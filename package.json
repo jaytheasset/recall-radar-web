@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro dev --host 127.0.0.1 --port 5179",
     "build": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "build:data": "npm run fetch:cpsc",
+    "fetch:cpsc": "node --experimental-strip-types scripts/fetch-cpsc.ts",
+    "normalize:cpsc": "node --experimental-strip-types scripts/normalize-cpsc.ts",
     "preview": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro preview --host 127.0.0.1 --port 5179",
     "check": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro check"
   },

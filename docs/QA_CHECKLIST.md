@@ -11,8 +11,19 @@
 
 - `npm run check`
 - `npm run build`
+- `npm run fetch:cpsc`
+- `npm run normalize:cpsc`
 - `npm run dev`
 - `npm run preview`
+
+## CPSC Data Pipeline
+
+- Confirm `npm run fetch:cpsc` saves `data/raw/cpsc-recalls.json`.
+- Confirm `npm run fetch:cpsc` saves `data/processed/recalls.json`.
+- Confirm both files contain a positive record count.
+- Confirm raw output includes `fetchedAt`.
+- Confirm normalized records include `source`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard`, `remedy`, `recallDate`, `affectedUnits`, `description`, `slug`, and `raw`.
+- Confirm the website still uses local mock data until a later phase explicitly switches it.
 
 ## Pages
 
