@@ -12,18 +12,83 @@ export function brandToSlug(brand: string): string {
 }
 
 export function limitSlug(value: string, maxLength = 96): string {
-  const slug = slugify(value);
+  const parts = slugify(value).split('-').filter(Boolean);
+  let limitedSlug = '';
 
-  if (slug.length <= maxLength) {
-    return slug;
+  for (const part of parts) {
+    const nextSlug = limitedSlug ? `${limitedSlug}-${part}` : part;
+
+    if (nextSlug.length > maxLength) {
+      break;
+    }
+
+    limitedSlug = nextSlug;
   }
 
-  return slug.slice(0, maxLength).replace(/-+$/g, '');
+  return limitedSlug || parts[0] || '';
 }
 
-export function recallSlug(title: string, id: string, maxBaseLength = 88): string {
+export type RecallSlugOptions = {
+  productNames?: string[];
+  brandNames?: string[];
+  maxBaseLength?: number;
+};
+
+const lowValueSegmentPatterns = [
+  /^risk of serious injury or death\b/i,
+  /^sold exclusively\b/i,
+  /^sold at\b/i,
+  /^imported by\b/i,
+  /^manufactured by\b/i
+];
+
+const lowValuePhrasePatterns = [
+  /\b(?:recalled|recalls)\s+due\s+to\b/gi,
+  /\b(?:recalled|recalls)\b/gi,
+  /\bdue\s+to\b/gi,
+  /\brisk\s+of\s+serious\s+injury\s+or\s+death(?:\s+from)?\b/gi,
+  /\bserious\s+injury\s+or\s+death(?:\s+from)?\b/gi,
+  /\brisk\s+of\b/gi,
+  /\bsold\s+exclusively\b/gi,
+  /\bsold\s+at\b/gi
+];
+
+function cleanRecallTitle(title: string): string {
+  const usefulSegments = title
+    .split(';')
+    .map((segment) => segment.trim())
+    .filter(Boolean)
+    .filter((segment) => !lowValueSegmentPatterns.some((pattern) => pattern.test(segment)));
+
+  return lowValuePhrasePatterns
+    .reduce((text, pattern) => text.replace(pattern, ' '), usefulSegments.join(' ') || title)
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function hasUsefulSlugTokens(value: string): boolean {
+  return slugify(value).split('-').filter(Boolean).length >= 3;
+}
+
+function recallSlugSource(title: string, options: RecallSlugOptions): string {
+  const cleanedTitle = cleanRecallTitle(title);
+
+  if (hasUsefulSlugTokens(cleanedTitle)) {
+    return cleanedTitle;
+  }
+
+  return [
+    options.brandNames?.[0],
+    options.productNames?.[0],
+    cleanedTitle || title
+  ]
+    .filter(Boolean)
+    .join(' ');
+}
+
+export function recallSlug(title: string, id: string, options: RecallSlugOptions = {}): string {
   const idSlug = slugify(id);
-  const base = limitSlug(title, maxBaseLength) || 'recall';
+  const base = limitSlug(recallSlugSource(title, options), options.maxBaseLength ?? 72) || 'recall';
   return idSlug ? `${base}-${idSlug}` : base;
 }
 

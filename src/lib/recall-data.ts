@@ -2,7 +2,7 @@ import processedRecallData from '../../data/processed/recalls.json';
 import { mockRecalls, type MockRecall, type RecallCategory } from '../data/mock-recalls';
 import type { NormalizedRecall, ProcessedRecallFile } from '../data/recall-types';
 import { normalizeBrandName } from './brand-normalize';
-import { recallSlug } from './slug';
+import { limitSlug, recallSlug } from './slug';
 
 export type SiteRecallCategory = RecallCategory | 'general-consumer-product';
 export type SiteRecallSource = 'CPSC' | 'Mock';
@@ -191,7 +191,10 @@ function toSiteRecallFromCpsc(record: NormalizedRecall): SiteRecall {
   const primaryBrandInfo = normalizedBrands[0];
   const primaryBrand = primaryBrandInfo?.displayName ?? 'CPSC record';
   const primaryProductName = firstNonEmpty(productNames, 'Product not listed');
-  const slug = recallSlug(record.title, record.id);
+  const slug = recallSlug(record.title, record.id, {
+    productNames,
+    brandNames: displayBrandNames
+  });
 
   return {
     id: record.id,
@@ -266,10 +269,41 @@ export function getRecallsByCategory(category: SiteRecallCategory): SiteRecall[]
 export function getBrandGroups(recalls = siteRecalls): BrandRecallGroup[] {
   const groups = new Map<string, BrandRecallGroup>();
 
+  function brandHash(value: string): string {
+    let hash = 0;
+    for (const character of value) {
+      hash = (hash * 31 + character.charCodeAt(0)) >>> 0;
+    }
+    return hash.toString(36).slice(0, 6);
+  }
+
+  function displayNamesMatch(a: string, b: string): boolean {
+    return a.localeCompare(b, undefined, { sensitivity: 'accent' }) === 0;
+  }
+
+  function uniqueBrandSlug(baseSlug: string, rawName: string, displayName: string): string {
+    const existing = groups.get(baseSlug);
+    if (!existing || displayNamesMatch(existing.displayName, displayName)) {
+      return baseSlug;
+    }
+
+    const suffix = brandHash(rawName);
+    const collisionSlug = `${limitSlug(baseSlug, 64)}-${suffix}`;
+    const collision = groups.get(collisionSlug);
+
+    return !collision || displayNamesMatch(collision.displayName, displayName)
+      ? collisionSlug
+      : `${limitSlug(baseSlug, 58)}-${suffix}-${groups.size + 1}`;
+  }
+
   for (const recall of recalls) {
     for (const brand of recall.brandNames) {
       const normalizedBrand = normalizeBrandName(brand);
-      const slug = normalizedBrand.slug;
+      const slug = uniqueBrandSlug(
+        normalizedBrand.slug,
+        normalizedBrand.rawName,
+        normalizedBrand.displayName
+      );
       if (!slug) {
         continue;
       }

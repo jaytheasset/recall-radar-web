@@ -66,7 +66,8 @@ Do not call `npm run fetch:cpsc` during Phase 3 or Phase 4 unless a later task e
 
 - loads `data/processed/recalls.json` at build time
 - maps CPSC records into a UI-safe `SiteRecall` shape
-- limits generated detail slugs while preserving uniqueness with the CPSC id
+- builds concise recall detail slugs from cleaned title text, with product/brand fallback context
+- limits generated detail slugs at word boundaries while preserving uniqueness with the CPSC id
 - builds brand groups from `brandNames`
 - keeps raw CPSC brand/legal names on each recall
 - adds normalized consumer-facing brand display names and shorter brand slugs through `src/lib/brand-normalize.ts`
@@ -82,12 +83,18 @@ Do not call `npm run fetch:cpsc` during Phase 3 or Phase 4 unless a later task e
 - removes common legal suffix noise such as `Inc.`, `LLC`, `Ltd.`, `Corporation`, and `Co. Ltd.`
 - keeps the raw source name available on recall detail and brand pages
 - limits brand slugs to avoid very long legal-entity URLs
+- avoids cutting brand slugs in the middle of a word
+- keeps brand routes unique if two different display names normalize to the same slug
 
 Example:
 
 - raw source name: `7111495 Canada Inc., dba Arizer Tech, of Waterloo, Ontario`
 - display brand: `Arizer Tech`
 - route: `/brands/arizer-tech`
+
+## Slug Quality
+
+`src/lib/slug.ts` removes common low-value recall-title phrases before generating recall page URLs, including `recalled due to`, `risk of`, `serious injury or death`, `sold exclusively`, `sold at`, and standalone importer/manufacturer clauses. Recall slugs keep the source id suffix, such as `cpsc-26565`, so cleaned URLs remain stable and unique for the same source record.
 
 ## Search Helper
 

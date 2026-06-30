@@ -46,7 +46,15 @@ Do not run `npm run fetch:cpsc` during local UI-only phases unless the task expl
 - Confirm obvious `dba` or `doing business as` source names use a cleaner display brand.
 - Confirm raw/source brand names still appear when they differ from the display brand.
 - Confirm brand URLs are readable and not excessively long.
+- Confirm brand URLs do not cut off in the middle of a word.
 - Confirm normalized brand routes still show related recalls.
+
+## Slug Quality
+
+- Confirm recall URLs keep the source id suffix, for example `cpsc-26565`.
+- Confirm recall URLs do not cut off in the middle of a word.
+- Confirm common filler phrases such as `recalled due to`, `risk of`, and `serious injury or death` are not overrepresented in generated recall URLs.
+- Confirm a cleaned real recall URL still renders its detail page.
 
 ## Search Cases
 
