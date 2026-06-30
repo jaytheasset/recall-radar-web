@@ -1,10 +1,9 @@
 ---
-import { mockRecalls } from '../../data/mock-recalls';
-import { brandToSlug } from '../../lib/slug';
+import { siteRecalls } from '../../lib/recall-data';
 import '../../styles/global.css';
 
 export function getStaticPaths() {
-  return mockRecalls.map((recall) => ({
+  return siteRecalls.map((recall) => ({
     params: { slug: recall.slug },
     props: { recall }
   }));
@@ -12,7 +11,7 @@ export function getStaticPaths() {
 
 const { recall } = Astro.props;
 const title = `${recall.title} | Recall Radar`;
-const description = `${recall.title} local mock detail page with brand, model, UPC, lot code, hazard, and remedy fields.`;
+const description = `${recall.title} local recall detail page with source, product, brand, hazard, remedy, affected units, and official notice link.`;
 ---
 
 <html lang="en">
@@ -37,31 +36,43 @@ const description = `${recall.title} local mock detail page with brand, model, U
     <main class="page-shell">
       <section class="section">
         <p class="eyebrow">Recall detail</p>
+        <div class="meta-row data-source-row">
+          <span class="status-pill">{recall.sourceLabel}</span>
+          <span class="tag">{recall.categoryLabel}</span>
+        </div>
         <h1>{recall.title}</h1>
-        <p class="lead">{recall.summary}</p>
+        <p class="lead">{recall.description}</p>
       </section>
 
       <section class="section detail-grid">
         <aside class="facts" aria-label="Recall facts">
           <div class="fact">
             <strong>Brand</strong>
-            <a href={`/brands/${brandToSlug(recall.brand)}`}>{recall.brand}</a>
+            {recall.primaryBrandSlug ? (
+              <a href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand}</a>
+            ) : (
+              <span>{recall.primaryBrand}</span>
+            )}
           </div>
           <div class="fact">
             <strong>Category</strong>
             <span>{recall.categoryLabel}</span>
           </div>
           <div class="fact">
-            <strong>Notice Date</strong>
-            <span>{recall.noticeDate}</span>
+            <strong>Recall Date</strong>
+            <span>{recall.recallDate}</span>
           </div>
           <div class="fact">
-            <strong>Agency</strong>
-            <span>{recall.agency}</span>
+            <strong>Source</strong>
+            <span>{recall.sourceLabel}</span>
           </div>
           <div class="fact">
-            <strong>Recall Number</strong>
-            <span>{recall.recallNumber}</span>
+            <strong>Record ID</strong>
+            <span>{recall.id}</span>
+          </div>
+          <div class="fact">
+            <strong>Official Notice</strong>
+            {recall.sourceUrl ? <a href={recall.sourceUrl}>View source notice</a> : <span>Not listed</span>}
           </div>
         </aside>
 
@@ -69,28 +80,20 @@ const description = `${recall.title} local mock detail page with brand, model, U
           <h2>Product Details</h2>
           <div class="facts">
             <div class="fact">
-              <strong>Product</strong>
-              <span>{recall.productName}</span>
+              <strong>Products</strong>
+              <span>{recall.productNames.length ? recall.productNames.join(', ') : recall.primaryProductName}</span>
             </div>
             <div class="fact">
-              <strong>Model Numbers</strong>
-              <span>{recall.modelNumbers.length ? recall.modelNumbers.join(', ') : 'Not listed in mock data'}</span>
-            </div>
-            <div class="fact">
-              <strong>UPC</strong>
-              <span>{recall.upcs.length ? recall.upcs.join(', ') : 'Not listed in mock data'}</span>
-            </div>
-            <div class="fact">
-              <strong>Lot Codes</strong>
-              <span>{recall.lotCodes.length ? recall.lotCodes.join(', ') : 'Not listed in mock data'}</span>
+              <strong>Affected Units</strong>
+              <span>{recall.affectedUnits || 'Not listed in local data'}</span>
             </div>
             <div class="fact">
               <strong>Hazard</strong>
-              <span>{recall.hazard}</span>
+              <span>{recall.hazard || 'Not listed in local data'}</span>
             </div>
             <div class="fact">
               <strong>Remedy</strong>
-              <span>{recall.remedy}</span>
+              <span>{recall.remedy || 'Not listed in local data'}</span>
             </div>
           </div>
         </article>
@@ -99,13 +102,17 @@ const description = `${recall.title} local mock detail page with brand, model, U
       <section class="section">
         <div class="link-row">
           <a class="button-link" href="/checker">Check another product</a>
-          <a class="button-link button-secondary" href={`/brands/${brandToSlug(recall.brand)}`}>Brand recall page</a>
+          {recall.primaryBrandSlug ? (
+            <a class="button-link button-secondary" href={`/brands/${recall.primaryBrandSlug}`}>
+              Brand recall page
+            </a>
+          ) : null}
         </div>
       </section>
     </main>
 
     <footer class="page-footer">
-      Recall Radar is using local mock data for this MVP. Always verify against official recall notices.
+      Recall Radar uses local CPSC processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
     </footer>
   </body>
 </html>

@@ -1,13 +1,19 @@
 ---
-import { categoryRoutes, mockRecalls } from '../data/mock-recalls';
-import { brandToSlug } from '../lib/slug';
+import {
+  brandGroups,
+  categoryRoutes,
+  dataSourceLabel,
+  processedCpscRecordCount,
+  siteRecalls,
+  usingProcessedCpscData
+} from '../lib/recall-data';
 import '../styles/global.css';
 
 const title = 'Product Recall Checker | Recall Radar';
 const description =
-  'Recall Radar is a local MVP product recall checker for searching mock recall data by brand, model, category, or keyword.';
-const featuredRecalls = mockRecalls.slice(0, 4);
-const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
+  'Recall Radar is a local product recall checker for searching CPSC local data by brand, product, category, or keyword.';
+const featuredRecalls = siteRecalls.slice(0, 6);
+const featuredBrands = brandGroups.slice(0, 24);
 ---
 
 <html lang="en">
@@ -35,11 +41,17 @@ const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
           <p class="eyebrow">Recall Radar</p>
           <h1>Check if a product has been recalled</h1>
           <p class="lead">Search product recalls by brand, model, category, or keyword.</p>
+          <div class="meta-row data-source-row">
+            <span class="status-pill">{dataSourceLabel}</span>
+            <span class="tag">
+              {usingProcessedCpscData ? `${processedCpscRecordCount} local CPSC records` : 'Demo fallback records'}
+            </span>
+          </div>
           <div class="category-band" aria-label="Recall categories">
             {categoryRoutes.map((route) => (
               <a class="category-link" href={route.href}>
                 {route.label}
-                <span>Browse local mock recalls</span>
+                <span>{route.description}</span>
               </a>
             ))}
           </div>
@@ -49,7 +61,7 @@ const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
           <form class="search-form" action="/checker" method="get">
             <label>
               Search
-              <input name="q" type="search" placeholder="Brand, model, UPC, lot, or keyword" />
+              <input name="q" type="search" placeholder="Brand, product, model, or keyword" />
             </label>
             <button type="submit">Check</button>
           </form>
@@ -58,21 +70,27 @@ const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
 
       <section class="section">
         <div class="section-header">
-          <h2>Recent Local Mock Recalls</h2>
+          <div>
+            <h2>Latest Local CPSC Recalls</h2>
+            <p class="section-note">Generated from the local processed CPSC data file.</p>
+          </div>
           <a class="button-link button-secondary" href="/checker">Search all</a>
         </div>
         <div class="grid">
           {featuredRecalls.map((recall) => (
             <article class="recall-card">
               <div class="meta-row">
+                <span class="tag source-tag">{recall.sourceLabel}</span>
                 <span class="tag">{recall.categoryLabel}</span>
-                <span class="tag">{recall.noticeDate}</span>
+                <span class="tag">{recall.recallDate}</span>
               </div>
-              <h3><a href={`/recalls/${recall.slug}`}>{recall.title}</a></h3>
-              <p>{recall.summary}</p>
+              <h3><a href={recall.detailPath}>{recall.title}</a></h3>
+              <p>{recall.description}</p>
               <div class="link-row">
-                <a href={`/brands/${brandToSlug(recall.brand)}`}>{recall.brand} recall page</a>
-                <a href={`/recalls/${recall.slug}`}>Details</a>
+                {recall.primaryBrandSlug ? (
+                  <a href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} recall page</a>
+                ) : null}
+                <a href={recall.detailPath}>Details</a>
               </div>
             </article>
           ))}
@@ -101,13 +119,13 @@ const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
           <h2>Brand Recall Pages</h2>
         </div>
         <div class="tag-row">
-          {brands.map((brand) => <a class="tag" href={`/brands/${brandToSlug(brand)}`}>{brand}</a>)}
+          {featuredBrands.map((group) => <a class="tag" href={`/brands/${group.slug}`}>{group.brand}</a>)}
         </div>
       </section>
     </main>
 
     <footer class="page-footer">
-      Recall Radar is using local mock data for this MVP. Always verify against official recall notices.
+      Recall Radar uses local CPSC processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
     </footer>
   </body>
 </html>

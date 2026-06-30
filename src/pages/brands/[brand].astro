@@ -1,23 +1,17 @@
 ---
-import { mockRecalls } from '../../data/mock-recalls';
-import { brandToSlug } from '../../lib/slug';
+import { brandGroups } from '../../lib/recall-data';
 import '../../styles/global.css';
 
 export function getStaticPaths() {
-  const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
-
-  return brands.map((brand) => ({
-    params: { brand: brandToSlug(brand) },
-    props: {
-      brand,
-      recalls: mockRecalls.filter((recall) => recall.brand === brand)
-    }
+  return brandGroups.map((group) => ({
+    params: { brand: group.slug },
+    props: group
   }));
 }
 
 const { brand, recalls } = Astro.props;
 const title = `${brand} Recall Page | Recall Radar`;
-const description = `${brand} Brand Recall page in Recall Radar with local mock product recall records and detail links.`;
+const description = `${brand} Brand Recall page in Recall Radar with local CPSC processed recall records and detail links.`;
 ---
 
 <html lang="en">
@@ -42,8 +36,12 @@ const description = `${brand} Brand Recall page in Recall Radar with local mock 
     <main class="page-shell">
       <section class="section">
         <p class="eyebrow">Brand Recall pages</p>
+        <div class="meta-row data-source-row">
+          <span class="status-pill">CPSC local data</span>
+          <span class="tag">{recalls.length} record{recalls.length === 1 ? '' : 's'}</span>
+        </div>
         <h1>{brand} Recall Page</h1>
-        <p class="lead">Local mock recall records for {brand}.</p>
+        <p class="lead">Local recall records for {brand}.</p>
       </section>
 
       <section class="section">
@@ -51,12 +49,13 @@ const description = `${brand} Brand Recall page in Recall Radar with local mock 
           {recalls.map((recall) => (
             <article class="recall-card">
               <div class="meta-row">
+                <span class="tag source-tag">{recall.sourceLabel}</span>
                 <span class="tag">{recall.categoryLabel}</span>
-                <span class="tag">{recall.noticeDate}</span>
+                <span class="tag">{recall.recallDate}</span>
               </div>
-              <h3><a href={`/recalls/${recall.slug}`}>{recall.title}</a></h3>
-              <p>{recall.summary}</p>
-              <a href={`/recalls/${recall.slug}`}>Details</a>
+              <h3><a href={recall.detailPath}>{recall.title}</a></h3>
+              <p>{recall.description}</p>
+              <a href={recall.detailPath}>Details</a>
             </article>
           ))}
         </div>
@@ -68,7 +67,7 @@ const description = `${brand} Brand Recall page in Recall Radar with local mock 
     </main>
 
     <footer class="page-footer">
-      Recall Radar is using local mock data for this MVP. Always verify against official recall notices.
+      Recall Radar uses local CPSC processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
     </footer>
   </body>
 </html>

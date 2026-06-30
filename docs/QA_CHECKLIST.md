@@ -23,7 +23,8 @@
 - Confirm both files contain a positive record count.
 - Confirm raw output includes `fetchedAt`.
 - Confirm normalized records include `source`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard`, `remedy`, `recallDate`, `affectedUnits`, `description`, `slug`, and `raw`.
-- Confirm the website still uses local mock data until a later phase explicitly switches it.
+- Confirm the website uses `data/processed/recalls.json` as the primary local source.
+- Confirm mock data remains only fallback/demo data.
 
 ## Pages
 
@@ -32,15 +33,16 @@
 - `/baby-product-recalls`
 - `/battery-recalls`
 - `/food-allergy-recalls`
-- `/recalls/brightnest-convertible-crib-rail-guard`
-- `/brands/brightnest`
+- one real CPSC `/recalls/[slug]` page
+- one real CPSC `/brands/[brand]` page
+- Confirm page labels identify records as local CPSC data.
 
 ## Search Cases
 
-- `BrightNest` returns an exact local match.
-- `VEB-20` returns an exact local match.
-- `peanut granola` returns a possible local match.
-- `battery` returns related local matches.
+- A full CPSC recall title returns an exact local match.
+- A real CPSC brand name returns an exact or possible local match.
+- `battery` returns possible or related local matches when battery records exist.
+- `smoke detector` returns possible or related local matches when detector records exist.
 - `not-a-real-product` returns no local match.
 
 ## Safety Copy

@@ -1,12 +1,40 @@
 ---
-import { categoryRoutes, mockRecalls } from '../data/mock-recalls';
-import { brandToSlug } from '../lib/slug';
+import {
+  brandGroups,
+  categoryRoutes,
+  dataSourceLabel,
+  processedCpscRecordCount,
+  siteRecalls,
+  usingProcessedCpscData
+} from '../lib/recall-data';
 import '../styles/global.css';
 
 const title = 'Product Recall Checker | Recall Radar';
 const description =
-  'Search local mock recall data with the Recall Radar Product Recall Checker by product name, brand, model, UPC, lot code, category, or keyword.';
-const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
+  'Search local CPSC processed recall data with the Recall Radar Product Recall Checker by product name, brand, category, or keyword.';
+const featuredBrands = brandGroups.slice(0, 24);
+const checkerRecalls = siteRecalls.map((recall) => ({
+  id: recall.id,
+  source: recall.source,
+  sourceLabel: recall.sourceLabel,
+  sourceUrl: recall.sourceUrl,
+  title: recall.title,
+  brandNames: recall.brandNames,
+  primaryBrand: recall.primaryBrand,
+  primaryBrandSlug: recall.primaryBrandSlug,
+  productNames: recall.productNames,
+  primaryProductName: recall.primaryProductName,
+  category: recall.category,
+  categoryLabel: recall.categoryLabel,
+  hazard: recall.hazard,
+  remedy: recall.remedy,
+  recallDate: recall.recallDate,
+  affectedUnits: recall.affectedUnits,
+  description: recall.description,
+  slug: recall.slug,
+  detailPath: recall.detailPath
+}));
+const checkerRecallsJson = JSON.stringify(checkerRecalls);
 ---
 
 <html lang="en">
@@ -33,9 +61,15 @@ const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
         <p class="eyebrow">Recall Radar</p>
         <h1>Product Recall Checker</h1>
         <p class="lead">Search product recalls by brand, model, category, or keyword.</p>
+        <div class="meta-row data-source-row">
+          <span class="status-pill">{dataSourceLabel}</span>
+          <span class="tag">
+            {usingProcessedCpscData ? `${processedCpscRecordCount} local CPSC records` : 'Demo fallback records'}
+          </span>
+        </div>
 
         <section class="search-panel" aria-labelledby="checker-form-title">
-          <h2 id="checker-form-title">Check Local Mock Data</h2>
+          <h2 id="checker-form-title">Check Local Recall Data</h2>
           <form id="recall-search-form" class="search-form">
             <label>
               Search
@@ -43,7 +77,7 @@ const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
                 id="recall-query"
                 name="q"
                 type="search"
-                placeholder="Try VoltEdge, VEB-20, peanut, crib, or air fryer"
+                placeholder="Try smoke detector, lithium, crib, allergy, or a brand"
                 autocomplete="off"
               />
             </label>
@@ -69,7 +103,7 @@ const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
           {categoryRoutes.map((route) => (
             <a class="category-link" href={route.href}>
               {route.label}
-              <span>Browse local mock recalls</span>
+              <span>{route.description}</span>
             </a>
           ))}
         </div>
@@ -80,20 +114,23 @@ const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
           <h2>Brand Recall Pages</h2>
         </div>
         <div class="tag-row">
-          {brands.map((brand) => <a class="tag" href={`/brands/${brandToSlug(brand)}`}>{brand}</a>)}
+          {featuredBrands.map((group) => <a class="tag" href={`/brands/${group.slug}`}>{group.brand}</a>)}
         </div>
       </section>
     </main>
 
     <footer class="page-footer">
-      Recall Radar is using local mock data for this MVP. Always verify against official recall notices.
+      Recall Radar uses local CPSC processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
     </footer>
 
+    <script id="recall-search-data" type="application/json" is:inline set:html={checkerRecallsJson}></script>
     <script>
-      import { mockRecalls } from '../data/mock-recalls';
       import { MATCH_LABELS, NO_MATCH_DISCLAIMER, searchRecalls } from '../lib/recall-search';
-      import { brandToSlug } from '../lib/slug';
 
+      const dataNode = document.querySelector<HTMLScriptElement>('#recall-search-data');
+      const siteRecalls = dataNode?.textContent
+        ? (JSON.parse(dataNode.textContent) as Parameters<typeof searchRecalls>[1])
+        : [];
       const form = document.querySelector<HTMLFormElement>('#recall-search-form');
       const input = document.querySelector<HTMLInputElement>('#recall-query');
       const panel = document.querySelector<HTMLElement>('#search-results');
@@ -103,12 +140,16 @@ const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
       const disclaimer = document.querySelector<HTMLElement>('#result-disclaimer');
       const list = document.querySelector<HTMLElement>('#result-list');
 
-      function createResultCard(recall: (typeof mockRecalls)[number]): HTMLElement {
+      function createResultCard(recall: (typeof siteRecalls)[number]): HTMLElement {
         const article = document.createElement('article');
         article.className = 'recall-card';
 
         const meta = document.createElement('div');
         meta.className = 'meta-row';
+
+        const source = document.createElement('span');
+        source.className = 'tag source-tag';
+        source.textContent = recall.sourceLabel;
 
         const category = document.createElement('span');
         category.className = 'tag';
@@ -116,30 +157,33 @@ const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
 
         const date = document.createElement('span');
         date.className = 'tag';
-        date.textContent = recall.noticeDate;
+        date.textContent = recall.recallDate;
 
         const heading = document.createElement('h3');
         const detailLink = document.createElement('a');
-        detailLink.href = `/recalls/${recall.slug}`;
+        detailLink.href = recall.detailPath;
         detailLink.textContent = recall.title;
         heading.append(detailLink);
 
         const text = document.createElement('p');
-        text.textContent = recall.summary;
+        text.textContent = recall.description;
 
         const links = document.createElement('div');
         links.className = 'link-row';
 
-        const brand = document.createElement('a');
-        brand.href = `/brands/${brandToSlug(recall.brand)}`;
-        brand.textContent = `${recall.brand} recall page`;
+        if (recall.primaryBrandSlug) {
+          const brand = document.createElement('a');
+          brand.href = `/brands/${recall.primaryBrandSlug}`;
+          brand.textContent = `${recall.primaryBrand} recall page`;
+          links.append(brand);
+        }
 
         const details = document.createElement('a');
-        details.href = `/recalls/${recall.slug}`;
+        details.href = recall.detailPath;
         details.textContent = 'Details';
 
-        meta.append(category, date);
-        links.append(brand, details);
+        meta.append(source, category, date);
+        links.append(details);
         article.append(meta, heading, text, links);
 
         return article;
@@ -150,17 +194,17 @@ const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
           return;
         }
 
-        const result = searchRecalls(query, mockRecalls);
+        const result = searchRecalls(query, siteRecalls);
         panel.hidden = false;
         panel.dataset.match = result.match;
         matchLabel.textContent = MATCH_LABELS[result.match];
         countLabel.textContent = `${result.recalls.length} result${result.recalls.length === 1 ? '' : 's'}`;
         summary.textContent =
           result.match === 'none'
-            ? 'No local mock recall matched that search.'
-            : `Local mock matches for "${query}".`;
+            ? 'No local recall matched that search.'
+            : `Local matches for "${query}".`;
         disclaimer.textContent = NO_MATCH_DISCLAIMER;
-        list.replaceChildren(...result.recalls.map(createResultCard));
+        list.replaceChildren(...result.recalls.slice(0, 25).map(createResultCard));
       }
 
       form?.addEventListener('submit', (event) => {

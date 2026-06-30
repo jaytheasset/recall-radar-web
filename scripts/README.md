@@ -5,6 +5,7 @@ This folder contains local-only data preparation scripts.
 Current rules:
 
 - The only external API allowed in phase 2 is the public CPSC recall API.
+- Phase 3 uses the existing local `data/processed/recalls.json` file and should not fetch unless a later task explicitly asks for fresh data.
 - Do not connect databases.
 - Do not write secrets.
 - Keep generated data inside `data/processed`.

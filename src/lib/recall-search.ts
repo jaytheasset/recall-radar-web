@@ -1,11 +1,11 @@
-import type { MockRecall } from '../data/mock-recalls';
+import type { SiteRecall } from './recall-data';
 
 export type RecallMatchType = 'exact' | 'possible' | 'related' | 'none';
 
 export type RecallSearchResult = {
   query: string;
   match: RecallMatchType;
-  recalls: MockRecall[];
+  recalls: SiteRecall[];
 };
 
 export const MATCH_LABELS: Record<RecallMatchType, string> = {
@@ -16,7 +16,7 @@ export const MATCH_LABELS: Record<RecallMatchType, string> = {
 };
 
 export const NO_MATCH_DISCLAIMER =
-  '?쏯o matching recall found does not guarantee a product is safe. Always verify with the official recall notice, manufacturer, and applicable government agency.??';
+  'No matching recall found does not guarantee a product is safe. Always verify with the official recall notice, manufacturer, and applicable government agency.';
 
 function normalize(value: string): string {
   return value
@@ -32,39 +32,65 @@ function tokensFor(query: string): string[] {
     .filter((token) => token.length > 1);
 }
 
-function searchableText(recall: MockRecall): string {
-  return normalize(
-    [
-      recall.title,
-      recall.brand,
-      recall.category,
-      recall.categoryLabel,
-      recall.productName,
-      recall.summary,
-      recall.hazard,
-      recall.remedy,
-      recall.recallNumber,
-      ...recall.modelNumbers,
-      ...recall.upcs,
-      ...recall.lotCodes,
-      ...recall.keywords
-    ].join(' ')
-  );
+function searchableText(values: string[]): string {
+  return normalize(values.join(' '));
 }
 
-function exactFields(recall: MockRecall): string[] {
+function exactFields(recall: SiteRecall): string[] {
   return [
+    recall.id,
     recall.title,
-    recall.brand,
-    recall.productName,
-    recall.recallNumber,
-    ...recall.modelNumbers,
-    ...recall.upcs,
-    ...recall.lotCodes
+    recall.slug,
+    ...recall.brandNames,
+    ...recall.productNames
   ].map(normalize);
 }
 
-export function getRecallMatch(query: string, recall: MockRecall): RecallMatchType {
+function possibleFields(recall: SiteRecall): string {
+  return searchableText([
+    recall.id,
+    recall.title,
+    recall.slug,
+    recall.primaryBrand,
+    recall.primaryProductName,
+    ...recall.brandNames,
+    ...recall.productNames
+  ]);
+}
+
+function relatedFields(recall: SiteRecall): string {
+  return searchableText([
+    recall.category,
+    recall.categoryLabel,
+    recall.hazard,
+    recall.remedy,
+    recall.description,
+    recall.affectedUnits,
+    recall.sourceLabel
+  ]);
+}
+
+function isStrongFieldMatch(normalizedQuery: string, queryTokens: string[], field: string): boolean {
+  if (!field) {
+    return false;
+  }
+
+  if (field === normalizedQuery || field === normalizedQuery.replace(/\s+/g, '-')) {
+    return true;
+  }
+
+  if (queryTokens.length >= 2 && queryTokens.every((token) => field.includes(token))) {
+    return true;
+  }
+
+  return normalizedQuery.length >= 4 && field.startsWith(normalizedQuery);
+}
+
+function tokenMatchCount(tokens: string[], text: string): number {
+  return tokens.filter((token) => token.length > 2 && text.includes(token)).length;
+}
+
+export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchType {
   const normalizedQuery = normalize(query);
   const queryTokens = tokensFor(query);
 
@@ -72,36 +98,48 @@ export function getRecallMatch(query: string, recall: MockRecall): RecallMatchTy
     return 'none';
   }
 
-  const fields = exactFields(recall);
-  if (fields.some((field) => field === normalizedQuery)) {
+  if (exactFields(recall).some((field) => isStrongFieldMatch(normalizedQuery, queryTokens, field))) {
     return 'exact';
   }
 
-  const text = searchableText(recall);
-  if (queryTokens.every((token) => text.includes(token))) {
+  const possibleText = possibleFields(recall);
+  if (tokenMatchCount(queryTokens, possibleText) > 0) {
     return 'possible';
   }
 
-  if (queryTokens.some((token) => token.length > 2 && text.includes(token))) {
+  const relatedText = relatedFields(recall);
+  if (tokenMatchCount(queryTokens, relatedText) > 0) {
     return 'related';
   }
 
   return 'none';
 }
 
-export function searchRecalls(query: string, recalls: MockRecall[]): RecallSearchResult {
+function matchOrder(match: RecallMatchType): number {
+  return ['exact', 'possible', 'related', 'none'].indexOf(match);
+}
+
+function compareRecalls(
+  a: { recall: SiteRecall; match: RecallMatchType },
+  b: { recall: SiteRecall; match: RecallMatchType }
+): number {
+  const matchDifference = matchOrder(a.match) - matchOrder(b.match);
+  if (matchDifference !== 0) {
+    return matchDifference;
+  }
+
+  return b.recall.recallDate.localeCompare(a.recall.recallDate);
+}
+
+export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearchResult {
   const matches = recalls
     .map((recall) => ({ recall, match: getRecallMatch(query, recall) }))
-    .filter((result) => result.match !== 'none');
-
-  const orderedTypes: RecallMatchType[] = ['exact', 'possible', 'related'];
-  const topMatch = orderedTypes.find((type) => matches.some((result) => result.match === type)) ?? 'none';
+    .filter((result) => result.match !== 'none')
+    .sort(compareRecalls);
 
   return {
     query,
-    match: topMatch,
-    recalls: matches
-      .sort((a, b) => orderedTypes.indexOf(a.match) - orderedTypes.indexOf(b.match))
-      .map((result) => result.recall)
+    match: matches[0]?.match ?? 'none',
+    recalls: matches.map((result) => result.recall)
   };
 }

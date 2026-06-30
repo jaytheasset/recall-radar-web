@@ -12,29 +12,36 @@ Use port `5179` only.
 
 ## Data Model
 
-Mock recall records live in `src/data/mock-recalls.ts`.
+The site-facing recall model is built in `src/lib/recall-data.ts`.
 
-Each recall includes:
+Primary local source:
+
+- `data/processed/recalls.json`
+
+Fallback/demo source:
+
+- `src/data/mock-recalls.ts`
+
+When processed CPSC records exist, they are the primary source for homepage cards, checker search results, recall detail pages, brand pages, and category pages. Mock records remain available only as local fallback/demo data.
+
+Site-facing records include:
 
 - slug
 - title
-- brand
+- source label
+- source URL
+- brand names
 - category
-- product name
-- notice date
-- mock agency
-- recall number
-- summary
+- product names
+- recall date
+- affected units
+- description
 - hazard
 - remedy
-- model numbers
-- UPCs
-- lot codes
-- keywords
 
 ## Local CPSC Pipeline
 
-Phase 2 adds a local-only CPSC recall data pipeline. It does not replace the website mock data yet.
+Phase 2 added a local-only CPSC recall data pipeline. Phase 3 connects the processed CPSC file to the website.
 
 Commands:
 
@@ -50,6 +57,19 @@ Local output files:
 The fetch script calls `https://www.saferproducts.gov/RestWebServices/Recall` without an API key. It writes only after the API returns non-empty records, and each raw file includes a `fetchedAt` timestamp.
 
 Normalized records use `src/data/recall-types.ts` and include `id`, `source`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard`, `remedy`, `recallDate`, `affectedUnits`, `description`, `slug`, and `raw`.
+
+Do not call `npm run fetch:cpsc` during Phase 3 unless a later task explicitly asks for fresh local CPSC data.
+
+## Site Data Loader
+
+`src/lib/recall-data.ts`:
+
+- loads `data/processed/recalls.json` at build time
+- maps CPSC records into a UI-safe `SiteRecall` shape
+- limits generated detail slugs while preserving uniqueness with the CPSC id
+- builds brand groups from `brandNames`
+- classifies records lightly into baby/kids, battery/electronics, food/allergy, household/appliance, or general consumer product
+- falls back to mock records only when no processed records are available
 
 ## Search Helper
 

@@ -1,12 +1,11 @@
 ---
-import { mockRecalls } from '../data/mock-recalls';
-import { brandToSlug } from '../lib/slug';
+import { getRecallsByCategory } from '../lib/recall-data';
 import '../styles/global.css';
 
 const title = 'Baby Product Recalls | Recall Radar';
 const description =
-  'Browse local mock Baby Product Recalls in Recall Radar, including cribs, teether clips, nursery products, and kids safety notices.';
-const recalls = mockRecalls.filter((recall) => recall.category === 'baby-kids');
+  'Browse local CPSC Baby Product Recalls in Recall Radar, including cribs, nursery products, and kids safety notices.';
+const recalls = getRecallsByCategory('baby-kids');
 ---
 
 <html lang="en">
@@ -31,32 +30,44 @@ const recalls = mockRecalls.filter((recall) => recall.category === 'baby-kids');
     <main class="page-shell">
       <section class="section">
         <p class="eyebrow">Recall category</p>
+        <div class="meta-row data-source-row">
+          <span class="status-pill">CPSC local data</span>
+          <span class="tag">{recalls.length} record{recalls.length === 1 ? '' : 's'}</span>
+        </div>
         <h1>Baby Product Recalls</h1>
-        <p class="lead">Local mock recall pages for baby, infant, nursery, and kids products.</p>
+        <p class="lead">Local recall pages for baby, infant, nursery, and kids products.</p>
       </section>
 
       <section class="section">
-        <div class="grid">
-          {recalls.map((recall) => (
-            <article class="recall-card">
-              <div class="meta-row">
-                <span class="tag">{recall.noticeDate}</span>
-                <span class="tag">{recall.recallNumber}</span>
-              </div>
-              <h3><a href={`/recalls/${recall.slug}`}>{recall.title}</a></h3>
-              <p>{recall.summary}</p>
-              <div class="link-row">
-                <a href={`/brands/${brandToSlug(recall.brand)}`}>{recall.brand} recall page</a>
-                <a href={`/recalls/${recall.slug}`}>Details</a>
-              </div>
-            </article>
-          ))}
-        </div>
+        {recalls.length ? (
+          <div class="grid">
+            {recalls.map((recall) => (
+              <article class="recall-card">
+                <div class="meta-row">
+                  <span class="tag source-tag">{recall.sourceLabel}</span>
+                  <span class="tag">{recall.recallDate}</span>
+                </div>
+                <h3><a href={recall.detailPath}>{recall.title}</a></h3>
+                <p>{recall.description}</p>
+                <div class="link-row">
+                  {recall.primaryBrandSlug ? (
+                    <a href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} recall page</a>
+                  ) : null}
+                  <a href={recall.detailPath}>Details</a>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="notice-panel">
+            <p>No local CPSC records are currently classified in this category.</p>
+          </div>
+        )}
       </section>
     </main>
 
     <footer class="page-footer">
-      Recall Radar is using local mock data for this MVP. Always verify against official recall notices.
+      Recall Radar uses local CPSC processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
     </footer>
   </body>
 </html>

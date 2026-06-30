@@ -200,6 +200,10 @@ button:hover,
   align-items: center;
 }
 
+.data-source-row {
+  margin: 1rem 0;
+}
+
 .tag,
 .status-pill {
   display: inline-flex;
@@ -212,6 +216,12 @@ button:hover,
   color: var(--muted);
   font-size: 0.84rem;
   font-weight: 750;
+}
+
+.source-tag {
+  border-color: rgba(29, 111, 95, 0.25);
+  background: #eef7f4;
+  color: var(--accent);
 }
 
 .status-pill {
@@ -230,6 +240,11 @@ button:hover,
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1.2rem;
+}
+
+.section-note {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
 }
 
 .grid {
