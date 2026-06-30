@@ -1,5 +1,6 @@
 ---
 import { siteRecalls } from '../../lib/recall-data';
+import { NO_MATCH_DISCLAIMER } from '../../lib/recall-search';
 import '../../styles/global.css';
 
 export function getStaticPaths() {
@@ -12,6 +13,15 @@ export function getStaticPaths() {
 const { recall } = Astro.props;
 const title = `${recall.title} | Recall Radar`;
 const description = `${recall.title} local recall detail page with source, product, brand, hazard, remedy, affected units, and official notice link.`;
+const displayBrandNames = recall.displayBrandNames.length ? recall.displayBrandNames : [recall.primaryBrand];
+const sourceBrandNames = recall.brandNames.filter(
+  (rawName: string) => !displayBrandNames.some((displayName: string) => displayName.toLowerCase() === rawName.toLowerCase())
+);
+const whatToCheckItems = [
+  'Compare the product name, model, and brand or company names against the official notice.',
+  'Review the hazard and remedy fields before using, selling, donating, or repairing the product.',
+  'Use the official CPSC notice and manufacturer instructions for the most authoritative next steps.'
+];
 ---
 
 <html lang="en">
@@ -28,7 +38,7 @@ const description = `${recall.title} local recall detail page with source, produ
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
         <a href="/baby-product-recalls">Baby Product Recalls</a>
-        <a href="/battery-recalls">Battery Recalls</a>
+        <a href="/battery-recalls">Battery & Electronics Recalls</a>
         <a href="/food-allergy-recalls">Food Allergy Recalls</a>
       </nav>
     </header>
@@ -47,7 +57,7 @@ const description = `${recall.title} local recall detail page with source, produ
       <section class="section detail-grid">
         <aside class="facts" aria-label="Recall facts">
           <div class="fact">
-            <strong>Brand</strong>
+            <strong>Primary Brand / Company</strong>
             {recall.primaryBrandSlug ? (
               <a href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand}</a>
             ) : (
@@ -71,22 +81,28 @@ const description = `${recall.title} local recall detail page with source, produ
             <span>{recall.id}</span>
           </div>
           <div class="fact">
-            <strong>Official Notice</strong>
-            {recall.sourceUrl ? <a href={recall.sourceUrl}>View source notice</a> : <span>Not listed</span>}
+            <strong>Official CPSC Notice</strong>
+            {recall.sourceUrl ? <a href={recall.sourceUrl}>Open official CPSC notice</a> : <span>Not listed</span>}
           </div>
         </aside>
 
         <article class="notice-panel">
-          <h2>Product Details</h2>
+          <h2>Recall Details</h2>
           <div class="facts">
             <div class="fact">
-              <strong>Products</strong>
+              <strong>Affected Products</strong>
               <span>{recall.productNames.length ? recall.productNames.join(', ') : recall.primaryProductName}</span>
             </div>
             <div class="fact">
-              <strong>Affected Units</strong>
-              <span>{recall.affectedUnits || 'Not listed in local data'}</span>
+              <strong>Brands / Companies</strong>
+              <span>{displayBrandNames.join(', ')}</span>
             </div>
+            {sourceBrandNames.length ? (
+              <div class="fact">
+                <strong>Source Brand Names</strong>
+                <span>{sourceBrandNames.join(', ')}</span>
+              </div>
+            ) : null}
             <div class="fact">
               <strong>Hazard</strong>
               <span>{recall.hazard || 'Not listed in local data'}</span>
@@ -95,7 +111,21 @@ const description = `${recall.title} local recall detail page with source, produ
               <strong>Remedy</strong>
               <span>{recall.remedy || 'Not listed in local data'}</span>
             </div>
+            <div class="fact">
+              <strong>Affected Units</strong>
+              <span>{recall.affectedUnits || 'Not listed in local data'}</span>
+            </div>
           </div>
+        </article>
+      </section>
+
+      <section class="section">
+        <article class="notice-panel">
+          <h2>What to check</h2>
+          <ul class="check-list">
+            {whatToCheckItems.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="disclaimer-copy">{NO_MATCH_DISCLAIMER}</p>
         </article>
       </section>
 

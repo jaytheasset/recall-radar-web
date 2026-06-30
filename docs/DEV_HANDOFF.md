@@ -58,7 +58,7 @@ The fetch script calls `https://www.saferproducts.gov/RestWebServices/Recall` wi
 
 Normalized records use `src/data/recall-types.ts` and include `id`, `source`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard`, `remedy`, `recallDate`, `affectedUnits`, `description`, `slug`, and `raw`.
 
-Do not call `npm run fetch:cpsc` during Phase 3 unless a later task explicitly asks for fresh local CPSC data.
+Do not call `npm run fetch:cpsc` during Phase 3 or Phase 4 unless a later task explicitly asks for fresh local CPSC data.
 
 ## Site Data Loader
 
@@ -68,8 +68,26 @@ Do not call `npm run fetch:cpsc` during Phase 3 unless a later task explicitly a
 - maps CPSC records into a UI-safe `SiteRecall` shape
 - limits generated detail slugs while preserving uniqueness with the CPSC id
 - builds brand groups from `brandNames`
+- keeps raw CPSC brand/legal names on each recall
+- adds normalized consumer-facing brand display names and shorter brand slugs through `src/lib/brand-normalize.ts`
 - classifies records lightly into baby/kids, battery/electronics, food/allergy, household/appliance, or general consumer product
 - falls back to mock records only when no processed records are available
+
+## Brand Normalization
+
+`src/lib/brand-normalize.ts` is intentionally conservative:
+
+- prefers explicit `dba`, `d/b/a`, or `doing business as` names
+- removes trailing CPSC location phrases such as `of Houston, Texas` when safe
+- removes common legal suffix noise such as `Inc.`, `LLC`, `Ltd.`, `Corporation`, and `Co. Ltd.`
+- keeps the raw source name available on recall detail and brand pages
+- limits brand slugs to avoid very long legal-entity URLs
+
+Example:
+
+- raw source name: `7111495 Canada Inc., dba Arizer Tech, of Waterloo, Ontario`
+- display brand: `Arizer Tech`
+- route: `/brands/arizer-tech`
 
 ## Search Helper
 
@@ -81,6 +99,8 @@ Do not call `npm run fetch:cpsc` during Phase 3 unless a later task explicitly a
 - `NO_MATCH_DISCLAIMER`
 
 Match types are `exact`, `possible`, `related`, and `none`.
+
+The checker renders grouped local results with match badges, recall date, source label, product/brand context, hazard summary, and detail links. Keep the required no-match disclaimer exact wherever search results appear.
 
 ## Guardrails
 

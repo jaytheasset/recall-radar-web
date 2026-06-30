@@ -178,7 +178,7 @@ export const categoryRoutes = [
   },
   {
     href: '/battery-recalls',
-    label: 'Battery Recalls',
+    label: 'Battery & Electronics Recalls',
     category: 'battery-electronics'
   },
   {

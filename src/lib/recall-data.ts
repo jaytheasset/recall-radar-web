@@ -1,7 +1,8 @@
 import processedRecallData from '../../data/processed/recalls.json';
 import { mockRecalls, type MockRecall, type RecallCategory } from '../data/mock-recalls';
 import type { NormalizedRecall, ProcessedRecallFile } from '../data/recall-types';
-import { brandToSlug, recallSlug } from './slug';
+import { normalizeBrandName } from './brand-normalize';
+import { recallSlug } from './slug';
 
 export type SiteRecallCategory = RecallCategory | 'general-consumer-product';
 export type SiteRecallSource = 'CPSC' | 'Mock';
@@ -13,7 +14,9 @@ export type SiteRecall = {
   sourceUrl: string;
   title: string;
   brandNames: string[];
+  displayBrandNames: string[];
   primaryBrand: string;
+  primaryBrandRawName: string;
   primaryBrandSlug: string;
   productNames: string[];
   primaryProductName: string;
@@ -30,7 +33,9 @@ export type SiteRecall = {
 
 export type BrandRecallGroup = {
   brand: string;
+  displayName: string;
   slug: string;
+  rawNames: string[];
   recalls: SiteRecall[];
 };
 
@@ -43,7 +48,7 @@ export const categoryRoutes = [
   },
   {
     href: '/battery-recalls',
-    label: 'Battery Recalls',
+    label: 'Battery & Electronics Recalls',
     category: 'battery-electronics',
     description: 'Browse battery, charger, lithium-ion, and electronics recalls from local data.'
   },
@@ -180,20 +185,25 @@ function sortByDateDescending(a: SiteRecall, b: SiteRecall): number {
 function toSiteRecallFromCpsc(record: NormalizedRecall): SiteRecall {
   const category = classifyRecall(record);
   const brandNames = uniqueNonEmpty(record.brandNames);
+  const normalizedBrands = brandNames.map(normalizeBrandName);
+  const displayBrandNames = uniqueNonEmpty(normalizedBrands.map((brand) => brand.displayName));
   const productNames = uniqueNonEmpty(record.productNames);
-  const primaryBrand = firstNonEmpty(brandNames, 'CPSC record');
+  const primaryBrandInfo = normalizedBrands[0];
+  const primaryBrand = primaryBrandInfo?.displayName ?? 'CPSC record';
   const primaryProductName = firstNonEmpty(productNames, 'Product not listed');
   const slug = recallSlug(record.title, record.id);
 
   return {
     id: record.id,
     source: 'CPSC',
-    sourceLabel: 'CPSC local data',
+    sourceLabel: 'Local CPSC data',
     sourceUrl: record.sourceUrl,
     title: record.title,
     brandNames,
+    displayBrandNames,
     primaryBrand,
-    primaryBrandSlug: primaryBrand === 'CPSC record' ? '' : brandToSlug(primaryBrand),
+    primaryBrandRawName: primaryBrandInfo?.rawName ?? '',
+    primaryBrandSlug: primaryBrandInfo?.slug ?? '',
     productNames,
     primaryProductName,
     category,
@@ -209,6 +219,8 @@ function toSiteRecallFromCpsc(record: NormalizedRecall): SiteRecall {
 }
 
 function toSiteRecallFromMock(recall: MockRecall): SiteRecall {
+  const brand = normalizeBrandName(recall.brand);
+
   return {
     id: recall.recallNumber,
     source: 'Mock',
@@ -216,8 +228,10 @@ function toSiteRecallFromMock(recall: MockRecall): SiteRecall {
     sourceUrl: '',
     title: recall.title,
     brandNames: [recall.brand],
-    primaryBrand: recall.brand,
-    primaryBrandSlug: brandToSlug(recall.brand),
+    displayBrandNames: [brand.displayName],
+    primaryBrand: brand.displayName,
+    primaryBrandRawName: recall.brand,
+    primaryBrandSlug: brand.slug,
     productNames: [recall.productName],
     primaryProductName: recall.productName,
     category: recall.category,
@@ -240,7 +254,7 @@ const fallbackMockRecalls = mockRecalls.map(toSiteRecallFromMock);
 
 export const usingProcessedCpscData = processedCpscRecalls.length > 0;
 export const processedCpscRecordCount = processedCpscRecalls.length;
-export const dataSourceLabel = usingProcessedCpscData ? 'CPSC local data' : 'Mock fallback data';
+export const dataSourceLabel = usingProcessedCpscData ? 'Local CPSC data' : 'Mock fallback data';
 export const siteRecalls = (usingProcessedCpscData ? processedCpscRecalls : fallbackMockRecalls).sort(
   sortByDateDescending
 );
@@ -254,16 +268,28 @@ export function getBrandGroups(recalls = siteRecalls): BrandRecallGroup[] {
 
   for (const recall of recalls) {
     for (const brand of recall.brandNames) {
-      const slug = brandToSlug(brand);
+      const normalizedBrand = normalizeBrandName(brand);
+      const slug = normalizedBrand.slug;
       if (!slug) {
         continue;
       }
 
       const existing = groups.get(slug);
       if (existing) {
-        existing.recalls.push(recall);
+        if (!existing.recalls.includes(recall)) {
+          existing.recalls.push(recall);
+        }
+        if (!existing.rawNames.includes(normalizedBrand.rawName)) {
+          existing.rawNames.push(normalizedBrand.rawName);
+        }
       } else {
-        groups.set(slug, { brand, slug, recalls: [recall] });
+        groups.set(slug, {
+          brand: normalizedBrand.displayName,
+          displayName: normalizedBrand.displayName,
+          slug,
+          rawNames: [normalizedBrand.rawName],
+          recalls: [recall]
+        });
       }
     }
   }

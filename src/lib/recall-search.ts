@@ -6,6 +6,12 @@ export type RecallSearchResult = {
   query: string;
   match: RecallMatchType;
   recalls: SiteRecall[];
+  items: RecallSearchItem[];
+};
+
+export type RecallSearchItem = {
+  recall: SiteRecall;
+  match: Exclude<RecallMatchType, 'none'>;
 };
 
 export const MATCH_LABELS: Record<RecallMatchType, string> = {
@@ -41,7 +47,10 @@ function exactFields(recall: SiteRecall): string[] {
     recall.id,
     recall.title,
     recall.slug,
+    recall.primaryBrand,
+    recall.primaryBrandRawName,
     ...recall.brandNames,
+    ...recall.displayBrandNames,
     ...recall.productNames
   ].map(normalize);
 }
@@ -52,8 +61,10 @@ function possibleFields(recall: SiteRecall): string {
     recall.title,
     recall.slug,
     recall.primaryBrand,
+    recall.primaryBrandRawName,
     recall.primaryProductName,
     ...recall.brandNames,
+    ...recall.displayBrandNames,
     ...recall.productNames
   ]);
 }
@@ -135,11 +146,12 @@ export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearc
   const matches = recalls
     .map((recall) => ({ recall, match: getRecallMatch(query, recall) }))
     .filter((result) => result.match !== 'none')
-    .sort(compareRecalls);
+    .sort(compareRecalls) as RecallSearchItem[];
 
   return {
     query,
     match: matches[0]?.match ?? 'none',
-    recalls: matches.map((result) => result.recall)
+    recalls: matches.map((result) => result.recall),
+    items: matches
   };
 }

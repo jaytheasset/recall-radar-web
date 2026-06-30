@@ -224,6 +224,12 @@ button:hover,
   color: var(--accent);
 }
 
+.match-tag {
+  border-color: rgba(177, 96, 24, 0.28);
+  background: #fff4e8;
+  color: var(--warn);
+}
+
 .status-pill {
   color: var(--primary);
   border-color: rgba(23, 65, 102, 0.28);
@@ -340,6 +346,15 @@ button:hover,
   margin-top: 1rem;
 }
 
+.result-group {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.result-group + .result-group {
+  margin-top: 1.2rem;
+}
+
 .detail-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
@@ -365,6 +380,24 @@ button:hover,
   font-size: 0.82rem;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+.source-name-list,
+.check-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.25rem;
+  color: var(--muted);
+}
+
+.source-name-list li + li,
+.check-list li + li {
+  margin-top: 0.35rem;
+}
+
+.notice-panel .disclaimer-copy {
+  margin-top: 1rem;
+  color: var(--muted);
+  font-weight: 700;
 }
 
 .page-footer {

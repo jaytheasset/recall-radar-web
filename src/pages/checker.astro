@@ -20,7 +20,9 @@ const checkerRecalls = siteRecalls.map((recall) => ({
   sourceUrl: recall.sourceUrl,
   title: recall.title,
   brandNames: recall.brandNames,
+  displayBrandNames: recall.displayBrandNames,
   primaryBrand: recall.primaryBrand,
+  primaryBrandRawName: recall.primaryBrandRawName,
   primaryBrandSlug: recall.primaryBrandSlug,
   productNames: recall.productNames,
   primaryProductName: recall.primaryProductName,
@@ -51,7 +53,7 @@ const checkerRecallsJson = JSON.stringify(checkerRecalls);
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
         <a href="/baby-product-recalls">Baby Product Recalls</a>
-        <a href="/battery-recalls">Battery Recalls</a>
+        <a href="/battery-recalls">Battery & Electronics Recalls</a>
         <a href="/food-allergy-recalls">Food Allergy Recalls</a>
       </nav>
     </header>
@@ -140,24 +142,22 @@ const checkerRecallsJson = JSON.stringify(checkerRecalls);
       const disclaimer = document.querySelector<HTMLElement>('#result-disclaimer');
       const list = document.querySelector<HTMLElement>('#result-list');
 
-      function createResultCard(recall: (typeof siteRecalls)[number]): HTMLElement {
+      type SearchItem = ReturnType<typeof searchRecalls>['items'][number];
+
+      function createTag(text: string, className = 'tag'): HTMLElement {
+        const tag = document.createElement('span');
+        tag.className = className;
+        tag.textContent = text;
+        return tag;
+      }
+
+      function createResultCard(item: SearchItem): HTMLElement {
+        const { recall, match } = item;
         const article = document.createElement('article');
         article.className = 'recall-card';
 
         const meta = document.createElement('div');
         meta.className = 'meta-row';
-
-        const source = document.createElement('span');
-        source.className = 'tag source-tag';
-        source.textContent = recall.sourceLabel;
-
-        const category = document.createElement('span');
-        category.className = 'tag';
-        category.textContent = recall.categoryLabel;
-
-        const date = document.createElement('span');
-        date.className = 'tag';
-        date.textContent = recall.recallDate;
 
         const heading = document.createElement('h3');
         const detailLink = document.createElement('a');
@@ -165,8 +165,14 @@ const checkerRecallsJson = JSON.stringify(checkerRecalls);
         detailLink.textContent = recall.title;
         heading.append(detailLink);
 
-        const text = document.createElement('p');
-        text.textContent = recall.description;
+        const summary = document.createElement('p');
+        const brandText = recall.displayBrandNames.length
+          ? recall.displayBrandNames.join(', ')
+          : recall.primaryBrand;
+        summary.textContent = `Product: ${recall.primaryProductName}. Brand/company: ${brandText}.`;
+
+        const hazard = document.createElement('p');
+        hazard.textContent = recall.hazard ? `Hazard: ${recall.hazard}` : 'Hazard: Not listed in local data.';
 
         const links = document.createElement('div');
         links.className = 'link-row';
@@ -182,11 +188,31 @@ const checkerRecallsJson = JSON.stringify(checkerRecalls);
         details.href = recall.detailPath;
         details.textContent = 'Details';
 
-        meta.append(source, category, date);
+        meta.append(
+          createTag(MATCH_LABELS[match], 'tag match-tag'),
+          createTag(recall.sourceLabel, 'tag source-tag'),
+          createTag(recall.recallDate),
+          createTag(recall.categoryLabel)
+        );
         links.append(details);
-        article.append(meta, heading, text, links);
+        article.append(meta, heading, summary, hazard, links);
 
         return article;
+      }
+
+      function createResultGroup(match: SearchItem['match'], items: SearchItem[]): HTMLElement {
+        const group = document.createElement('section');
+        group.className = 'result-group';
+
+        const heading = document.createElement('h3');
+        heading.textContent = `${MATCH_LABELS[match]} (${items.length})`;
+
+        const cards = document.createElement('div');
+        cards.className = 'result-list';
+        cards.replaceChildren(...items.map(createResultCard));
+
+        group.append(heading, cards);
+        return group;
       }
 
       function renderSearch(query: string): void {
@@ -204,7 +230,14 @@ const checkerRecallsJson = JSON.stringify(checkerRecalls);
             ? 'No local recall matched that search.'
             : `Local matches for "${query}".`;
         disclaimer.textContent = NO_MATCH_DISCLAIMER;
-        list.replaceChildren(...result.recalls.slice(0, 25).map(createResultCard));
+        const groupedResults = (['exact', 'possible', 'related'] as const)
+          .map((match) => ({
+            match,
+            items: result.items.filter((item) => item.match === match).slice(0, 25)
+          }))
+          .filter((group) => group.items.length > 0)
+          .map((group) => createResultGroup(group.match, group.items));
+        list.replaceChildren(...groupedResults);
       }
 
       form?.addEventListener('submit', (event) => {

@@ -22,7 +22,7 @@ const recalls = getRecallsByCategory('baby-kids');
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
         <a href="/baby-product-recalls">Baby Product Recalls</a>
-        <a href="/battery-recalls">Battery Recalls</a>
+        <a href="/battery-recalls">Battery & Electronics Recalls</a>
         <a href="/food-allergy-recalls">Food Allergy Recalls</a>
       </nav>
     </header>
@@ -31,7 +31,7 @@ const recalls = getRecallsByCategory('baby-kids');
       <section class="section">
         <p class="eyebrow">Recall category</p>
         <div class="meta-row data-source-row">
-          <span class="status-pill">CPSC local data</span>
+          <span class="status-pill">Local CPSC data</span>
           <span class="tag">{recalls.length} record{recalls.length === 1 ? '' : 's'}</span>
         </div>
         <h1>Baby Product Recalls</h1>
@@ -48,7 +48,9 @@ const recalls = getRecallsByCategory('baby-kids');
                   <span class="tag">{recall.recallDate}</span>
                 </div>
                 <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-                <p>{recall.description}</p>
+                <p>Product: {recall.primaryProductName}</p>
+                <p>Brand/company: {recall.primaryBrand}</p>
+                <p>Hazard: {recall.hazard || 'Not listed in local data'}</p>
                 <div class="link-row">
                   {recall.primaryBrandSlug ? (
                     <a href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} recall page</a>
