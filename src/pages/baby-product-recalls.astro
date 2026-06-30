@@ -1,0 +1,62 @@
+---
+import { mockRecalls } from '../data/mock-recalls';
+import { brandToSlug } from '../lib/slug';
+import '../styles/global.css';
+
+const title = 'Baby Product Recalls | Recall Radar';
+const description =
+  'Browse local mock Baby Product Recalls in Recall Radar, including cribs, teether clips, nursery products, and kids safety notices.';
+const recalls = mockRecalls.filter((recall) => recall.category === 'baby-kids');
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">Recall Radar</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/checker">Product Recall Checker</a>
+        <a href="/baby-product-recalls">Baby Product Recalls</a>
+        <a href="/battery-recalls">Battery Recalls</a>
+        <a href="/food-allergy-recalls">Food Allergy Recalls</a>
+      </nav>
+    </header>
+
+    <main class="page-shell">
+      <section class="section">
+        <p class="eyebrow">Recall category</p>
+        <h1>Baby Product Recalls</h1>
+        <p class="lead">Local mock recall pages for baby, infant, nursery, and kids products.</p>
+      </section>
+
+      <section class="section">
+        <div class="grid">
+          {recalls.map((recall) => (
+            <article class="recall-card">
+              <div class="meta-row">
+                <span class="tag">{recall.noticeDate}</span>
+                <span class="tag">{recall.recallNumber}</span>
+              </div>
+              <h3><a href={`/recalls/${recall.slug}`}>{recall.title}</a></h3>
+              <p>{recall.summary}</p>
+              <div class="link-row">
+                <a href={`/brands/${brandToSlug(recall.brand)}`}>{recall.brand} recall page</a>
+                <a href={`/recalls/${recall.slug}`}>Details</a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      Recall Radar is using local mock data for this MVP. Always verify against official recall notices.
+    </footer>
+  </body>
+</html>

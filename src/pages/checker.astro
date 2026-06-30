@@ -1,0 +1,186 @@
+---
+import { categoryRoutes, mockRecalls } from '../data/mock-recalls';
+import { brandToSlug } from '../lib/slug';
+import '../styles/global.css';
+
+const title = 'Product Recall Checker | Recall Radar';
+const description =
+  'Search local mock recall data with the Recall Radar Product Recall Checker by product name, brand, model, UPC, lot code, category, or keyword.';
+const brands = [...new Set(mockRecalls.map((recall) => recall.brand))].sort();
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">Recall Radar</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/checker">Product Recall Checker</a>
+        <a href="/baby-product-recalls">Baby Product Recalls</a>
+        <a href="/battery-recalls">Battery Recalls</a>
+        <a href="/food-allergy-recalls">Food Allergy Recalls</a>
+      </nav>
+    </header>
+
+    <main class="page-shell">
+      <section class="section">
+        <p class="eyebrow">Recall Radar</p>
+        <h1>Product Recall Checker</h1>
+        <p class="lead">Search product recalls by brand, model, category, or keyword.</p>
+
+        <section class="search-panel" aria-labelledby="checker-form-title">
+          <h2 id="checker-form-title">Check Local Mock Data</h2>
+          <form id="recall-search-form" class="search-form">
+            <label>
+              Search
+              <input
+                id="recall-query"
+                name="q"
+                type="search"
+                placeholder="Try VoltEdge, VEB-20, peanut, crib, or air fryer"
+                autocomplete="off"
+              />
+            </label>
+            <button type="submit">Check</button>
+          </form>
+          <div id="search-results" class="notice-panel result-panel" hidden>
+            <div class="meta-row">
+              <span id="result-match" class="status-pill">No local match</span>
+              <span id="result-count" class="tag">0 results</span>
+            </div>
+            <p id="result-summary"></p>
+            <p id="result-disclaimer"></p>
+            <div id="result-list" class="result-list"></div>
+          </div>
+        </section>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h2>Recall Categories</h2>
+        </div>
+        <div class="category-band">
+          {categoryRoutes.map((route) => (
+            <a class="category-link" href={route.href}>
+              {route.label}
+              <span>Browse local mock recalls</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h2>Brand Recall Pages</h2>
+        </div>
+        <div class="tag-row">
+          {brands.map((brand) => <a class="tag" href={`/brands/${brandToSlug(brand)}`}>{brand}</a>)}
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      Recall Radar is using local mock data for this MVP. Always verify against official recall notices.
+    </footer>
+
+    <script>
+      import { mockRecalls } from '../data/mock-recalls';
+      import { MATCH_LABELS, NO_MATCH_DISCLAIMER, searchRecalls } from '../lib/recall-search';
+      import { brandToSlug } from '../lib/slug';
+
+      const form = document.querySelector<HTMLFormElement>('#recall-search-form');
+      const input = document.querySelector<HTMLInputElement>('#recall-query');
+      const panel = document.querySelector<HTMLElement>('#search-results');
+      const matchLabel = document.querySelector<HTMLElement>('#result-match');
+      const countLabel = document.querySelector<HTMLElement>('#result-count');
+      const summary = document.querySelector<HTMLElement>('#result-summary');
+      const disclaimer = document.querySelector<HTMLElement>('#result-disclaimer');
+      const list = document.querySelector<HTMLElement>('#result-list');
+
+      function createResultCard(recall: (typeof mockRecalls)[number]): HTMLElement {
+        const article = document.createElement('article');
+        article.className = 'recall-card';
+
+        const meta = document.createElement('div');
+        meta.className = 'meta-row';
+
+        const category = document.createElement('span');
+        category.className = 'tag';
+        category.textContent = recall.categoryLabel;
+
+        const date = document.createElement('span');
+        date.className = 'tag';
+        date.textContent = recall.noticeDate;
+
+        const heading = document.createElement('h3');
+        const detailLink = document.createElement('a');
+        detailLink.href = `/recalls/${recall.slug}`;
+        detailLink.textContent = recall.title;
+        heading.append(detailLink);
+
+        const text = document.createElement('p');
+        text.textContent = recall.summary;
+
+        const links = document.createElement('div');
+        links.className = 'link-row';
+
+        const brand = document.createElement('a');
+        brand.href = `/brands/${brandToSlug(recall.brand)}`;
+        brand.textContent = `${recall.brand} recall page`;
+
+        const details = document.createElement('a');
+        details.href = `/recalls/${recall.slug}`;
+        details.textContent = 'Details';
+
+        meta.append(category, date);
+        links.append(brand, details);
+        article.append(meta, heading, text, links);
+
+        return article;
+      }
+
+      function renderSearch(query: string): void {
+        if (!panel || !matchLabel || !countLabel || !summary || !disclaimer || !list) {
+          return;
+        }
+
+        const result = searchRecalls(query, mockRecalls);
+        panel.hidden = false;
+        panel.dataset.match = result.match;
+        matchLabel.textContent = MATCH_LABELS[result.match];
+        countLabel.textContent = `${result.recalls.length} result${result.recalls.length === 1 ? '' : 's'}`;
+        summary.textContent =
+          result.match === 'none'
+            ? 'No local mock recall matched that search.'
+            : `Local mock matches for "${query}".`;
+        disclaimer.textContent = NO_MATCH_DISCLAIMER;
+        list.replaceChildren(...result.recalls.map(createResultCard));
+      }
+
+      form?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const query = input?.value.trim() ?? '';
+        const url = new URL(window.location.href);
+        if (query) {
+          url.searchParams.set('q', query);
+        } else {
+          url.searchParams.delete('q');
+        }
+        window.history.replaceState({}, '', url);
+        renderSearch(query);
+      });
+
+      const initialQuery = new URLSearchParams(window.location.search).get('q');
+      if (initialQuery && input) {
+        input.value = initialQuery;
+        renderSearch(initialQuery);
+      }
+    </script>
+  </body>
+</html>

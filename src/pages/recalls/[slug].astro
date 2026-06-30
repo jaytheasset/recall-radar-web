@@ -1,0 +1,111 @@
+---
+import { mockRecalls } from '../../data/mock-recalls';
+import { brandToSlug } from '../../lib/slug';
+import '../../styles/global.css';
+
+export function getStaticPaths() {
+  return mockRecalls.map((recall) => ({
+    params: { slug: recall.slug },
+    props: { recall }
+  }));
+}
+
+const { recall } = Astro.props;
+const title = `${recall.title} | Recall Radar`;
+const description = `${recall.title} local mock detail page with brand, model, UPC, lot code, hazard, and remedy fields.`;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">Recall Radar</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/checker">Product Recall Checker</a>
+        <a href="/baby-product-recalls">Baby Product Recalls</a>
+        <a href="/battery-recalls">Battery Recalls</a>
+        <a href="/food-allergy-recalls">Food Allergy Recalls</a>
+      </nav>
+    </header>
+
+    <main class="page-shell">
+      <section class="section">
+        <p class="eyebrow">Recall detail</p>
+        <h1>{recall.title}</h1>
+        <p class="lead">{recall.summary}</p>
+      </section>
+
+      <section class="section detail-grid">
+        <aside class="facts" aria-label="Recall facts">
+          <div class="fact">
+            <strong>Brand</strong>
+            <a href={`/brands/${brandToSlug(recall.brand)}`}>{recall.brand}</a>
+          </div>
+          <div class="fact">
+            <strong>Category</strong>
+            <span>{recall.categoryLabel}</span>
+          </div>
+          <div class="fact">
+            <strong>Notice Date</strong>
+            <span>{recall.noticeDate}</span>
+          </div>
+          <div class="fact">
+            <strong>Agency</strong>
+            <span>{recall.agency}</span>
+          </div>
+          <div class="fact">
+            <strong>Recall Number</strong>
+            <span>{recall.recallNumber}</span>
+          </div>
+        </aside>
+
+        <article class="notice-panel">
+          <h2>Product Details</h2>
+          <div class="facts">
+            <div class="fact">
+              <strong>Product</strong>
+              <span>{recall.productName}</span>
+            </div>
+            <div class="fact">
+              <strong>Model Numbers</strong>
+              <span>{recall.modelNumbers.length ? recall.modelNumbers.join(', ') : 'Not listed in mock data'}</span>
+            </div>
+            <div class="fact">
+              <strong>UPC</strong>
+              <span>{recall.upcs.length ? recall.upcs.join(', ') : 'Not listed in mock data'}</span>
+            </div>
+            <div class="fact">
+              <strong>Lot Codes</strong>
+              <span>{recall.lotCodes.length ? recall.lotCodes.join(', ') : 'Not listed in mock data'}</span>
+            </div>
+            <div class="fact">
+              <strong>Hazard</strong>
+              <span>{recall.hazard}</span>
+            </div>
+            <div class="fact">
+              <strong>Remedy</strong>
+              <span>{recall.remedy}</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="section">
+        <div class="link-row">
+          <a class="button-link" href="/checker">Check another product</a>
+          <a class="button-link button-secondary" href={`/brands/${brandToSlug(recall.brand)}`}>Brand recall page</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      Recall Radar is using local mock data for this MVP. Always verify against official recall notices.
+    </footer>
+  </body>
+</html>
