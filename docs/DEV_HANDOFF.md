@@ -44,6 +44,8 @@ Site-facing records include:
 
 Phase 2 added a local-only CPSC recall data pipeline. Phase 3 connects the processed CPSC file to the website. Phase 5 adds local FDA/openFDA food recall records and makes `data/processed/recalls.json` the merged canonical local source.
 
+USDA FSIS integration is deferred. A local Phase 6 attempt against the official USDA FSIS recall endpoint returned HTTP `403 Forbidden` / `Access Denied`; no USDA data was written. See `docs/USDA_FSIS_DEFERRED.md`.
+
 Commands:
 
 - `npm run fetch:cpsc` fetches current-year public CPSC recall JSON and writes local files.

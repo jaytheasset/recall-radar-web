@@ -20,6 +20,8 @@
 
 Do not run fetch scripts during local UI-only phases unless the task explicitly asks for fresh local data.
 
+USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt returned HTTP `403 Forbidden` / `Access Denied`, so USDA integration is deferred and no USDA fetch script is active. See `docs/USDA_FSIS_DEFERRED.md`.
+
 ## CPSC Data Pipeline
 
 - Confirm `npm run fetch:cpsc` saves `data/raw/cpsc-recalls.json`.
