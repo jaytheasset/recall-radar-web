@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { NormalizedRecall, ProcessedRecallFile } from '../src/data/recall-types.ts';
 import { slugify } from '../src/lib/slug.ts';
+import { canonicalProcessedPath, cpscProcessedPath, mergeProcessedRecalls } from './merge-recalls.ts';
 
 type NamedValue = {
   Name?: unknown;
@@ -38,7 +39,8 @@ type RawCpscFile = {
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 export const defaultRawPath = resolve(projectRoot, 'data/raw/cpsc-recalls.json');
-export const defaultProcessedPath = resolve(projectRoot, 'data/processed/recalls.json');
+export const defaultCpscProcessedPath = cpscProcessedPath;
+export const defaultProcessedPath = canonicalProcessedPath;
 
 function asString(value: unknown): string {
   return typeof value === 'string' ? value.trim() : '';
@@ -180,7 +182,7 @@ export async function writeJsonAtomic(path: string, value: unknown): Promise<voi
 
 export async function writeNormalizedCpscRecalls(
   records: CpscRecallRaw[],
-  processedPath = defaultProcessedPath
+  processedPath = defaultCpscProcessedPath
 ): Promise<ProcessedRecallFile> {
   const normalizedRecords = normalizeCpscRecords(records);
 
@@ -209,6 +211,7 @@ async function runNormalize(): Promise<void> {
   }
 
   const output = await writeNormalizedCpscRecalls(records);
+  const merged = await mergeProcessedRecalls();
   const sample = output.records[0];
 
   console.log(
@@ -216,7 +219,10 @@ async function runNormalize(): Promise<void> {
       {
         rawRecordsRead: records.length,
         normalizedRecordsSaved: output.count,
-        processedPath: defaultProcessedPath,
+        processedPath: defaultCpscProcessedPath,
+        canonicalPath: defaultProcessedPath,
+        mergedRecordsSaved: merged.count,
+        countsBySource: merged.countsBySource,
         sample: sample
           ? {
               id: sample.id,

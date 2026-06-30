@@ -4,14 +4,16 @@ import {
   categoryRoutes,
   dataSourceLabel,
   processedCpscRecordCount,
+  processedFdaRecordCount,
+  processedLocalRecordCount,
   siteRecalls,
-  usingProcessedCpscData
+  usingProcessedLocalData
 } from '../lib/recall-data';
 import '../styles/global.css';
 
 const title = 'Product Recall Checker | Recall Radar';
 const description =
-  'Recall Radar is a local product recall checker for searching CPSC local data by brand, product, category, or keyword.';
+  'Recall Radar is a local product recall checker for searching CPSC and FDA/openFDA local data by brand, product, category, or keyword.';
 const featuredRecalls = siteRecalls.slice(0, 6);
 const featuredBrands = brandGroups.slice(0, 24);
 ---
@@ -44,8 +46,14 @@ const featuredBrands = brandGroups.slice(0, 24);
           <div class="meta-row data-source-row">
             <span class="status-pill">{dataSourceLabel}</span>
             <span class="tag">
-              {usingProcessedCpscData ? `${processedCpscRecordCount} local CPSC records` : 'Demo fallback records'}
+              {usingProcessedLocalData ? `${processedLocalRecordCount} local records` : 'Demo fallback records'}
             </span>
+            {usingProcessedLocalData ? (
+              <>
+                <span class="tag">{processedCpscRecordCount} CPSC</span>
+                <span class="tag">{processedFdaRecordCount} FDA/openFDA</span>
+              </>
+            ) : null}
           </div>
           <div class="category-band" aria-label="Recall categories">
             {categoryRoutes.map((route) => (
@@ -71,8 +79,8 @@ const featuredBrands = brandGroups.slice(0, 24);
       <section class="section">
         <div class="section-header">
           <div>
-            <h2>Latest Local CPSC Recalls</h2>
-            <p class="section-note">Generated from the local processed CPSC data file.</p>
+            <h2>Latest Local Recall Records</h2>
+            <p class="section-note">Generated from the local processed recall data file.</p>
           </div>
           <a class="button-link button-secondary" href="/checker">Search all</a>
         </div>
@@ -125,7 +133,7 @@ const featuredBrands = brandGroups.slice(0, 24);
     </main>
 
     <footer class="page-footer">
-      Recall Radar uses local CPSC processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
+      Recall Radar uses local CPSC and FDA/openFDA processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
     </footer>
   </body>
 </html>

@@ -5,7 +5,7 @@ import { normalizeBrandName } from './brand-normalize';
 import { limitSlug, recallSlug } from './slug';
 
 export type SiteRecallCategory = RecallCategory | 'general-consumer-product';
-export type SiteRecallSource = 'CPSC' | 'Mock';
+export type SiteRecallSource = NormalizedRecall['source'] | 'Mock';
 
 export type SiteRecall = {
   id: string;
@@ -29,6 +29,12 @@ export type SiteRecall = {
   description: string;
   slug: string;
   detailPath: string;
+  classification?: string;
+  reason?: string;
+  distributionPattern?: string;
+  productQuantity?: string;
+  recallNumber?: string;
+  status?: string;
 };
 
 export type BrandRecallGroup = {
@@ -82,6 +88,10 @@ function textHasAny(text: string, terms: string[]): boolean {
 }
 
 function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
+  if (record.source === 'FDA') {
+    return 'food-allergy';
+  }
+
   const text = normalize(
     [
       record.title,
@@ -179,17 +189,30 @@ function uniqueNonEmpty(values: string[]): string[] {
 }
 
 function sortByDateDescending(a: SiteRecall, b: SiteRecall): number {
-  return b.recallDate.localeCompare(a.recallDate);
+  const dateDifference = b.recallDate.localeCompare(a.recallDate);
+  return dateDifference === 0 ? a.id.localeCompare(b.id) : dateDifference;
 }
 
-function toSiteRecallFromCpsc(record: NormalizedRecall): SiteRecall {
+function sourceLabelFor(source: SiteRecallSource): string {
+  if (source === 'FDA') {
+    return 'Local FDA/openFDA data';
+  }
+
+  if (source === 'CPSC') {
+    return 'Local CPSC data';
+  }
+
+  return 'Mock fallback data';
+}
+
+function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
   const category = classifyRecall(record);
   const brandNames = uniqueNonEmpty(record.brandNames);
   const normalizedBrands = brandNames.map(normalizeBrandName);
   const displayBrandNames = uniqueNonEmpty(normalizedBrands.map((brand) => brand.displayName));
   const productNames = uniqueNonEmpty(record.productNames);
   const primaryBrandInfo = normalizedBrands[0];
-  const primaryBrand = primaryBrandInfo?.displayName ?? 'CPSC record';
+  const primaryBrand = primaryBrandInfo?.displayName ?? `${record.source} record`;
   const primaryProductName = firstNonEmpty(productNames, 'Product not listed');
   const slug = recallSlug(record.title, record.id, {
     productNames,
@@ -198,8 +221,8 @@ function toSiteRecallFromCpsc(record: NormalizedRecall): SiteRecall {
 
   return {
     id: record.id,
-    source: 'CPSC',
-    sourceLabel: 'Local CPSC data',
+    source: record.source,
+    sourceLabel: sourceLabelFor(record.source),
     sourceUrl: record.sourceUrl,
     title: record.title,
     brandNames,
@@ -217,7 +240,13 @@ function toSiteRecallFromCpsc(record: NormalizedRecall): SiteRecall {
     affectedUnits: record.affectedUnits,
     description: record.description,
     slug,
-    detailPath: `/recalls/${slug}`
+    detailPath: `/recalls/${slug}`,
+    classification: record.classification,
+    reason: record.reason,
+    distributionPattern: record.distributionPattern,
+    productQuantity: record.productQuantity,
+    recallNumber: record.recallNumber,
+    status: record.status
   };
 }
 
@@ -227,7 +256,7 @@ function toSiteRecallFromMock(recall: MockRecall): SiteRecall {
   return {
     id: recall.recallNumber,
     source: 'Mock',
-    sourceLabel: 'Mock fallback data',
+    sourceLabel: sourceLabelFor('Mock'),
     sourceUrl: '',
     title: recall.title,
     brandNames: [recall.brand],
@@ -249,16 +278,27 @@ function toSiteRecallFromMock(recall: MockRecall): SiteRecall {
   };
 }
 
-const processedCpscRecalls = Array.isArray(processedFile.records)
-  ? processedFile.records.map(toSiteRecallFromCpsc)
+const processedLocalRecalls = Array.isArray(processedFile.records)
+  ? processedFile.records.map(toSiteRecallFromProcessed)
   : [];
 
 const fallbackMockRecalls = mockRecalls.map(toSiteRecallFromMock);
 
-export const usingProcessedCpscData = processedCpscRecalls.length > 0;
-export const processedCpscRecordCount = processedCpscRecalls.length;
-export const dataSourceLabel = usingProcessedCpscData ? 'Local CPSC data' : 'Mock fallback data';
-export const siteRecalls = (usingProcessedCpscData ? processedCpscRecalls : fallbackMockRecalls).sort(
+export const usingProcessedLocalData = processedLocalRecalls.length > 0;
+export const processedLocalRecordCount = processedLocalRecalls.length;
+export const processedCpscRecordCount = processedLocalRecalls.filter((recall) => recall.source === 'CPSC').length;
+export const processedFdaRecordCount = processedLocalRecalls.filter((recall) => recall.source === 'FDA').length;
+export const usingProcessedCpscData = processedCpscRecordCount > 0;
+export const usingProcessedFdaData = processedFdaRecordCount > 0;
+export const dataSourceLabel = usingProcessedLocalData
+  ? [
+      usingProcessedCpscData ? 'Local CPSC data' : '',
+      usingProcessedFdaData ? 'Local FDA/openFDA data' : ''
+    ]
+      .filter(Boolean)
+      .join(' + ')
+  : 'Mock fallback data';
+export const siteRecalls = (usingProcessedLocalData ? processedLocalRecalls : fallbackMockRecalls).sort(
   sortByDateDescending
 );
 

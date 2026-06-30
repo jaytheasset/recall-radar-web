@@ -4,14 +4,16 @@ import {
   categoryRoutes,
   dataSourceLabel,
   processedCpscRecordCount,
+  processedFdaRecordCount,
+  processedLocalRecordCount,
   siteRecalls,
-  usingProcessedCpscData
+  usingProcessedLocalData
 } from '../lib/recall-data';
 import '../styles/global.css';
 
 const title = 'Product Recall Checker | Recall Radar';
 const description =
-  'Search local CPSC processed recall data with the Recall Radar Product Recall Checker by product name, brand, category, or keyword.';
+  'Search local processed CPSC and FDA/openFDA recall data with the Recall Radar Product Recall Checker by product name, brand, category, or keyword.';
 const featuredBrands = brandGroups.slice(0, 24);
 const checkerRecalls = siteRecalls.map((recall) => ({
   id: recall.id,
@@ -34,7 +36,13 @@ const checkerRecalls = siteRecalls.map((recall) => ({
   affectedUnits: recall.affectedUnits,
   description: recall.description,
   slug: recall.slug,
-  detailPath: recall.detailPath
+  detailPath: recall.detailPath,
+  classification: recall.classification,
+  reason: recall.reason,
+  distributionPattern: recall.distributionPattern,
+  productQuantity: recall.productQuantity,
+  recallNumber: recall.recallNumber,
+  status: recall.status
 }));
 const checkerRecallsJson = JSON.stringify(checkerRecalls);
 ---
@@ -66,8 +74,14 @@ const checkerRecallsJson = JSON.stringify(checkerRecalls);
         <div class="meta-row data-source-row">
           <span class="status-pill">{dataSourceLabel}</span>
           <span class="tag">
-            {usingProcessedCpscData ? `${processedCpscRecordCount} local CPSC records` : 'Demo fallback records'}
+            {usingProcessedLocalData ? `${processedLocalRecordCount} local records` : 'Demo fallback records'}
           </span>
+          {usingProcessedLocalData ? (
+            <>
+              <span class="tag">{processedCpscRecordCount} CPSC</span>
+              <span class="tag">{processedFdaRecordCount} FDA/openFDA</span>
+            </>
+          ) : null}
         </div>
 
         <section class="search-panel" aria-labelledby="checker-form-title">
@@ -122,7 +136,7 @@ const checkerRecallsJson = JSON.stringify(checkerRecalls);
     </main>
 
     <footer class="page-footer">
-      Recall Radar uses local CPSC processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
+      Recall Radar uses local CPSC and FDA/openFDA processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
     </footer>
 
     <script id="recall-search-data" type="application/json" is:inline set:html={checkerRecallsJson}></script>

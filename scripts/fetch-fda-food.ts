@@ -1,27 +1,17 @@
+import { canonicalProcessedPath, mergeProcessedRecalls } from './merge-recalls.ts';
 import {
-  defaultCpscProcessedPath,
-  defaultProcessedPath,
-  defaultRawPath,
-  extractRawRecords,
-  writeJsonAtomic,
-  writeNormalizedCpscRecalls
-} from './normalize-cpsc.ts';
-import { mergeProcessedRecalls } from './merge-recalls.ts';
+  defaultFdaProcessedPath,
+  defaultRawFdaFoodPath,
+  extractFdaFoodRecords,
+  writeNormalizedFdaFoodRecalls
+} from './normalize-fda-food.ts';
+import { writeJsonAtomic } from './normalize-cpsc.ts';
 
-const cpscRecallEndpoint = 'https://www.saferproducts.gov/RestWebServices/Recall';
+const openFdaFoodEnforcementEndpoint = 'https://api.fda.gov/food/enforcement.json';
 
 type FetchOptions = {
-  startDate: string;
-  endDate: string;
+  limit: number;
 };
-
-function toDateOnly(date: Date): string {
-  return date.toISOString().slice(0, 10);
-}
-
-function defaultStartDate(): string {
-  return `${new Date().getFullYear()}-01-01`;
-}
 
 function readOption(name: string): string | undefined {
   const prefix = `--${name}=`;
@@ -30,17 +20,16 @@ function readOption(name: string): string | undefined {
 }
 
 function getFetchOptions(): FetchOptions {
-  return {
-    startDate: readOption('start') ?? defaultStartDate(),
-    endDate: readOption('end') ?? toDateOnly(new Date())
-  };
+  const parsedLimit = Number.parseInt(readOption('limit') ?? '100', 10);
+  const limit = Number.isFinite(parsedLimit) ? Math.min(Math.max(parsedLimit, 1), 100) : 100;
+
+  return { limit };
 }
 
-function buildCpscUrl(options: FetchOptions): string {
-  const url = new URL(cpscRecallEndpoint);
-  url.searchParams.set('format', 'json');
-  url.searchParams.set('RecallDateStart', options.startDate);
-  url.searchParams.set('RecallDateEnd', options.endDate);
+function buildFdaFoodUrl(options: FetchOptions): string {
+  const url = new URL(openFdaFoodEnforcementEndpoint);
+  url.searchParams.set('sort', 'report_date:desc');
+  url.searchParams.set('limit', String(options.limit));
   return url.toString();
 }
 
@@ -58,6 +47,12 @@ function publicSample(record: {
   affectedUnits: string;
   description: string;
   slug: string;
+  classification?: string;
+  reason?: string;
+  distributionPattern?: string;
+  productQuantity?: string;
+  recallNumber?: string;
+  status?: string;
 }): {
   id: string;
   source: string;
@@ -72,6 +67,12 @@ function publicSample(record: {
   affectedUnits: string;
   description: string;
   slug: string;
+  classification?: string;
+  reason?: string;
+  distributionPattern?: string;
+  productQuantity?: string;
+  recallNumber?: string;
+  status?: string;
 } {
   return {
     id: record.id,
@@ -86,66 +87,74 @@ function publicSample(record: {
     recallDate: record.recallDate,
     affectedUnits: record.affectedUnits,
     description: record.description,
-    slug: record.slug
+    slug: record.slug,
+    classification: record.classification,
+    reason: record.reason,
+    distributionPattern: record.distributionPattern,
+    productQuantity: record.productQuantity,
+    recallNumber: record.recallNumber,
+    status: record.status
   };
 }
 
-async function fetchCpscRecalls(endpoint: string): Promise<unknown> {
+async function fetchFdaFoodRecalls(endpoint: string): Promise<unknown> {
   let response: Response;
 
   try {
     response = await fetch(endpoint, {
       headers: {
         accept: 'application/json',
-        'user-agent': 'Recall Radar local MVP data fetch'
+        'user-agent': 'Recall Radar local MVP FDA food data fetch'
       }
     });
   } catch (error) {
     throw new Error(
-      `CPSC recall API request failed before a response was received: ${
+      `openFDA food enforcement API request failed before a response was received: ${
         error instanceof Error ? error.message : String(error)
       }`
     );
   }
 
   if (!response.ok) {
-    throw new Error(`CPSC recall API returned HTTP ${response.status} ${response.statusText}.`);
+    throw new Error(`openFDA food enforcement API returned HTTP ${response.status} ${response.statusText}.`);
   }
 
   const text = await response.text();
   if (!text.trim()) {
-    throw new Error('CPSC recall API returned an empty response; existing data was not overwritten.');
+    throw new Error('openFDA food enforcement API returned an empty response; existing data was not overwritten.');
   }
 
   try {
     return JSON.parse(text) as unknown;
   } catch (error) {
     throw new Error(
-      `CPSC recall API returned invalid JSON: ${error instanceof Error ? error.message : String(error)}`
+      `openFDA food enforcement API returned invalid JSON: ${
+        error instanceof Error ? error.message : String(error)
+      }`
     );
   }
 }
 
 async function runFetch(): Promise<void> {
   const options = getFetchOptions();
-  const endpoint = buildCpscUrl(options);
-  const payload = await fetchCpscRecalls(endpoint);
-  const records = extractRawRecords(payload);
+  const endpoint = buildFdaFoodUrl(options);
+  const payload = await fetchFdaFoodRecalls(endpoint);
+  const records = extractFdaFoodRecords(payload);
 
   if (records.length === 0) {
-    throw new Error('CPSC recall API returned zero records; existing data was not overwritten.');
+    throw new Error('openFDA food enforcement API returned zero records; existing data was not overwritten.');
   }
 
   const fetchedAt = new Date().toISOString();
-  await writeJsonAtomic(defaultRawPath, {
+  await writeJsonAtomic(defaultRawFdaFoodPath, {
     fetchedAt,
-    source: 'CPSC',
+    source: 'FDA',
     endpoint,
     count: records.length,
-    records
+    results: records
   });
 
-  const processed = await writeNormalizedCpscRecalls(records, defaultCpscProcessedPath);
+  const processed = await writeNormalizedFdaFoodRecalls(records, defaultFdaProcessedPath);
   const merged = await mergeProcessedRecalls();
   const sample = processed.records[0];
 
@@ -154,9 +163,9 @@ async function runFetch(): Promise<void> {
       {
         fetchedAt,
         endpoint,
-        rawPath: defaultRawPath,
-        processedPath: defaultCpscProcessedPath,
-        canonicalPath: defaultProcessedPath,
+        rawPath: defaultRawFdaFoodPath,
+        processedPath: defaultFdaProcessedPath,
+        canonicalPath: canonicalProcessedPath,
         rawRecordsSaved: records.length,
         normalizedRecordsSaved: processed.count,
         mergedRecordsSaved: merged.count,

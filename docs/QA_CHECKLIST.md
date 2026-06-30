@@ -13,21 +13,33 @@
 - `npm run build`
 - `npm run fetch:cpsc`
 - `npm run normalize:cpsc`
+- `npm run fetch:fda-food`
+- `npm run normalize:fda-food`
 - `npm run dev`
 - `npm run preview`
 
-Do not run `npm run fetch:cpsc` during local UI-only phases unless the task explicitly asks for fresh CPSC data.
+Do not run fetch scripts during local UI-only phases unless the task explicitly asks for fresh local data.
 
 ## CPSC Data Pipeline
 
 - Confirm `npm run fetch:cpsc` saves `data/raw/cpsc-recalls.json`.
-- Confirm `npm run fetch:cpsc` saves `data/processed/recalls.json`.
+- Confirm `npm run fetch:cpsc` saves `data/processed/cpsc-recalls.json`.
+- Confirm `npm run fetch:cpsc` rebuilds canonical `data/processed/recalls.json`.
 - Confirm both files contain a positive record count.
 - Confirm raw output includes `fetchedAt`.
 - Confirm normalized records include `source`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard`, `remedy`, `recallDate`, `affectedUnits`, `description`, `slug`, and `raw`.
 - Confirm the website uses `data/processed/recalls.json` as the primary local source.
 - Confirm mock data remains only fallback/demo data.
-- Confirm Phase 4 UI work does not add any new data source.
+
+## FDA/openFDA Food Pipeline
+
+- Confirm `npm run fetch:fda-food` saves `data/raw/fda-food-recalls.json`.
+- Confirm `npm run fetch:fda-food` saves `data/processed/fda-recalls.json`.
+- Confirm `npm run fetch:fda-food` rebuilds canonical `data/processed/recalls.json`.
+- Confirm raw FDA output includes `fetchedAt`.
+- Confirm FDA records include `source: FDA`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard` or `reason`, `recallDate`, `affectedUnits` or `productQuantity`, `description`, `slug`, and `raw`.
+- Confirm canonical records preserve existing CPSC records and append FDA records by stable id.
+- Confirm canonical records are sorted by `recallDate` descending where possible.
 
 ## Pages
 
@@ -37,9 +49,12 @@ Do not run `npm run fetch:cpsc` during local UI-only phases unless the task expl
 - `/battery-recalls`
 - `/food-allergy-recalls`
 - one real CPSC `/recalls/[slug]` page
+- one real FDA `/recalls/[slug]` page, when FDA data has been fetched
 - one normalized real CPSC `/brands/[brand]` page
-- Confirm page labels identify records as local CPSC data.
-- Confirm category pages show a matching local CPSC record count.
+- Confirm page labels identify CPSC records as local CPSC data.
+- Confirm page labels identify FDA records as local FDA/openFDA data.
+- Confirm category pages show a matching local record count.
+- Confirm `/food-allergy-recalls` shows FDA/openFDA food records before CPSC food/allergy records when FDA records exist.
 
 ## Brand Pages
 
@@ -60,6 +75,7 @@ Do not run `npm run fetch:cpsc` during local UI-only phases unless the task expl
 
 - A full CPSC recall title returns an exact local match.
 - A real CPSC brand name returns an exact or possible local match.
+- A real FDA recalling firm or food product returns an exact or possible local match when FDA records exist.
 - A normalized display brand name returns a local match.
 - `battery` returns possible or related local matches when battery records exist.
 - `smoke detector` returns possible or related local matches when detector records exist.

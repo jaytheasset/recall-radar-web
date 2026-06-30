@@ -45,6 +45,7 @@ function searchableText(values: string[]): string {
 function exactFields(recall: SiteRecall): string[] {
   return [
     recall.id,
+    recall.recallNumber ?? '',
     recall.title,
     recall.slug,
     recall.primaryBrand,
@@ -58,6 +59,7 @@ function exactFields(recall: SiteRecall): string[] {
 function possibleFields(recall: SiteRecall): string {
   return searchableText([
     recall.id,
+    recall.recallNumber ?? '',
     recall.title,
     recall.slug,
     recall.primaryBrand,
@@ -75,6 +77,11 @@ function relatedFields(recall: SiteRecall): string {
     recall.categoryLabel,
     recall.hazard,
     recall.remedy,
+    recall.reason ?? '',
+    recall.classification ?? '',
+    recall.distributionPattern ?? '',
+    recall.productQuantity ?? '',
+    recall.status ?? '',
     recall.description,
     recall.affectedUnits,
     recall.sourceLabel

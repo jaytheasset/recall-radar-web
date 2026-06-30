@@ -13,6 +13,8 @@ export function getStaticPaths() {
 const { recall } = Astro.props;
 const title = `${recall.title} | Recall Radar`;
 const description = `${recall.title} local recall detail page with source, product, brand, hazard, remedy, affected units, and official notice link.`;
+const sourceLinkLabel = recall.source === 'FDA' ? 'FDA/openFDA Reference' : 'Official CPSC Notice';
+const sourceLinkText = recall.source === 'FDA' ? 'Open FDA/openFDA reference' : 'Open official CPSC notice';
 const displayBrandNames = recall.displayBrandNames.length ? recall.displayBrandNames : [recall.primaryBrand];
 const sourceBrandNames = recall.brandNames.filter(
   (rawName: string) => !displayBrandNames.some((displayName: string) => displayName.toLowerCase() === rawName.toLowerCase())
@@ -20,7 +22,7 @@ const sourceBrandNames = recall.brandNames.filter(
 const whatToCheckItems = [
   'Compare the product name, model, and brand or company names against the official notice.',
   'Review the hazard and remedy fields before using, selling, donating, or repairing the product.',
-  'Use the official CPSC notice and manufacturer instructions for the most authoritative next steps.'
+  'Use the official agency notice and manufacturer or recalling firm instructions for the most authoritative next steps.'
 ];
 ---
 
@@ -81,8 +83,8 @@ const whatToCheckItems = [
             <span>{recall.id}</span>
           </div>
           <div class="fact">
-            <strong>Official CPSC Notice</strong>
-            {recall.sourceUrl ? <a href={recall.sourceUrl}>Open official CPSC notice</a> : <span>Not listed</span>}
+            <strong>{sourceLinkLabel}</strong>
+            {recall.sourceUrl ? <a href={recall.sourceUrl}>{sourceLinkText}</a> : <span>Not listed</span>}
           </div>
         </aside>
 
@@ -115,6 +117,30 @@ const whatToCheckItems = [
               <strong>Affected Units</strong>
               <span>{recall.affectedUnits || 'Not listed in local data'}</span>
             </div>
+            {recall.classification ? (
+              <div class="fact">
+                <strong>Classification</strong>
+                <span>{recall.classification}</span>
+              </div>
+            ) : null}
+            {recall.status ? (
+              <div class="fact">
+                <strong>Status</strong>
+                <span>{recall.status}</span>
+              </div>
+            ) : null}
+            {recall.recallNumber ? (
+              <div class="fact">
+                <strong>Recall Number</strong>
+                <span>{recall.recallNumber}</span>
+              </div>
+            ) : null}
+            {recall.distributionPattern ? (
+              <div class="fact">
+                <strong>Distribution</strong>
+                <span>{recall.distributionPattern}</span>
+              </div>
+            ) : null}
           </div>
         </article>
       </section>
@@ -142,7 +168,7 @@ const whatToCheckItems = [
     </main>
 
     <footer class="page-footer">
-      Recall Radar uses local CPSC processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
+      Recall Radar uses local CPSC and FDA/openFDA processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
     </footer>
   </body>
 </html>

@@ -1,4 +1,5 @@
-export type RecallSource = 'CPSC';
+export type RecallSource = 'CPSC' | 'FDA';
+export type ProcessedRecallSource = RecallSource | 'MULTI';
 
 export type NormalizedRecall = {
   id: string;
@@ -14,12 +15,18 @@ export type NormalizedRecall = {
   affectedUnits: string;
   description: string;
   slug: string;
+  classification?: string;
+  reason?: string;
+  distributionPattern?: string;
+  productQuantity?: string;
+  recallNumber?: string;
+  status?: string;
   raw: unknown;
 };
 
 export type ProcessedRecallFile = {
   generatedAt: string;
-  source: RecallSource;
+  source: ProcessedRecallSource;
   count: number;
   records: NormalizedRecall[];
 };

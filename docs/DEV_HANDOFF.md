@@ -22,7 +22,7 @@ Fallback/demo source:
 
 - `src/data/mock-recalls.ts`
 
-When processed CPSC records exist, they are the primary source for homepage cards, checker search results, recall detail pages, brand pages, and category pages. Mock records remain available only as local fallback/demo data.
+When processed local records exist, they are the primary source for homepage cards, checker search results, recall detail pages, brand pages, and category pages. Mock records remain available only as local fallback/demo data.
 
 Site-facing records include:
 
@@ -38,40 +38,51 @@ Site-facing records include:
 - description
 - hazard
 - remedy
+- optional FDA fields such as classification, reason, distribution pattern, product quantity, recall number, and status
 
 ## Local CPSC Pipeline
 
-Phase 2 added a local-only CPSC recall data pipeline. Phase 3 connects the processed CPSC file to the website.
+Phase 2 added a local-only CPSC recall data pipeline. Phase 3 connects the processed CPSC file to the website. Phase 5 adds local FDA/openFDA food recall records and makes `data/processed/recalls.json` the merged canonical local source.
 
 Commands:
 
 - `npm run fetch:cpsc` fetches current-year public CPSC recall JSON and writes local files.
 - `npm run normalize:cpsc` rebuilds processed recall data from `data/raw/cpsc-recalls.json`.
-- `npm run build:data` currently runs the CPSC fetch pipeline.
+- `npm run fetch:fda-food` fetches recent public openFDA food enforcement JSON and writes local files.
+- `npm run normalize:fda-food` rebuilds FDA processed recall data from `data/raw/fda-food-recalls.json`.
+- `npm run build:data` currently runs the CPSC fetch pipeline and the FDA/openFDA fetch pipeline.
 
 Local output files:
 
 - `data/raw/cpsc-recalls.json`
+- `data/raw/fda-food-recalls.json`
+- `data/processed/cpsc-recalls.json`
+- `data/processed/fda-recalls.json`
 - `data/processed/recalls.json`
 
 The fetch script calls `https://www.saferproducts.gov/RestWebServices/Recall` without an API key. It writes only after the API returns non-empty records, and each raw file includes a `fetchedAt` timestamp.
 
-Normalized records use `src/data/recall-types.ts` and include `id`, `source`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard`, `remedy`, `recallDate`, `affectedUnits`, `description`, `slug`, and `raw`.
+The FDA/openFDA fetch script calls `https://api.fda.gov/food/enforcement.json` without an API key. It fetches a limited set of recent records, writes only after the API returns non-empty records, and each raw file includes a `fetchedAt` timestamp.
 
-Do not call `npm run fetch:cpsc` during Phase 3 or Phase 4 unless a later task explicitly asks for fresh local CPSC data.
+Normalized records use `src/data/recall-types.ts` and include `id`, `source`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard`, `remedy`, `recallDate`, `affectedUnits`, `description`, `slug`, and `raw`. FDA records can also include `classification`, `reason`, `distributionPattern`, `productQuantity`, `recallNumber`, and `status`.
+
+Do not call fetch scripts during UI-only phases unless a later task explicitly asks for fresh local data.
 
 ## Site Data Loader
 
 `src/lib/recall-data.ts`:
 
 - loads `data/processed/recalls.json` at build time
-- maps CPSC records into a UI-safe `SiteRecall` shape
+- maps CPSC and FDA/openFDA records into a UI-safe `SiteRecall` shape
+- labels CPSC records as `Local CPSC data`
+- labels FDA records as `Local FDA/openFDA data`
 - builds concise recall detail slugs from cleaned title text, with product/brand fallback context
 - limits generated detail slugs at word boundaries while preserving uniqueness with the CPSC id
 - builds brand groups from `brandNames`
 - keeps raw CPSC brand/legal names on each recall
 - adds normalized consumer-facing brand display names and shorter brand slugs through `src/lib/brand-normalize.ts`
 - classifies records lightly into baby/kids, battery/electronics, food/allergy, household/appliance, or general consumer product
+- routes FDA/openFDA food records into the food/allergy page for local browsing
 - falls back to mock records only when no processed records are available
 
 ## Brand Normalization
@@ -111,4 +122,4 @@ The checker renders grouped local results with match badges, recall date, source
 
 ## Guardrails
 
-Keep this repo local-only. Do not add remotes, secrets, deployments, databases, or external API calls except the local public CPSC recall fetch allowed for phase 2.
+Keep this repo local-only. Do not add remotes, secrets, deployments, databases, or external API calls except the local public CPSC and FDA/openFDA fetch scripts when explicitly requested for data-pipeline phases.

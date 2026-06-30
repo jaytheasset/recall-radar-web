@@ -4,8 +4,16 @@ import '../styles/global.css';
 
 const title = 'Food Allergy Recalls | Recall Radar';
 const description =
-  'Browse local CPSC Food Allergy Recalls in Recall Radar, including undeclared allergens, packaged foods, and grocery products.';
-const recalls = getRecallsByCategory('food-allergy');
+  'Browse local FDA/openFDA and CPSC Food Allergy Recalls in Recall Radar, including undeclared allergens, packaged foods, and grocery products.';
+const recalls = getRecallsByCategory('food-allergy').sort((a, b) => {
+  if (a.source !== b.source) {
+    return a.source === 'FDA' ? -1 : 1;
+  }
+
+  return b.recallDate.localeCompare(a.recallDate);
+});
+const fdaFoodRecalls = recalls.filter((recall) => recall.source === 'FDA').length;
+const cpscFoodRecalls = recalls.filter((recall) => recall.source === 'CPSC').length;
 ---
 
 <html lang="en">
@@ -31,11 +39,13 @@ const recalls = getRecallsByCategory('food-allergy');
       <section class="section">
         <p class="eyebrow">Recall category</p>
         <div class="meta-row data-source-row">
-          <span class="status-pill">Local CPSC data</span>
+          <span class="status-pill">Local FDA/openFDA + CPSC data</span>
           <span class="tag">{recalls.length} record{recalls.length === 1 ? '' : 's'}</span>
+          <span class="tag">{fdaFoodRecalls} FDA/openFDA food</span>
+          <span class="tag">{cpscFoodRecalls} CPSC food/allergy</span>
         </div>
         <h1>Food Allergy Recalls</h1>
-        <p class="lead">Local recall pages for undeclared allergens and packaged food notices.</p>
+        <p class="lead">Local recall pages for FDA/openFDA food records, undeclared allergens, and packaged food notices.</p>
       </section>
 
       <section class="section">
@@ -62,14 +72,14 @@ const recalls = getRecallsByCategory('food-allergy');
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No local CPSC records are currently classified in this category.</p>
+            <p>No local FDA/openFDA or CPSC records are currently classified in this category.</p>
           </div>
         )}
       </section>
     </main>
 
     <footer class="page-footer">
-      Recall Radar uses local CPSC processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
+      Recall Radar uses local CPSC and FDA/openFDA processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
     </footer>
   </body>
 </html>
