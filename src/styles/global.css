@@ -951,6 +951,67 @@ button:disabled {
   min-height: 0;
 }
 
+.result-card .card-body {
+  gap: 0.56rem;
+}
+
+.result-card h3 {
+  font-size: 1rem;
+}
+
+.result-card-line {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.38;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.result-card-line strong {
+  color: var(--ink);
+  font-weight: 850;
+}
+
+.result-card-reason,
+.result-card-action {
+  -webkit-line-clamp: 2;
+}
+
+.result-card-reason {
+  color: var(--ink);
+  font-weight: 720;
+}
+
+.result-card-badges {
+  gap: 0.38rem;
+  margin-top: 0.15rem;
+}
+
+.no-result-state {
+  display: grid;
+  gap: 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 1rem;
+  box-shadow: var(--shadow-card);
+}
+
+.no-result-state h3 {
+  font-size: 1rem;
+}
+
+.no-result-state p {
+  color: var(--muted);
+}
+
+.no-result-suggestion {
+  color: var(--source);
+  font-weight: 760;
+}
+
 .result-group {
   display: grid;
   gap: 0.7rem;

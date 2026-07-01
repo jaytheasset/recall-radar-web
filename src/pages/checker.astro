@@ -178,8 +178,8 @@ const dateOptions = [
               <span id="result-filter-summary" class="tag">All markets</span>
             </div>
             <p id="result-summary"></p>
-            <p id="result-disclaimer"></p>
             <div id="result-list" class="result-list"></div>
+            <p id="result-disclaimer"></p>
           </div>
         </section>
       </section>
@@ -392,6 +392,39 @@ const dateOptions = [
         return link;
       }
 
+      function reasonLabelFor(recall: SearchItem['recall']): string {
+        return recall.source === 'CPSC' ? 'Hazard' : 'Reason';
+      }
+
+      function reasonTextFor(recall: SearchItem['recall']): string {
+        return recall.hazard || recall.reason || 'Not listed in the indexed notice.';
+      }
+
+      function actionTextFor(recall: SearchItem['recall']): string {
+        return recall.remedy || 'Review the official notice for current instructions.';
+      }
+
+      function productTextFor(recall: SearchItem['recall']): string {
+        return recall.productNames.length
+          ? recall.productNames.slice(0, 3).join(', ')
+          : recall.primaryProductName;
+      }
+
+      function brandTextFor(recall: SearchItem['recall']): string {
+        return recall.displayBrandNames.length
+          ? recall.displayBrandNames.slice(0, 3).join(', ')
+          : recall.primaryBrand;
+      }
+
+      function createCardLine(label: string, value: string, className = 'result-card-line'): HTMLElement {
+        const line = document.createElement('p');
+        line.className = className;
+        const strong = document.createElement('strong');
+        strong.textContent = `${label}: `;
+        line.append(strong, value);
+        return line;
+      }
+
       function createResultCard(item: SearchItem): HTMLElement {
         const { recall, match } = item;
         const article = document.createElement('article');
@@ -401,10 +434,11 @@ const dateOptions = [
         body.className = 'card-body';
 
         const meta = document.createElement('div');
-        meta.className = 'meta-row';
+        meta.className = 'meta-row result-card-badges';
         meta.append(
           createTag(MATCH_LABELS[match], 'badge-danger'),
           createTag(recall.sourceLabel, 'badge-source'),
+          createTag(recall.categoryLabel),
           createTag(recall.recallDate, 'badge-date')
         );
 
@@ -414,31 +448,13 @@ const dateOptions = [
         detailLink.textContent = recall.title;
         heading.append(detailLink);
 
-        const productSummary = document.createElement('p');
-        const productText = recall.productNames.length
-          ? recall.productNames.slice(0, 3).join(', ')
-          : recall.primaryProductName;
-        const brandText = recall.displayBrandNames.length
-          ? recall.displayBrandNames.slice(0, 3).join(', ')
-          : recall.primaryBrand;
-        productSummary.textContent = `Product: ${productText}. Brand/company: ${brandText}.`;
-
-        const hazard = document.createElement('p');
-        hazard.textContent =
-          recall.hazard || recall.reason
-            ? `Hazard/reason: ${recall.hazard || recall.reason}`
-            : 'Hazard or reason not listed in the indexed notice.';
+        const reason = createCardLine(reasonLabelFor(recall), reasonTextFor(recall), 'result-card-line result-card-reason');
+        const action = createCardLine('Action', actionTextFor(recall), 'result-card-line result-card-action');
+        const product = createCardLine('Product', productTextFor(recall));
+        const brand = createCardLine('Brand/company', brandTextFor(recall));
 
         const links = document.createElement('div');
         links.className = 'link-row';
-
-        if (recall.primaryBrandSlug) {
-          const brand = document.createElement('a');
-          brand.className = 'btn btn-ghost';
-          brand.href = `/brands/${recall.primaryBrandSlug}`;
-          brand.textContent = `${recall.primaryBrand} page`;
-          links.append(brand);
-        }
 
         const details = document.createElement('a');
         details.className = 'btn btn-primary';
@@ -446,10 +462,30 @@ const dateOptions = [
         details.textContent = 'View recall';
 
         links.append(details);
-        body.append(meta, heading, productSummary, hazard, links);
+        body.append(heading, reason, action, product, brand, meta, links);
         article.append(createImageShell(recall), body);
 
         return article;
+      }
+
+      function createNoResultState(): HTMLElement {
+        const emptyState = document.createElement('div');
+        emptyState.className = 'no-result-state';
+
+        const heading = document.createElement('h3');
+        heading.textContent = 'No clear match found';
+
+        const body = document.createElement('p');
+        body.textContent =
+          'We did not find a clear match in the indexed recall notices. This does not mean the product is safe or recall-free.';
+
+        const suggestion = document.createElement('p');
+        suggestion.className = 'no-result-suggestion';
+        suggestion.textContent =
+          'Try searching by brand name, model number, UPC/barcode, lot code, ingredient, allergen, or product type.';
+
+        emptyState.append(heading, body, suggestion);
+        return emptyState;
       }
 
       function sortItems(items: SearchItem[], sort: SortFilter): SearchItem[] {
@@ -525,9 +561,12 @@ const dateOptions = [
         matchLabel.textContent = MATCH_LABELS[result.match];
         countLabel.textContent = `${sortedItems.length} recall notice${sortedItems.length === 1 ? '' : 's'}`;
         summary.textContent =
-          result.match === 'none'
-            ? 'No clear match found. We did not find a clear match in the indexed recall notices. This does not mean the product is safe or recall-free. Try searching by brand name, model number, UPC/barcode, lot code, ingredient, allergen, or product type.'
-            : `Possible recall matches for "${state.query}" with the selected filters.`;
+          result.match === 'none' ? 'No clear match found.' : `Possible recall matches for "${state.query}".`;
+
+        if (result.match === 'none') {
+          list.replaceChildren(createNoResultState());
+          return;
+        }
 
         if (state.sort === 'best') {
           const groupedResults = (['exact', 'possible', 'related'] as const)
