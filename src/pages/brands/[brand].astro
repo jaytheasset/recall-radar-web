@@ -15,8 +15,8 @@ const sourceNames = rawNames.filter(
 );
 const sourceLabels = [...new Set(recalls.map((recall: { sourceLabel: string }) => recall.sourceLabel))];
 const sourceLabel = sourceLabels.join(' + ');
-const title = `Recall Signals for ${brand} | Recall Radar`;
-const description = `Local recall signals for ${brand}, with related products, source company names, hazards, remedies, and detail links.`;
+const title = `Recalls linked to ${brand} | Recall Radar`;
+const description = `Local recalls linked to ${brand}, with related products, source company names, hazards, remedies, and official detail links.`;
 ---
 
 <html lang="en">
@@ -41,27 +41,27 @@ const description = `Local recall signals for ${brand}, with related products, s
 
     <main class="page-shell">
       <section class="section">
-        <p class="eyebrow">Brand monitoring page</p>
+        <p class="eyebrow">Brand page</p>
         <div class="meta-row data-source-row">
-          <span class="status-pill">{sourceLabel}</span>
-          <span class="tag">{recalls.length} record{recalls.length === 1 ? '' : 's'}</span>
+          <span class="badge-source">{sourceLabel}</span>
+          <span class="badge-date">{recalls.length} record{recalls.length === 1 ? '' : 's'}</span>
         </div>
-        <h1>Recall signals for {brand}</h1>
-        <p class="lead">Source-backed related recall signals for {brand} from the local dataset.</p>
+        <h1>Recalls linked to {brand}</h1>
+        <p class="lead">Local recall records that list {brand} or related source company names.</p>
         <div class="link-row data-source-row">
-          <button id="save-brand-watchlist" type="button" data-brand={brand} data-brand-slug={slug}>
+          <button class="btn btn-primary" id="save-brand-watchlist" type="button" data-brand={brand} data-brand-slug={slug}>
             Monitor this brand locally
           </button>
-          <a class="button-link button-secondary" href="/watchlist">View watchlist</a>
+          <a class="btn btn-secondary" href="/watchlist">View watchlist</a>
         </div>
         <p id="save-brand-status" class="form-note" hidden></p>
       </section>
 
       {sourceNames.length ? (
         <section class="section">
-          <article class="notice-panel">
-            <h2>Source brand names</h2>
-            <p>These local records may list the brand, importer, recalling firm, or legal company name differently.</p>
+          <article class="detail-card">
+            <h2>Raw source names</h2>
+            <p>Local records may list a brand, importer, recalling firm, or legal company name differently.</p>
             <ul class="source-name-list">
               {sourceNames.map((name: string) => <li>{name}</li>)}
             </ul>
@@ -71,27 +71,38 @@ const description = `Local recall signals for ${brand}, with related products, s
 
       <section class="section">
         <div class="section-header">
-          <h2>Source-backed related recalls</h2>
+          <div>
+            <p class="eyebrow">Related recalls</p>
+            <h2>Products linked to this brand</h2>
+          </div>
         </div>
-        <div class="grid">
+        <div class="product-grid">
           {recalls.map((recall) => (
-            <article class="recall-card">
-              <div class="meta-row">
-                <span class="tag source-tag">{recall.sourceLabel}</span>
-                <span class="tag">{recall.categoryLabel}</span>
-                <span class="tag">{recall.recallDate}</span>
+            <article class="product-card">
+              <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
+                {recall.primaryImageUrl ? (
+                  <img src={recall.primaryImageUrl} alt={recall.primaryImageAlt || recall.title} loading="lazy" />
+                ) : (
+                  <span class="image-placeholder">{recall.source === 'FDA' ? 'FDA food notice' : 'Recall notice'}</span>
+                )}
+              </a>
+              <div class="card-body">
+                <div class="meta-row">
+                  <span class="badge-source">{recall.sourceLabel}</span>
+                  <span class="badge-date">{recall.recallDate}</span>
+                </div>
+                <h3><a href={recall.detailPath}>{recall.title}</a></h3>
+                <p>Product: {recall.primaryProductName}</p>
+                <p>Hazard/reason: {recall.hazard || recall.reason || 'Not listed in local data'}</p>
+                <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
               </div>
-              <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-              <p>Product: {recall.primaryProductName}</p>
-              <p>Hazard signal: {recall.hazard || 'Not listed in local data'}</p>
-              <a href={recall.detailPath}>Signal report</a>
             </article>
           ))}
         </div>
       </section>
 
       <section class="section">
-        <a class="button-link button-secondary" href="/checker">Scan another product</a>
+        <a class="btn btn-secondary" href="/checker">Check another product</a>
       </section>
     </main>
 

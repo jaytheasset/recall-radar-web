@@ -1,6 +1,6 @@
 import processedRecallData from '../../data/processed/recalls.json';
 import { mockRecalls, type MockRecall, type RecallCategory } from '../data/mock-recalls';
-import type { NormalizedRecall, ProcessedRecallFile } from '../data/recall-types';
+import type { NormalizedRecall, ProcessedRecallFile, RecallImage } from '../data/recall-types';
 import { normalizeBrandName } from './brand-normalize';
 import { limitSlug, recallSlug } from './slug';
 
@@ -36,6 +36,9 @@ export type SiteRecall = {
   productQuantity?: string;
   recallNumber?: string;
   status?: string;
+  images: RecallImage[];
+  primaryImageUrl?: string;
+  primaryImageAlt?: string;
 };
 
 export type BrandRecallGroup = {
@@ -51,19 +54,19 @@ export const categoryRoutes = [
     href: '/baby-product-recalls',
     label: 'Baby & Kids Gear',
     category: 'baby-kids',
-    description: 'Scan baby, infant, nursery, toy, and kids gear recall signals.'
+    description: 'Browse cribs, sleepers, toys, nursery gear, and child-focused product recalls.'
   },
   {
     href: '/battery-recalls',
     label: 'Batteries & Electronics',
     category: 'battery-electronics',
-    description: 'Scan battery, charger, lithium-ion, and electronics recall signals.'
+    description: 'Browse batteries, chargers, power banks, lithium-ion products, and electronics recalls.'
   },
   {
     href: '/food-allergy-recalls',
     label: 'Food & Allergy',
     category: 'food-allergy',
-    description: 'Scan food, allergy, and undeclared allergen recall signals.'
+    description: 'Browse food notices, undeclared allergens, and packaged grocery recalls.'
   }
 ] as const;
 
@@ -206,6 +209,60 @@ function sourceLabelFor(source: SiteRecallSource): string {
   return 'Mock fallback data';
 }
 
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function safeText(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function isOfficialCpscImageUrl(url: string): boolean {
+  return /^https:\/\/www\.cpsc\.gov\//i.test(url);
+}
+
+function normalizeImage(value: unknown, fallbackAlt: string): RecallImage | null {
+  if (!isObject(value)) {
+    return null;
+  }
+
+  const url = safeText(value.url) || safeText(value.URL);
+  if (!url || !isOfficialCpscImageUrl(url)) {
+    return null;
+  }
+
+  const caption = safeText(value.caption) || safeText(value.Caption);
+  const alt = safeText(value.alt) || safeText(value.AltText) || caption || fallbackAlt;
+
+  return {
+    url,
+    ...(caption ? { caption } : {}),
+    ...(alt ? { alt } : {})
+  };
+}
+
+function uniqueImages(images: RecallImage[]): RecallImage[] {
+  const seen = new Set<string>();
+  return images.filter((image) => {
+    if (seen.has(image.url)) {
+      return false;
+    }
+    seen.add(image.url);
+    return true;
+  });
+}
+
+function extractRecallImages(record: NormalizedRecall): RecallImage[] {
+  const directImages = Array.isArray(record.images) ? record.images : [];
+  const rawImages = isObject(record.raw) && Array.isArray(record.raw.Images) ? record.raw.Images : [];
+  const fallbackAlt = `${record.title} recall product image`;
+  const images = [...directImages, ...rawImages]
+    .map((image) => normalizeImage(image, fallbackAlt))
+    .filter((image): image is RecallImage => Boolean(image));
+
+  return record.source === 'CPSC' ? uniqueImages(images) : [];
+}
+
 function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
   const category = classifyRecall(record);
   const brandNames = uniqueNonEmpty(record.brandNames);
@@ -219,6 +276,8 @@ function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
     productNames,
     brandNames: displayBrandNames
   });
+  const images = extractRecallImages(record);
+  const primaryImage = images[0];
 
   return {
     id: record.id,
@@ -248,7 +307,10 @@ function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
     distributionPattern: record.distributionPattern,
     productQuantity: record.productQuantity,
     recallNumber: record.recallNumber,
-    status: record.status
+    status: record.status,
+    images,
+    primaryImageUrl: primaryImage?.url,
+    primaryImageAlt: primaryImage?.alt ?? primaryImage?.caption
   };
 }
 
@@ -277,7 +339,8 @@ function toSiteRecallFromMock(recall: MockRecall): SiteRecall {
     affectedUnits: '',
     description: recall.summary,
     slug: recall.slug,
-    detailPath: `/recalls/${recall.slug}`
+    detailPath: `/recalls/${recall.slug}`,
+    images: []
   };
 }
 

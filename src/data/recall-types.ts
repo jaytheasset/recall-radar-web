@@ -1,6 +1,12 @@
 export type RecallSource = 'CPSC' | 'FDA';
 export type ProcessedRecallSource = RecallSource | 'MULTI';
 
+export type RecallImage = {
+  url: string;
+  caption?: string;
+  alt?: string;
+};
+
 export type NormalizedRecall = {
   id: string;
   source: RecallSource;
@@ -21,6 +27,9 @@ export type NormalizedRecall = {
   productQuantity?: string;
   recallNumber?: string;
   status?: string;
+  images?: RecallImage[];
+  primaryImageUrl?: string;
+  primaryImageAlt?: string;
   raw: unknown;
 };
 

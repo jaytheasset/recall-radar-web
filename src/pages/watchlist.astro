@@ -12,7 +12,7 @@ import '../styles/global.css';
 
 const title = 'Local Watchlist | Recall Radar';
 const description =
-  'Monitor local Recall Radar search terms and brands in browser localStorage, then preview matching CPSC and FDA/openFDA recall signals without a backend.';
+  'Monitor local Recall Radar search terms and brands in browser localStorage, then preview matching CPSC and FDA/openFDA recall cards without a backend.';
 const watchlistRecalls = siteRecalls.map((recall) => ({
   id: recall.id,
   source: recall.source,
@@ -41,7 +41,9 @@ const watchlistRecalls = siteRecalls.map((recall) => ({
   distributionPattern: recall.distributionPattern,
   productQuantity: recall.productQuantity,
   recallNumber: recall.recallNumber,
-  status: recall.status
+  status: recall.status,
+  primaryImageUrl: recall.primaryImageUrl,
+  primaryImageAlt: recall.primaryImageAlt
 }));
 const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 ---
@@ -67,11 +69,11 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
     </header>
 
     <main class="page-shell">
-      <section class="section monitor-hero">
-        <p class="eyebrow">Watchlist / Monitor</p>
+      <section class="section">
+        <p class="eyebrow">Saved recall monitor</p>
         <h1>Local Watchlist</h1>
         <p class="lead">
-          Monitor saved searches and brands in this browser. Matching recall signal previews are generated from the local processed recall data file.
+          Save searches and brands in this browser, then preview matching recall cards from the local processed data file.
         </p>
         <div class="meta-row data-source-row">
           <span class="status-pill">{dataSourceLabel}</span>
@@ -90,7 +92,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 
       <section class="section">
         <div class="watchlist-layout">
-          <article class="notice-panel monitor-panel">
+          <article class="detail-card">
             <h2>Local demo only &mdash; no email is sent</h2>
             <p>
               This form is only a product UI demonstration. It does not submit, send, store, or transmit an email address.
@@ -100,19 +102,19 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
                 Demo email
                 <input type="email" placeholder="you@example.com" autocomplete="off" />
               </label>
-              <button type="submit">Preview alert</button>
+              <button class="btn btn-primary" type="submit">Preview alert</button>
               <p id="demo-alert-status" class="form-note" hidden></p>
             </form>
           </article>
 
-          <article class="notice-panel monitor-panel">
-            <h2>Saved monitors</h2>
+          <article class="detail-card">
+            <h2>Saved items</h2>
             <p>
               Saved searches and brands stay in localStorage for this browser profile. No server, database, API endpoint, or email service is used.
             </p>
             <div class="meta-row data-source-row">
               <span id="watchlist-count" class="status-pill">0 saved items</span>
-              <button id="clear-watchlist" class="button-secondary" type="button">Clear all</button>
+              <button id="clear-watchlist" class="btn btn-secondary" type="button">Clear all</button>
             </div>
           </article>
         </div>
@@ -121,17 +123,17 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       <section class="section">
         <div class="section-header">
           <div>
-            <p class="eyebrow">Local monitoring console</p>
-            <h2>Matching recall signals</h2>
-            <p class="section-note">Signal previews are generated locally from saved searches and brands.</p>
+            <p class="eyebrow">Matching local recalls</p>
+            <h2>Saved recall previews</h2>
+            <p class="section-note">Cards are generated locally from saved searches and brand pages.</p>
           </div>
-          <a class="button-link button-secondary" href="/checker">Add a monitored search</a>
+          <a class="btn btn-secondary" href="/checker">Add a monitored search</a>
         </div>
         <p class="disclaimer-copy">
           No matching recall found does not guarantee a product is safe. Always verify with the official recall notice, manufacturer, and applicable government agency.
         </p>
         <div id="empty-watchlist" class="notice-panel">
-          <p>No saved searches or brands yet. Use the Product Recall Checker or a brand monitor page to add local watchlist items.</p>
+          <p>No saved searches or brands yet. Use the Product Recall Checker or a brand page to add local watchlist items.</p>
         </div>
         <div id="watchlist-items" class="watchlist-items"></div>
       </section>
@@ -209,15 +211,40 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         return tag;
       }
 
+      function createImageShell(recall: (typeof siteRecalls)[number]): HTMLElement {
+        const link = document.createElement('a');
+        link.className = 'image-shell';
+        link.href = recall.detailPath;
+        link.setAttribute('aria-label', `View recall for ${recall.title}`);
+
+        if (recall.primaryImageUrl) {
+          const image = document.createElement('img');
+          image.src = recall.primaryImageUrl;
+          image.alt = recall.primaryImageAlt || recall.title;
+          image.loading = 'lazy';
+          link.append(image);
+          return link;
+        }
+
+        const placeholder = document.createElement('span');
+        placeholder.className = 'image-placeholder';
+        placeholder.textContent = recall.source === 'FDA' ? 'FDA food notice' : 'Recall notice';
+        link.append(placeholder);
+        return link;
+      }
+
       function createRecallPreview(recall: (typeof siteRecalls)[number]): HTMLElement {
         const article = document.createElement('article');
-        article.className = 'recall-card result-card';
+        article.className = 'product-card result-card';
+
+        const body = document.createElement('div');
+        body.className = 'card-body';
 
         const meta = document.createElement('div');
         meta.className = 'meta-row';
         meta.append(
-          createTag(recall.sourceLabel, 'tag source-tag'),
-          createTag(recall.recallDate),
+          createTag(recall.sourceLabel, 'badge-source'),
+          createTag(recall.recallDate, 'badge-date'),
           createTag(recall.categoryLabel)
         );
 
@@ -237,10 +264,12 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
             : 'Hazard/reason: Not listed in local data.';
 
         const details = document.createElement('a');
+        details.className = 'btn btn-primary';
         details.href = recall.detailPath;
-        details.textContent = 'Signal report';
+        details.textContent = 'View recall';
 
-        article.append(meta, heading, summary, hazard, details);
+        body.append(meta, heading, summary, hazard, details);
+        article.append(createImageShell(recall), body);
         return article;
       }
 
@@ -265,7 +294,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 
       function createSavedItemCard(item: WatchlistItem): HTMLElement {
         const article = document.createElement('article');
-        article.className = 'notice-panel watchlist-item';
+        article.className = 'detail-card watchlist-item';
 
         const header = document.createElement('div');
         header.className = 'watchlist-item-header';
@@ -277,11 +306,11 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         details.textContent =
           item.type === 'search'
             ? `${sourceLabel(item.source)} / ${categoryLabel(item.category)}`
-            : `Brand monitor page: /brands/${item.slug}`;
+            : `Brand page: /brands/${item.slug}`;
         title.append(heading, details);
 
         const remove = document.createElement('button');
-        remove.className = 'button-secondary';
+        remove.className = 'btn btn-secondary';
         remove.type = 'button';
         remove.textContent = 'Remove';
         remove.addEventListener('click', () => {
@@ -293,12 +322,12 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 
         const matches = matchingRecallsForItem(item);
         const list = document.createElement('div');
-        list.className = 'result-list';
+        list.className = 'product-grid';
         if (matches.length) {
           list.replaceChildren(...matches.map(createRecallPreview));
         } else {
           const empty = document.createElement('p');
-          empty.textContent = 'No matching recall signals for this saved item in the local dataset right now.';
+          empty.textContent = 'No matching recall found for this saved item in the local dataset right now.';
           list.append(empty);
         }
 

@@ -2,9 +2,9 @@
 import { getRecallsByCategory } from '../lib/recall-data';
 import '../styles/global.css';
 
-const title = 'Food & Allergy Recall Signals | Recall Radar';
+const title = 'Food & Allergy Recalls | Recall Radar';
 const description =
-  'Scan local FDA/openFDA and CPSC food and allergy recall signals in Recall Radar, including undeclared allergens, packaged foods, and grocery products.';
+  'Browse local FDA/openFDA and CPSC food and allergy recalls in Recall Radar, including undeclared allergens, packaged foods, UPCs, and lot codes.';
 const recalls = getRecallsByCategory('food-allergy').sort((a, b) => {
   if (a.source !== b.source) {
     return a.source === 'FDA' ? -1 : 1;
@@ -38,49 +38,54 @@ const cpscRelevantRecalls = recalls.filter((recall) => recall.source === 'CPSC')
 
     <main class="page-shell">
       <section class="section">
-        <p class="eyebrow">Scan zone</p>
+        <p class="eyebrow">Food & Allergy</p>
         <div class="meta-row data-source-row">
-          <span class="status-pill">Local FDA/openFDA + CPSC data</span>
-          <span class="tag">{recalls.length} record{recalls.length === 1 ? '' : 's'}</span>
+          <span class="badge-source">Local FDA/openFDA + CPSC data</span>
+          <span class="badge-date">{recalls.length} record{recalls.length === 1 ? '' : 's'}</span>
           <span class="tag">{fdaRecalls.length} FDA/openFDA food</span>
-          <span class="tag">{cpscRelevantRecalls.length} CPSC food/allergy</span>
+          <span class="tag">{cpscRelevantRecalls.length} relevant CPSC</span>
         </div>
-        <h1>Food & Allergy Recall Signals</h1>
-        <p class="lead">A conservative local scan zone focused on FDA/openFDA food records, undeclared allergens, and packaged food notices. Relevant CPSC food/allergy records remain visible when classified locally.</p>
+        <h1>Food & Allergy recalls</h1>
+        <p class="lead">A conservative local category focused on FDA/openFDA food records, undeclared allergens, UPCs, lot codes, and packaged food notices.</p>
       </section>
 
       <section class="section">
         <div class="section-header">
           <div>
-            <h2>FDA/openFDA food signals</h2>
-            <p class="section-note">Food and allergen signals from the local FDA/openFDA processed data.</p>
+            <h2>FDA/openFDA food recalls</h2>
+            <p class="section-note">Food and allergen notices from the local FDA/openFDA processed data.</p>
           </div>
-          <span class="tag">{fdaRecalls.length} record{fdaRecalls.length === 1 ? '' : 's'}</span>
+          <span class="badge-date">{fdaRecalls.length} record{fdaRecalls.length === 1 ? '' : 's'}</span>
         </div>
         {fdaRecalls.length ? (
-          <div class="grid">
+          <div class="product-grid">
             {fdaRecalls.map((recall) => (
-              <article class="recall-card signal-card">
-                <div class="meta-row">
-                  <span class="tag source-tag">{recall.sourceLabel}</span>
-                  <span class="tag">{recall.recallDate}</span>
-                </div>
-                <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-                <p>Product: {recall.primaryProductName}</p>
-                <p>Brand/company: {recall.primaryBrand}</p>
-                <p>Hazard: {recall.hazard || 'Not listed in local data'}</p>
-                <div class="link-row">
-                  {recall.primaryBrandSlug ? (
-                    <a href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} monitor page</a>
-                  ) : null}
-                  <a href={recall.detailPath}>Signal report</a>
+              <article class="product-card">
+                <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
+                  <span class="image-placeholder">FDA food notice</span>
+                </a>
+                <div class="card-body">
+                  <div class="meta-row">
+                    <span class="badge-source">{recall.sourceLabel}</span>
+                    <span class="badge-date">{recall.recallDate}</span>
+                  </div>
+                  <h3><a href={recall.detailPath}>{recall.title}</a></h3>
+                  <p>Product: {recall.primaryProductName}</p>
+                  <p>Brand/company: {recall.primaryBrand}</p>
+                  <p>Hazard/reason: {recall.hazard || recall.reason || 'Not listed in local data'}</p>
+                  <div class="link-row">
+                    {recall.primaryBrandSlug ? (
+                      <a class="btn btn-ghost" href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} page</a>
+                    ) : null}
+                    <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
+                  </div>
                 </div>
               </article>
             ))}
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No local FDA/openFDA records are currently classified in this scan zone.</p>
+            <p>No local FDA/openFDA records are currently classified in this category.</p>
           </div>
         )}
       </section>
@@ -89,27 +94,36 @@ const cpscRelevantRecalls = recalls.filter((recall) => recall.source === 'CPSC')
         <section class="section">
           <div class="section-header">
             <div>
-              <h2>Relevant CPSC food/allergy signals</h2>
-              <p class="section-note">CPSC records shown only when local classification finds a food or allergy signal.</p>
+              <h2>Relevant CPSC food and allergy recalls</h2>
+              <p class="section-note">CPSC records shown only when local classification finds a food or allergy recall.</p>
             </div>
-            <span class="tag">{cpscRelevantRecalls.length} record{cpscRelevantRecalls.length === 1 ? '' : 's'}</span>
+            <span class="badge-date">{cpscRelevantRecalls.length} record{cpscRelevantRecalls.length === 1 ? '' : 's'}</span>
           </div>
-          <div class="grid">
+          <div class="product-grid">
             {cpscRelevantRecalls.map((recall) => (
-              <article class="recall-card signal-card">
-                <div class="meta-row">
-                  <span class="tag source-tag">{recall.sourceLabel}</span>
-                  <span class="tag">{recall.recallDate}</span>
-                </div>
-                <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-                <p>Product: {recall.primaryProductName}</p>
-                <p>Brand/company: {recall.primaryBrand}</p>
-                <p>Hazard signal: {recall.hazard || 'Not listed in local data'}</p>
-                <div class="link-row">
-                  {recall.primaryBrandSlug ? (
-                    <a href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} monitor page</a>
-                  ) : null}
-                  <a href={recall.detailPath}>Signal report</a>
+              <article class="product-card">
+                <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
+                  {recall.primaryImageUrl ? (
+                    <img src={recall.primaryImageUrl} alt={recall.primaryImageAlt || recall.title} loading="lazy" />
+                  ) : (
+                    <span class="image-placeholder">Recall notice</span>
+                  )}
+                </a>
+                <div class="card-body">
+                  <div class="meta-row">
+                    <span class="badge-source">{recall.sourceLabel}</span>
+                    <span class="badge-date">{recall.recallDate}</span>
+                  </div>
+                  <h3><a href={recall.detailPath}>{recall.title}</a></h3>
+                  <p>Product: {recall.primaryProductName}</p>
+                  <p>Brand/company: {recall.primaryBrand}</p>
+                  <p>Hazard/reason: {recall.hazard || recall.reason || 'Not listed in local data'}</p>
+                  <div class="link-row">
+                    {recall.primaryBrandSlug ? (
+                      <a class="btn btn-ghost" href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} page</a>
+                    ) : null}
+                    <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
+                  </div>
                 </div>
               </article>
             ))}

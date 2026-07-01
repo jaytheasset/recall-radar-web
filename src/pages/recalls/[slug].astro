@@ -11,17 +11,18 @@ export function getStaticPaths() {
 }
 
 const { recall } = Astro.props;
-const title = `${recall.title} Signal Report | Recall Radar`;
-const description = `${recall.title} local recall signal report with source, product, brand, hazard, remedy, affected units, and official notice link.`;
-const sourceLinkLabel = recall.source === 'FDA' ? 'Official FDA/openFDA Reference' : 'Official CPSC Notice';
+const title = `${recall.title} | Recall Radar`;
+const description = `${recall.title} local recall record with source, product, brand, hazard, remedy, affected units, and official notice link.`;
+const sourceLinkLabel = recall.source === 'FDA' ? 'Official FDA/openFDA reference' : 'Official CPSC notice';
 const sourceLinkText = recall.source === 'FDA' ? 'Open official FDA/openFDA reference' : 'Open official CPSC notice';
 const displayBrandNames = recall.displayBrandNames.length ? recall.displayBrandNames : [recall.primaryBrand];
 const sourceBrandNames = recall.brandNames.filter(
   (rawName: string) => !displayBrandNames.some((displayName: string) => displayName.toLowerCase() === rawName.toLowerCase())
 );
+const galleryImages = recall.images.length ? recall.images : [];
 const whatToCheckItems = [
-  'Compare the product name, model, and brand or company names against the official notice.',
-  'Review the hazard and remedy fields before using, selling, donating, or repairing the product.',
+  'Compare the product name, model, UPC, lot code, and brand or company names against the official notice.',
+  'Review the hazard and remedy fields before using, selling, donating, repairing, or disposing of the product.',
   'Use the official agency notice and manufacturer or recalling firm instructions for the most authoritative next steps.'
 ];
 ---
@@ -48,9 +49,10 @@ const whatToCheckItems = [
 
     <main class="page-shell">
       <section class="section">
-        <p class="eyebrow">Source-backed signal report</p>
+        <p class="eyebrow">Recall report</p>
         <div class="meta-row data-source-row">
-          <span class="status-pill">{recall.sourceLabel}</span>
+          <span class="badge-source">{recall.sourceLabel}</span>
+          <span class="badge-date">{recall.recallDate}</span>
           <span class="tag">{recall.categoryLabel}</span>
         </div>
         <h1>{recall.title}</h1>
@@ -58,67 +60,82 @@ const whatToCheckItems = [
       </section>
 
       <section class="section detail-grid">
-        <aside class="facts source-record" aria-label="Source record">
-          <h2>Source record</h2>
-          <div class="fact">
-            <strong>Brand / company</strong>
-            {recall.primaryBrandSlug ? (
-              <a href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand}</a>
+        <div class="detail-gallery" aria-label="Product images">
+          <div class="image-shell image-shell-large">
+            {recall.primaryImageUrl ? (
+              <img src={recall.primaryImageUrl} alt={recall.primaryImageAlt || recall.title} loading="lazy" />
             ) : (
-              <span>{recall.primaryBrand}</span>
+              <span class="image-placeholder">{recall.source === 'FDA' ? 'FDA food notice' : 'Recall notice'}</span>
             )}
           </div>
-          <div class="fact">
-            <strong>Category</strong>
-            <span>{recall.categoryLabel}</span>
-          </div>
-          <div class="fact">
-            <strong>Recall Date</strong>
-            <span>{recall.recallDate}</span>
-          </div>
-          <div class="fact">
-            <strong>Source</strong>
-            <span>{recall.sourceLabel}</span>
-          </div>
-          <div class="fact">
-            <strong>Record ID</strong>
-            <span>{recall.id}</span>
-          </div>
-          <div class="fact">
-            <strong>{sourceLinkLabel}</strong>
-            {recall.sourceUrl ? <a class="official-source-link" href={recall.sourceUrl}>{sourceLinkText}</a> : <span>Not listed</span>}
-          </div>
-        </aside>
+          {galleryImages.length > 1 ? (
+            <div class="thumbnail-grid" aria-label="Additional product images">
+              {galleryImages.slice(1, 7).map((image) => (
+                <div class="image-shell">
+                  <img src={image.url} alt={image.alt || image.caption || recall.title} loading="lazy" />
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </div>
 
-        <article class="notice-panel">
-          <h2>Recall signal summary</h2>
+        <aside class="detail-card recall-summary-card" aria-label="Recall summary">
+          <h2>Recall summary</h2>
           <div class="facts">
             <div class="fact">
-              <strong>Affected Products</strong>
+              <strong>Source</strong>
+              <span>{recall.sourceLabel}</span>
+            </div>
+            <div class="fact">
+              <strong>Recall date</strong>
+              <span>{recall.recallDate}</span>
+            </div>
+            <div class="fact">
+              <strong>Hazard</strong>
+              <span>{recall.hazard || recall.reason || 'Not listed in local data'}</span>
+            </div>
+            <div class="fact">
+              <strong>Remedy</strong>
+              <span>{recall.remedy || 'Not listed in local data'}</span>
+            </div>
+            <div class="fact">
+              <strong>Affected units</strong>
+              <span>{recall.affectedUnits || recall.productQuantity || 'Not listed in local data'}</span>
+            </div>
+            <div class="fact">
+              <strong>Record ID</strong>
+              <span>{recall.id}</span>
+            </div>
+            <div class="fact">
+              <strong>{sourceLinkLabel}</strong>
+              {recall.sourceUrl ? (
+                <a class="btn btn-primary official-source-link" href={recall.sourceUrl}>{sourceLinkText}</a>
+              ) : (
+                <span>Not listed</span>
+              )}
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section detail-grid">
+        <article class="detail-card">
+          <h2>Affected products</h2>
+          <div class="facts">
+            <div class="fact">
+              <strong>Products</strong>
               <span>{recall.productNames.length ? recall.productNames.join(', ') : recall.primaryProductName}</span>
             </div>
             <div class="fact">
-              <strong>Brands / Companies</strong>
+              <strong>Brands / companies</strong>
               <span>{displayBrandNames.join(', ')}</span>
             </div>
             {sourceBrandNames.length ? (
               <div class="fact">
-                <strong>Source Brand Names</strong>
+                <strong>Raw source names</strong>
                 <span>{sourceBrandNames.join(', ')}</span>
               </div>
             ) : null}
-            <div class="fact">
-              <strong>Hazard signal</strong>
-              <span>{recall.hazard || 'Not listed in local data'}</span>
-            </div>
-            <div class="fact">
-              <strong>Remedy / consumer action</strong>
-              <span>{recall.remedy || 'Not listed in local data'}</span>
-            </div>
-            <div class="fact">
-              <strong>Affected Units</strong>
-              <span>{recall.affectedUnits || 'Not listed in local data'}</span>
-            </div>
             {recall.classification ? (
               <div class="fact">
                 <strong>Classification</strong>
@@ -133,7 +150,7 @@ const whatToCheckItems = [
             ) : null}
             {recall.recallNumber ? (
               <div class="fact">
-                <strong>Recall Number</strong>
+                <strong>Recall number</strong>
                 <span>{recall.recallNumber}</span>
               </div>
             ) : null}
@@ -145,11 +162,9 @@ const whatToCheckItems = [
             ) : null}
           </div>
         </article>
-      </section>
 
-      <section class="section">
-        <article class="notice-panel">
-          <h2>What to verify</h2>
+        <article class="detail-card">
+          <h2>What to check</h2>
           <ul class="check-list">
             {whatToCheckItems.map((item) => <li>{item}</li>)}
           </ul>
@@ -159,10 +174,10 @@ const whatToCheckItems = [
 
       <section class="section">
         <div class="link-row">
-          <a class="button-link" href="/checker">Scan another product</a>
+          <a class="btn btn-primary" href="/checker">Check another product</a>
           {recall.primaryBrandSlug ? (
-            <a class="button-link button-secondary" href={`/brands/${recall.primaryBrandSlug}`}>
-              Brand monitor page
+            <a class="btn btn-secondary" href={`/brands/${recall.primaryBrandSlug}`}>
+              Monitor this brand locally
             </a>
           ) : null}
         </div>
