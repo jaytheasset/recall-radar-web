@@ -11,15 +11,12 @@ import '../styles/global.css';
 const title = 'Recall Radar | Local product recall checker';
 const description =
   'Recall Radar helps consumers search local CPSC and FDA/openFDA recall records by product, brand, model, UPC, lot code, or keyword.';
-const featuredRecall = siteRecalls.find((recall) => recall.primaryImageUrl) ?? siteRecalls[0];
-const latestRecalls = siteRecalls
-  .filter((recall) => recall.id !== featuredRecall?.id)
-  .slice(0, 6);
+const latestRecalls = siteRecalls.slice(0, 6);
 const babyCount = getRecallsByCategory('baby-kids').length;
 const batteryCount = getRecallsByCategory('battery-electronics').length;
 const foodCount = getRecallsByCategory('food-allergy').length;
 const householdCount = getRecallsByCategory('household-appliance').length;
-const countLine = `${processedLocalRecordCount} local records - ${processedCpscRecordCount} CPSC - ${processedFdaRecordCount} FDA/openFDA`;
+const countLine = `${processedLocalRecordCount} local records · ${processedCpscRecordCount} CPSC · ${processedFdaRecordCount} FDA/openFDA`;
 const productTypes = [
   {
     label: 'Baby & Kids',
@@ -75,15 +72,13 @@ const productTypes = [
     <main class="page-shell home-page">
       <section class="home-hero">
         <div class="home-hero-copy">
-          <h1>Check recalled products before they stay in your home</h1>
+          <h1>Find recalled products fast</h1>
           <p class="lead">
             Search local CPSC and FDA/openFDA recall records by product, brand, model, UPC, lot code, or keyword.
           </p>
-          <p class="data-count-line">{countLine}</p>
         </div>
 
-        <div class="home-search-panel" aria-labelledby="hero-search-title">
-          <h2 id="hero-search-title">Search the local recall file</h2>
+        <div class="home-search-panel" aria-label="Search local recall records">
           <form class="home-search-module" action="/checker" method="get">
             <label class="sr-only" for="home-recall-search">Product, brand, model, UPC, lot, or recall number</label>
             <input
@@ -101,6 +96,7 @@ const productTypes = [
             <a href="/checker?q=pistachio&source=FDA">pistachio</a>
             <a href="/checker?q=smoke%20detector&source=CPSC">smoke detector</a>
           </div>
+          <p class="data-count-line">{countLine}</p>
         </div>
       </section>
 
@@ -156,33 +152,6 @@ const productTypes = [
         </div>
       </section>
 
-      {featuredRecall ? (
-        <section class="section home-featured-section">
-          <article class="home-featured-recall">
-            <a class="home-featured-image" href={featuredRecall.detailPath} aria-label={`View recall for ${featuredRecall.title}`}>
-              {featuredRecall.primaryImageUrl ? (
-                <img
-                  src={featuredRecall.primaryImageUrl}
-                  alt={featuredRecall.primaryImageAlt || featuredRecall.title}
-                  loading="lazy"
-                />
-              ) : (
-                <span class="image-placeholder">{featuredRecall.source === 'FDA' ? 'FDA food notice' : 'Recall notice'}</span>
-              )}
-            </a>
-            <div class="home-featured-copy">
-              <div class="home-card-meta">
-                <span>{featuredRecall.sourceLabel}</span>
-                <span>{featuredRecall.recallDate}</span>
-              </div>
-              <h2><a href={featuredRecall.detailPath}>{featuredRecall.title}</a></h2>
-              <p>{featuredRecall.hazard || featuredRecall.reason || 'Hazard/reason not listed in local data'}</p>
-              <a class="btn btn-primary" href={featuredRecall.detailPath}>View recall</a>
-            </div>
-          </article>
-        </section>
-      ) : null}
-
       <section class="section home-latest-section">
         <div class="section-header">
           <div>
@@ -206,7 +175,7 @@ const productTypes = [
                   <span>{recall.recallDate}</span>
                 </div>
                 <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-                <p>{recall.hazard || recall.reason || 'Hazard/reason not listed in local data'}</p>
+                <span class="home-card-hazard">{recall.hazard || recall.reason || 'Hazard/reason not listed in local data'}</span>
                 <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
               </div>
             </article>
