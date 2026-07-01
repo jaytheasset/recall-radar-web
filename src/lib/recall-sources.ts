@@ -1,5 +1,6 @@
 export type RecallSourceId = 'CPSC' | 'FDA' | 'Mock';
 export type CurrentCoverageSourceId = Exclude<RecallSourceId, 'Mock'>;
+export type RecallSourceType = 'official-api' | 'sample';
 
 export type RecallSourceOption = {
   value: CurrentCoverageSourceId;
@@ -11,9 +12,14 @@ export type RecallSourceConfig = {
   marketCode: string;
   marketLabel: string;
   agencyLabel: string;
+  sourceType: RecallSourceType;
   displayLabel: string;
   noticeTypeLabel: string;
   productScopeLabel: string;
+  identifierTypes: string[];
+  supportsImages: boolean;
+  supportsDistributionDetails: boolean;
+  rawPayloadNotes: string;
   officialSourceLabel: string;
   placeholderLabel: string;
   reasonLabel: string;
@@ -35,9 +41,15 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     marketCode: 'US',
     marketLabel: 'United States',
     agencyLabel: 'CPSC',
+    sourceType: 'official-api',
     displayLabel: 'United States · CPSC',
     noticeTypeLabel: 'Consumer product notice',
     productScopeLabel: 'Consumer products',
+    identifierTypes: ['model number', 'item number', 'UPC/barcode', 'RN/date details', 'recall number'],
+    supportsImages: true,
+    supportsDistributionDetails: true,
+    rawPayloadNotes:
+      'CPSC raw payloads can include Products, ProductUPCs, Images, Retailers, Importers, Manufacturers, ManufacturerCountries, Hazards, and Remedies.',
     officialSourceLabel: 'Source: United States · CPSC',
     placeholderLabel: 'Recall notice',
     reasonLabel: 'Hazard',
@@ -66,9 +78,15 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     marketCode: 'US',
     marketLabel: 'United States',
     agencyLabel: 'FDA / openFDA',
+    sourceType: 'official-api',
     displayLabel: 'United States · FDA / openFDA',
     noticeTypeLabel: 'Food enforcement notice',
     productScopeLabel: 'Food and enforcement',
+    identifierTypes: ['UPC/barcode', 'lot/batch code', 'best-by/use-by date', 'recall number'],
+    supportsImages: false,
+    supportsDistributionDetails: true,
+    rawPayloadNotes:
+      'FDA/openFDA food enforcement raw payloads can include product_description, code_info, product_quantity, distribution_pattern, classification, status, and recall_number.',
     officialSourceLabel: 'Source: United States · FDA / openFDA',
     placeholderLabel: 'FDA food notice',
     reasonLabel: 'Reason',
@@ -99,9 +117,14 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     marketCode: '',
     marketLabel: '',
     agencyLabel: '',
+    sourceType: 'sample',
     displayLabel: 'Sample notice',
     noticeTypeLabel: 'Sample notice',
     productScopeLabel: 'Sample products',
+    identifierTypes: [],
+    supportsImages: false,
+    supportsDistributionDetails: false,
+    rawPayloadNotes: 'Fallback sample records are not an official source ingestion path.',
     officialSourceLabel: 'Source: Sample notice',
     placeholderLabel: 'Recall notice',
     reasonLabel: 'Reason',
@@ -187,4 +210,8 @@ export function getSourceOptionsForCurrentCoverage(): RecallSourceOption[] {
     value: source,
     label: getRecallSourceLabel(source)
   }));
+}
+
+export function getCurrentRecallSourceConfigs(): RecallSourceConfig[] {
+  return currentCoverageSources.map((source) => sourceConfigs[source]);
 }
