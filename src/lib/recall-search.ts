@@ -21,8 +21,8 @@ export const MATCH_LABELS: Record<RecallMatchType, string> = {
   none: 'No clear match'
 };
 
-export const NO_MATCH_DISCLAIMER =
-  'No matching recall found does not guarantee a product is safe. Always verify with the official recall notice, manufacturer, and applicable government agency.';
+export const SEARCH_RESULTS_DISCLAIMER =
+  'Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.';
 
 function normalize(value: string): string {
   return value

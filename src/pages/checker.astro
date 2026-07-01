@@ -169,7 +169,7 @@ const dateOptions = [
             <a class="tag" href="/checker?q=smoke%20detector&source=CPSC">smoke detector in CPSC</a>
           </div>
           <p class="disclaimer-copy">
-            No matching recall found does not guarantee a product is safe. Always verify with the official recall notice, manufacturer, and applicable government agency.
+            Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
           </p>
           <div id="search-results" class="notice-panel result-panel" hidden>
             <div class="meta-row">
@@ -217,7 +217,7 @@ const dateOptions = [
 
     <script id="recall-search-data" type="application/json" is:inline set:html={checkerRecallsJson}></script>
     <script>
-      import { MATCH_LABELS, NO_MATCH_DISCLAIMER, searchRecalls } from '../lib/recall-search';
+      import { MATCH_LABELS, SEARCH_RESULTS_DISCLAIMER, searchRecalls } from '../lib/recall-search';
       import { upsertWatchlistSearch } from '../lib/watchlist';
 
       const dataNode = document.querySelector<HTMLScriptElement>('#recall-search-data');
@@ -505,7 +505,7 @@ const dateOptions = [
         const filteredRecalls = filterRecalls(state);
         panel.hidden = false;
         filterSummary.textContent = describeFilters(state);
-        disclaimer.textContent = NO_MATCH_DISCLAIMER;
+        disclaimer.textContent = SEARCH_RESULTS_DISCLAIMER;
 
         if (!state.query) {
           panel.dataset.match = 'none';

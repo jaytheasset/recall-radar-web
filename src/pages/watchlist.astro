@@ -128,7 +128,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
           <a class="btn btn-secondary" href="/checker">Add a monitored search</a>
         </div>
         <p class="disclaimer-copy">
-          No matching recall found does not guarantee a product is safe. Always verify with the official recall notice, manufacturer, and applicable government agency.
+          Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
         </p>
         <div id="empty-watchlist" class="notice-panel">
           <p>No saved searches or brands yet. Use the Product Recall Checker or a brand page to add saved items.</p>
@@ -143,7 +143,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 
     <script id="watchlist-recall-data" type="application/json" is:inline set:html={watchlistRecallsJson}></script>
     <script>
-      import { NO_MATCH_DISCLAIMER, searchRecalls } from '../lib/recall-search';
+      import { SEARCH_RESULTS_DISCLAIMER, searchRecalls } from '../lib/recall-search';
       import {
         clearWatchlist,
         loadWatchlist,
@@ -331,7 +331,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 
         const disclaimer = document.createElement('p');
         disclaimer.className = 'disclaimer-copy';
-        disclaimer.textContent = NO_MATCH_DISCLAIMER;
+        disclaimer.textContent = SEARCH_RESULTS_DISCLAIMER;
 
         article.append(header, list, disclaimer);
         return article;
