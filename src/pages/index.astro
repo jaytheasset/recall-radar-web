@@ -11,12 +11,15 @@ import '../styles/global.css';
 const title = 'Recall Radar | Local product recall checker';
 const description =
   'Recall Radar helps consumers search local CPSC and FDA/openFDA recall records by product, brand, model, UPC, lot code, or keyword.';
-const latestRecalls = siteRecalls.slice(0, 6);
+const featuredRecall = siteRecalls.find((recall) => recall.primaryImageUrl) ?? siteRecalls[0];
+const latestRecalls = siteRecalls
+  .filter((recall) => recall.id !== featuredRecall?.id)
+  .slice(0, 6);
 const babyCount = getRecallsByCategory('baby-kids').length;
 const batteryCount = getRecallsByCategory('battery-electronics').length;
 const foodCount = getRecallsByCategory('food-allergy').length;
 const householdCount = getRecallsByCategory('household-appliance').length;
-const countLine = `${processedLocalRecordCount} local records · ${processedCpscRecordCount} CPSC · ${processedFdaRecordCount} FDA/openFDA`;
+const countLine = `${processedLocalRecordCount} local records - ${processedCpscRecordCount} CPSC - ${processedFdaRecordCount} FDA/openFDA`;
 const productTypes = [
   {
     label: 'Baby & Kids',
@@ -66,8 +69,8 @@ const productTypes = [
     </header>
 
     <main class="page-shell home-page">
-      <section class="hero home-hero">
-        <div class="hero-copy">
+      <section class="home-hero">
+        <div class="home-hero-copy">
           <h1>Check recalled products before they stay in your home</h1>
           <p class="lead">
             Search local CPSC and FDA/openFDA recall records by product, brand, model, UPC, lot code, or keyword.
@@ -75,28 +78,56 @@ const productTypes = [
           <p class="data-count-line">{countLine}</p>
         </div>
 
-        <aside class="hero-search-card home-search-card detail-card" aria-labelledby="hero-search-title">
-          <div>
-            <h2 id="hero-search-title">Search the local recall file</h2>
-          </div>
-          <form class="hero-search" action="/checker" method="get">
-            <label>
-              Product, brand, model, UPC, lot, or recall number
-              <input name="q" type="search" placeholder="Try baby sleeper, power bank, pistachio, or smoke detector" />
-            </label>
+        <div class="home-search-panel" aria-labelledby="hero-search-title">
+          <h2 id="hero-search-title">Search the local recall file</h2>
+          <form class="home-search-module" action="/checker" method="get">
+            <label class="sr-only" for="home-recall-search">Product, brand, model, UPC, lot, or recall number</label>
+            <input
+              id="home-recall-search"
+              name="q"
+              type="search"
+              placeholder="Search baby sleeper, power bank, pistachio, smoke detector..."
+            />
             <button class="btn btn-primary" type="submit">Check recalls</button>
           </form>
-          <div class="example-searches" aria-label="Example searches">
-            <span>Examples</span>
-            <a class="btn-link" href="/checker?q=baby%20sleeper">baby sleeper</a>
-            <a class="btn-link" href="/checker?q=power%20bank">power bank</a>
-            <a class="btn-link" href="/checker?q=pistachio&source=FDA">pistachio</a>
-            <a class="btn-link" href="/checker?q=smoke%20detector&source=CPSC">smoke detector</a>
+          <div class="home-example-links" aria-label="Example searches">
+            <span>Try</span>
+            <a href="/checker?q=baby%20sleeper">baby sleeper</a>
+            <a href="/checker?q=power%20bank">power bank</a>
+            <a href="/checker?q=pistachio&source=FDA">pistachio</a>
+            <a href="/checker?q=smoke%20detector&source=CPSC">smoke detector</a>
           </div>
-        </aside>
+        </div>
       </section>
 
-      <section class="section">
+      {featuredRecall ? (
+        <section class="section home-featured-section">
+          <article class="home-featured-recall">
+            <a class="home-featured-image" href={featuredRecall.detailPath} aria-label={`View recall for ${featuredRecall.title}`}>
+              {featuredRecall.primaryImageUrl ? (
+                <img
+                  src={featuredRecall.primaryImageUrl}
+                  alt={featuredRecall.primaryImageAlt || featuredRecall.title}
+                  loading="lazy"
+                />
+              ) : (
+                <span class="image-placeholder">{featuredRecall.source === 'FDA' ? 'FDA food notice' : 'Recall notice'}</span>
+              )}
+            </a>
+            <div class="home-featured-copy">
+              <div class="home-card-meta">
+                <span>{featuredRecall.sourceLabel}</span>
+                <span>{featuredRecall.recallDate}</span>
+              </div>
+              <h2><a href={featuredRecall.detailPath}>{featuredRecall.title}</a></h2>
+              <p>{featuredRecall.hazard || featuredRecall.reason || 'Hazard/reason not listed in local data'}</p>
+              <a class="btn btn-primary" href={featuredRecall.detailPath}>View recall</a>
+            </div>
+          </article>
+        </section>
+      ) : null}
+
+      <section class="section home-latest-section">
         <div class="section-header">
           <div>
             <h2>Recently recalled products</h2>
@@ -105,8 +136,8 @@ const productTypes = [
         </div>
         <div class="product-grid">
           {latestRecalls.map((recall) => (
-            <article class="product-card">
-              <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
+            <article class="home-recall-card product-card">
+              <a class="home-card-image image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
                 {recall.primaryImageUrl ? (
                   <img src={recall.primaryImageUrl} alt={recall.primaryImageAlt || recall.title} loading="lazy" />
                 ) : (
@@ -114,9 +145,9 @@ const productTypes = [
                 )}
               </a>
               <div class="card-body">
-                <div class="meta-row">
-                  <span class="badge-source">{recall.sourceLabel}</span>
-                  <span class="badge-date">{recall.recallDate}</span>
+                <div class="home-card-meta">
+                  <span>{recall.sourceLabel}</span>
+                  <span>{recall.recallDate}</span>
                 </div>
                 <h3><a href={recall.detailPath}>{recall.title}</a></h3>
                 <p>{recall.hazard || recall.reason || 'Hazard/reason not listed in local data'}</p>
@@ -127,7 +158,7 @@ const productTypes = [
         </div>
       </section>
 
-      <section class="section">
+      <section class="section home-category-section">
         <div class="section-header">
           <div>
             <h2>Browse recalls by product type</h2>
@@ -147,8 +178,8 @@ const productTypes = [
         </div>
       </section>
 
-      <section class="section">
-        <div class="signup-panel compact-cta">
+      <section class="section home-watchlist-section">
+        <div class="signup-panel compact-cta home-watchlist-cta">
           <div>
             <h2>Monitor saved searches in this browser</h2>
             <p>Local demo only &mdash; no email is sent.</p>
