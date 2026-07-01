@@ -23,27 +23,31 @@ const countLine = `${processedLocalRecordCount} local records - ${processedCpscR
 const productTypes = [
   {
     label: 'Baby & Kids',
+    icon: 'baby',
     href: '/baby-product-recalls',
     count: babyCount,
-    description: 'Cribs, sleepers, toys, and nursery gear.'
+    description: 'Nursery gear and kids products.'
   },
   {
     label: 'Batteries & Electronics',
+    icon: 'battery',
     href: '/battery-recalls',
     count: batteryCount,
-    description: 'Power banks, chargers, batteries, and devices.'
+    description: 'Devices, batteries, and chargers.'
   },
   {
     label: 'Food & Allergy',
+    icon: 'food',
     href: '/food-allergy-recalls',
     count: foodCount,
-    description: 'Food recalls, allergens, UPCs, and lot codes.'
+    description: 'Foods, allergens, UPCs, and lots.'
   },
   {
     label: 'Household Products',
+    icon: 'household',
     href: '/checker?category=household-appliance',
     count: householdCount,
-    description: 'Appliances, furniture, fixtures, and home products.'
+    description: 'Appliances and home products.'
   }
 ];
 ---
@@ -97,6 +101,58 @@ const productTypes = [
             <a href="/checker?q=pistachio&source=FDA">pistachio</a>
             <a href="/checker?q=smoke%20detector&source=CPSC">smoke detector</a>
           </div>
+        </div>
+      </section>
+
+      <section class="section home-category-section">
+        <div class="section-header">
+          <div>
+            <h2>Browse recalls by product type</h2>
+          </div>
+        </div>
+        <div class="category-grid">
+          {productTypes.map((type) => (
+            <a class="category-card home-product-type-card" href={type.href}>
+              <span class="category-icon" aria-hidden="true">
+                {type.icon === 'baby' ? (
+                  <svg viewBox="0 0 48 48" role="img">
+                    <path d="M16 18h16" />
+                    <path d="M18 18l-2 14h16l-2-14" />
+                    <path d="M20 32v6" />
+                    <path d="M28 32v6" />
+                    <circle cx="18" cy="14" r="4" />
+                    <circle cx="30" cy="14" r="4" />
+                  </svg>
+                ) : type.icon === 'battery' ? (
+                  <svg viewBox="0 0 48 48" role="img">
+                    <rect x="9" y="17" width="26" height="16" rx="3" />
+                    <path d="M35 22h4v6h-4" />
+                    <path d="M23 19l-5 8h6l-3 7 8-10h-6l3-5z" />
+                  </svg>
+                ) : type.icon === 'food' ? (
+                  <svg viewBox="0 0 48 48" role="img">
+                    <path d="M15 18c5-8 14-8 18 0" />
+                    <path d="M12 22h24l-3 15H15z" />
+                    <path d="M20 12c3 1 5 3 6 6" />
+                    <path d="M29 11c-3 1-5 3-6 7" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 48 48" role="img">
+                    <path d="M10 24l14-12 14 12" />
+                    <path d="M14 22v15h20V22" />
+                    <path d="M20 37V27h8v10" />
+                    <path d="M31 16v-4h4v8" />
+                  </svg>
+                )}
+              </span>
+              <span class="category-card-body">
+                <h3>{type.label}</h3>
+                <p>{type.description}</p>
+                <span class="category-count">{type.count} local record{type.count === 1 ? '' : 's'}</span>
+                <span class="btn btn-link">Browse recalls</span>
+              </span>
+            </a>
+          ))}
         </div>
       </section>
 
@@ -154,26 +210,6 @@ const productTypes = [
                 <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
               </div>
             </article>
-          ))}
-        </div>
-      </section>
-
-      <section class="section home-category-section">
-        <div class="section-header">
-          <div>
-            <h2>Browse recalls by product type</h2>
-          </div>
-        </div>
-        <div class="category-grid">
-          {productTypes.map((type) => (
-            <a class="category-card" href={type.href}>
-              <span class="category-card-body">
-                <h3>{type.label}</h3>
-                <p>{type.description}</p>
-                <span class="category-count">{type.count} local record{type.count === 1 ? '' : 's'}</span>
-                <span class="btn btn-link">Browse recalls</span>
-              </span>
-            </a>
           ))}
         </div>
       </section>
