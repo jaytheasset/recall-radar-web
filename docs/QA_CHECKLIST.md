@@ -20,7 +20,7 @@
 
 Do not run fetch scripts during local UI-only phases unless the task explicitly asks for fresh local data.
 
-USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt returned HTTP `403 Forbidden` / `Access Denied`, so USDA integration is deferred and no USDA fetch script is active. See `docs/USDA_FSIS_DEFERRED.md`.
+USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt returned HTTP `403 Forbidden` / `Access Denied`, likely from FSIS-side access control, CDN/WAF filtering, User-Agent/header filtering, IP/range filtering, or temporary endpoint restrictions. No USDA data was written, no bypass should be attempted, and no USDA fetch script is active. See `docs/USDA_FSIS_DEFERRED.md`.
 
 ## CPSC Data Pipeline
 
@@ -61,6 +61,9 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm category pages show a matching local record count.
 - Confirm `/food-allergy-recalls` shows FDA/openFDA food records before CPSC food/allergy records when FDA records exist.
 - Confirm core pages remain readable at narrow mobile widths and long titles/labels wrap instead of overflowing.
+- Confirm recall detail pages show company recall history and related recall sections.
+- Confirm recall detail pages use small source attribution links instead of large official source CTAs.
+- Confirm recall detail pages show conservative what-to-check items without invented model, UPC, lot, or date-code values.
 
 ## Brand Pages
 

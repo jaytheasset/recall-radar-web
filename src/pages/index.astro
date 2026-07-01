@@ -127,7 +127,7 @@ const productTypes = [
                   <span class="badge-date">{recall.recallDate}</span>
                 </div>
                 <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-                <p>{recall.hazard || recall.reason || recall.description}</p>
+                <p>{recall.hazard || recall.reason || 'Hazard/reason not listed in local data'}</p>
                 <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
               </div>
             </article>

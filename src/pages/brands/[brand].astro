@@ -47,7 +47,7 @@ const description = `Local recalls linked to ${brand}, with related products, so
           <span class="badge-date">{recalls.length} record{recalls.length === 1 ? '' : 's'}</span>
         </div>
         <h1>Recalls linked to {brand}</h1>
-        <p class="lead">Local recall records that list {brand} or related source company names.</p>
+        <p class="lead">Showing local recalls linked to this normalized brand/company name.</p>
         <div class="link-row data-source-row">
           <button class="btn btn-primary" id="save-brand-watchlist" type="button" data-brand={brand} data-brand-slug={slug}>
             Monitor this brand locally
@@ -72,8 +72,9 @@ const description = `Local recalls linked to ${brand}, with related products, so
       <section class="section">
         <div class="section-header">
           <div>
-            <p class="eyebrow">Related recalls</p>
-            <h2>Products linked to this brand</h2>
+            <p class="eyebrow">Company recall history</p>
+            <h2>Products linked to this brand/company</h2>
+            <p class="section-note">Cards are based on local records connected to this normalized brand/company page.</p>
           </div>
         </div>
         <div class="product-grid">
@@ -92,8 +93,7 @@ const description = `Local recalls linked to ${brand}, with related products, so
                   <span class="badge-date">{recall.recallDate}</span>
                 </div>
                 <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-                <p>Product: {recall.primaryProductName}</p>
-                <p>Hazard/reason: {recall.hazard || recall.reason || 'Not listed in local data'}</p>
+                <p>{recall.hazard || recall.reason || 'Hazard/reason not listed in local data'}</p>
                 <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
               </div>
             </article>

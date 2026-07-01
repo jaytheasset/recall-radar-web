@@ -44,7 +44,7 @@ Site-facing records include:
 
 Phase 2 added a local-only CPSC recall data pipeline. Phase 3 connects the processed CPSC file to the website. Phase 5 adds local FDA/openFDA food recall records and makes `data/processed/recalls.json` the merged canonical local source.
 
-USDA FSIS integration is deferred. A local Phase 6 attempt against the official USDA FSIS recall endpoint returned HTTP `403 Forbidden` / `Access Denied`; no USDA data was written. See `docs/USDA_FSIS_DEFERRED.md`.
+USDA FSIS integration is deferred. A local Phase 6 attempt against the official USDA FSIS recall endpoint returned HTTP `403 Forbidden` / `Access Denied`; no USDA data was written and no bypass should be attempted. The likely cause is FSIS-side access control, CDN/WAF filtering, User-Agent/header filtering, IP/range filtering, or temporary endpoint restrictions. See `docs/USDA_FSIS_DEFERRED.md`.
 
 Commands:
 
@@ -132,6 +132,14 @@ Phase 7 added local-only search controls on `/checker`:
 - URL query state such as `/checker?q=arizer`, `/checker?q=pistachio&source=FDA`, and `/checker?q=smoke&source=CPSC`
 
 The checker remains static and local-only. It embeds the local processed recall records at build time and does not add a server, API route, database, or external data call.
+
+## Recall Detail Pages
+
+Recall detail pages use structured local summaries instead of long official text blocks. Each detail page shows product, brand/company, hazard, remedy, affected units, a conservative what-to-check checklist, company recall history, related recalls, and a smaller official source attribution link.
+
+`src/lib/recall-checklist.ts` derives checklist items from available local fields such as product names, brand/company names, recall numbers, affected units, and identifier-like text already present in the local record. It does not invent model, UPC, lot, or date-code values.
+
+`src/lib/related-recalls.ts` builds company recall history from conservative normalized brand/company matching and related recalls from category, hazard keywords, product terms, and source tie-breakers. It avoids matching only on legal suffixes, generic company words, or location-only overlap.
 
 ## Local Watchlist Demo
 

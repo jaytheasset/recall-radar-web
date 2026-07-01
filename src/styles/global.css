@@ -776,8 +776,15 @@ button:disabled {
   text-transform: uppercase;
 }
 
-.official-source-link {
+.source-attribution {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.source-link {
   width: fit-content;
+  font-size: 0.92rem;
+  font-weight: 850;
 }
 
 .source-name-list,

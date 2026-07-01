@@ -70,9 +70,7 @@ const cpscRelevantRecalls = recalls.filter((recall) => recall.source === 'CPSC')
                     <span class="badge-date">{recall.recallDate}</span>
                   </div>
                   <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-                  <p>Product: {recall.primaryProductName}</p>
-                  <p>Brand/company: {recall.primaryBrand}</p>
-                  <p>Hazard/reason: {recall.hazard || recall.reason || 'Not listed in local data'}</p>
+                  <p>{recall.hazard || recall.reason || 'Hazard/reason not listed in local data'}</p>
                   <div class="link-row">
                     {recall.primaryBrandSlug ? (
                       <a class="btn btn-ghost" href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} page</a>
@@ -115,9 +113,7 @@ const cpscRelevantRecalls = recalls.filter((recall) => recall.source === 'CPSC')
                     <span class="badge-date">{recall.recallDate}</span>
                   </div>
                   <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-                  <p>Product: {recall.primaryProductName}</p>
-                  <p>Brand/company: {recall.primaryBrand}</p>
-                  <p>Hazard/reason: {recall.hazard || recall.reason || 'Not listed in local data'}</p>
+                  <p>{recall.hazard || recall.reason || 'Hazard/reason not listed in local data'}</p>
                   <div class="link-row">
                     {recall.primaryBrandSlug ? (
                       <a class="btn btn-ghost" href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} page</a>

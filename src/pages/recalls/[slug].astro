@@ -1,5 +1,7 @@
 ---
-import { siteRecalls } from '../../lib/recall-data';
+import { categoryRoutes, siteRecalls } from '../../lib/recall-data';
+import { getWhatToCheckItems } from '../../lib/recall-checklist';
+import { getCompanyRecallHistory, getRelatedRecalls } from '../../lib/related-recalls';
 import { NO_MATCH_DISCLAIMER } from '../../lib/recall-search';
 import '../../styles/global.css';
 
@@ -12,19 +14,20 @@ export function getStaticPaths() {
 
 const { recall } = Astro.props;
 const title = `${recall.title} | Recall Radar`;
-const description = `${recall.title} local recall record with source, product, brand, hazard, remedy, affected units, and official notice link.`;
-const sourceLinkLabel = recall.source === 'FDA' ? 'Official FDA/openFDA reference' : 'Official CPSC notice';
-const sourceLinkText = recall.source === 'FDA' ? 'Open official FDA/openFDA reference' : 'Open official CPSC notice';
+const description = `${recall.title} local recall record with product, brand, hazard, remedy, company recall history, related recalls, and official source attribution.`;
+const sourceLinkText = recall.source === 'FDA' ? 'Source: FDA/openFDA record' : 'Source: CPSC recall notice';
 const displayBrandNames = recall.displayBrandNames.length ? recall.displayBrandNames : [recall.primaryBrand];
 const sourceBrandNames = recall.brandNames.filter(
   (rawName: string) => !displayBrandNames.some((displayName: string) => displayName.toLowerCase() === rawName.toLowerCase())
 );
 const galleryImages = recall.images.length ? recall.images : [];
-const whatToCheckItems = [
-  'Compare the product name, model, UPC, lot code, and brand or company names against the official notice.',
-  'Review the hazard and remedy fields before using, selling, donating, repairing, or disposing of the product.',
-  'Use the official agency notice and manufacturer or recalling firm instructions for the most authoritative next steps.'
-];
+const whatToCheckItems = getWhatToCheckItems(recall);
+const companyRecallHistory = getCompanyRecallHistory(recall, siteRecalls, 4);
+const companyHistoryIds = new Set(companyRecallHistory.map((historyRecall) => historyRecall.id));
+const relatedRecalls = getRelatedRecalls(recall, siteRecalls, 4, companyHistoryIds);
+const categoryRoute = categoryRoutes.find((route) => route.category === recall.category);
+const categoryFallbackPath = categoryRoute?.href ?? `/checker?category=${recall.category}`;
+const pageIntro = `Local ${recall.source === 'FDA' ? 'FDA/openFDA' : 'CPSC'} recall record for ${recall.primaryProductName} from ${displayBrandNames.join(', ')}. Review the structured fields below and verify details with the official source.`;
 ---
 
 <html lang="en">
@@ -56,7 +59,7 @@ const whatToCheckItems = [
           <span class="tag">{recall.categoryLabel}</span>
         </div>
         <h1>{recall.title}</h1>
-        <p class="lead">{recall.description}</p>
+        <p class="lead">{pageIntro}</p>
       </section>
 
       <section class="section detail-grid">
@@ -107,9 +110,14 @@ const whatToCheckItems = [
               <span>{recall.id}</span>
             </div>
             <div class="fact">
-              <strong>{sourceLinkLabel}</strong>
+              <strong>Official source</strong>
               {recall.sourceUrl ? (
-                <a class="btn btn-primary official-source-link" href={recall.sourceUrl}>{sourceLinkText}</a>
+                <span class="source-attribution">
+                  <span>{recall.sourceLabel}</span>
+                  <a class="source-link" href={recall.sourceUrl} target="_blank" rel="noopener noreferrer">
+                    {sourceLinkText}
+                  </a>
+                </span>
               ) : (
                 <span>Not listed</span>
               )}
@@ -170,6 +178,91 @@ const whatToCheckItems = [
           </ul>
           <p class="disclaimer-copy">{NO_MATCH_DISCLAIMER}</p>
         </article>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Company recall history</p>
+            <h2>Other local recalls linked to this brand/company</h2>
+            <p class="section-note">Matched conservatively by normalized brand/company name and raw source names.</p>
+          </div>
+        </div>
+        {companyRecallHistory.length ? (
+          <div class="product-grid">
+            {companyRecallHistory.map((historyRecall) => (
+              <article class="product-card">
+                <a class="image-shell" href={historyRecall.detailPath} aria-label={`View recall for ${historyRecall.title}`}>
+                  {historyRecall.primaryImageUrl ? (
+                    <img
+                      src={historyRecall.primaryImageUrl}
+                      alt={historyRecall.primaryImageAlt || historyRecall.title}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span class="image-placeholder">{historyRecall.source === 'FDA' ? 'FDA food notice' : 'Recall notice'}</span>
+                  )}
+                </a>
+                <div class="card-body">
+                  <div class="meta-row">
+                    <span class="badge-source">{historyRecall.sourceLabel}</span>
+                    <span class="badge-date">{historyRecall.recallDate}</span>
+                  </div>
+                  <h3><a href={historyRecall.detailPath}>{historyRecall.title}</a></h3>
+                  <p>{historyRecall.hazard || historyRecall.reason || 'Hazard/reason not listed in local data'}</p>
+                  <a class="btn btn-primary" href={historyRecall.detailPath}>View recall</a>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="notice-panel">
+            <p>No other local recalls linked to this brand/company in the current dataset.</p>
+          </div>
+        )}
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Related recalls</p>
+            <h2>Similar local recall records</h2>
+            <p class="section-note">Matched by category, hazard keywords, product terms, and source as a tie-breaker.</p>
+          </div>
+        </div>
+        {relatedRecalls.length ? (
+          <div class="product-grid">
+            {relatedRecalls.map((relatedRecall) => (
+              <article class="product-card">
+                <a class="image-shell" href={relatedRecall.detailPath} aria-label={`View recall for ${relatedRecall.title}`}>
+                  {relatedRecall.primaryImageUrl ? (
+                    <img
+                      src={relatedRecall.primaryImageUrl}
+                      alt={relatedRecall.primaryImageAlt || relatedRecall.title}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span class="image-placeholder">{relatedRecall.source === 'FDA' ? 'FDA food notice' : 'Recall notice'}</span>
+                  )}
+                </a>
+                <div class="card-body">
+                  <div class="meta-row">
+                    <span class="badge-source">{relatedRecall.sourceLabel}</span>
+                    <span class="badge-date">{relatedRecall.recallDate}</span>
+                  </div>
+                  <h3><a href={relatedRecall.detailPath}>{relatedRecall.title}</a></h3>
+                  <p>{relatedRecall.hazard || relatedRecall.reason || 'Hazard/reason not listed in local data'}</p>
+                  <a class="btn btn-primary" href={relatedRecall.detailPath}>View recall</a>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="notice-panel">
+            <p>No strong related local recalls were found for this record.</p>
+            <a class="btn btn-secondary" href={categoryFallbackPath}>Browse {recall.categoryLabel} recalls</a>
+          </div>
+        )}
       </section>
 
       <section class="section">
