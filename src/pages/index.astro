@@ -4,8 +4,7 @@ import {
   processedCpscRecordCount,
   processedFdaRecordCount,
   processedLocalRecordCount,
-  siteRecalls,
-  usingProcessedLocalData
+  siteRecalls
 } from '../lib/recall-data';
 import '../styles/global.css';
 
@@ -17,6 +16,7 @@ const babyCount = getRecallsByCategory('baby-kids').length;
 const batteryCount = getRecallsByCategory('battery-electronics').length;
 const foodCount = getRecallsByCategory('food-allergy').length;
 const householdCount = getRecallsByCategory('household-appliance').length;
+const countLine = `${processedLocalRecordCount} local records · ${processedCpscRecordCount} CPSC · ${processedFdaRecordCount} FDA/openFDA`;
 const productTypes = [
   {
     label: 'Baby & Kids',
@@ -65,26 +65,18 @@ const productTypes = [
       </nav>
     </header>
 
-    <main class="page-shell">
-      <section class="hero">
+    <main class="page-shell home-page">
+      <section class="hero home-hero">
         <div class="hero-copy">
-          <p class="eyebrow">Local recall board</p>
           <h1>Check recalled products before they stay in your home</h1>
           <p class="lead">
             Search local CPSC and FDA/openFDA recall records by product, brand, model, UPC, lot code, or keyword.
           </p>
-          <div class="trust-row" aria-label="Local recall data coverage">
-            <span>
-              {usingProcessedLocalData ? `${processedLocalRecordCount} local records` : 'Demo fallback records'}
-            </span>
-            <span>{processedCpscRecordCount} CPSC</span>
-            <span>{processedFdaRecordCount} FDA/openFDA</span>
-          </div>
+          <p class="data-count-line">{countLine}</p>
         </div>
 
-        <aside class="hero-search-card detail-card" aria-labelledby="hero-search-title">
+        <aside class="hero-search-card home-search-card detail-card" aria-labelledby="hero-search-title">
           <div>
-            <p class="eyebrow">Product Recall Checker</p>
             <h2 id="hero-search-title">Search the local recall file</h2>
           </div>
           <form class="hero-search" action="/checker" method="get">
@@ -159,7 +151,7 @@ const productTypes = [
         <div class="signup-panel compact-cta">
           <div>
             <h2>Monitor saved searches in this browser</h2>
-            <p>Local demo only - no email is sent.</p>
+            <p>Local demo only &mdash; no email is sent.</p>
           </div>
           <div class="link-row">
             <a class="btn btn-primary" href="/watchlist">Open watchlist</a>
