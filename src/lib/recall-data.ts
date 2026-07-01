@@ -112,6 +112,18 @@ function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
   );
 
   if (record.source === 'FR_RAPPELCONSO') {
+    const rawCategory = normalize(record.category);
+
+    // RappelConso vehicle notices often mention electric systems, fuel, or collision risk.
+    // Until Recall Radar has a vehicle category, keep them out of food, baby, and electronics groups.
+    if (rawCategory.includes('automobiles') || rawCategory.includes('moyens de deplacement')) {
+      return 'general-consumer-product';
+    }
+
+    if (rawCategory.includes('appareils electriques')) {
+      return 'household-appliance';
+    }
+
     if (textHasAny(text, ['alimentation', 'allergene', 'lait', 'arachide', 'noisette', 'sesame'])) {
       return 'food-allergy';
     }
@@ -126,16 +138,24 @@ function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
         'batteries',
         'chargeur',
         'chargeurs',
-        'electrique',
-        'electronique',
-        'appareils electriques',
-        'outils'
+        'electronique'
       ])
     ) {
       return 'battery-electronics';
     }
 
-    if (textHasAny(text, ['maison', 'habitat', 'electromenager', 'meuble', 'chauffage'])) {
+    if (
+      textHasAny(text, [
+        'appareils electriques',
+        'cuiseur',
+        'vapeur',
+        'maison',
+        'habitat',
+        'electromenager',
+        'meuble',
+        'chauffage'
+      ])
+    ) {
       return 'household-appliance';
     }
 

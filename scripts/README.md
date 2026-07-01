@@ -106,4 +106,10 @@ To rebuild RappelConso processed data from the saved raw file:
 npm run normalize:rappelconso
 ```
 
+To audit the current local RappelConso processed data without making network calls:
+
+```powershell
+npm run audit:rappelconso
+```
+
 The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, and France RappelConso records.

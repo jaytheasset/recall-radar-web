@@ -93,6 +93,66 @@ RappelConso fields are mapped into the existing `NormalizedRecall` shape:
 - Category mapping is conservative and may classify some French product types as general consumer products until expanded.
 - The current script fetches a limited recent slice by default to avoid silently generating thousands of static pages.
 
+## Phase 7.1 QA
+
+Audit command:
+
+```powershell
+npm run audit:rappelconso
+```
+
+Audit method:
+
+- Reads `data/processed/rappelconso-recalls.json`.
+- Checks only local processed data; it does not call RappelConso or any external API.
+- Reports missing fields, duplicate ids, slug collisions, category distribution, identifier availability, image availability, distribution details, official notice URL shape, long titles, and suspicious category mappings.
+
+Current QA result:
+
+- Source id: `FR_RAPPELCONSO`
+- RappelConso records: 100
+- Duplicate ids: 0
+- Slug collisions: 0
+- Missing source URLs: 0
+- Missing titles: 0
+- Missing recall dates: 0
+- Missing product names: 0
+- Missing brand names: 0
+- Missing hazard/reason: 0
+- Missing remedy/action: 40
+- Records with images: 61
+- Records with GTIN/barcode-like values: 37
+- Records with lot/batch/code/date-like values: 52
+- Records with distribution details: 60
+- Records with official RappelConso notice URL shape: 100
+
+Raw RappelConso category distribution:
+
+- alimentation: 49
+- automobiles et moyens de déplacement: 42
+- bébés-enfants (hors alimentaire): 3
+- autres: 2
+- hygiène-beauté: 1
+- sports-loisirs: 1
+- vêtements, mode, epi: 1
+- appareils électriques, outils: 1
+
+Site category distribution after conservative mapping:
+
+- food-allergy: 49
+- general-consumer-product: 45
+- baby-kids: 5
+- household-appliance: 1
+- battery-electronics: 0
+
+Phase 7.1 fixes:
+
+- Added `scripts/audit-rappelconso.ts` and `npm run audit:rappelconso`.
+- Hardened French category mapping so automobile notices remain `general-consumer-product` until Recall Radar has a vehicle-specific category.
+- Hardened appliance mapping so `appareils électriques, outils` records are not pulled into food/allergy just because a product name contains food-related words.
+- Kept baby/kids mapping only for records with clear child, baby, toy, or childcare language.
+- Updated the audit URL check to accept both RappelConso `/interne` and `/rapex` official notice paths.
+
 ## Deferred
 
 - Full RappelConso backfill.

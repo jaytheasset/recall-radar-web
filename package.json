@@ -10,6 +10,7 @@
     "fetch:cpsc": "node --experimental-strip-types scripts/fetch-cpsc.ts",
     "fetch:fda-food": "node --experimental-strip-types scripts/fetch-fda-food.ts",
     "fetch:rappelconso": "node --experimental-strip-types scripts/fetch-rappelconso.ts",
+    "audit:rappelconso": "node --experimental-strip-types scripts/audit-rappelconso.ts",
     "normalize:cpsc": "node --experimental-strip-types scripts/normalize-cpsc.ts",
     "normalize:fda-food": "node --experimental-strip-types scripts/normalize-fda-food.ts",
     "normalize:rappelconso": "node --experimental-strip-types scripts/normalize-rappelconso.ts",
