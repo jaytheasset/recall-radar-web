@@ -8,15 +8,15 @@ import {
 } from '../lib/recall-data';
 import '../styles/global.css';
 
-const title = 'Recall Radar | Local product recall checker';
+const title = 'Recall Radar | Global product recall search';
 const description =
-  'Recall Radar helps consumers search local CPSC and FDA/openFDA recall records by product, brand, model, UPC, lot code, or keyword.';
+  'Recall Radar helps consumers search product recalls by brand, product name, model number, UPC/barcode, lot code, ingredient, or keyword.';
 const latestRecalls = siteRecalls.slice(0, 6);
 const babyCount = getRecallsByCategory('baby-kids').length;
 const batteryCount = getRecallsByCategory('battery-electronics').length;
 const foodCount = getRecallsByCategory('food-allergy').length;
 const householdCount = getRecallsByCategory('household-appliance').length;
-const countLine = `${processedLocalRecordCount} local records · ${processedCpscRecordCount} CPSC · ${processedFdaRecordCount} FDA/openFDA`;
+const countLine = `${processedLocalRecordCount} indexed recall notices · ${processedCpscRecordCount} consumer product notices · ${processedFdaRecordCount} food enforcement notices`;
 const productTypes = [
   {
     label: 'Baby & Kids',
@@ -72,20 +72,20 @@ const productTypes = [
     <main class="page-shell home-page">
       <section class="home-hero">
         <div class="home-hero-copy">
-          <h1>Find recalled products fast</h1>
+          <h1>Check product recalls, wherever you bought it.</h1>
           <p class="lead">
-            Search local CPSC and FDA/openFDA recall records by product, brand, model, UPC, lot code, or keyword.
+            Search product recalls by brand, product name, model number, UPC/barcode, lot code, ingredient, or keyword.
           </p>
         </div>
 
-        <div class="home-search-panel" aria-label="Search local recall records">
+        <div class="home-search-panel" aria-label="Search product recall notices">
           <form class="home-search-module" action="/checker" method="get">
-            <label class="sr-only" for="home-recall-search">Product, brand, model, UPC, lot, or recall number</label>
+            <label class="sr-only" for="home-recall-search">Brand, product, model, UPC, lot code, ingredient, or keyword</label>
             <input
               id="home-recall-search"
               name="q"
               type="search"
-              placeholder="Search baby sleeper, power bank, pistachio, smoke detector..."
+              placeholder="Search brand, product, model, UPC, lot code, ingredient, or keyword"
             />
             <button class="btn btn-primary" type="submit">Check recalls</button>
           </form>
@@ -144,7 +144,7 @@ const productTypes = [
               <span class="category-card-body">
                 <h3>{type.label}</h3>
                 <p>{type.description}</p>
-                <span class="category-count">{type.count} local record{type.count === 1 ? '' : 's'}</span>
+                <span class="category-count">{type.count} indexed notice{type.count === 1 ? '' : 's'}</span>
                 <span class="btn btn-link">Browse recalls</span>
               </span>
             </a>
@@ -157,7 +157,7 @@ const productTypes = [
           <div>
             <h2>Recently recalled products</h2>
           </div>
-          <a class="btn btn-secondary" href="/checker">Search all records</a>
+          <a class="btn btn-secondary" href="/checker">Search all notices</a>
         </div>
         <div class="product-grid">
           {latestRecalls.map((recall) => (
@@ -175,7 +175,7 @@ const productTypes = [
                   <span>{recall.recallDate}</span>
                 </div>
                 <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-                <span class="home-card-hazard">{recall.hazard || recall.reason || 'Hazard/reason not listed in local data'}</span>
+                <span class="home-card-hazard">{recall.hazard || recall.reason || 'Hazard or reason not listed in the indexed notice.'}</span>
                 <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
               </div>
             </article>
@@ -187,7 +187,7 @@ const productTypes = [
         <div class="signup-panel compact-cta home-watchlist-cta">
           <div>
             <h2>Monitor saved searches in this browser</h2>
-            <p>Local demo only &mdash; no email is sent.</p>
+            <p>Saved searches stay on this device. No account or email alerts are enabled yet.</p>
           </div>
           <div class="link-row">
             <a class="btn btn-primary" href="/watchlist">Open watchlist</a>
@@ -198,7 +198,7 @@ const productTypes = [
     </main>
 
     <footer class="page-footer">
-      Recall Radar uses local CPSC and FDA/openFDA processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
+      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
     </footer>
   </body>
 </html>

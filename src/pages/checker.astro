@@ -13,7 +13,7 @@ import '../styles/global.css';
 
 const title = 'Product Recall Checker | Recall Radar';
 const description =
-  'Search local CPSC and FDA/openFDA recall records by keyword, product, brand, model, UPC, lot, or recall number.';
+  'Search product recalls by keyword, product, brand, model number, UPC/barcode, lot code, ingredient, allergen, or official source.';
 const featuredBrands = brandGroups.slice(0, 18);
 const checkerRecalls = siteRecalls.map((recall) => ({
   id: recall.id,
@@ -49,12 +49,12 @@ const checkerRecalls = siteRecalls.map((recall) => ({
 }));
 const checkerRecallsJson = JSON.stringify(checkerRecalls);
 const sourceOptions = [
-  { value: 'all', label: 'All sources' },
-  { value: 'CPSC', label: 'CPSC' },
-  { value: 'FDA', label: 'FDA/openFDA' }
+  { value: 'all', label: 'All markets' },
+  { value: 'CPSC', label: 'United States · CPSC' },
+  { value: 'FDA', label: 'United States · FDA / openFDA' }
 ];
 const categoryOptions = [
-  { value: 'all', label: 'All categories' },
+  { value: 'all', label: 'All product types' },
   { value: 'baby-kids', label: 'Baby and kids' },
   { value: 'battery-electronics', label: 'Battery and electronics' },
   { value: 'food-allergy', label: 'Food and allergy' },
@@ -96,18 +96,18 @@ const dateOptions = [
 
     <main class="page-shell">
       <section class="section">
-        <p class="eyebrow">Product Recall Checker</p>
-        <h1>Search products, brands, model numbers, UPCs, and lot codes</h1>
-        <p class="lead">Results are generated locally from processed CPSC and FDA/openFDA recall records.</p>
+        <p class="eyebrow">Product recall search</p>
+        <h1>Search product recalls</h1>
+        <p class="lead">Enter a product, brand, model number, UPC/barcode, lot code, ingredient, allergen, or keyword.</p>
         <div class="meta-row data-source-row">
           <span class="status-pill">{dataSourceLabel}</span>
           <span class="tag">
-            {usingProcessedLocalData ? `${processedLocalRecordCount} local records` : 'Demo fallback records'}
+            {usingProcessedLocalData ? `${processedLocalRecordCount} indexed notices` : 'Sample notices'}
           </span>
           {usingProcessedLocalData ? (
             <>
-              <span class="tag">{processedCpscRecordCount} CPSC</span>
-              <span class="tag">{processedFdaRecordCount} FDA/openFDA</span>
+              <span class="tag">{processedCpscRecordCount} consumer product notices</span>
+              <span class="tag">{processedFdaRecordCount} food enforcement notices</span>
             </>
           ) : null}
         </div>
@@ -115,10 +115,10 @@ const dateOptions = [
         <section class="search-board" aria-labelledby="checker-form-title">
           <div class="section-header">
             <div>
-              <p class="eyebrow">Local search</p>
-              <h2 id="checker-form-title">Check local recall records</h2>
+              <p class="eyebrow">Search</p>
+              <h2 id="checker-form-title">Check a product, brand, code, or ingredient</h2>
             </div>
-            <span class="badge-source">Source-backed records</span>
+            <span class="badge-source">Official-source notices</span>
           </div>
           <form id="recall-search-form" class="search-form checker-search-form">
             <label class="search-query-field">
@@ -127,21 +127,21 @@ const dateOptions = [
                 id="recall-query"
                 name="q"
                 type="search"
-                placeholder="Brand, product, model, UPC, lot, or recall number"
+                placeholder="Search product, brand, model, UPC, lot code, ingredient, or keyword"
                 autocomplete="off"
               />
             </label>
             <button class="btn btn-primary" type="submit">Check recalls</button>
-            <button id="save-search-watchlist" class="btn btn-secondary" type="button">Monitor this search</button>
-            <div class="filter-grid" aria-label="Local recall search filters">
+            <button id="save-search-watchlist" class="btn btn-secondary" type="button">Save this search</button>
+            <div class="filter-grid" aria-label="Recall search filters">
               <label>
-                Source
+                Market / source
                 <select id="source-filter" name="source">
                   {sourceOptions.map((option) => <option value={option.value}>{option.label}</option>)}
                 </select>
               </label>
               <label>
-                Category
+                Product type
                 <select id="category-filter" name="category">
                   {categoryOptions.map((option) => <option value={option.value}>{option.label}</option>)}
                 </select>
@@ -153,7 +153,7 @@ const dateOptions = [
                 </select>
               </label>
               <label>
-                Date
+                Notice date
                 <select id="date-filter" name="date">
                   {dateOptions.map((option) => <option value={option.value}>{option.label}</option>)}
                 </select>
@@ -173,9 +173,9 @@ const dateOptions = [
           </p>
           <div id="search-results" class="notice-panel result-panel" hidden>
             <div class="meta-row">
-              <span id="result-match" class="status-pill">No local match</span>
+              <span id="result-match" class="status-pill">No clear match</span>
               <span id="result-count" class="tag">0 recalls</span>
-              <span id="result-filter-summary" class="tag">All local data</span>
+              <span id="result-filter-summary" class="tag">All markets</span>
             </div>
             <p id="result-summary"></p>
             <p id="result-disclaimer"></p>
@@ -212,7 +212,7 @@ const dateOptions = [
     </main>
 
     <footer class="page-footer">
-      Recall Radar uses local CPSC and FDA/openFDA processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
+      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
     </footer>
 
     <script id="recall-search-data" type="application/json" is:inline set:html={checkerRecallsJson}></script>
@@ -273,9 +273,9 @@ const dateOptions = [
       const sortValues: SortFilter[] = ['best', 'newest', 'oldest'];
       const dateValues: DateFilter[] = ['all', '30', '90'];
       const groupTitles = {
-        exact: 'Matching recalls',
+        exact: 'Strong matches',
         possible: 'Possible matches',
-        related: 'Related recalls'
+        related: 'Related notices'
       };
 
       function isOneOf<T extends string>(value: string | null, values: readonly T[], fallback: T): T {
@@ -427,7 +427,7 @@ const dateOptions = [
         hazard.textContent =
           recall.hazard || recall.reason
             ? `Hazard/reason: ${recall.hazard || recall.reason}`
-            : 'Hazard/reason: Not listed in local data.';
+            : 'Hazard or reason not listed in the indexed notice.';
 
         const links = document.createElement('div');
         links.className = 'link-row';
@@ -480,9 +480,13 @@ const dateOptions = [
 
       function describeFilters(state: SearchState): string {
         const parts = [
-          state.source === 'all' ? 'All sources' : state.source === 'FDA' ? 'FDA/openFDA' : 'CPSC',
+          state.source === 'all'
+            ? 'All markets'
+            : state.source === 'FDA'
+              ? 'United States · FDA / openFDA'
+              : 'United States · CPSC',
           state.category === 'all'
-            ? 'all categories'
+            ? 'all product types'
             : state.category === 'general'
               ? 'general'
               : state.category.replace(/-/g, ' '),
@@ -505,12 +509,12 @@ const dateOptions = [
 
         if (!state.query) {
           panel.dataset.match = 'none';
-          matchLabel.textContent = 'Local records';
-          countLabel.textContent = `${filteredRecalls.length} available record${
+          matchLabel.textContent = 'Indexed notices';
+          countLabel.textContent = `${filteredRecalls.length} indexed notice${
             filteredRecalls.length === 1 ? '' : 's'
           }`;
           summary.textContent =
-            'Enter a product, brand, model, UPC, lot, recall number, or keyword to search the filtered local recall data.';
+            'Search recalls by product, brand, model, UPC/barcode, lot code, ingredient, or keyword.';
           list.replaceChildren();
           return;
         }
@@ -519,11 +523,11 @@ const dateOptions = [
         const sortedItems = sortItems(result.items, state.sort);
         panel.dataset.match = result.match;
         matchLabel.textContent = MATCH_LABELS[result.match];
-        countLabel.textContent = `${sortedItems.length} recall${sortedItems.length === 1 ? '' : 's'}`;
+        countLabel.textContent = `${sortedItems.length} recall notice${sortedItems.length === 1 ? '' : 's'}`;
         summary.textContent =
           result.match === 'none'
-            ? 'No matching recall found in the local dataset.'
-            : `Local recall results for "${state.query}" with the selected filters.`;
+            ? 'No clear match found. We did not find a clear match in the indexed recall notices. This does not mean the product is safe or recall-free. Try searching by brand name, model number, UPC/barcode, lot code, ingredient, allergen, or product type.'
+            : `Possible recall matches for "${state.query}" with the selected filters.`;
 
         if (state.sort === 'best') {
           const groupedResults = (['exact', 'possible', 'related'] as const)
@@ -548,14 +552,14 @@ const dateOptions = [
       }
 
       function saveCurrentSearch(): void {
-        const state = readState();
+          const state = readState();
         if (!saveSearchStatus) {
           return;
         }
 
         saveSearchStatus.hidden = false;
         if (!state.query) {
-          saveSearchStatus.textContent = 'Enter a search term before monitoring it in the local watchlist.';
+          saveSearchStatus.textContent = 'Enter a search term before saving it in this browser.';
           return;
         }
 
@@ -564,7 +568,7 @@ const dateOptions = [
           source: state.source,
           category: state.category
         });
-        saveSearchStatus.textContent = `Monitoring "${item.query}" in this browser's local watchlist.`;
+        saveSearchStatus.textContent = `Saved "${item.query}" in this browser.`;
       }
 
       form?.addEventListener('submit', (event) => {

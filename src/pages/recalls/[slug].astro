@@ -110,7 +110,7 @@ const fallbackImageLabel = recall.source === 'FDA' ? 'FDA food recall' : 'Recall
           </div>
           {view.officialSourceUrl ? (
             <a class="source-link source-link-small" href={view.officialSourceUrl} target="_blank" rel="noopener noreferrer">
-              {view.officialSourceLabel}
+              View official notice
             </a>
           ) : null}
         </aside>
@@ -236,13 +236,15 @@ const fallbackImageLabel = recall.source === 'FDA' ? 'FDA food recall' : 'Recall
         <article class="detail-card official-source-card">
           <div>
             <p class="eyebrow">Official source</p>
-            <h2>Official notice title</h2>
+            <h2>Verify with the official notice</h2>
+            <p>Use the official notice to confirm affected models, lots, dates, distribution, and remedies.</p>
+            <p class="official-recall-number">{view.officialSourceLabel}</p>
             <p>{view.officialTitle}</p>
             {view.recallNumber ? <p class="official-recall-number">Recall number: {view.recallNumber}</p> : null}
           </div>
           {view.officialSourceUrl ? (
             <a class="source-link source-link-small" href={view.officialSourceUrl} target="_blank" rel="noopener noreferrer">
-              {view.officialSourceLabel}
+              View official notice
             </a>
           ) : null}
         </article>
@@ -284,7 +286,7 @@ const fallbackImageLabel = recall.source === 'FDA' ? 'FDA food recall' : 'Recall
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No other recalls from this brand or company were found in the current dataset.</p>
+            <p>No other indexed notices from this brand or company were found.</p>
           </div>
         )}
       </section>
@@ -326,7 +328,7 @@ const fallbackImageLabel = recall.source === 'FDA' ? 'FDA food recall' : 'Recall
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No similar recalls were found in the current dataset.</p>
+            <p>No similar indexed notices were found.</p>
             <a class="btn btn-secondary" href={categoryFallbackPath}>Browse {view.categoryLabel} recalls</a>
           </div>
         )}
@@ -345,7 +347,7 @@ const fallbackImageLabel = recall.source === 'FDA' ? 'FDA food recall' : 'Recall
     </main>
 
     <footer class="page-footer">
-      Always verify recall details against official notices, manufacturers, and applicable government agencies.
+      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
     </footer>
   </body>
 </html>

@@ -15,10 +15,10 @@ export type RecallSearchItem = {
 };
 
 export const MATCH_LABELS: Record<RecallMatchType, string> = {
-  exact: 'Matching recall',
+  exact: 'Strong match',
   possible: 'Possible match',
-  related: 'Related recall',
-  none: 'No local match'
+  related: 'Related notice',
+  none: 'No clear match'
 };
 
 export const NO_MATCH_DISCLAIMER =

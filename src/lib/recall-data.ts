@@ -52,21 +52,21 @@ export type BrandRecallGroup = {
 export const categoryRoutes = [
   {
     href: '/baby-product-recalls',
-    label: 'Baby & Kids Gear',
+    label: 'Baby & Kids',
     category: 'baby-kids',
-    description: 'Browse cribs, sleepers, toys, nursery gear, and child-focused product recalls.'
+    description: 'Cribs, sleepers, toys, nursery gear, and child-focused notices.'
   },
   {
     href: '/battery-recalls',
     label: 'Batteries & Electronics',
     category: 'battery-electronics',
-    description: 'Browse batteries, chargers, power banks, lithium-ion products, and electronics recalls.'
+    description: 'Batteries, chargers, power banks, lithium-ion products, and electronics.'
   },
   {
     href: '/food-allergy-recalls',
     label: 'Food & Allergy',
     category: 'food-allergy',
-    description: 'Browse food notices, undeclared allergens, and packaged grocery recalls.'
+    description: 'Food notices, undeclared allergens, packaged goods, UPCs, and lot codes.'
   }
 ] as const;
 
@@ -199,14 +199,14 @@ function sortByDateDescending(a: SiteRecall, b: SiteRecall): number {
 
 function sourceLabelFor(source: SiteRecallSource): string {
   if (source === 'FDA') {
-    return 'Local FDA/openFDA data';
+    return 'United States · FDA / openFDA';
   }
 
   if (source === 'CPSC') {
-    return 'Local CPSC data';
+    return 'United States · CPSC';
   }
 
-  return 'Mock fallback data';
+  return 'Sample notice';
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -358,12 +358,12 @@ export const usingProcessedCpscData = processedCpscRecordCount > 0;
 export const usingProcessedFdaData = processedFdaRecordCount > 0;
 export const dataSourceLabel = usingProcessedLocalData
   ? [
-      usingProcessedCpscData ? 'Local CPSC data' : '',
-      usingProcessedFdaData ? 'Local FDA/openFDA data' : ''
+      usingProcessedCpscData ? 'United States · CPSC' : '',
+      usingProcessedFdaData ? 'United States · FDA / openFDA' : ''
     ]
       .filter(Boolean)
       .join(' + ')
-  : 'Mock fallback data';
+  : 'Sample notices';
 export const siteRecalls = (usingProcessedLocalData ? processedLocalRecalls : fallbackMockRecalls).sort(
   sortByDateDescending
 );

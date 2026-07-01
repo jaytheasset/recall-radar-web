@@ -161,14 +161,14 @@ function displayTitleFor(productName: string, officialTitle: string): string {
 
 function sourceBadgeFor(recall: SiteRecall): string {
   if (recall.source === 'FDA') {
-    return 'FDA Recall';
+    return 'United States · FDA / openFDA';
   }
 
   if (recall.source === 'CPSC') {
-    return 'CPSC Recall';
+    return 'United States · CPSC';
   }
 
-  return 'Demo Recall';
+  return 'Sample notice';
 }
 
 export function recallSourceBadge(recall: SiteRecall): string {
@@ -176,7 +176,7 @@ export function recallSourceBadge(recall: SiteRecall): string {
 }
 
 function officialSourceLabelFor(recall: SiteRecall): string {
-  return recall.source === 'FDA' ? 'Official record: FDA/openFDA' : 'Official notice: CPSC';
+  return recall.source === 'FDA' ? 'Source: United States · FDA / openFDA' : 'Source: United States · CPSC';
 }
 
 function cpscRecallNumber(value: string): string {

@@ -7,12 +7,11 @@ import {
   siteRecalls,
   usingProcessedLocalData
 } from '../lib/recall-data';
-import { WATCHLIST_STORAGE_KEY } from '../lib/watchlist';
 import '../styles/global.css';
 
-const title = 'Local Watchlist | Recall Radar';
+const title = 'Saved Watchlist | Recall Radar';
 const description =
-  'Monitor local Recall Radar search terms and brands in browser localStorage, then preview matching CPSC and FDA/openFDA recall cards without a backend.';
+  'Save Recall Radar search terms and brands in this browser, then preview matching recall notices without an account or email alerts.';
 const watchlistRecalls = siteRecalls.map((recall) => ({
   id: recall.id,
   source: recall.source,
@@ -71,38 +70,37 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
     <main class="page-shell">
       <section class="section">
         <p class="eyebrow">Saved recall monitor</p>
-        <h1>Local Watchlist</h1>
+        <h1>Saved in this browser</h1>
         <p class="lead">
-          Save searches and brands in this browser, then preview matching recall cards from the local processed data file.
+          Save searches and brands in this browser, then preview matching recall notices from indexed sources.
         </p>
         <div class="meta-row data-source-row">
           <span class="status-pill">{dataSourceLabel}</span>
           <span class="tag">
-            {usingProcessedLocalData ? `${processedLocalRecordCount} local records` : 'Demo fallback records'}
+            {usingProcessedLocalData ? `${processedLocalRecordCount} indexed notices` : 'Sample notices'}
           </span>
           {usingProcessedLocalData ? (
             <>
-              <span class="tag">{processedCpscRecordCount} CPSC</span>
-              <span class="tag">{processedFdaRecordCount} FDA/openFDA</span>
+              <span class="tag">{processedCpscRecordCount} consumer product notices</span>
+              <span class="tag">{processedFdaRecordCount} food enforcement notices</span>
             </>
           ) : null}
-          <span class="tag">Storage key: <code>{WATCHLIST_STORAGE_KEY}</code></span>
         </div>
       </section>
 
       <section class="section">
         <div class="watchlist-layout">
           <article class="detail-card">
-            <h2>Local demo only &mdash; no email is sent</h2>
+            <h2>Email alerts are not enabled yet</h2>
             <p>
-              This form is only a product UI demonstration. It does not submit, send, store, or transmit an email address.
+              This field previews future alert preferences. It does not submit, send, store, or transmit an email address.
             </p>
             <form id="demo-alert-form" class="signup-form">
               <label>
-                Demo email
+                Email preview
                 <input type="email" placeholder="you@example.com" autocomplete="off" />
               </label>
-              <button class="btn btn-primary" type="submit">Preview alert</button>
+              <button class="btn btn-primary" type="submit">Preview future alert</button>
               <p id="demo-alert-status" class="form-note" hidden></p>
             </form>
           </article>
@@ -110,7 +108,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
           <article class="detail-card">
             <h2>Saved items</h2>
             <p>
-              Saved searches and brands stay in localStorage for this browser profile. No server, database, API endpoint, or email service is used.
+              Saved searches stay on this device. No account or email alerts are enabled yet.
             </p>
             <div class="meta-row data-source-row">
               <span id="watchlist-count" class="status-pill">0 saved items</span>
@@ -123,9 +121,9 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       <section class="section">
         <div class="section-header">
           <div>
-            <p class="eyebrow">Matching local recalls</p>
+            <p class="eyebrow">Saved recall previews</p>
             <h2>Saved recall previews</h2>
-            <p class="section-note">Cards are generated locally from saved searches and brand pages.</p>
+            <p class="section-note">Cards are matched in this browser from indexed notices.</p>
           </div>
           <a class="btn btn-secondary" href="/checker">Add a monitored search</a>
         </div>
@@ -133,14 +131,14 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
           No matching recall found does not guarantee a product is safe. Always verify with the official recall notice, manufacturer, and applicable government agency.
         </p>
         <div id="empty-watchlist" class="notice-panel">
-          <p>No saved searches or brands yet. Use the Product Recall Checker or a brand page to add local watchlist items.</p>
+          <p>No saved searches or brands yet. Use the Product Recall Checker or a brand page to add saved items.</p>
         </div>
         <div id="watchlist-items" class="watchlist-items"></div>
       </section>
     </main>
 
     <footer class="page-footer">
-      Recall Radar uses local CPSC and FDA/openFDA processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
+      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
     </footer>
 
     <script id="watchlist-recall-data" type="application/json" is:inline set:html={watchlistRecallsJson}></script>
@@ -194,14 +192,14 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 
       function sourceLabel(source: WatchlistSearchItem['source']): string {
         if (source === 'FDA') {
-          return 'FDA/openFDA';
+          return 'United States · FDA / openFDA';
         }
 
         if (source === 'CPSC') {
-          return 'CPSC';
+          return 'United States · CPSC';
         }
 
-        return 'All sources';
+        return 'All markets';
       }
 
       function createTag(text: string, className = 'tag'): HTMLElement {
@@ -261,7 +259,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         hazard.textContent =
           recall.hazard || recall.reason
             ? `Hazard/reason: ${recall.hazard || recall.reason}`
-            : 'Hazard/reason: Not listed in local data.';
+            : 'Hazard or reason not listed in the indexed notice.';
 
         const details = document.createElement('a');
         details.className = 'btn btn-primary';
@@ -327,7 +325,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
           list.replaceChildren(...matches.map(createRecallPreview));
         } else {
           const empty = document.createElement('p');
-          empty.textContent = 'No matching recall found for this saved item in the local dataset right now.';
+          empty.textContent = 'No clear match found for this saved item in the indexed notices right now.';
           list.append(empty);
         }
 
@@ -361,7 +359,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         if (demoAlertStatus) {
           demoAlertStatus.hidden = false;
           demoAlertStatus.textContent =
-            'Local demo only - no email is sent or stored. The typed email stays in this browser field only.';
+            'No email is sent or stored. This preview stays in your browser field only.';
         }
       });
 
