@@ -65,6 +65,114 @@ Current bounded spike:
 - No browser runtime API call
 - No backend, database, email, account, LLM, notification, or product registration feature
 
+## Operational Update Strategy
+
+Current default limit:
+
+- `RAPPELCONSO_LIMIT=100`
+- The fetch script also accepts `--limit=100`.
+- The script clamps limits to a maximum of 500 as a guardrail.
+- Do not use this phase for full backfill. A full backfill should be a separate phase with a file-size and static-page strategy.
+
+Local files:
+
+- Raw RappelConso file: `data/raw/rappelconso-recalls.json`
+- Processed RappelConso file: `data/processed/rappelconso-recalls.json`
+- Canonical merged processed file: `data/processed/recalls.json`
+
+Standard refresh command:
+
+```powershell
+npm run update:rappelconso
+```
+
+This runs:
+
+1. `npm run data:rappelconso:fetch`
+2. `npm run audit:rappelconso`
+
+`data:rappelconso:fetch` calls the public RappelConso endpoint, writes the bounded raw file, normalizes RappelConso records, and rebuilds the canonical merged file. It should only be run during an explicit data refresh task.
+
+Manual local-only validation sequence:
+
+```powershell
+npm run data:rappelconso:normalize
+npm run data:merge
+npm run audit:rappelconso
+```
+
+This sequence rebuilds processed files from the existing raw file and does not fetch from the network. It may update generated timestamps in processed JSON files, so review diffs before committing.
+
+Explicit limit examples:
+
+```powershell
+npm run fetch:rappelconso -- --limit=100
+```
+
+PowerShell environment-variable form:
+
+```powershell
+$env:RAPPELCONSO_LIMIT = "100"
+npm run update:rappelconso
+Remove-Item Env:RAPPELCONSO_LIMIT
+```
+
+Expected counts for the current spike:
+
+- `FR_RAPPELCONSO`: 100
+- Total: 501
+- CPSC: 301
+- FDA/openFDA: 100
+
+The audit uses these expected counts by default. If the limit is intentionally changed in a later phase, update the expected audit environment variables for that run and explain the count change in the commit:
+
+- `EXPECTED_RAPPELCONSO_COUNT`
+- `EXPECTED_TOTAL_RECALL_COUNT`
+- `EXPECTED_CPSC_COUNT`
+- `EXPECTED_FDA_COUNT`
+
+Safe diff review after refresh:
+
+```powershell
+git status --short --branch
+git diff --stat
+npm run audit:rappelconso
+```
+
+Review these files before committing:
+
+- `data/raw/rappelconso-recalls.json`
+- `data/processed/rappelconso-recalls.json`
+- `data/processed/recalls.json`
+- any script or documentation changes made during the refresh
+
+Commit strategy for the 100-record spike:
+
+- Commit `data/raw/rappelconso-recalls.json`.
+- Commit `data/processed/rappelconso-recalls.json`.
+- Commit `data/processed/recalls.json`.
+
+Future full backfill strategy:
+
+- Reconsider committing huge raw exports before adding them to Git.
+- Consider keeping only a bounded raw fixture or sample.
+- Consider generating processed data during a maintenance workflow.
+- Keep full backfill as a separate phase.
+
+Merge should be blocked or investigated if audit reports:
+
+- `FR_RAPPELCONSO` count is 0.
+- Duplicate ids are found.
+- Slug collisions are found.
+- Suspicious category mappings are found.
+- Source URLs, titles, or recall dates are missing.
+- Official RappelConso notice URL shape checks fail.
+- CPSC, FDA, RappelConso, or total counts change without an explicit explanation.
+
+Known current limitation:
+
+- 40 RappelConso records have no remedy/action in source data. This is reported by audit but is not a merge blocker by itself.
+
 ## Mapped Fields
 
 RappelConso fields are mapped into the existing `NormalizedRecall` shape:

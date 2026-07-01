@@ -46,9 +46,15 @@ Current package scripts:
 - `npm run normalize:fda-food`
 - `npm run fetch:rappelconso`
 - `npm run normalize:rappelconso`
+- `npm run data:rappelconso:fetch`
+- `npm run data:rappelconso:normalize`
+- `npm run data:merge`
+- `npm run audit:rappelconso`
+- `npm run update:rappelconso`
 - `npm run build:data`
 
 Do not run fetch scripts in UI or planning phases unless a later task explicitly requests a data refresh.
+`npm run update:rappelconso` is an explicit France RappelConso refresh workflow that performs a network fetch and audit; it is not part of `npm run check` or `npm run build`.
 
 ## C. Current Source Registry
 

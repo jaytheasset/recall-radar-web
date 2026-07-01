@@ -28,6 +28,15 @@ type AuditSummary = {
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const processedPath = resolve(projectRoot, 'data/processed/rappelconso-recalls.json');
+const canonicalProcessedPath = resolve(projectRoot, 'data/processed/recalls.json');
+const runtimeEnv = (process as typeof process & { env?: Record<string, string | undefined> }).env ?? {};
+
+type SourceCounts = {
+  total: number;
+  CPSC: number;
+  FDA: number;
+  FR_RAPPELCONSO: number;
+};
 
 function normalize(value: string): string {
   return value
@@ -125,12 +134,30 @@ function countMissing(records: NormalizedRecall[], test: (record: NormalizedReca
   return records.filter(test).length;
 }
 
+function expectedNumber(name: string, fallback: number): number {
+  const parsed = Number.parseInt(runtimeEnv[name] ?? '', 10);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
 async function readProcessedRappelConsoRecords(): Promise<NormalizedRecall[]> {
   const text = await readFile(processedPath, 'utf8');
   const payload = JSON.parse(text) as ProcessedRecallFile;
   return Array.isArray(payload.records)
     ? payload.records.filter((record) => record.source === 'FR_RAPPELCONSO')
     : [];
+}
+
+async function readCanonicalCounts(): Promise<SourceCounts> {
+  const text = await readFile(canonicalProcessedPath, 'utf8');
+  const payload = JSON.parse(text) as ProcessedRecallFile;
+  const records = Array.isArray(payload.records) ? payload.records : [];
+
+  return {
+    total: records.length,
+    CPSC: records.filter((record) => record.source === 'CPSC').length,
+    FDA: records.filter((record) => record.source === 'FDA').length,
+    FR_RAPPELCONSO: records.filter((record) => record.source === 'FR_RAPPELCONSO').length
+  };
 }
 
 function audit(records: NormalizedRecall[]): AuditSummary {
@@ -209,13 +236,91 @@ function audit(records: NormalizedRecall[]): AuditSummary {
   };
 }
 
+function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts): string[] {
+  const expectedCounts: SourceCounts = {
+    total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 501),
+    CPSC: expectedNumber('EXPECTED_CPSC_COUNT', 301),
+    FDA: expectedNumber('EXPECTED_FDA_COUNT', 100),
+    FR_RAPPELCONSO: expectedNumber('EXPECTED_RAPPELCONSO_COUNT', 100)
+  };
+  const blockers = [
+    summary.total === 0 ? 'FR_RAPPELCONSO count is 0.' : '',
+    summary.total !== expectedCounts.FR_RAPPELCONSO
+      ? `FR_RAPPELCONSO count ${summary.total} does not match expected ${expectedCounts.FR_RAPPELCONSO}.`
+      : '',
+    canonicalCounts.total !== expectedCounts.total
+      ? `Total processed count ${canonicalCounts.total} does not match expected ${expectedCounts.total}.`
+      : '',
+    canonicalCounts.CPSC !== expectedCounts.CPSC
+      ? `CPSC count ${canonicalCounts.CPSC} does not match expected ${expectedCounts.CPSC}.`
+      : '',
+    canonicalCounts.FDA !== expectedCounts.FDA
+      ? `FDA count ${canonicalCounts.FDA} does not match expected ${expectedCounts.FDA}.`
+      : '',
+    canonicalCounts.FR_RAPPELCONSO !== expectedCounts.FR_RAPPELCONSO
+      ? `Canonical FR_RAPPELCONSO count ${canonicalCounts.FR_RAPPELCONSO} does not match expected ${expectedCounts.FR_RAPPELCONSO}.`
+      : '',
+    summary.duplicateIds.length > 0 ? `Duplicate ids found: ${summary.duplicateIds.length}.` : '',
+    summary.slugCollisions.length > 0 ? `Slug collisions found: ${summary.slugCollisions.length}.` : '',
+    summary.suspiciousCategoryMappings.length > 0
+      ? `Suspicious category mappings found: ${summary.suspiciousCategoryMappings.length}.`
+      : '',
+    summary.missing.sourceUrl > 0 ? `Missing source URLs found: ${summary.missing.sourceUrl}.` : '',
+    summary.missing.title > 0 ? `Missing titles found: ${summary.missing.title}.` : '',
+    summary.missing.recallDate > 0 ? `Missing recall dates found: ${summary.missing.recallDate}.` : '',
+    summary.recordsWithOfficialNoticeUrlShape !== summary.total
+      ? `Official RappelConso URL shape mismatch count: ${
+          summary.total - summary.recordsWithOfficialNoticeUrlShape
+        }.`
+      : ''
+  ].filter(Boolean);
+
+  return blockers;
+}
+
 async function runAudit(): Promise<void> {
   const records = await readProcessedRappelConsoRecords();
   if (records.length === 0) {
     throw new Error(`No FR_RAPPELCONSO records found in ${processedPath}`);
   }
 
-  console.log(JSON.stringify(audit(records), null, 2));
+  const summary = audit(records);
+  const canonicalCounts = await readCanonicalCounts();
+  const blockers = buildBlockers(summary, canonicalCounts);
+  const passed = blockers.length === 0;
+
+  console.log(
+    JSON.stringify(
+      {
+        passed,
+        blockers,
+        operationalSummary: {
+          source: summary.source,
+          totalProcessedCount: canonicalCounts.total,
+          countsBySource: {
+            CPSC: canonicalCounts.CPSC,
+            FDA: canonicalCounts.FDA,
+            FR_RAPPELCONSO: canonicalCounts.FR_RAPPELCONSO
+          },
+          duplicateIds: summary.duplicateIds.length,
+          slugCollisions: summary.slugCollisions.length,
+          suspiciousCategoryMappings: summary.suspiciousCategoryMappings.length,
+          recordsWithImages: summary.recordsWithImages,
+          recordsWithGtinOrBarcodeLikeValues: summary.recordsWithGtinOrBarcodeLikeValues,
+          recordsWithLotBatchCodeOrDateLikeValues: summary.recordsWithLotBatchCodeOrDateLikeValues,
+          recordsWithDistributionDetails: summary.recordsWithDistributionDetails,
+          recordsWithOfficialNoticeUrlShape: summary.recordsWithOfficialNoticeUrlShape
+        },
+        detail: summary
+      },
+      null,
+      2
+    )
+  );
+
+  if (!passed) {
+    process.exitCode = 1;
+  }
 }
 
 runAudit().catch((error: unknown) => {

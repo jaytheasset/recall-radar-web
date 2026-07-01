@@ -100,6 +100,14 @@ Optional limit:
 npm run fetch:rappelconso -- --limit=50
 ```
 
+The default RappelConso limit is 100. It can also be set with an environment variable:
+
+```powershell
+$env:RAPPELCONSO_LIMIT = "100"
+npm run fetch:rappelconso
+Remove-Item Env:RAPPELCONSO_LIMIT
+```
+
 To rebuild RappelConso processed data from the saved raw file:
 
 ```powershell
@@ -109,6 +117,20 @@ npm run normalize:rappelconso
 To audit the current local RappelConso processed data without making network calls:
 
 ```powershell
+npm run audit:rappelconso
+```
+
+To run the explicit RappelConso refresh workflow, including network fetch and local audit:
+
+```powershell
+npm run update:rappelconso
+```
+
+For local-only validation from the existing raw file:
+
+```powershell
+npm run data:rappelconso:normalize
+npm run data:merge
 npm run audit:rappelconso
 ```
 

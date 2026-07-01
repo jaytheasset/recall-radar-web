@@ -10,6 +10,8 @@ import {
 const defaultRappelConsoEndpoint =
   'https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/rappelconso-v2-gtin-espaces/records';
 const defaultLimit = 100;
+const maxLimit = 500;
+const runtimeEnv = (process as typeof process & { env?: Record<string, string | undefined> }).env ?? {};
 
 type FetchOptions = {
   endpoint: string;
@@ -22,9 +24,13 @@ function readOption(name: string): string | undefined {
   return match ? match.slice(prefix.length) : undefined;
 }
 
+function readLimitOption(): string {
+  return readOption('limit') ?? runtimeEnv.RAPPELCONSO_LIMIT ?? String(defaultLimit);
+}
+
 function getFetchOptions(): FetchOptions {
-  const parsedLimit = Number.parseInt(readOption('limit') ?? String(defaultLimit), 10);
-  const limit = Number.isFinite(parsedLimit) ? Math.min(Math.max(parsedLimit, 1), 500) : defaultLimit;
+  const parsedLimit = Number.parseInt(readLimitOption(), 10);
+  const limit = Number.isFinite(parsedLimit) ? Math.min(Math.max(parsedLimit, 1), maxLimit) : defaultLimit;
   const endpoint = readOption('url') ?? defaultRappelConsoEndpoint;
 
   return { endpoint, limit };
