@@ -23,6 +23,7 @@ const companyDetails = [
 const title = `${view.displayTitle} | Recall Radar`;
 const description = `${view.displayTitle} with product photos, affected item details, reason for recall, consumer action, and official source link.`;
 const fallbackImageLabel = getRecallSourcePlaceholder(recall.source);
+const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
 ---
 
 <html lang="en">
@@ -89,11 +90,11 @@ const fallbackImageLabel = getRecallSourcePlaceholder(recall.source);
           <h2>Recall summary</h2>
           <div class="summary-list">
             <div class="summary-item">
-              <strong>Reason</strong>
+              <strong>{view.reasonLabel}</strong>
               <p>{view.reason}</p>
             </div>
             <div class="summary-item">
-              <strong>Action</strong>
+              <strong>{view.actionLabel}</strong>
               <p>{view.action}</p>
             </div>
             <div class="summary-meta-row">
@@ -103,7 +104,7 @@ const fallbackImageLabel = getRecallSourcePlaceholder(recall.source);
               </span>
               {view.units ? (
                 <span>
-                  <strong>{recall.source === 'FDA' ? 'Quantity' : 'Units'}</strong>
+                  <strong>{view.quantityLabel}</strong>
                   {view.units}
                 </span>
               ) : null}
@@ -117,32 +118,48 @@ const fallbackImageLabel = getRecallSourcePlaceholder(recall.source);
         </aside>
       </section>
 
-      {view.identificationDetails.length ? (
-        <section class="section">
-          <article class="detail-card detail-section-card">
-            <div class="section-header">
-              <div>
-                <p class="eyebrow">Affected item</p>
-                <h2>How to identify the recalled product</h2>
-              </div>
+      <section class="section">
+        <article class="detail-card detail-section-card identification-guide-card">
+          <div class="section-header">
+            <div>
+              <p class="eyebrow">Check your product</p>
+              <h2>How to verify product details</h2>
+              <p class="section-note">{view.verificationIntro}</p>
             </div>
-            <div class="detail-fact-grid">
-              {view.identificationDetails.map((fact) => (
-                <div class="detail-fact">
-                  <strong>{fact.label}</strong>
-                  {Array.isArray(fact.value) ? (
-                    <ul>
-                      {fact.value.map((item) => <li>{item}</li>)}
-                    </ul>
-                  ) : (
-                    <span>{fact.value}</span>
-                  )}
+          </div>
+          <div class="verification-layout">
+            <section class="verification-panel" aria-labelledby="what-to-compare">
+              <h3 id="what-to-compare">What to compare</h3>
+              <ul class="verification-checklist">
+                {view.verificationChecklist.map((item) => <li>{item}</li>)}
+              </ul>
+              <p class="verification-note">{view.detailSafetyCopy}</p>
+              {hasSparseIdentificationDetails ? <p class="verification-note">{view.sparseIdentificationCopy}</p> : null}
+            </section>
+            <section class="verification-panel" aria-labelledby="details-found">
+              <h3 id="details-found">Details found in this notice</h3>
+              {view.identificationDetails.length ? (
+                <div class="detail-fact-grid">
+                  {view.identificationDetails.map((fact) => (
+                    <div class="detail-fact">
+                      <strong>{fact.label}</strong>
+                      {Array.isArray(fact.value) ? (
+                        <ul>
+                          {fact.value.map((item) => <li>{item}</li>)}
+                        </ul>
+                      ) : (
+                        <span>{fact.value}</span>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </article>
-        </section>
-      ) : null}
+              ) : (
+                <p class="verification-note">{view.sparseIdentificationCopy}</p>
+              )}
+            </section>
+          </div>
+        </article>
+      </section>
 
       {view.actionParagraphs.length ? (
         <section class="section">
@@ -179,7 +196,7 @@ const fallbackImageLabel = getRecallSourcePlaceholder(recall.source);
             </div>
             <div class="detail-fact-grid">
               <div class="detail-fact">
-                <strong>{recall.source === 'FDA' ? 'Distribution' : 'Sold at'}</strong>
+                <strong>{view.distributionLabel}</strong>
                 <ul>
                   {view.soldAt.map((item) => <li>{item}</li>)}
                 </ul>
@@ -238,7 +255,7 @@ const fallbackImageLabel = getRecallSourcePlaceholder(recall.source);
           <div>
             <p class="eyebrow">Official source</p>
             <h2>Verify with the official notice</h2>
-            <p>Use the official notice to confirm affected models, lots, dates, distribution, and remedies.</p>
+            <p>{view.officialVerificationCopy}</p>
             <p class="official-recall-number">{view.officialSourceLabel}</p>
             <p>{view.officialTitle}</p>
             {view.recallNumber ? <p class="official-recall-number">Recall number: {view.recallNumber}</p> : null}

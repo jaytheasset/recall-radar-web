@@ -1,7 +1,19 @@
 import processedRecallData from '../../data/processed/recalls.json';
 import type { NormalizedRecall, ProcessedRecallFile, RecallImage } from '../data/recall-types';
 import type { SiteRecall } from './recall-data';
-import { getOfficialSourceLabel, getRecallSourceLabel } from './recall-sources';
+import {
+  getOfficialSourceLabel,
+  getOfficialVerificationCopy,
+  getRecallActionLabel,
+  getRecallDefaultActionFallback,
+  getRecallDistributionLabel,
+  getRecallQuantityLabel,
+  getRecallReasonLabel,
+  getRecallSourceLabel,
+  getRecallSparseIdentificationCopy,
+  getRecallVerificationChecklist,
+  getRecallVerificationIntro
+} from './recall-sources';
 import { getCompanyRecallHistory, getRelatedRecalls } from './related-recalls';
 
 type RawObject = Record<string, unknown>;
@@ -24,12 +36,18 @@ export type RecallDetailView = {
   imageCaptions: string[];
   primaryImageAlt: string;
   introSentence: string;
+  reasonLabel: string;
   reason: string;
+  actionLabel: string;
   action: string;
   actionDetail: string;
   actionParagraphs: string[];
   description: string;
   identificationDetails: DetailFact[];
+  verificationIntro: string;
+  verificationChecklist: string[];
+  sparseIdentificationCopy: string;
+  detailSafetyCopy: string;
   consumerContact: string;
   soldAt: string[];
   incidents: string[];
@@ -37,8 +55,11 @@ export type RecallDetailView = {
   manufacturer: string[];
   manufacturedIn: string[];
   units: string;
+  quantityLabel: string;
+  distributionLabel: string;
   officialSourceLabel: string;
   officialSourceUrl: string;
+  officialVerificationCopy: string;
   fdaDetails: DetailFact[];
   companyRecallHistory: SiteRecall[];
   relatedRecalls: SiteRecall[];
@@ -56,8 +77,17 @@ type SourceDetailView = Omit<
   | 'productImages'
   | 'primaryImageAlt'
   | 'introSentence'
+  | 'reasonLabel'
+  | 'actionLabel'
+  | 'verificationIntro'
+  | 'verificationChecklist'
+  | 'sparseIdentificationCopy'
+  | 'detailSafetyCopy'
+  | 'quantityLabel'
+  | 'distributionLabel'
   | 'officialSourceLabel'
   | 'officialSourceUrl'
+  | 'officialVerificationCopy'
   | 'companyRecallHistory'
   | 'relatedRecalls'
 >;
@@ -236,7 +266,10 @@ function buildCpscView(recall: SiteRecall, raw: RawObject): SourceDetailView {
   );
   const description = rawText(raw, 'Description') || recall.description;
   const reason = firstNonEmpty([...valuesFrom(raw, 'Hazards'), recall.hazard], 'Reason not listed.');
-  const remedyDetail = firstNonEmpty([...valuesFrom(raw, 'Remedies'), recall.remedy], 'Review the official notice for current instructions.');
+  const remedyDetail = firstNonEmpty(
+    [...valuesFrom(raw, 'Remedies'), recall.remedy],
+    getRecallDefaultActionFallback(recall.source)
+  );
   const captions = imageCaptions(raw, recall);
   const identificationDetails: DetailFact[] = [];
   const ids = uniqueNonEmpty([
@@ -281,7 +314,11 @@ function buildFdaView(recall: SiteRecall, raw: RawObject): SourceDetailView {
   const brandName = firstNonEmpty([rawText(raw, 'recalling_firm'), ...recall.displayBrandNames, recall.primaryBrand], 'Firm not listed');
   const reason = firstNonEmpty([rawText(raw, 'reason_for_recall'), recall.reason ?? '', recall.hazard], 'Reason not listed.');
   const status = rawText(raw, 'status') || recall.status || '';
-  const action = cleanText(recall.remedy) || (status ? `FDA enforcement status: ${status}. Verify current instructions with the FDA/openFDA record and recalling firm.` : 'Verify current instructions with the FDA/openFDA record and recalling firm.');
+  const action =
+    cleanText(recall.remedy) ||
+    (status
+      ? `FDA enforcement status: ${status}. Verify current instructions with the FDA/openFDA record and recalling firm.`
+      : getRecallDefaultActionFallback(recall.source));
   const officialTitle = recall.title;
   const details: DetailFact[] = [];
   const codeDetails = uniqueNonEmpty([rawText(raw, 'code_info'), rawText(raw, 'more_code_info'), ...identifierDetails(productName)]);
@@ -338,8 +375,18 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
     productImages: recall.images,
     primaryImageAlt: recall.primaryImageAlt || `${sourceSpecificView.productName} recall product image`,
     introSentence: `${productIntro}${brandIntro}. Review the photos and details below before using, keeping, selling, or giving it away.`,
+    reasonLabel: getRecallReasonLabel(recall.source),
+    actionLabel: getRecallActionLabel(recall.source),
+    verificationIntro: getRecallVerificationIntro(recall.source),
+    verificationChecklist: getRecallVerificationChecklist(recall.source),
+    sparseIdentificationCopy: getRecallSparseIdentificationCopy(recall.source),
+    detailSafetyCopy:
+      'Search matches and indexed notices are not safety confirmations. Verify affected models, lots, dates, distribution, and remedies with the official notice.',
+    quantityLabel: getRecallQuantityLabel(recall.source),
+    distributionLabel: getRecallDistributionLabel(recall.source),
     officialSourceLabel: getOfficialSourceLabel(recall.source),
     officialSourceUrl: recall.sourceUrl,
+    officialVerificationCopy: getOfficialVerificationCopy(recall.source),
     fdaDetails: sourceSpecificView.fdaDetails,
     companyRecallHistory,
     relatedRecalls

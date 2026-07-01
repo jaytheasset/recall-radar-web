@@ -1311,6 +1311,48 @@ button:disabled {
   padding: clamp(1rem, 2.5vw, 1.35rem);
 }
 
+.identification-guide-card {
+  gap: 1.15rem;
+}
+
+.verification-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.45fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.verification-panel {
+  display: grid;
+  gap: 0.8rem;
+  min-width: 0;
+}
+
+.verification-panel h3 {
+  font-size: 1rem;
+}
+
+.verification-checklist {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding-left: 1.15rem;
+  color: var(--ink);
+}
+
+.verification-checklist li {
+  line-height: 1.45;
+}
+
+.verification-note {
+  border-left: 3px solid var(--line);
+  padding-left: 0.8rem;
+  color: var(--source);
+  font-size: 0.9rem;
+  font-weight: 720;
+  line-height: 1.45;
+}
+
 .detail-fact-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1445,6 +1487,7 @@ button:disabled {
 @media (max-width: 980px) {
   .hero,
   .detail-grid,
+  .verification-layout,
   .watchlist-layout,
   .signup-panel {
     grid-template-columns: 1fr;
