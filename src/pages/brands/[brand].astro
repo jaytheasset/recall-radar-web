@@ -9,7 +9,7 @@ export function getStaticPaths() {
   }));
 }
 
-const { brand, rawNames, recalls } = Astro.props;
+const { brand, rawNames, recalls, slug } = Astro.props;
 const sourceNames = rawNames.filter(
   (rawName: string) => rawName.toLowerCase() !== brand.toLowerCase()
 );
@@ -32,6 +32,7 @@ const description = `Local recall records for ${brand}, with related products, s
       <a class="brand" href="/">Recall Radar</a>
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
+        <a href="/watchlist">Watchlist</a>
         <a href="/baby-product-recalls">Baby Product Recalls</a>
         <a href="/battery-recalls">Battery & Electronics Recalls</a>
         <a href="/food-allergy-recalls">Food Allergy Recalls</a>
@@ -47,6 +48,13 @@ const description = `Local recall records for ${brand}, with related products, s
         </div>
         <h1>{brand} Recall Page</h1>
         <p class="lead">Related local recall records for {brand}.</p>
+        <div class="link-row data-source-row">
+          <button id="save-brand-watchlist" type="button" data-brand={brand} data-brand-slug={slug}>
+            Save this brand to watchlist
+          </button>
+          <a class="button-link button-secondary" href="/watchlist">View watchlist</a>
+        </div>
+        <p id="save-brand-status" class="form-note" hidden></p>
       </section>
 
       {sourceNames.length ? (
@@ -90,5 +98,23 @@ const description = `Local recall records for ${brand}, with related products, s
     <footer class="page-footer">
       Recall Radar uses local CPSC and FDA/openFDA processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
     </footer>
+    <script>
+      import { upsertWatchlistBrand } from '../../lib/watchlist';
+
+      const saveBrandButton = document.querySelector<HTMLButtonElement>('#save-brand-watchlist');
+      const saveBrandStatus = document.querySelector<HTMLElement>('#save-brand-status');
+
+      saveBrandButton?.addEventListener('click', () => {
+        const brand = saveBrandButton.dataset.brand ?? '';
+        const slug = saveBrandButton.dataset.brandSlug ?? '';
+        if (!brand || !slug || !saveBrandStatus) {
+          return;
+        }
+
+        const item = upsertWatchlistBrand({ brand, slug });
+        saveBrandStatus.hidden = false;
+        saveBrandStatus.textContent = `Saved ${item.brand} to this browser's local watchlist.`;
+      });
+    </script>
   </body>
 </html>

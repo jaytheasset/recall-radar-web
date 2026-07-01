@@ -33,6 +33,7 @@ const featuredBrands = brandGroups.slice(0, 24);
       <a class="brand" href="/">Recall Radar</a>
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
+        <a href="/watchlist">Watchlist</a>
         <a href="/baby-product-recalls">Baby Product Recalls</a>
         <a href="/battery-recalls">Battery & Electronics Recalls</a>
         <a href="/food-allergy-recalls">Food Allergy Recalls</a>
@@ -161,17 +162,13 @@ const featuredBrands = brandGroups.slice(0, 24);
       <section class="section">
         <div class="signup-panel">
           <div>
-            <h2>Email Recall Alerts</h2>
-            <p>Static signup UI for future alert routing.</p>
+            <h2>Local Watchlist & Alert Demo</h2>
+            <p>Save searches and brands in this browser only, then preview matching local recall records.</p>
           </div>
-          <form class="signup-form">
-            <label>
-              Email
-              <input type="email" placeholder="you@example.com" autocomplete="email" />
-            </label>
-            <button type="button">Notify me</button>
-            <p class="form-note">No email is sent or stored in this local MVP.</p>
-          </form>
+          <div class="link-row">
+            <a class="button-link" href="/watchlist">Open watchlist</a>
+            <a class="button-link button-secondary" href="/checker?q=pistachio&source=FDA">Try a saved search</a>
+          </div>
         </div>
       </section>
 

@@ -133,6 +133,20 @@ Phase 7 added local-only search controls on `/checker`:
 
 The checker remains static and local-only. It embeds the local processed recall records at build time and does not add a server, API route, database, or external data call.
 
+## Local Watchlist Demo
+
+Phase 8 adds a static `/watchlist` page and browser-only watchlist UX.
+
+- Storage key: `recall-radar-watchlist-v1`
+- Implementation: `src/lib/watchlist.ts`
+- Users can save search terms from `/checker` with source and category preferences.
+- Users can save normalized brand pages from `/brands/[brand]`.
+- Users can remove individual saved items or clear the watchlist.
+- `/watchlist` embeds the existing local recall data at build time and previews matching local recall records in the browser.
+- The demo alert form is labeled `Local demo only - no email is sent`; it does not submit, send, store, or transmit email addresses.
+
+The watchlist is not an alert backend. It uses only browser `localStorage`; there is no API endpoint, server persistence, database, email service, external dependency, or network request.
+
 ## Guardrails
 
 Keep this repo local-only. Do not add remotes, secrets, deployments, databases, or external API calls except the local public CPSC and FDA/openFDA fetch scripts when explicitly requested for data-pipeline phases.

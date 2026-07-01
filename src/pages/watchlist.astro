@@ -1,0 +1,341 @@
+---
+import {
+  dataSourceLabel,
+  processedCpscRecordCount,
+  processedFdaRecordCount,
+  processedLocalRecordCount,
+  siteRecalls,
+  usingProcessedLocalData
+} from '../lib/recall-data';
+import { WATCHLIST_STORAGE_KEY } from '../lib/watchlist';
+import '../styles/global.css';
+
+const title = 'Local Watchlist | Recall Radar';
+const description =
+  'Save local Recall Radar search terms and brands in browser localStorage, then preview matching CPSC and FDA/openFDA records without a backend.';
+const watchlistRecalls = siteRecalls.map((recall) => ({
+  id: recall.id,
+  source: recall.source,
+  sourceLabel: recall.sourceLabel,
+  sourceUrl: recall.sourceUrl,
+  title: recall.title,
+  brandNames: recall.brandNames,
+  displayBrandNames: recall.displayBrandNames,
+  primaryBrand: recall.primaryBrand,
+  primaryBrandRawName: recall.primaryBrandRawName,
+  primaryBrandSlug: recall.primaryBrandSlug,
+  productNames: recall.productNames,
+  primaryProductName: recall.primaryProductName,
+  category: recall.category,
+  rawCategory: recall.rawCategory,
+  categoryLabel: recall.categoryLabel,
+  hazard: recall.hazard,
+  remedy: recall.remedy,
+  recallDate: recall.recallDate,
+  affectedUnits: recall.affectedUnits,
+  description: recall.description,
+  slug: recall.slug,
+  detailPath: recall.detailPath,
+  classification: recall.classification,
+  reason: recall.reason,
+  distributionPattern: recall.distributionPattern,
+  productQuantity: recall.productQuantity,
+  recallNumber: recall.recallNumber,
+  status: recall.status
+}));
+const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">Recall Radar</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/checker">Product Recall Checker</a>
+        <a href="/watchlist">Watchlist</a>
+        <a href="/baby-product-recalls">Baby Product Recalls</a>
+        <a href="/battery-recalls">Battery & Electronics Recalls</a>
+        <a href="/food-allergy-recalls">Food Allergy Recalls</a>
+      </nav>
+    </header>
+
+    <main class="page-shell">
+      <section class="section">
+        <p class="eyebrow">Local browser demo</p>
+        <h1>Watchlist</h1>
+        <p class="lead">
+          Save searches and brands in this browser only. Matching previews are generated from the local processed recall data file.
+        </p>
+        <div class="meta-row data-source-row">
+          <span class="status-pill">{dataSourceLabel}</span>
+          <span class="tag">
+            {usingProcessedLocalData ? `${processedLocalRecordCount} local records` : 'Demo fallback records'}
+          </span>
+          {usingProcessedLocalData ? (
+            <>
+              <span class="tag">{processedCpscRecordCount} CPSC</span>
+              <span class="tag">{processedFdaRecordCount} FDA/openFDA</span>
+            </>
+          ) : null}
+          <span class="tag">Storage key: <code>{WATCHLIST_STORAGE_KEY}</code></span>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="watchlist-layout">
+          <article class="notice-panel">
+            <h2>Local demo only &mdash; no email is sent</h2>
+            <p>
+              This form is only a product UI demonstration. It does not submit, send, store, or transmit an email address.
+            </p>
+            <form id="demo-alert-form" class="signup-form">
+              <label>
+                Demo email
+                <input type="email" placeholder="you@example.com" autocomplete="off" />
+              </label>
+              <button type="submit">Preview alert</button>
+              <p id="demo-alert-status" class="form-note" hidden></p>
+            </form>
+          </article>
+
+          <article class="notice-panel">
+            <h2>Saved Items</h2>
+            <p>
+              Saved searches and brands stay in localStorage for this browser profile. No server, database, API endpoint, or email service is used.
+            </p>
+            <div class="meta-row data-source-row">
+              <span id="watchlist-count" class="status-pill">0 saved items</span>
+              <button id="clear-watchlist" class="button-secondary" type="button">Clear all</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Matching Local Recall Previews</h2>
+            <p class="section-note">Preview matches are generated locally from saved searches and brands.</p>
+          </div>
+          <a class="button-link button-secondary" href="/checker">Add a search</a>
+        </div>
+        <p class="disclaimer-copy">
+          No matching recall found does not guarantee a product is safe. Always verify with the official recall notice, manufacturer, and applicable government agency.
+        </p>
+        <div id="empty-watchlist" class="notice-panel">
+          <p>No saved searches or brands yet. Use the checker or a brand page to add local watchlist items.</p>
+        </div>
+        <div id="watchlist-items" class="watchlist-items"></div>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      Recall Radar uses local CPSC and FDA/openFDA processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
+    </footer>
+
+    <script id="watchlist-recall-data" type="application/json" is:inline set:html={watchlistRecallsJson}></script>
+    <script>
+      import { NO_MATCH_DISCLAIMER, searchRecalls } from '../lib/recall-search';
+      import {
+        clearWatchlist,
+        loadWatchlist,
+        removeWatchlistItem,
+        type WatchlistBrandItem,
+        type WatchlistCategoryFilter,
+        type WatchlistItem,
+        type WatchlistSearchItem
+      } from '../lib/watchlist';
+
+      const dataNode = document.querySelector<HTMLScriptElement>('#watchlist-recall-data');
+      const siteRecalls = dataNode?.textContent
+        ? (JSON.parse(dataNode.textContent) as Parameters<typeof searchRecalls>[1])
+        : [];
+      const countLabel = document.querySelector<HTMLElement>('#watchlist-count');
+      const clearButton = document.querySelector<HTMLButtonElement>('#clear-watchlist');
+      const emptyWatchlist = document.querySelector<HTMLElement>('#empty-watchlist');
+      const itemsContainer = document.querySelector<HTMLElement>('#watchlist-items');
+      const demoAlertForm = document.querySelector<HTMLFormElement>('#demo-alert-form');
+      const demoAlertStatus = document.querySelector<HTMLElement>('#demo-alert-status');
+
+      function filterRecallsForSearch(item: WatchlistSearchItem): typeof siteRecalls {
+        return siteRecalls.filter((recall) => {
+          const sourceMatches = item.source === 'all' || recall.source === item.source;
+          const categoryMatches =
+            item.category === 'all' ||
+            (item.category === 'food' && (recall.rawCategory === 'food' || recall.source === 'FDA')) ||
+            (item.category === 'general' && recall.category === 'general-consumer-product') ||
+            recall.category === item.category;
+
+          return sourceMatches && categoryMatches;
+        });
+      }
+
+      function categoryLabel(category: WatchlistCategoryFilter): string {
+        if (category === 'all') {
+          return 'All categories';
+        }
+
+        if (category === 'general') {
+          return 'General';
+        }
+
+        return category.replace(/-/g, ' ');
+      }
+
+      function sourceLabel(source: WatchlistSearchItem['source']): string {
+        if (source === 'FDA') {
+          return 'FDA/openFDA';
+        }
+
+        if (source === 'CPSC') {
+          return 'CPSC';
+        }
+
+        return 'All sources';
+      }
+
+      function createTag(text: string, className = 'tag'): HTMLElement {
+        const tag = document.createElement('span');
+        tag.className = className;
+        tag.textContent = text;
+        return tag;
+      }
+
+      function createRecallPreview(recall: (typeof siteRecalls)[number]): HTMLElement {
+        const article = document.createElement('article');
+        article.className = 'recall-card result-card';
+
+        const meta = document.createElement('div');
+        meta.className = 'meta-row';
+        meta.append(
+          createTag(recall.sourceLabel, 'tag source-tag'),
+          createTag(recall.recallDate),
+          createTag(recall.categoryLabel)
+        );
+
+        const heading = document.createElement('h3');
+        const link = document.createElement('a');
+        link.href = recall.detailPath;
+        link.textContent = recall.title;
+        heading.append(link);
+
+        const summary = document.createElement('p');
+        summary.textContent = `Product: ${recall.primaryProductName}. Brand/company: ${recall.primaryBrand}.`;
+
+        const hazard = document.createElement('p');
+        hazard.textContent =
+          recall.hazard || recall.reason
+            ? `Hazard/reason: ${recall.hazard || recall.reason}`
+            : 'Hazard/reason: Not listed in local data.';
+
+        const details = document.createElement('a');
+        details.href = recall.detailPath;
+        details.textContent = 'Details';
+
+        article.append(meta, heading, summary, hazard, details);
+        return article;
+      }
+
+      function brandMatches(item: WatchlistBrandItem, recall: (typeof siteRecalls)[number]): boolean {
+        const normalizedBrand = item.brand.toLowerCase();
+        return (
+          recall.primaryBrandSlug === item.slug ||
+          recall.displayBrandNames.some((brand) => brand.toLowerCase() === normalizedBrand) ||
+          recall.brandNames.some((brand) => brand.toLowerCase() === normalizedBrand)
+        );
+      }
+
+      function matchingRecallsForItem(item: WatchlistItem): typeof siteRecalls {
+        if (item.type === 'search') {
+          return searchRecalls(item.query, filterRecallsForSearch(item)).items
+            .map((result) => result.recall)
+            .slice(0, 4);
+        }
+
+        return siteRecalls.filter((recall) => brandMatches(item, recall)).slice(0, 4);
+      }
+
+      function createSavedItemCard(item: WatchlistItem): HTMLElement {
+        const article = document.createElement('article');
+        article.className = 'notice-panel watchlist-item';
+
+        const header = document.createElement('div');
+        header.className = 'watchlist-item-header';
+
+        const title = document.createElement('div');
+        const heading = document.createElement('h3');
+        heading.textContent = item.type === 'search' ? item.query : item.brand;
+        const details = document.createElement('p');
+        details.textContent =
+          item.type === 'search'
+            ? `${sourceLabel(item.source)} / ${categoryLabel(item.category)}`
+            : `Brand page: /brands/${item.slug}`;
+        title.append(heading, details);
+
+        const remove = document.createElement('button');
+        remove.className = 'button-secondary';
+        remove.type = 'button';
+        remove.textContent = 'Remove';
+        remove.addEventListener('click', () => {
+          removeWatchlistItem(item.id);
+          renderWatchlist();
+        });
+
+        header.append(title, remove);
+
+        const matches = matchingRecallsForItem(item);
+        const list = document.createElement('div');
+        list.className = 'result-list';
+        if (matches.length) {
+          list.replaceChildren(...matches.map(createRecallPreview));
+        } else {
+          const empty = document.createElement('p');
+          empty.textContent = 'No matching local recall previews for this saved item right now.';
+          list.append(empty);
+        }
+
+        const disclaimer = document.createElement('p');
+        disclaimer.className = 'disclaimer-copy';
+        disclaimer.textContent = NO_MATCH_DISCLAIMER;
+
+        article.append(header, list, disclaimer);
+        return article;
+      }
+
+      function renderWatchlist(): void {
+        if (!countLabel || !emptyWatchlist || !itemsContainer || !clearButton) {
+          return;
+        }
+
+        const state = loadWatchlist();
+        countLabel.textContent = `${state.items.length} saved item${state.items.length === 1 ? '' : 's'}`;
+        clearButton.disabled = state.items.length === 0;
+        emptyWatchlist.hidden = state.items.length > 0;
+        itemsContainer.replaceChildren(...state.items.map(createSavedItemCard));
+      }
+
+      clearButton?.addEventListener('click', () => {
+        clearWatchlist();
+        renderWatchlist();
+      });
+
+      demoAlertForm?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (demoAlertStatus) {
+          demoAlertStatus.hidden = false;
+          demoAlertStatus.textContent =
+            'Local demo only - no email is sent or stored. The typed email stays in this browser field only.';
+        }
+      });
+
+      renderWatchlist();
+    </script>
+  </body>
+</html>

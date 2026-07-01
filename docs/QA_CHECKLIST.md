@@ -49,6 +49,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - `/checker`
 - `/checker?q=pistachio&source=FDA`
 - `/checker?q=smoke&source=CPSC`
+- `/watchlist`
 - `/baby-product-recalls`
 - `/battery-recalls`
 - `/food-allergy-recalls`
@@ -92,6 +93,17 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - `smoke detector` returns possible or related local matches when detector records exist.
 - `not-a-real-product` returns no local match.
 - Confirm result cards show match badges, source label, recall date, product/brand context, hazard summary, and detail links.
+
+## Watchlist Demo
+
+- Confirm `/checker?q=pistachio&source=FDA` can save a search to browser localStorage.
+- Confirm `/brands/arizer-tech` can save the normalized brand to browser localStorage.
+- Confirm `/watchlist` reads saved items from `recall-radar-watchlist-v1`.
+- Confirm `/watchlist` shows saved search terms, saved brands, source/category preferences, source labels, and detail links.
+- Confirm saved watchlist items can be removed individually.
+- Confirm all saved watchlist items can be cleared.
+- Confirm the demo alert form says local demo only and does not submit, send, store, or transmit an email address.
+- Confirm watchlist matching results show the required disclaimer.
 
 ## Safety Copy
 

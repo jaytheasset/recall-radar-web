@@ -85,6 +85,7 @@ const dateOptions = [
       <a class="brand" href="/">Recall Radar</a>
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
+        <a href="/watchlist">Watchlist</a>
         <a href="/baby-product-recalls">Baby Product Recalls</a>
         <a href="/battery-recalls">Battery & Electronics Recalls</a>
         <a href="/food-allergy-recalls">Food Allergy Recalls</a>
@@ -123,6 +124,7 @@ const dateOptions = [
               />
             </label>
             <button type="submit">Search</button>
+            <button id="save-search-watchlist" class="button-secondary" type="button">Save this search</button>
             <div class="filter-grid" aria-label="Local recall search filters">
               <label>
                 Source
@@ -150,6 +152,7 @@ const dateOptions = [
               </label>
             </div>
           </form>
+          <p id="save-search-status" class="form-note" hidden></p>
           <div class="example-searches" aria-label="Example searches">
             <span>Examples:</span>
             <a class="tag" href="/checker?q=arizer">arizer</a>
@@ -200,6 +203,7 @@ const dateOptions = [
     <script id="recall-search-data" type="application/json" is:inline set:html={checkerRecallsJson}></script>
     <script>
       import { MATCH_LABELS, NO_MATCH_DISCLAIMER, searchRecalls } from '../lib/recall-search';
+      import { upsertWatchlistSearch } from '../lib/watchlist';
 
       const dataNode = document.querySelector<HTMLScriptElement>('#recall-search-data');
       const siteRecalls = dataNode?.textContent
@@ -211,6 +215,8 @@ const dateOptions = [
       const categoryFilter = document.querySelector<HTMLSelectElement>('#category-filter');
       const sortFilter = document.querySelector<HTMLSelectElement>('#sort-filter');
       const dateFilter = document.querySelector<HTMLSelectElement>('#date-filter');
+      const saveSearchButton = document.querySelector<HTMLButtonElement>('#save-search-watchlist');
+      const saveSearchStatus = document.querySelector<HTMLElement>('#save-search-status');
       const panel = document.querySelector<HTMLElement>('#search-results');
       const matchLabel = document.querySelector<HTMLElement>('#result-match');
       const countLabel = document.querySelector<HTMLElement>('#result-count');
@@ -494,6 +500,26 @@ const dateOptions = [
         renderSearch(state);
       }
 
+      function saveCurrentSearch(): void {
+        const state = readState();
+        if (!saveSearchStatus) {
+          return;
+        }
+
+        saveSearchStatus.hidden = false;
+        if (!state.query) {
+          saveSearchStatus.textContent = 'Enter a search term before saving it to the local watchlist.';
+          return;
+        }
+
+        const item = upsertWatchlistSearch({
+          query: state.query,
+          source: state.source,
+          category: state.category
+        });
+        saveSearchStatus.textContent = `Saved "${item.query}" to this browser's local watchlist.`;
+      }
+
       form?.addEventListener('submit', (event) => {
         event.preventDefault();
         updateSearch();
@@ -502,6 +528,7 @@ const dateOptions = [
       [sourceFilter, categoryFilter, sortFilter, dateFilter].forEach((filter) => {
         filter?.addEventListener('change', updateSearch);
       });
+      saveSearchButton?.addEventListener('click', saveCurrentSearch);
 
       const initialState = writeStateFromUrl();
       if (hasActiveState(initialState)) {
