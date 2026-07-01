@@ -459,6 +459,10 @@ const dateOptions = [
         const action = createCardLine(getRecallActionLabel(recall.source), actionTextFor(recall), 'result-card-line result-card-action');
         const product = createCardLine('Product', productTextFor(recall));
         const brand = createCardLine('Brand/company', brandTextFor(recall));
+        const matchReason = createCardLine('Match reason', item.matchReasonLabel, 'result-card-line match-reason-line');
+        const identifierHint = document.createElement('p');
+        identifierHint.className = 'identifier-hint';
+        identifierHint.textContent = item.identifierHint;
 
         const links = document.createElement('div');
         links.className = 'link-row';
@@ -469,7 +473,7 @@ const dateOptions = [
         details.textContent = 'View recall';
 
         links.append(details);
-        body.append(heading, reason, action, product, brand, meta, links);
+        body.append(heading, reason, action, product, brand, matchReason, identifierHint, meta, links);
         article.append(createImageShell(recall), body);
 
         return article;
@@ -491,7 +495,22 @@ const dateOptions = [
         suggestion.textContent =
           'Try searching by brand name, model number, UPC/barcode, lot code, ingredient, allergen, or product type.';
 
-        emptyState.append(heading, body, suggestion);
+        const suggestionList = document.createElement('ul');
+        suggestionList.className = 'no-result-suggestions';
+        [
+          'Brand or company name',
+          'Model number or item number',
+          'UPC/barcode',
+          'Lot or batch code',
+          'Ingredient or allergen',
+          'Product type'
+        ].forEach((text) => {
+          const item = document.createElement('li');
+          item.textContent = text;
+          suggestionList.append(item);
+        });
+
+        emptyState.append(heading, body, suggestion, suggestionList);
         return emptyState;
       }
 
@@ -594,7 +613,7 @@ const dateOptions = [
       }
 
       function saveCurrentSearch(): void {
-          const state = readState();
+        const state = readState();
         if (!saveSearchStatus) {
           return;
         }

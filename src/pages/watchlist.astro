@@ -143,7 +143,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 
     <script id="watchlist-recall-data" type="application/json" is:inline set:html={watchlistRecallsJson}></script>
     <script>
-      import { SEARCH_RESULTS_DISCLAIMER, searchRecalls } from '../lib/recall-search';
+      import { MATCH_LABELS, SEARCH_RESULTS_DISCLAIMER, getRecallIdentifierHint, searchRecalls } from '../lib/recall-search';
       import {
         getRecallActionLabel,
         getRecallDefaultActionFallback,
@@ -171,6 +171,14 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       const itemsContainer = document.querySelector<HTMLElement>('#watchlist-items');
       const demoAlertForm = document.querySelector<HTMLFormElement>('#demo-alert-form');
       const demoAlertStatus = document.querySelector<HTMLElement>('#demo-alert-status');
+
+      type WatchlistRecall = (typeof siteRecalls)[number];
+      type WatchlistPreviewItem = {
+        recall: WatchlistRecall;
+        matchLabel?: string;
+        matchReasonLabel?: string;
+        identifierHint?: string;
+      };
 
       function filterRecallsForSearch(item: WatchlistSearchItem): typeof siteRecalls {
         return siteRecalls.filter((recall) => {
@@ -208,7 +216,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         return tag;
       }
 
-      function createImageShell(recall: (typeof siteRecalls)[number]): HTMLElement {
+      function createImageShell(recall: WatchlistRecall): HTMLElement {
         const link = document.createElement('a');
         link.className = 'image-shell';
         link.href = recall.detailPath;
@@ -230,15 +238,15 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         return link;
       }
 
-      function reasonLabelFor(recall: (typeof siteRecalls)[number]): string {
+      function reasonLabelFor(recall: WatchlistRecall): string {
         return getRecallReasonLabel(recall.source);
       }
 
-      function reasonTextFor(recall: (typeof siteRecalls)[number]): string {
+      function reasonTextFor(recall: WatchlistRecall): string {
         return recall.hazard || recall.reason || 'Not listed in the indexed notice.';
       }
 
-      function actionTextFor(recall: (typeof siteRecalls)[number]): string {
+      function actionTextFor(recall: WatchlistRecall): string {
         return recall.remedy || getRecallDefaultActionFallback(recall.source);
       }
 
@@ -251,7 +259,8 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         return line;
       }
 
-      function createRecallPreview(recall: (typeof siteRecalls)[number]): HTMLElement {
+      function createRecallPreview(item: WatchlistPreviewItem): HTMLElement {
+        const { recall } = item;
         const article = document.createElement('article');
         article.className = 'product-card result-card';
 
@@ -260,6 +269,9 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 
         const meta = document.createElement('div');
         meta.className = 'meta-row result-card-badges';
+        if (item.matchLabel) {
+          meta.append(createTag(item.matchLabel, 'badge-danger'));
+        }
         meta.append(
           createTag(recall.sourceLabel, 'badge-source'),
           createTag(recall.categoryLabel),
@@ -276,18 +288,34 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         const action = createCardLine(getRecallActionLabel(recall.source), actionTextFor(recall), 'result-card-line result-card-action');
         const product = createCardLine('Product', recall.primaryProductName);
         const brand = createCardLine('Brand/company', recall.primaryBrand);
+        const matchReason = item.matchReasonLabel
+          ? createCardLine('Match reason', item.matchReasonLabel, 'result-card-line match-reason-line')
+          : null;
+        const identifierHint = document.createElement('p');
+        identifierHint.className = 'identifier-hint';
+        identifierHint.textContent = item.identifierHint ?? getRecallIdentifierHint(recall);
 
         const details = document.createElement('a');
         details.className = 'btn btn-primary';
         details.href = recall.detailPath;
         details.textContent = 'View recall';
 
-        body.append(heading, reason, action, product, brand, meta, details);
+        body.append(
+          heading,
+          reason,
+          action,
+          product,
+          brand,
+          ...(matchReason ? [matchReason] : []),
+          identifierHint,
+          meta,
+          details
+        );
         article.append(createImageShell(recall), body);
         return article;
       }
 
-      function brandMatches(item: WatchlistBrandItem, recall: (typeof siteRecalls)[number]): boolean {
+      function brandMatches(item: WatchlistBrandItem, recall: WatchlistRecall): boolean {
         const normalizedBrand = item.brand.toLowerCase();
         return (
           recall.primaryBrandSlug === item.slug ||
@@ -296,14 +324,26 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         );
       }
 
-      function matchingRecallsForItem(item: WatchlistItem): typeof siteRecalls {
+      function matchingRecallsForItem(item: WatchlistItem): WatchlistPreviewItem[] {
         if (item.type === 'search') {
           return searchRecalls(item.query, filterRecallsForSearch(item)).items
-            .map((result) => result.recall)
+            .map((result) => ({
+              recall: result.recall,
+              matchLabel: MATCH_LABELS[result.match],
+              matchReasonLabel: result.matchReasonLabel,
+              identifierHint: result.identifierHint
+            }))
             .slice(0, 4);
         }
 
-        return siteRecalls.filter((recall) => brandMatches(item, recall)).slice(0, 4);
+        return siteRecalls
+          .filter((recall) => brandMatches(item, recall))
+          .map((recall) => ({
+            recall,
+            matchReasonLabel: 'Matched by brand/company',
+            identifierHint: getRecallIdentifierHint(recall)
+          }))
+          .slice(0, 4);
       }
 
       function createSavedItemCard(item: WatchlistItem): HTMLElement {

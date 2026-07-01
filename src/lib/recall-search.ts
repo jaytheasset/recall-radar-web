@@ -1,6 +1,16 @@
 import type { SiteRecall } from './recall-data';
 
 export type RecallMatchType = 'exact' | 'possible' | 'related' | 'none';
+export type RecallMatchReason =
+  | 'recall-number'
+  | 'identifier'
+  | 'brand'
+  | 'product'
+  | 'ingredient'
+  | 'product-type'
+  | 'hazard'
+  | 'source'
+  | 'keyword';
 
 export type RecallSearchResult = {
   query: string;
@@ -12,6 +22,10 @@ export type RecallSearchResult = {
 export type RecallSearchItem = {
   recall: SiteRecall;
   match: Exclude<RecallMatchType, 'none'>;
+  matchReason: RecallMatchReason;
+  matchReasonLabel: string;
+  matchedFieldType: RecallMatchReason;
+  identifierHint: string;
 };
 
 export const MATCH_LABELS: Record<RecallMatchType, string> = {
@@ -23,6 +37,52 @@ export const MATCH_LABELS: Record<RecallMatchType, string> = {
 
 export const SEARCH_RESULTS_DISCLAIMER =
   'Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.';
+
+export const MATCH_REASON_LABELS: Record<RecallMatchReason, string> = {
+  'recall-number': 'Matched by recall number',
+  identifier: 'Matched by UPC, lot, or code text',
+  brand: 'Matched by brand/company',
+  product: 'Matched by product name',
+  ingredient: 'Matched by ingredient or allergen',
+  'product-type': 'Related by product type',
+  hazard: 'Related by hazard or reason',
+  source: 'Related by market/source',
+  keyword: 'Matched by keyword'
+};
+
+const IDENTIFIER_TERMS = [
+  'upc',
+  'barcode',
+  'gtin',
+  'ean',
+  'lot',
+  'batch',
+  'code',
+  'model',
+  'model no',
+  'item no',
+  'sku',
+  'serial',
+  'recall number',
+  'fda recall number',
+  'cpsc recall number'
+];
+
+const ALLERGEN_TERMS = [
+  'milk',
+  'egg',
+  'peanut',
+  'tree nut',
+  'almond',
+  'cashew',
+  'walnut',
+  'soy',
+  'wheat',
+  'sesame',
+  'fish',
+  'shellfish',
+  'pistachio'
+];
 
 function normalize(value: string): string {
   return value
@@ -40,6 +100,19 @@ function tokensFor(query: string): string[] {
 
 function searchableText(values: string[]): string {
   return normalize(values.join(' '));
+}
+
+function hasTextMatch(normalizedQuery: string, queryTokens: string[], values: string[]): boolean {
+  const text = searchableText(values);
+  if (!text) {
+    return false;
+  }
+
+  return text.includes(normalizedQuery) || tokenMatchCount(queryTokens, text) > 0;
+}
+
+function hasStrongMatch(normalizedQuery: string, queryTokens: string[], values: string[]): boolean {
+  return values.map(normalize).some((field) => isStrongFieldMatch(normalizedQuery, queryTokens, field));
 }
 
 function exactFields(recall: SiteRecall): string[] {
@@ -108,7 +181,175 @@ function isStrongFieldMatch(normalizedQuery: string, queryTokens: string[], fiel
 }
 
 function tokenMatchCount(tokens: string[], text: string): number {
-  return tokens.filter((token) => token.length > 2 && text.includes(token)).length;
+  const words = text.split(' ').filter(Boolean);
+  return tokens.filter((token) => {
+    if (token.length <= 2) {
+      return false;
+    }
+
+    return words.some((word) => word === token || (token.length >= 4 && word.startsWith(token)));
+  }).length;
+}
+
+function hasMeaningfulTokenMatch(tokens: string[], text: string): boolean {
+  const count = tokenMatchCount(tokens, text);
+  return tokens.length >= 3 ? count >= 2 : count > 0;
+}
+
+function hasIdentifierCue(normalizedQuery: string): boolean {
+  return IDENTIFIER_TERMS.some((term) => normalizedQuery.includes(term));
+}
+
+function looksLikeIdentifier(query: string, normalizedQuery: string): boolean {
+  const compact = query.trim().replace(/\s+/g, '');
+  const normalizedCompact = normalizedQuery.replace(/\s+/g, '');
+
+  if (/^\d{6,}$/.test(compact)) {
+    return true;
+  }
+
+  if (/^[a-z0-9]+-[a-z0-9-]+$/i.test(compact) && /\d/.test(compact)) {
+    return true;
+  }
+
+  return normalizedCompact.length >= 6 && /[a-z]/i.test(normalizedCompact) && /\d/.test(normalizedCompact);
+}
+
+function hasAllergenQuery(normalizedQuery: string, queryTokens: string[]): boolean {
+  return ALLERGEN_TERMS.some((term) => {
+    const normalizedTerm = normalize(term);
+    return normalizedQuery.includes(normalizedTerm) || queryTokens.includes(normalizedTerm);
+  });
+}
+
+function identifierFields(recall: SiteRecall): string[] {
+  return [
+    recall.id,
+    recall.recallNumber ?? '',
+    recall.title,
+    recall.slug,
+    recall.primaryProductName,
+    ...recall.productNames,
+    recall.description,
+    recall.affectedUnits,
+    recall.productQuantity ?? '',
+    recall.distributionPattern ?? ''
+  ];
+}
+
+function brandFields(recall: SiteRecall): string[] {
+  return [
+    recall.primaryBrand,
+    recall.primaryBrandRawName,
+    ...recall.brandNames,
+    ...recall.displayBrandNames
+  ];
+}
+
+function productFields(recall: SiteRecall): string[] {
+  return [recall.title, recall.slug, recall.primaryProductName, ...recall.productNames];
+}
+
+function ingredientFields(recall: SiteRecall): string[] {
+  return [
+    recall.title,
+    recall.primaryProductName,
+    ...recall.productNames,
+    recall.hazard,
+    recall.reason ?? '',
+    recall.description,
+    recall.classification ?? '',
+    recall.distributionPattern ?? ''
+  ];
+}
+
+function productTypeFields(recall: SiteRecall): string[] {
+  return [recall.category, recall.rawCategory, recall.categoryLabel];
+}
+
+function hazardFields(recall: SiteRecall): string[] {
+  return [
+    recall.hazard,
+    recall.remedy,
+    recall.reason ?? '',
+    recall.classification ?? '',
+    recall.status ?? '',
+    recall.description
+  ];
+}
+
+function sourceFields(recall: SiteRecall): string[] {
+  return [recall.source, recall.sourceLabel, recall.sourceUrl];
+}
+
+export function getRecallIdentifierHint(recall: Pick<SiteRecall, 'source'>): string {
+  if (recall.source === 'FDA') {
+    return 'Check UPC/barcode, lot code, date, ingredient, distribution, and official notice details.';
+  }
+
+  if (recall.source === 'CPSC') {
+    return 'Check model, UPC/barcode, date, product photos, and official notice details.';
+  }
+
+  return 'Check model, UPC/barcode, lot code, date, and official notice details.';
+}
+
+function getMatchReason(query: string, recall: SiteRecall): RecallMatchReason {
+  const normalizedQuery = normalize(query);
+  const queryTokens = tokensFor(query);
+
+  if (!normalizedQuery || queryTokens.length === 0) {
+    return 'keyword';
+  }
+
+  const recallNumberFields = [recall.id, recall.recallNumber ?? ''];
+  if (
+    hasStrongMatch(normalizedQuery, queryTokens, recallNumberFields) ||
+    hasTextMatch(normalizedQuery, queryTokens, recallNumberFields)
+  ) {
+    return 'recall-number';
+  }
+
+  if (
+    (hasIdentifierCue(normalizedQuery) || looksLikeIdentifier(query, normalizedQuery)) &&
+    hasTextMatch(normalizedQuery, queryTokens, identifierFields(recall))
+  ) {
+    return 'identifier';
+  }
+
+  if (hasTextMatch(normalizedQuery, queryTokens, brandFields(recall))) {
+    return 'brand';
+  }
+
+  if (
+    hasAllergenQuery(normalizedQuery, queryTokens) &&
+    (recall.source === 'FDA' || recall.category === 'food-allergy') &&
+    hasTextMatch(normalizedQuery, queryTokens, ingredientFields(recall))
+  ) {
+    return 'ingredient';
+  }
+
+  if (hasTextMatch(normalizedQuery, queryTokens, productFields(recall))) {
+    return 'product';
+  }
+
+  if (hasAllergenQuery(normalizedQuery, queryTokens) && hasTextMatch(normalizedQuery, queryTokens, ingredientFields(recall))) {
+    return 'ingredient';
+  }
+
+  if (hasTextMatch(normalizedQuery, queryTokens, productTypeFields(recall))) {
+    return 'product-type';
+  }
+
+  if (hasTextMatch(normalizedQuery, queryTokens, hazardFields(recall))) {
+    return 'hazard';
+  }
+
+  if (hasTextMatch(normalizedQuery, queryTokens, sourceFields(recall))) {
+    return 'source';
+  }
+
+  return 'keyword';
 }
 
 export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchType {
@@ -124,12 +365,12 @@ export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchTy
   }
 
   const possibleText = possibleFields(recall);
-  if (tokenMatchCount(queryTokens, possibleText) > 0) {
+  if (hasMeaningfulTokenMatch(queryTokens, possibleText)) {
     return 'possible';
   }
 
   const relatedText = relatedFields(recall);
-  if (tokenMatchCount(queryTokens, relatedText) > 0) {
+  if (hasMeaningfulTokenMatch(queryTokens, relatedText)) {
     return 'related';
   }
 
@@ -154,7 +395,18 @@ function compareRecalls(
 
 export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearchResult {
   const matches = recalls
-    .map((recall) => ({ recall, match: getRecallMatch(query, recall) }))
+    .map((recall) => {
+      const match = getRecallMatch(query, recall);
+      const matchReason = getMatchReason(query, recall);
+      return {
+        recall,
+        match,
+        matchReason,
+        matchReasonLabel: MATCH_REASON_LABELS[matchReason],
+        matchedFieldType: matchReason,
+        identifierHint: getRecallIdentifierHint(recall)
+      };
+    })
     .filter((result) => result.match !== 'none')
     .sort(compareRecalls) as RecallSearchItem[];
 

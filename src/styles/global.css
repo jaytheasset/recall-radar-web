@@ -984,6 +984,17 @@ button:disabled {
   font-weight: 720;
 }
 
+.match-reason-line {
+  color: var(--source);
+  font-weight: 760;
+}
+
+.identifier-hint {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
 .result-card-badges {
   gap: 0.38rem;
   margin-top: 0.15rem;
@@ -1010,6 +1021,16 @@ button:disabled {
 .no-result-suggestion {
   color: var(--source);
   font-weight: 760;
+}
+
+.no-result-suggestions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem 1rem;
+  margin: 0.25rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .result-group {
