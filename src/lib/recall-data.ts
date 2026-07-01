@@ -2,6 +2,7 @@ import processedRecallData from '../../data/processed/recalls.json';
 import { mockRecalls, type MockRecall, type RecallCategory } from '../data/mock-recalls';
 import type { NormalizedRecall, ProcessedRecallFile, RecallImage } from '../data/recall-types';
 import { normalizeBrandName } from './brand-normalize';
+import { getRecallSourceLabel } from './recall-sources';
 import { limitSlug, recallSlug } from './slug';
 
 export type SiteRecallCategory = RecallCategory | 'general-consumer-product';
@@ -197,18 +198,6 @@ function sortByDateDescending(a: SiteRecall, b: SiteRecall): number {
   return dateDifference === 0 ? a.id.localeCompare(b.id) : dateDifference;
 }
 
-function sourceLabelFor(source: SiteRecallSource): string {
-  if (source === 'FDA') {
-    return 'United States · FDA / openFDA';
-  }
-
-  if (source === 'CPSC') {
-    return 'United States · CPSC';
-  }
-
-  return 'Sample notice';
-}
-
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
@@ -282,7 +271,7 @@ function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
   return {
     id: record.id,
     source: record.source,
-    sourceLabel: sourceLabelFor(record.source),
+    sourceLabel: getRecallSourceLabel(record.source),
     sourceUrl: record.sourceUrl,
     title: record.title,
     brandNames,
@@ -320,7 +309,7 @@ function toSiteRecallFromMock(recall: MockRecall): SiteRecall {
   return {
     id: recall.recallNumber,
     source: 'Mock',
-    sourceLabel: sourceLabelFor('Mock'),
+    sourceLabel: getRecallSourceLabel('Mock'),
     sourceUrl: '',
     title: recall.title,
     brandNames: [recall.brand],
@@ -358,12 +347,12 @@ export const usingProcessedCpscData = processedCpscRecordCount > 0;
 export const usingProcessedFdaData = processedFdaRecordCount > 0;
 export const dataSourceLabel = usingProcessedLocalData
   ? [
-      usingProcessedCpscData ? 'United States · CPSC' : '',
-      usingProcessedFdaData ? 'United States · FDA / openFDA' : ''
+      usingProcessedCpscData ? getRecallSourceLabel('CPSC') : '',
+      usingProcessedFdaData ? getRecallSourceLabel('FDA') : ''
     ]
       .filter(Boolean)
       .join(' + ')
-  : 'Sample notices';
+  : getRecallSourceLabel('Mock');
 export const siteRecalls = (usingProcessedLocalData ? processedLocalRecalls : fallbackMockRecalls).sort(
   sortByDateDescending
 );

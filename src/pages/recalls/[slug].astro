@@ -1,6 +1,7 @@
 ---
 import { categoryRoutes, siteRecalls } from '../../lib/recall-data';
 import { buildRecallDetailView, recallSourceBadge } from '../../lib/recall-detail-view';
+import { getRecallSourcePlaceholder } from '../../lib/recall-sources';
 import '../../styles/global.css';
 
 export function getStaticPaths() {
@@ -21,7 +22,7 @@ const companyDetails = [
 ].filter((fact) => fact.value.length > 0);
 const title = `${view.displayTitle} | Recall Radar`;
 const description = `${view.displayTitle} with product photos, affected item details, reason for recall, consumer action, and official source link.`;
-const fallbackImageLabel = recall.source === 'FDA' ? 'FDA food recall' : 'Recall notice';
+const fallbackImageLabel = getRecallSourcePlaceholder(recall.source);
 ---
 
 <html lang="en">
@@ -269,7 +270,7 @@ const fallbackImageLabel = recall.source === 'FDA' ? 'FDA food recall' : 'Recall
                       loading="lazy"
                     />
                   ) : (
-                    <span class="image-placeholder">{historyRecall.source === 'FDA' ? 'FDA food recall' : 'Recall notice'}</span>
+                    <span class="image-placeholder">{getRecallSourcePlaceholder(historyRecall.source)}</span>
                   )}
                 </a>
                 <div class="card-body">
@@ -311,7 +312,7 @@ const fallbackImageLabel = recall.source === 'FDA' ? 'FDA food recall' : 'Recall
                       loading="lazy"
                     />
                   ) : (
-                    <span class="image-placeholder">{relatedRecall.source === 'FDA' ? 'FDA food recall' : 'Recall notice'}</span>
+                    <span class="image-placeholder">{getRecallSourcePlaceholder(relatedRecall.source)}</span>
                   )}
                 </a>
                 <div class="card-body">

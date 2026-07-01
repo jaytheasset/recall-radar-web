@@ -1,6 +1,7 @@
 import processedRecallData from '../../data/processed/recalls.json';
 import type { NormalizedRecall, ProcessedRecallFile, RecallImage } from '../data/recall-types';
 import type { SiteRecall } from './recall-data';
+import { getOfficialSourceLabel, getRecallSourceLabel } from './recall-sources';
 import { getCompanyRecallHistory, getRelatedRecalls } from './related-recalls';
 
 type RawObject = Record<string, unknown>;
@@ -159,24 +160,8 @@ function displayTitleFor(productName: string, officialTitle: string): string {
   return `${titleBase} Recall`;
 }
 
-function sourceBadgeFor(recall: SiteRecall): string {
-  if (recall.source === 'FDA') {
-    return 'United States · FDA / openFDA';
-  }
-
-  if (recall.source === 'CPSC') {
-    return 'United States · CPSC';
-  }
-
-  return 'Sample notice';
-}
-
 export function recallSourceBadge(recall: SiteRecall): string {
-  return sourceBadgeFor(recall);
-}
-
-function officialSourceLabelFor(recall: SiteRecall): string {
-  return recall.source === 'FDA' ? 'Source: United States · FDA / openFDA' : 'Source: United States · CPSC';
+  return getRecallSourceLabel(recall.source);
 }
 
 function cpscRecallNumber(value: string): string {
@@ -348,12 +333,12 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
 
   return {
     ...sourceSpecificView,
-    sourceBadge: sourceBadgeFor(recall),
+    sourceBadge: getRecallSourceLabel(recall.source),
     categoryLabel: recall.categoryLabel,
     productImages: recall.images,
     primaryImageAlt: recall.primaryImageAlt || `${sourceSpecificView.productName} recall product image`,
     introSentence: `${productIntro}${brandIntro}. Review the photos and details below before using, keeping, selling, or giving it away.`,
-    officialSourceLabel: officialSourceLabelFor(recall),
+    officialSourceLabel: getOfficialSourceLabel(recall.source),
     officialSourceUrl: recall.sourceUrl,
     fdaDetails: sourceSpecificView.fdaDetails,
     companyRecallHistory,

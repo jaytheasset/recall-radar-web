@@ -1,5 +1,6 @@
 ---
 import { getRecallsByCategory } from '../lib/recall-data';
+import { getRecallSourcePlaceholder } from '../lib/recall-sources';
 import '../styles/global.css';
 
 const title = 'Baby & Kids Product Recalls | Recall Radar';
@@ -54,7 +55,7 @@ const recalls = getRecallsByCategory('baby-kids');
                   {recall.primaryImageUrl ? (
                     <img src={recall.primaryImageUrl} alt={recall.primaryImageAlt || recall.title} loading="lazy" />
                   ) : (
-                    <span class="image-placeholder">Recall notice</span>
+                    <span class="image-placeholder">{getRecallSourcePlaceholder(recall.source)}</span>
                   )}
                 </a>
                 <div class="card-body">

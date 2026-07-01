@@ -9,6 +9,7 @@ import {
   siteRecalls,
   usingProcessedLocalData
 } from '../lib/recall-data';
+import { getSourceOptionsForCurrentCoverage } from '../lib/recall-sources';
 import '../styles/global.css';
 
 const title = 'Product Recall Checker | Recall Radar';
@@ -50,8 +51,7 @@ const checkerRecalls = siteRecalls.map((recall) => ({
 const checkerRecallsJson = JSON.stringify(checkerRecalls);
 const sourceOptions = [
   { value: 'all', label: 'All markets' },
-  { value: 'CPSC', label: 'United States · CPSC' },
-  { value: 'FDA', label: 'United States · FDA / openFDA' }
+  ...getSourceOptionsForCurrentCoverage()
 ];
 const categoryOptions = [
   { value: 'all', label: 'All product types' },
@@ -218,6 +218,13 @@ const dateOptions = [
     <script id="recall-search-data" type="application/json" is:inline set:html={checkerRecallsJson}></script>
     <script>
       import { MATCH_LABELS, SEARCH_RESULTS_DISCLAIMER, searchRecalls } from '../lib/recall-search';
+      import {
+        getRecallActionLabel,
+        getRecallDefaultActionFallback,
+        getRecallReasonLabel,
+        getRecallSourceLabel,
+        getRecallSourcePlaceholder
+      } from '../lib/recall-sources';
       import { upsertWatchlistSearch } from '../lib/watchlist';
 
       const dataNode = document.querySelector<HTMLScriptElement>('#recall-search-data');
@@ -387,13 +394,13 @@ const dateOptions = [
 
         const placeholder = document.createElement('span');
         placeholder.className = 'image-placeholder';
-        placeholder.textContent = recall.source === 'FDA' ? 'FDA food notice' : 'Recall notice';
+        placeholder.textContent = getRecallSourcePlaceholder(recall.source);
         link.append(placeholder);
         return link;
       }
 
       function reasonLabelFor(recall: SearchItem['recall']): string {
-        return recall.source === 'CPSC' ? 'Hazard' : 'Reason';
+        return getRecallReasonLabel(recall.source);
       }
 
       function reasonTextFor(recall: SearchItem['recall']): string {
@@ -401,7 +408,7 @@ const dateOptions = [
       }
 
       function actionTextFor(recall: SearchItem['recall']): string {
-        return recall.remedy || 'Review the official notice for current instructions.';
+        return recall.remedy || getRecallDefaultActionFallback(recall.source);
       }
 
       function productTextFor(recall: SearchItem['recall']): string {
@@ -449,7 +456,7 @@ const dateOptions = [
         heading.append(detailLink);
 
         const reason = createCardLine(reasonLabelFor(recall), reasonTextFor(recall), 'result-card-line result-card-reason');
-        const action = createCardLine('Action', actionTextFor(recall), 'result-card-line result-card-action');
+        const action = createCardLine(getRecallActionLabel(recall.source), actionTextFor(recall), 'result-card-line result-card-action');
         const product = createCardLine('Product', productTextFor(recall));
         const brand = createCardLine('Brand/company', brandTextFor(recall));
 
@@ -516,11 +523,7 @@ const dateOptions = [
 
       function describeFilters(state: SearchState): string {
         const parts = [
-          state.source === 'all'
-            ? 'All markets'
-            : state.source === 'FDA'
-              ? 'United States · FDA / openFDA'
-              : 'United States · CPSC',
+          state.source === 'all' ? 'All markets' : getRecallSourceLabel(state.source),
           state.category === 'all'
             ? 'all product types'
             : state.category === 'general'

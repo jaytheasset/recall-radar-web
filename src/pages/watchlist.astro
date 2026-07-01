@@ -145,6 +145,13 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
     <script>
       import { SEARCH_RESULTS_DISCLAIMER, searchRecalls } from '../lib/recall-search';
       import {
+        getRecallActionLabel,
+        getRecallDefaultActionFallback,
+        getRecallReasonLabel,
+        getRecallSourceLabel,
+        getRecallSourcePlaceholder
+      } from '../lib/recall-sources';
+      import {
         clearWatchlist,
         loadWatchlist,
         removeWatchlistItem,
@@ -191,15 +198,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       }
 
       function sourceLabel(source: WatchlistSearchItem['source']): string {
-        if (source === 'FDA') {
-          return 'United States · FDA / openFDA';
-        }
-
-        if (source === 'CPSC') {
-          return 'United States · CPSC';
-        }
-
-        return 'All markets';
+        return source === 'all' ? 'All markets' : getRecallSourceLabel(source);
       }
 
       function createTag(text: string, className = 'tag'): HTMLElement {
@@ -226,13 +225,13 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 
         const placeholder = document.createElement('span');
         placeholder.className = 'image-placeholder';
-        placeholder.textContent = recall.source === 'FDA' ? 'FDA food notice' : 'Recall notice';
+        placeholder.textContent = getRecallSourcePlaceholder(recall.source);
         link.append(placeholder);
         return link;
       }
 
       function reasonLabelFor(recall: (typeof siteRecalls)[number]): string {
-        return recall.source === 'CPSC' ? 'Hazard' : 'Reason';
+        return getRecallReasonLabel(recall.source);
       }
 
       function reasonTextFor(recall: (typeof siteRecalls)[number]): string {
@@ -240,7 +239,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       }
 
       function actionTextFor(recall: (typeof siteRecalls)[number]): string {
-        return recall.remedy || 'Review the official notice for current instructions.';
+        return recall.remedy || getRecallDefaultActionFallback(recall.source);
       }
 
       function createCardLine(label: string, value: string, className = 'result-card-line'): HTMLElement {
@@ -274,7 +273,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         heading.append(link);
 
         const reason = createCardLine(reasonLabelFor(recall), reasonTextFor(recall), 'result-card-line result-card-reason');
-        const action = createCardLine('Action', actionTextFor(recall), 'result-card-line result-card-action');
+        const action = createCardLine(getRecallActionLabel(recall.source), actionTextFor(recall), 'result-card-line result-card-action');
         const product = createCardLine('Product', recall.primaryProductName);
         const brand = createCardLine('Brand/company', recall.primaryBrand);
 

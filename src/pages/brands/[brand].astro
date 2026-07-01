@@ -1,5 +1,6 @@
 ---
 import { brandGroups } from '../../lib/recall-data';
+import { getRecallSourcePlaceholder } from '../../lib/recall-sources';
 import '../../styles/global.css';
 
 export function getStaticPaths() {
@@ -84,7 +85,7 @@ const description = `Indexed recall notices linked to ${brand}, with related pro
                 {recall.primaryImageUrl ? (
                   <img src={recall.primaryImageUrl} alt={recall.primaryImageAlt || recall.title} loading="lazy" />
                 ) : (
-                  <span class="image-placeholder">{recall.source === 'FDA' ? 'FDA food notice' : 'Recall notice'}</span>
+                  <span class="image-placeholder">{getRecallSourcePlaceholder(recall.source)}</span>
                 )}
               </a>
               <div class="card-body">
