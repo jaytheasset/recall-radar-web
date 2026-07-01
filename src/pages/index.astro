@@ -15,6 +15,8 @@ const title = 'Product Recall Checker | Recall Radar';
 const description =
   'Recall Radar is a local product recall checker for searching CPSC and FDA/openFDA local data by brand, product, category, or keyword.';
 const featuredRecalls = siteRecalls.slice(0, 6);
+const latestCpscRecalls = siteRecalls.filter((recall) => recall.source === 'CPSC').slice(0, 3);
+const latestFdaRecalls = siteRecalls.filter((recall) => recall.source === 'FDA').slice(0, 3);
 const featuredBrands = brandGroups.slice(0, 24);
 ---
 
@@ -45,15 +47,20 @@ const featuredBrands = brandGroups.slice(0, 24);
           <p class="lead">Search product recalls by brand, model, category, or keyword.</p>
           <div class="meta-row data-source-row">
             <span class="status-pill">{dataSourceLabel}</span>
-            <span class="tag">
-              {usingProcessedLocalData ? `${processedLocalRecordCount} local records` : 'Demo fallback records'}
-            </span>
-            {usingProcessedLocalData ? (
-              <>
-                <span class="tag">{processedCpscRecordCount} CPSC</span>
-                <span class="tag">{processedFdaRecordCount} FDA/openFDA</span>
-              </>
-            ) : null}
+          </div>
+          <div class="metric-grid" aria-label="Local recall record counts">
+            <div class="metric">
+              <strong>{usingProcessedLocalData ? processedLocalRecordCount : featuredRecalls.length}</strong>
+              <span>{usingProcessedLocalData ? 'Total local records' : 'Demo fallback records'}</span>
+            </div>
+            <div class="metric">
+              <strong>{processedCpscRecordCount}</strong>
+              <span>CPSC records</span>
+            </div>
+            <div class="metric">
+              <strong>{processedFdaRecordCount}</strong>
+              <span>FDA/openFDA records</span>
+            </div>
           </div>
           <div class="category-band" aria-label="Recall categories">
             {categoryRoutes.map((route) => (
@@ -73,7 +80,53 @@ const featuredBrands = brandGroups.slice(0, 24);
             </label>
             <button type="submit">Check</button>
           </form>
+          <div class="example-searches" aria-label="Example searches">
+            <span>Examples:</span>
+            <a class="tag" href="/checker?q=arizer">arizer</a>
+            <a class="tag" href="/checker?q=pistachio&source=FDA">pistachio in FDA</a>
+            <a class="tag" href="/checker?q=smoke&source=CPSC">smoke in CPSC</a>
+          </div>
         </section>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Latest Recalls by Source</h2>
+            <p class="section-note">Separate local CPSC and FDA/openFDA views from the merged local data file.</p>
+          </div>
+          <a class="button-link button-secondary" href="/checker">Search all</a>
+        </div>
+        <div class="source-latest-grid">
+          <section class="source-latest-column" aria-labelledby="latest-cpsc-title">
+            <h3 id="latest-cpsc-title">Local CPSC data</h3>
+            {latestCpscRecalls.map((recall) => (
+              <article class="recall-card">
+                <div class="meta-row">
+                  <span class="tag source-tag">{recall.sourceLabel}</span>
+                  <span class="tag">{recall.recallDate}</span>
+                </div>
+                <h3><a href={recall.detailPath}>{recall.title}</a></h3>
+                <p>{recall.hazard || recall.description}</p>
+                <a href={recall.detailPath}>Details</a>
+              </article>
+            ))}
+          </section>
+          <section class="source-latest-column" aria-labelledby="latest-fda-title">
+            <h3 id="latest-fda-title">Local FDA/openFDA data</h3>
+            {latestFdaRecalls.map((recall) => (
+              <article class="recall-card">
+                <div class="meta-row">
+                  <span class="tag source-tag">{recall.sourceLabel}</span>
+                  <span class="tag">{recall.recallDate}</span>
+                </div>
+                <h3><a href={recall.detailPath}>{recall.title}</a></h3>
+                <p>{recall.hazard || recall.reason || recall.description}</p>
+                <a href={recall.detailPath}>Details</a>
+              </article>
+            ))}
+          </section>
+        </div>
       </section>
 
       <section class="section">

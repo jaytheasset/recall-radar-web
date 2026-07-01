@@ -75,6 +75,12 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 
 ## Search Cases
 
+- Confirm `/checker?q=arizer` reads the URL query on load and renders local results.
+- Confirm `/checker?q=pistachio&source=FDA` applies the FDA/openFDA source filter.
+- Confirm `/checker?q=smoke&source=CPSC` applies the CPSC source filter.
+- Confirm source, category, sort, and date filter changes update the URL query string.
+- Confirm category filters include all, baby/kids, battery/electronics, food/allergy, household/appliance, food, and general.
+- Confirm sort options include best match, newest first, and oldest first.
 - A full CPSC recall title returns an exact local match.
 - A real CPSC brand name returns an exact or possible local match.
 - A real FDA recalling firm or food product returns an exact or possible local match when FDA records exist.

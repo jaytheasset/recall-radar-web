@@ -74,6 +74,7 @@ function possibleFields(recall: SiteRecall): string {
 function relatedFields(recall: SiteRecall): string {
   return searchableText([
     recall.category,
+    recall.rawCategory,
     recall.categoryLabel,
     recall.hazard,
     recall.remedy,
@@ -84,6 +85,8 @@ function relatedFields(recall: SiteRecall): string {
     recall.status ?? '',
     recall.description,
     recall.affectedUnits,
+    recall.source,
+    recall.sourceUrl,
     recall.sourceLabel
   ]);
 }

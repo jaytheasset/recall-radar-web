@@ -120,7 +120,18 @@ Example:
 
 Match types are `exact`, `possible`, `related`, and `none`.
 
-The checker renders grouped local results with match badges, recall date, source label, product/brand context, hazard summary, and detail links. Keep the required no-match disclaimer exact wherever search results appear.
+The checker renders grouped local results with match badges, recall date, source label, product/brand context, hazard summary, category, and detail links. Keep the required no-match disclaimer exact wherever search results appear.
+
+Phase 7 added local-only search controls on `/checker`:
+
+- keyword/product/brand/model/UPC/lot text query
+- source filter for all records, CPSC, or FDA/openFDA
+- category filter for baby/kids, battery/electronics, food/allergy, household/appliance, food, and general records
+- sort controls for best match, newest first, and oldest first
+- optional date windows for last 30 days, last 90 days, and all time
+- URL query state such as `/checker?q=arizer`, `/checker?q=pistachio&source=FDA`, and `/checker?q=smoke&source=CPSC`
+
+The checker remains static and local-only. It embeds the local processed recall records at build time and does not add a server, API route, database, or external data call.
 
 ## Guardrails
 

@@ -144,13 +144,15 @@ label {
 }
 
 input,
+select,
 button {
   min-height: 46px;
   border-radius: 6px;
   font: inherit;
 }
 
-input {
+input,
+select {
   width: 100%;
   border: 1px solid var(--border);
   padding: 0.75rem 0.9rem;
@@ -204,6 +206,34 @@ button:hover,
   margin: 1rem 0;
 }
 
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.metric {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem;
+  background: var(--surface);
+}
+
+.metric strong {
+  display: block;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.metric span {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
 .tag,
 .status-pill {
   display: inline-flex;
@@ -251,6 +281,32 @@ button:hover,
 .section-note {
   margin: 0.4rem 0 0;
   color: var(--muted);
+}
+
+.checker-search-form {
+  align-items: end;
+}
+
+.search-query-field {
+  min-width: 0;
+}
+
+.filter-grid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.example-searches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.9rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .grid {
@@ -355,6 +411,18 @@ button:hover,
   margin-top: 1.2rem;
 }
 
+.source-latest-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.source-latest-column {
+  display: grid;
+  align-content: start;
+  gap: 0.85rem;
+}
+
 .detail-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
@@ -425,7 +493,13 @@ button:hover,
   }
 
   .grid,
+  .metric-grid,
+  .source-latest-grid,
   .category-band {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filter-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -437,6 +511,9 @@ button:hover,
   }
 
   .grid,
+  .metric-grid,
+  .source-latest-grid,
+  .filter-grid,
   .category-band {
     grid-template-columns: 1fr;
   }

@@ -12,8 +12,8 @@ const recalls = getRecallsByCategory('food-allergy').sort((a, b) => {
 
   return b.recallDate.localeCompare(a.recallDate);
 });
-const fdaFoodRecalls = recalls.filter((recall) => recall.source === 'FDA').length;
-const cpscFoodRecalls = recalls.filter((recall) => recall.source === 'CPSC').length;
+const fdaRecalls = recalls.filter((recall) => recall.source === 'FDA');
+const cpscRelevantRecalls = recalls.filter((recall) => recall.source === 'CPSC');
 ---
 
 <html lang="en">
@@ -41,17 +41,24 @@ const cpscFoodRecalls = recalls.filter((recall) => recall.source === 'CPSC').len
         <div class="meta-row data-source-row">
           <span class="status-pill">Local FDA/openFDA + CPSC data</span>
           <span class="tag">{recalls.length} record{recalls.length === 1 ? '' : 's'}</span>
-          <span class="tag">{fdaFoodRecalls} FDA/openFDA food</span>
-          <span class="tag">{cpscFoodRecalls} CPSC food/allergy</span>
+          <span class="tag">{fdaRecalls.length} FDA/openFDA food</span>
+          <span class="tag">{cpscRelevantRecalls.length} CPSC food/allergy</span>
         </div>
         <h1>Food Allergy Recalls</h1>
-        <p class="lead">Local recall pages for FDA/openFDA food records, undeclared allergens, and packaged food notices.</p>
+        <p class="lead">Local recall pages focused on FDA/openFDA food records, undeclared allergens, and packaged food notices. Relevant CPSC food/allergy records remain visible when classified locally.</p>
       </section>
 
       <section class="section">
-        {recalls.length ? (
+        <div class="section-header">
+          <div>
+            <h2>FDA/openFDA Food Records</h2>
+            <p class="section-note">Food and allergen notices from the local FDA/openFDA processed data.</p>
+          </div>
+          <span class="tag">{fdaRecalls.length} record{fdaRecalls.length === 1 ? '' : 's'}</span>
+        </div>
+        {fdaRecalls.length ? (
           <div class="grid">
-            {recalls.map((recall) => (
+            {fdaRecalls.map((recall) => (
               <article class="recall-card">
                 <div class="meta-row">
                   <span class="tag source-tag">{recall.sourceLabel}</span>
@@ -72,10 +79,42 @@ const cpscFoodRecalls = recalls.filter((recall) => recall.source === 'CPSC').len
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No local FDA/openFDA or CPSC records are currently classified in this category.</p>
+            <p>No local FDA/openFDA records are currently classified in this category.</p>
           </div>
         )}
       </section>
+
+      {cpscRelevantRecalls.length ? (
+        <section class="section">
+          <div class="section-header">
+            <div>
+              <h2>Relevant CPSC Food/Allergy Records</h2>
+              <p class="section-note">CPSC records shown only when local classification finds a food or allergy signal.</p>
+            </div>
+            <span class="tag">{cpscRelevantRecalls.length} record{cpscRelevantRecalls.length === 1 ? '' : 's'}</span>
+          </div>
+          <div class="grid">
+            {cpscRelevantRecalls.map((recall) => (
+              <article class="recall-card">
+                <div class="meta-row">
+                  <span class="tag source-tag">{recall.sourceLabel}</span>
+                  <span class="tag">{recall.recallDate}</span>
+                </div>
+                <h3><a href={recall.detailPath}>{recall.title}</a></h3>
+                <p>Product: {recall.primaryProductName}</p>
+                <p>Brand/company: {recall.primaryBrand}</p>
+                <p>Hazard: {recall.hazard || 'Not listed in local data'}</p>
+                <div class="link-row">
+                  {recall.primaryBrandSlug ? (
+                    <a href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} recall page</a>
+                  ) : null}
+                  <a href={recall.detailPath}>Details</a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </main>
 
     <footer class="page-footer">

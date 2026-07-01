@@ -21,6 +21,7 @@ export type SiteRecall = {
   productNames: string[];
   primaryProductName: string;
   category: SiteRecallCategory;
+  rawCategory: string;
   categoryLabel: string;
   hazard: string;
   remedy: string;
@@ -233,6 +234,7 @@ function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
     productNames,
     primaryProductName,
     category,
+    rawCategory: record.category,
     categoryLabel: categoryLabels[category],
     hazard: record.hazard,
     remedy: record.remedy,
@@ -267,6 +269,7 @@ function toSiteRecallFromMock(recall: MockRecall): SiteRecall {
     productNames: [recall.productName],
     primaryProductName: recall.productName,
     category: recall.category,
+    rawCategory: recall.category,
     categoryLabel: recall.categoryLabel,
     hazard: recall.hazard,
     remedy: recall.remedy,

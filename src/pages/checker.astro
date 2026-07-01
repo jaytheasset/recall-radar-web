@@ -29,6 +29,7 @@ const checkerRecalls = siteRecalls.map((recall) => ({
   productNames: recall.productNames,
   primaryProductName: recall.primaryProductName,
   category: recall.category,
+  rawCategory: recall.rawCategory,
   categoryLabel: recall.categoryLabel,
   hazard: recall.hazard,
   remedy: recall.remedy,
@@ -45,6 +46,30 @@ const checkerRecalls = siteRecalls.map((recall) => ({
   status: recall.status
 }));
 const checkerRecallsJson = JSON.stringify(checkerRecalls);
+const sourceOptions = [
+  { value: 'all', label: 'All sources' },
+  { value: 'CPSC', label: 'CPSC' },
+  { value: 'FDA', label: 'FDA/openFDA' }
+];
+const categoryOptions = [
+  { value: 'all', label: 'All categories' },
+  { value: 'baby-kids', label: 'Baby and kids' },
+  { value: 'battery-electronics', label: 'Battery and electronics' },
+  { value: 'food-allergy', label: 'Food and allergy' },
+  { value: 'household-appliance', label: 'Household appliance' },
+  { value: 'food', label: 'Food' },
+  { value: 'general', label: 'General' }
+];
+const sortOptions = [
+  { value: 'best', label: 'Best match' },
+  { value: 'newest', label: 'Newest first' },
+  { value: 'oldest', label: 'Oldest first' }
+];
+const dateOptions = [
+  { value: 'all', label: 'All time' },
+  { value: '30', label: 'Last 30 days' },
+  { value: '90', label: 'Last 90 days' }
+];
 ---
 
 <html lang="en">
@@ -86,23 +111,56 @@ const checkerRecallsJson = JSON.stringify(checkerRecalls);
 
         <section class="search-panel" aria-labelledby="checker-form-title">
           <h2 id="checker-form-title">Check Local Recall Data</h2>
-          <form id="recall-search-form" class="search-form">
-            <label>
+          <form id="recall-search-form" class="search-form checker-search-form">
+            <label class="search-query-field">
               Search
               <input
                 id="recall-query"
                 name="q"
                 type="search"
-                placeholder="Try smoke detector, lithium, crib, allergy, or a brand"
+                placeholder="Keyword, product, brand, model, UPC, lot, or recall number"
                 autocomplete="off"
               />
             </label>
-            <button type="submit">Check</button>
+            <button type="submit">Search</button>
+            <div class="filter-grid" aria-label="Local recall search filters">
+              <label>
+                Source
+                <select id="source-filter" name="source">
+                  {sourceOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                </select>
+              </label>
+              <label>
+                Category
+                <select id="category-filter" name="category">
+                  {categoryOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                </select>
+              </label>
+              <label>
+                Sort
+                <select id="sort-filter" name="sort">
+                  {sortOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                </select>
+              </label>
+              <label>
+                Date
+                <select id="date-filter" name="date">
+                  {dateOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                </select>
+              </label>
+            </div>
           </form>
+          <div class="example-searches" aria-label="Example searches">
+            <span>Examples:</span>
+            <a class="tag" href="/checker?q=arizer">arizer</a>
+            <a class="tag" href="/checker?q=pistachio&source=FDA">pistachio in FDA</a>
+            <a class="tag" href="/checker?q=smoke&source=CPSC">smoke in CPSC</a>
+          </div>
           <div id="search-results" class="notice-panel result-panel" hidden>
             <div class="meta-row">
               <span id="result-match" class="status-pill">No local match</span>
               <span id="result-count" class="tag">0 results</span>
+              <span id="result-filter-summary" class="tag">All local data</span>
             </div>
             <p id="result-summary"></p>
             <p id="result-disclaimer"></p>
@@ -149,14 +207,135 @@ const checkerRecallsJson = JSON.stringify(checkerRecalls);
         : [];
       const form = document.querySelector<HTMLFormElement>('#recall-search-form');
       const input = document.querySelector<HTMLInputElement>('#recall-query');
+      const sourceFilter = document.querySelector<HTMLSelectElement>('#source-filter');
+      const categoryFilter = document.querySelector<HTMLSelectElement>('#category-filter');
+      const sortFilter = document.querySelector<HTMLSelectElement>('#sort-filter');
+      const dateFilter = document.querySelector<HTMLSelectElement>('#date-filter');
       const panel = document.querySelector<HTMLElement>('#search-results');
       const matchLabel = document.querySelector<HTMLElement>('#result-match');
       const countLabel = document.querySelector<HTMLElement>('#result-count');
+      const filterSummary = document.querySelector<HTMLElement>('#result-filter-summary');
       const summary = document.querySelector<HTMLElement>('#result-summary');
       const disclaimer = document.querySelector<HTMLElement>('#result-disclaimer');
       const list = document.querySelector<HTMLElement>('#result-list');
 
       type SearchItem = ReturnType<typeof searchRecalls>['items'][number];
+      type SourceFilter = 'all' | 'CPSC' | 'FDA';
+      type CategoryFilter =
+        | 'all'
+        | 'baby-kids'
+        | 'battery-electronics'
+        | 'food-allergy'
+        | 'household-appliance'
+        | 'food'
+        | 'general';
+      type SortFilter = 'best' | 'newest' | 'oldest';
+      type DateFilter = 'all' | '30' | '90';
+      type SearchState = {
+        query: string;
+        source: SourceFilter;
+        category: CategoryFilter;
+        sort: SortFilter;
+        date: DateFilter;
+      };
+
+      const sourceValues: SourceFilter[] = ['all', 'CPSC', 'FDA'];
+      const categoryValues: CategoryFilter[] = [
+        'all',
+        'baby-kids',
+        'battery-electronics',
+        'food-allergy',
+        'household-appliance',
+        'food',
+        'general'
+      ];
+      const sortValues: SortFilter[] = ['best', 'newest', 'oldest'];
+      const dateValues: DateFilter[] = ['all', '30', '90'];
+
+      function isOneOf<T extends string>(value: string | null, values: readonly T[], fallback: T): T {
+        return value && values.includes(value as T) ? (value as T) : fallback;
+      }
+
+      function filterRecalls(state: SearchState): typeof siteRecalls {
+        const now = Date.now();
+        const cutoff =
+          state.date === 'all' ? 0 : now - Number(state.date) * 24 * 60 * 60 * 1000;
+
+        return siteRecalls.filter((recall) => {
+          const sourceMatches = state.source === 'all' || recall.source === state.source;
+          const categoryMatches =
+            state.category === 'all' ||
+            (state.category === 'food' && (recall.rawCategory === 'food' || recall.source === 'FDA')) ||
+            (state.category === 'general' && recall.category === 'general-consumer-product') ||
+            recall.category === state.category;
+          const recallTime = Date.parse(recall.recallDate);
+          const dateMatches = state.date === 'all' || (Number.isFinite(recallTime) && recallTime >= cutoff);
+
+          return sourceMatches && categoryMatches && dateMatches;
+        });
+      }
+
+      function readState(): SearchState {
+        return {
+          query: input?.value.trim() ?? '',
+          source: isOneOf(sourceFilter?.value ?? null, sourceValues, 'all'),
+          category: isOneOf(categoryFilter?.value ?? null, categoryValues, 'all'),
+          sort: isOneOf(sortFilter?.value ?? null, sortValues, 'best'),
+          date: isOneOf(dateFilter?.value ?? null, dateValues, 'all')
+        };
+      }
+
+      function writeStateFromUrl(): SearchState {
+        const params = new URLSearchParams(window.location.search);
+        const state: SearchState = {
+          query: params.get('q')?.trim() ?? '',
+          source: isOneOf(params.get('source'), sourceValues, 'all'),
+          category: isOneOf(params.get('category'), categoryValues, 'all'),
+          sort: isOneOf(params.get('sort'), sortValues, 'best'),
+          date: isOneOf(params.get('date'), dateValues, 'all')
+        };
+
+        if (input) {
+          input.value = state.query;
+        }
+        if (sourceFilter) {
+          sourceFilter.value = state.source;
+        }
+        if (categoryFilter) {
+          categoryFilter.value = state.category;
+        }
+        if (sortFilter) {
+          sortFilter.value = state.sort;
+        }
+        if (dateFilter) {
+          dateFilter.value = state.date;
+        }
+
+        return state;
+      }
+
+      function syncUrl(state: SearchState): void {
+        const url = new URL(window.location.href);
+        const params = url.searchParams;
+
+        state.query ? params.set('q', state.query) : params.delete('q');
+        state.source === 'all' ? params.delete('source') : params.set('source', state.source);
+        state.category === 'all' ? params.delete('category') : params.set('category', state.category);
+        state.sort === 'best' ? params.delete('sort') : params.set('sort', state.sort);
+        state.date === 'all' ? params.delete('date') : params.set('date', state.date);
+
+        window.history.replaceState({}, '', url);
+      }
+
+      function hasActiveState(state: SearchState): boolean {
+        return Boolean(
+          state.query ||
+            state.source !== 'all' ||
+            state.category !== 'all' ||
+            state.sort !== 'best' ||
+            state.date !== 'all'
+        );
+      }
 
       function createTag(text: string, className = 'tag'): HTMLElement {
         const tag = document.createElement('span');
@@ -179,14 +358,20 @@ const checkerRecallsJson = JSON.stringify(checkerRecalls);
         detailLink.textContent = recall.title;
         heading.append(detailLink);
 
-        const summary = document.createElement('p');
+        const productSummary = document.createElement('p');
+        const productText = recall.productNames.length
+          ? recall.productNames.slice(0, 3).join(', ')
+          : recall.primaryProductName;
         const brandText = recall.displayBrandNames.length
-          ? recall.displayBrandNames.join(', ')
+          ? recall.displayBrandNames.slice(0, 3).join(', ')
           : recall.primaryBrand;
-        summary.textContent = `Product: ${recall.primaryProductName}. Brand/company: ${brandText}.`;
+        productSummary.textContent = `Product: ${productText}. Brand/company: ${brandText}.`;
 
         const hazard = document.createElement('p');
-        hazard.textContent = recall.hazard ? `Hazard: ${recall.hazard}` : 'Hazard: Not listed in local data.';
+        hazard.textContent =
+          recall.hazard || recall.reason
+            ? `Hazard/reason: ${recall.hazard || recall.reason}`
+            : 'Hazard/reason: Not listed in local data.';
 
         const links = document.createElement('div');
         links.className = 'link-row';
@@ -203,23 +388,34 @@ const checkerRecallsJson = JSON.stringify(checkerRecalls);
         details.textContent = 'Details';
 
         meta.append(
-          createTag(MATCH_LABELS[match], 'tag match-tag'),
+          createTag(MATCH_LABELS[match].replace(' local match', ''), 'tag match-tag'),
           createTag(recall.sourceLabel, 'tag source-tag'),
           createTag(recall.recallDate),
           createTag(recall.categoryLabel)
         );
         links.append(details);
-        article.append(meta, heading, summary, hazard, links);
+        article.append(meta, heading, productSummary, hazard, links);
 
         return article;
       }
 
-      function createResultGroup(match: SearchItem['match'], items: SearchItem[]): HTMLElement {
+      function sortItems(items: SearchItem[], sort: SortFilter): SearchItem[] {
+        if (sort === 'best') {
+          return items;
+        }
+
+        return [...items].sort((a, b) => {
+          const comparison = a.recall.recallDate.localeCompare(b.recall.recallDate);
+          return sort === 'newest' ? -comparison : comparison;
+        });
+      }
+
+      function createResultGroup(title: string, items: SearchItem[]): HTMLElement {
         const group = document.createElement('section');
         group.className = 'result-group';
 
         const heading = document.createElement('h3');
-        heading.textContent = `${MATCH_LABELS[match]} (${items.length})`;
+        heading.textContent = `${title} (${items.length})`;
 
         const cards = document.createElement('div');
         cards.className = 'result-list';
@@ -229,48 +425,87 @@ const checkerRecallsJson = JSON.stringify(checkerRecalls);
         return group;
       }
 
-      function renderSearch(query: string): void {
-        if (!panel || !matchLabel || !countLabel || !summary || !disclaimer || !list) {
+      function describeFilters(state: SearchState): string {
+        const parts = [
+          state.source === 'all' ? 'All sources' : state.source === 'FDA' ? 'FDA/openFDA' : 'CPSC',
+          state.category === 'all'
+            ? 'all categories'
+            : state.category === 'general'
+              ? 'general'
+              : state.category.replace(/-/g, ' '),
+          state.date === 'all' ? 'all time' : `last ${state.date} days`,
+          state.sort === 'best' ? 'best match' : state.sort === 'newest' ? 'newest first' : 'oldest first'
+        ];
+
+        return parts.join(' / ');
+      }
+
+      function renderSearch(state: SearchState): void {
+        if (!panel || !matchLabel || !countLabel || !filterSummary || !summary || !disclaimer || !list) {
           return;
         }
 
-        const result = searchRecalls(query, siteRecalls);
+        const filteredRecalls = filterRecalls(state);
         panel.hidden = false;
+        filterSummary.textContent = describeFilters(state);
+        disclaimer.textContent = NO_MATCH_DISCLAIMER;
+
+        if (!state.query) {
+          panel.dataset.match = 'none';
+          matchLabel.textContent = 'Search local data';
+          countLabel.textContent = `${filteredRecalls.length} available record${
+            filteredRecalls.length === 1 ? '' : 's'
+          }`;
+          summary.textContent =
+            'Enter a product, brand, model, UPC, lot, recall number, or keyword to search the filtered local recall data.';
+          list.replaceChildren();
+          return;
+        }
+
+        const result = searchRecalls(state.query, filteredRecalls);
+        const sortedItems = sortItems(result.items, state.sort);
         panel.dataset.match = result.match;
         matchLabel.textContent = MATCH_LABELS[result.match];
-        countLabel.textContent = `${result.recalls.length} result${result.recalls.length === 1 ? '' : 's'}`;
+        countLabel.textContent = `${sortedItems.length} result${sortedItems.length === 1 ? '' : 's'}`;
         summary.textContent =
           result.match === 'none'
-            ? 'No local recall matched that search.'
-            : `Local matches for "${query}".`;
-        disclaimer.textContent = NO_MATCH_DISCLAIMER;
-        const groupedResults = (['exact', 'possible', 'related'] as const)
-          .map((match) => ({
-            match,
-            items: result.items.filter((item) => item.match === match).slice(0, 25)
-          }))
-          .filter((group) => group.items.length > 0)
-          .map((group) => createResultGroup(group.match, group.items));
-        list.replaceChildren(...groupedResults);
+            ? `No local recall matched "${state.query}" with the selected filters.`
+            : `Local matches for "${state.query}" with the selected filters.`;
+
+        if (state.sort === 'best') {
+          const groupedResults = (['exact', 'possible', 'related'] as const)
+            .map((match) => ({
+              match,
+              items: sortedItems.filter((item) => item.match === match)
+            }))
+            .filter((group) => group.items.length > 0)
+            .map((group) => createResultGroup(MATCH_LABELS[group.match], group.items));
+          list.replaceChildren(...groupedResults);
+        } else {
+          list.replaceChildren(
+            ...(sortedItems.length ? [createResultGroup('Sorted local matches', sortedItems)] : [])
+          );
+        }
+      }
+
+      function updateSearch(): void {
+        const state = readState();
+        syncUrl(state);
+        renderSearch(state);
       }
 
       form?.addEventListener('submit', (event) => {
         event.preventDefault();
-        const query = input?.value.trim() ?? '';
-        const url = new URL(window.location.href);
-        if (query) {
-          url.searchParams.set('q', query);
-        } else {
-          url.searchParams.delete('q');
-        }
-        window.history.replaceState({}, '', url);
-        renderSearch(query);
+        updateSearch();
       });
 
-      const initialQuery = new URLSearchParams(window.location.search).get('q');
-      if (initialQuery && input) {
-        input.value = initialQuery;
-        renderSearch(initialQuery);
+      [sourceFilter, categoryFilter, sortFilter, dateFilter].forEach((filter) => {
+        filter?.addEventListener('change', updateSearch);
+      });
+
+      const initialState = writeStateFromUrl();
+      if (hasActiveState(initialState)) {
+        renderSearch(initialState);
       }
     </script>
   </body>
