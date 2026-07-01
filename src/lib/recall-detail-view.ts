@@ -1,0 +1,362 @@
+import processedRecallData from '../../data/processed/recalls.json';
+import type { NormalizedRecall, ProcessedRecallFile, RecallImage } from '../data/recall-types';
+import type { SiteRecall } from './recall-data';
+import { getCompanyRecallHistory, getRelatedRecalls } from './related-recalls';
+
+type RawObject = Record<string, unknown>;
+
+export type DetailFact = {
+  label: string;
+  value: string | string[];
+};
+
+export type RecallDetailView = {
+  displayTitle: string;
+  officialTitle: string;
+  productName: string;
+  brandName: string;
+  sourceBadge: string;
+  recallDate: string;
+  recallNumber: string;
+  categoryLabel: string;
+  productImages: RecallImage[];
+  imageCaptions: string[];
+  primaryImageAlt: string;
+  introSentence: string;
+  reason: string;
+  action: string;
+  actionDetail: string;
+  actionParagraphs: string[];
+  description: string;
+  identificationDetails: DetailFact[];
+  consumerContact: string;
+  soldAt: string[];
+  incidents: string[];
+  importer: string[];
+  manufacturer: string[];
+  manufacturedIn: string[];
+  units: string;
+  officialSourceLabel: string;
+  officialSourceUrl: string;
+  fdaDetails: DetailFact[];
+  companyRecallHistory: SiteRecall[];
+  relatedRecalls: SiteRecall[];
+};
+
+const processedFile = processedRecallData as ProcessedRecallFile;
+const processedRecordById = new Map<string, NormalizedRecall>(
+  (Array.isArray(processedFile.records) ? processedFile.records : []).map((record) => [record.id, record])
+);
+
+type SourceDetailView = Omit<
+  RecallDetailView,
+  | 'sourceBadge'
+  | 'categoryLabel'
+  | 'productImages'
+  | 'primaryImageAlt'
+  | 'introSentence'
+  | 'officialSourceLabel'
+  | 'officialSourceUrl'
+  | 'companyRecallHistory'
+  | 'relatedRecalls'
+>;
+
+function isObject(value: unknown): value is RawObject {
+  return typeof value === 'object' && value !== null;
+}
+
+function cleanText(value?: string | null): string {
+  return (value ?? '').replace(/\s+/g, ' ').trim();
+}
+
+function safeText(value: unknown): string {
+  return typeof value === 'string' || typeof value === 'number' ? cleanText(String(value)) : '';
+}
+
+function uniqueNonEmpty(values: string[]): string[] {
+  return [...new Set(values.map(cleanText).filter(Boolean))];
+}
+
+function firstNonEmpty(values: string[], fallback = ''): string {
+  return values.map(cleanText).find(Boolean) ?? fallback;
+}
+
+function rawFor(recall: SiteRecall): RawObject {
+  const record = processedRecordById.get(recall.id);
+  return isObject(record?.raw) ? record.raw : {};
+}
+
+function rawArray(raw: RawObject, key: string): RawObject[] {
+  const value = raw[key];
+  return Array.isArray(value) ? value.filter(isObject) : [];
+}
+
+function rawText(raw: RawObject, key: string): string {
+  return safeText(raw[key]);
+}
+
+function valuesFrom(raw: RawObject, key: string, property = 'Name'): string[] {
+  return uniqueNonEmpty(rawArray(raw, key).map((item) => safeText(item[property])));
+}
+
+function addFact(facts: DetailFact[], label: string, value: string | string[]): void {
+  const cleaned = Array.isArray(value) ? uniqueNonEmpty(value) : cleanText(value);
+  if (Array.isArray(cleaned) ? cleaned.length > 0 : Boolean(cleaned)) {
+    facts.push({ label, value: cleaned });
+  }
+}
+
+function formatDate(value: string): string {
+  const text = cleanText(value);
+  if (!text) {
+    return '';
+  }
+
+  const date =
+    /^\d{8}$/.test(text)
+      ? new Date(`${text.slice(0, 4)}-${text.slice(4, 6)}-${text.slice(6, 8)}T00:00:00Z`)
+      : new Date(text.includes('T') ? text : `${text}T00:00:00Z`);
+
+  if (Number.isNaN(date.getTime())) {
+    return text;
+  }
+
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC'
+  }).format(date);
+}
+
+function compactTitle(value: string): string {
+  return cleanText(value)
+    .replace(/\s*,?\s*UPC\b.*$/i, '')
+    .replace(/\s+Distribution:\b.*$/i, '')
+    .replace(/\s+recalled by\b.*$/i, '')
+    .replace(/\s+recalls?\b.*$/i, '')
+    .replace(/\s+recalled\b.*$/i, '')
+    .replace(/\s+due to\b.*$/i, '')
+    .replace(/\s+risk of\b.*$/i, '')
+    .replace(/\s+because of\b.*$/i, '')
+    .trim();
+}
+
+function limitWithoutEllipsis(value: string, maxLength = 92): string {
+  const text = cleanText(value);
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  const clipped = text.slice(0, maxLength);
+  const lastSpace = clipped.lastIndexOf(' ');
+
+  return clipped.slice(0, lastSpace > Math.floor(maxLength * 0.55) ? lastSpace : maxLength).trim();
+}
+
+function displayTitleFor(productName: string, officialTitle: string): string {
+  const titleBase = limitWithoutEllipsis(compactTitle(productName) || compactTitle(officialTitle) || 'Product');
+  return `${titleBase} Recall`;
+}
+
+function sourceBadgeFor(recall: SiteRecall): string {
+  if (recall.source === 'FDA') {
+    return 'FDA Recall';
+  }
+
+  if (recall.source === 'CPSC') {
+    return 'CPSC Recall';
+  }
+
+  return 'Demo Recall';
+}
+
+export function recallSourceBadge(recall: SiteRecall): string {
+  return sourceBadgeFor(recall);
+}
+
+function officialSourceLabelFor(recall: SiteRecall): string {
+  return recall.source === 'FDA' ? 'Official record: FDA/openFDA' : 'Official notice: CPSC';
+}
+
+function cpscRecallNumber(value: string): string {
+  const clean = cleanText(value);
+  if (/^\d{5}$/.test(clean)) {
+    return `${clean.slice(0, 2)}-${clean.slice(2)}`;
+  }
+
+  return clean;
+}
+
+function productUnits(raw: RawObject, recall: SiteRecall): string {
+  return firstNonEmpty(
+    [
+      ...rawArray(raw, 'Products').map((item) => safeText(item.NumberOfUnits)),
+      recall.affectedUnits,
+      recall.productQuantity ?? ''
+    ]
+  );
+}
+
+function imageCaptions(raw: RawObject, recall: SiteRecall): string[] {
+  return uniqueNonEmpty([
+    ...rawArray(raw, 'Images').map((item) => safeText(item.Caption) || safeText(item.caption)),
+    ...recall.images.map((image) => image.caption ?? '')
+  ]);
+}
+
+function productUpcs(raw: RawObject): string[] {
+  return uniqueNonEmpty(rawArray(raw, 'ProductUPCs').flatMap((item) => Object.values(item).map(safeText)));
+}
+
+function productModels(raw: RawObject): string[] {
+  return uniqueNonEmpty(rawArray(raw, 'Products').map((item) => safeText(item.Model)));
+}
+
+function identifierDetails(text: string): string[] {
+  const patterns = [
+    /\bUPC\s*[0-9][0-9 -]{5,}\b/gi,
+    /\bLOT\s*[A-Z0-9./_-]{2,}\b/gi,
+    /\bKHK[0-9A-Z./_-]+\b/gi,
+    /\bRN\s*[0-9]{4,}\b/gi,
+    /\bFCC ID\s*["']?[A-Z0-9-]+["']?/gi,
+    /\b(?:model|model number|model no\.?)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/gi,
+    /\b(?:date of manufacture|date code|best by|use by|sell by|expiration date|exp\.?)\s*["']?[A-Z0-9][A-Z0-9 ,./_-]{2,30}["']?/gi,
+    /"[^"]{2,80}"/g
+  ];
+
+  return uniqueNonEmpty(patterns.flatMap((pattern) => [...text.matchAll(pattern)].map((match) => match[0])));
+}
+
+function paragraphs(value: string): string[] {
+  const text = cleanText(value);
+  if (!text) {
+    return [];
+  }
+
+  const sentences = text.match(/[^.!?]+[.!?]+(?:\s|$)|[^.!?]+$/g)?.map(cleanText).filter(Boolean) ?? [text];
+  return sentences.length > 2 ? sentences : [text];
+}
+
+function normalizeIncidents(values: string[]): string[] {
+  return uniqueNonEmpty(values).map((value) => (/^none reported\.?$/i.test(value) ? 'None reported.' : value));
+}
+
+function buildCpscView(recall: SiteRecall, raw: RawObject): SourceDetailView {
+  const officialTitle = rawText(raw, 'Title') || recall.title;
+  const productName = firstNonEmpty([...rawArray(raw, 'Products').map((item) => safeText(item.Name)), ...recall.productNames, recall.primaryProductName], 'Product');
+  const brandName = firstNonEmpty(
+    [...valuesFrom(raw, 'Importers'), ...valuesFrom(raw, 'Manufacturers'), ...valuesFrom(raw, 'Distributors'), ...recall.displayBrandNames],
+    recall.primaryBrand
+  );
+  const description = rawText(raw, 'Description') || recall.description;
+  const reason = firstNonEmpty([...valuesFrom(raw, 'Hazards'), recall.hazard], 'Reason not listed.');
+  const remedyDetail = firstNonEmpty([...valuesFrom(raw, 'Remedies'), recall.remedy], 'Review the official notice for current instructions.');
+  const captions = imageCaptions(raw, recall);
+  const identificationDetails: DetailFact[] = [];
+  const ids = uniqueNonEmpty([
+    ...productModels(raw),
+    ...productUpcs(raw),
+    ...identifierDetails([description, productName, ...captions].join(' '))
+  ]);
+
+  addFact(identificationDetails, 'Product', productName);
+  addFact(identificationDetails, 'Brand or company', brandName);
+  addFact(identificationDetails, 'Description', description);
+  addFact(identificationDetails, 'Label, model, UPC, lot, RN, or date details', ids);
+  addFact(identificationDetails, 'Image captions', captions);
+
+  return {
+    displayTitle: displayTitleFor(productName, officialTitle),
+    officialTitle,
+    productName,
+    brandName,
+    recallDate: formatDate(rawText(raw, 'RecallDate') || recall.recallDate),
+    recallNumber: cpscRecallNumber(rawText(raw, 'RecallNumber') || recall.recallNumber || ''),
+    imageCaptions: captions,
+    reason,
+    action: remedyDetail,
+    actionDetail: remedyDetail,
+    actionParagraphs: paragraphs(remedyDetail),
+    description,
+    identificationDetails,
+    consumerContact: rawText(raw, 'ConsumerContact'),
+    soldAt: valuesFrom(raw, 'Retailers'),
+    incidents: normalizeIncidents(valuesFrom(raw, 'Injuries')),
+    importer: valuesFrom(raw, 'Importers'),
+    manufacturer: valuesFrom(raw, 'Manufacturers'),
+    manufacturedIn: valuesFrom(raw, 'ManufacturerCountries', 'Country'),
+    units: productUnits(raw, recall) || recall.affectedUnits,
+    fdaDetails: []
+  };
+}
+
+function buildFdaView(recall: SiteRecall, raw: RawObject): SourceDetailView {
+  const productName = firstNonEmpty([rawText(raw, 'product_description'), ...recall.productNames, recall.primaryProductName], 'Product');
+  const brandName = firstNonEmpty([rawText(raw, 'recalling_firm'), ...recall.displayBrandNames, recall.primaryBrand], 'Firm not listed');
+  const reason = firstNonEmpty([rawText(raw, 'reason_for_recall'), recall.reason ?? '', recall.hazard], 'Reason not listed.');
+  const status = rawText(raw, 'status') || recall.status || '';
+  const action = cleanText(recall.remedy) || (status ? `FDA enforcement status: ${status}. Verify current instructions with the FDA/openFDA record and recalling firm.` : 'Verify current instructions with the FDA/openFDA record and recalling firm.');
+  const officialTitle = recall.title;
+  const details: DetailFact[] = [];
+  const codeDetails = uniqueNonEmpty([rawText(raw, 'code_info'), rawText(raw, 'more_code_info'), ...identifierDetails(productName)]);
+
+  addFact(details, 'Product description', productName);
+  addFact(details, 'Recalling firm', brandName);
+  addFact(details, 'Lot, UPC, or code information', codeDetails);
+  addFact(details, 'Classification', rawText(raw, 'classification') || recall.classification || '');
+  addFact(details, 'Status', status);
+  addFact(details, 'Quantity', rawText(raw, 'product_quantity') || recall.productQuantity || recall.affectedUnits);
+  addFact(details, 'Distribution', rawText(raw, 'distribution_pattern') || recall.distributionPattern || '');
+  addFact(details, 'Recall number', rawText(raw, 'recall_number') || recall.recallNumber || '');
+
+  return {
+    displayTitle: displayTitleFor(productName, officialTitle),
+    officialTitle,
+    productName,
+    brandName,
+    recallDate: formatDate(rawText(raw, 'recall_initiation_date') || recall.recallDate),
+    recallNumber: rawText(raw, 'recall_number') || recall.recallNumber || '',
+    imageCaptions: [],
+    reason,
+    action,
+    actionDetail: action,
+    actionParagraphs: paragraphs(action),
+    description: productName,
+    identificationDetails: details,
+    consumerContact: '',
+    soldAt: uniqueNonEmpty([rawText(raw, 'distribution_pattern') || recall.distributionPattern || '']),
+    incidents: [],
+    importer: [],
+    manufacturer: [],
+    manufacturedIn: [],
+    units: rawText(raw, 'product_quantity') || recall.productQuantity || recall.affectedUnits,
+    fdaDetails: details
+  };
+}
+
+export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall[]): RecallDetailView {
+  const raw = rawFor(recall);
+  const companyRecallHistory = getCompanyRecallHistory(recall, allRecalls, 4);
+  const companyHistoryIds = new Set(companyRecallHistory.map((historyRecall) => historyRecall.id));
+  const relatedRecalls = getRelatedRecalls(recall, allRecalls, 4, companyHistoryIds);
+  const sourceSpecificView = recall.source === 'FDA' ? buildFdaView(recall, raw) : buildCpscView(recall, raw);
+  const productIntro = sourceSpecificView.productName
+    ? `This recall involves ${sourceSpecificView.productName}`
+    : 'This recall involves a recalled product';
+  const brandIntro = sourceSpecificView.brandName ? ` from ${sourceSpecificView.brandName}` : '';
+
+  return {
+    ...sourceSpecificView,
+    sourceBadge: sourceBadgeFor(recall),
+    categoryLabel: recall.categoryLabel,
+    productImages: recall.images,
+    primaryImageAlt: recall.primaryImageAlt || `${sourceSpecificView.productName} recall product image`,
+    introSentence: `${productIntro}${brandIntro}. Review the photos and details below before using, keeping, selling, or giving it away.`,
+    officialSourceLabel: officialSourceLabelFor(recall),
+    officialSourceUrl: recall.sourceUrl,
+    fdaDetails: sourceSpecificView.fdaDetails,
+    companyRecallHistory,
+    relatedRecalls
+  };
+}

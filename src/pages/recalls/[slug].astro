@@ -1,8 +1,6 @@
 ---
 import { categoryRoutes, siteRecalls } from '../../lib/recall-data';
-import { getRecallIdentifierHints, getWhatToCheckItems } from '../../lib/recall-checklist';
-import { getCompanyRecallHistory, getRelatedRecalls } from '../../lib/related-recalls';
-import { NO_MATCH_DISCLAIMER } from '../../lib/recall-search';
+import { buildRecallDetailView, recallSourceBadge } from '../../lib/recall-detail-view';
 import '../../styles/global.css';
 
 export function getStaticPaths() {
@@ -13,70 +11,17 @@ export function getStaticPaths() {
 }
 
 const { recall } = Astro.props;
-const cleanText = (value?: string | null) => (value ?? '').replace(/\s+/g, ' ').trim();
-const shortenText = (value?: string | null, maxLength = 140) => {
-  const text = cleanText(value);
-
-  if (!text) {
-    return 'Not listed';
-  }
-
-  if (text.length <= maxLength) {
-    return text;
-  }
-
-  const clipped = text.slice(0, maxLength);
-  const lastSpace = clipped.lastIndexOf(' ');
-  const cutPoint = lastSpace > Math.floor(maxLength * 0.62) ? lastSpace : maxLength;
-
-  return `${clipped.slice(0, cutPoint).trim()}...`;
-};
-const displayBrandNames = recall.displayBrandNames.length ? recall.displayBrandNames : [recall.primaryBrand];
-const sourceBrandNames = recall.brandNames.filter(
-  (rawName: string) => !displayBrandNames.some((displayName: string) => displayName.toLowerCase() === rawName.toLowerCase())
-);
-const galleryImages = recall.images.length ? recall.images : [];
-const whatToCheckItems = getWhatToCheckItems(recall);
-const identifierHints = getRecallIdentifierHints(recall);
-const companyRecallHistory = getCompanyRecallHistory(recall, siteRecalls, 4);
-const companyHistoryIds = new Set(companyRecallHistory.map((historyRecall) => historyRecall.id));
-const relatedRecalls = getRelatedRecalls(recall, siteRecalls, 4, companyHistoryIds);
+const view = buildRecallDetailView(recall, siteRecalls);
 const categoryRoute = categoryRoutes.find((route) => route.category === recall.category);
 const categoryFallbackPath = categoryRoute?.href ?? `/checker?category=${recall.category}`;
-const sourceLinkText = recall.source === 'FDA' ? 'Official record: FDA/openFDA' : 'Official notice: CPSC';
-const sourceLinkLabel = recall.source === 'FDA' ? 'Official record' : 'Official notice';
-const simplifyTitlePart = (value?: string | null) =>
-  cleanText(value)
-    .replace(/\s+recalled\b.*$/i, '')
-    .replace(/\s+recalls\b.*$/i, '')
-    .replace(/\s+due to\b.*$/i, '')
-    .replace(/\s+risk of\b.*$/i, '')
-    .replace(/\s+because of\b.*$/i, '')
-    .replace(/\s+recall(ed|s)?\b/gi, '')
-    .trim();
-const isUsefulName = (value: string) => Boolean(value && !/^(unknown|not listed|various|n\/a)$/i.test(value));
-const titleProduct = simplifyTitlePart(recall.primaryProductName || recall.productNames[0] || recall.title);
-const titleBrand = simplifyTitlePart(displayBrandNames[0]);
-const titleBase =
-  isUsefulName(titleBrand) && titleProduct && !titleProduct.toLowerCase().includes(titleBrand.toLowerCase())
-    ? `${titleBrand} ${titleProduct}`
-    : titleProduct || simplifyTitlePart(recall.title);
-const visitorTitle = `${shortenText(titleBase || recall.title, 86)} recall`;
-const productSummary = shortenText(recall.primaryProductName, 72);
-const brandSummary = shortenText(displayBrandNames.join(', '), 88);
-const shortHazard = shortenText(recall.hazard || recall.reason, 130);
-const shortRemedy = shortenText(recall.remedy, 125);
-const affectedUnitsSummary = shortenText(recall.affectedUnits || recall.productQuantity, 82);
-const riskHazard = cleanText(recall.hazard || recall.reason) ? shortenText(recall.hazard || recall.reason, 52) : 'Recall notice';
-const riskRemedy = cleanText(recall.remedy) ? shortenText(recall.remedy, 42) : '';
-const riskLine = [
-  riskHazard,
-  riskRemedy,
-  recall.recallDate ? `Recalled ${recall.recallDate}` : 'Recall date not listed'
-].filter(Boolean).join(' - ');
-const pageIntro = `This recall involves ${productSummary} from ${brandSummary}. Check the product photos and details below before using or keeping it.`;
-const title = `${visitorTitle} | Recall Radar`;
-const description = `${visitorTitle} with photos, product details, hazard, remedy, related recalls, and official notice link.`;
+const companyDetails = [
+  { label: 'Importer', value: view.importer },
+  { label: 'Manufacturer', value: view.manufacturer },
+  { label: 'Manufactured in', value: view.manufacturedIn }
+].filter((fact) => fact.value.length > 0);
+const title = `${view.displayTitle} | Recall Radar`;
+const description = `${view.displayTitle} with product photos, affected item details, reason for recall, consumer action, and official source link.`;
+const fallbackImageLabel = recall.source === 'FDA' ? 'FDA food recall' : 'Recall notice';
 ---
 
 <html lang="en">
@@ -103,127 +48,216 @@ const description = `${visitorTitle} with photos, product details, hazard, remed
       <section class="section detail-report-hero">
         <p class="eyebrow">Recall report</p>
         <div class="meta-row data-source-row">
-          <span class="badge-source">{recall.sourceLabel}</span>
-          <span class="badge-date">{recall.recallDate}</span>
-          <span class="tag">{recall.categoryLabel}</span>
+          <span class="badge-source">{view.sourceBadge}</span>
+          <span class="badge-date">{view.recallDate}</span>
+          <span class="tag">{view.categoryLabel}</span>
         </div>
-        <h1 class="detail-title">{visitorTitle}</h1>
-        <p class="detail-risk-line">{riskLine}</p>
-        <p class="lead detail-intro">{pageIntro}</p>
+        <h1 class="detail-title">{view.displayTitle}</h1>
+        <p class="lead detail-intro">{view.introSentence}</p>
       </section>
 
       <section class="section detail-grid detail-main-grid">
         <article class="detail-gallery-card" aria-label="Product images">
           <div class="detail-gallery">
-            <div class="image-shell image-shell-large">
-              {recall.primaryImageUrl ? (
-                <img src={recall.primaryImageUrl} alt={recall.primaryImageAlt || recall.title} loading="lazy" />
-              ) : (
-                <span class="image-placeholder">{recall.source === 'FDA' ? 'FDA food notice' : 'Recall notice'}</span>
-              )}
-            </div>
-            {galleryImages.length > 1 ? (
+            <figure class="detail-image-figure">
+              <div class="image-shell image-shell-large">
+                {view.productImages[0] ? (
+                  <img src={view.productImages[0].url} alt={view.productImages[0].alt || view.primaryImageAlt} loading="lazy" />
+                ) : (
+                  <span class="image-placeholder">{fallbackImageLabel}</span>
+                )}
+              </div>
+              {view.productImages[0]?.caption ? <figcaption>{view.productImages[0].caption}</figcaption> : null}
+            </figure>
+            {view.productImages.length > 1 ? (
               <div class="thumbnail-grid detail-thumbnail-grid" aria-label="Additional product images">
-                {galleryImages.slice(1, 7).map((image) => (
-                  <div class="image-shell">
-                    <img src={image.url} alt={image.alt || image.caption || recall.title} loading="lazy" />
-                  </div>
+                {view.productImages.slice(1, 7).map((image) => (
+                  <figure class="detail-thumbnail">
+                    <div class="image-shell">
+                      <img src={image.url} alt={image.alt || image.caption || view.primaryImageAlt} loading="lazy" />
+                    </div>
+                    {image.caption ? <figcaption>{image.caption}</figcaption> : null}
+                  </figure>
                 ))}
               </div>
             ) : null}
           </div>
         </article>
 
-        <aside class="detail-card recall-summary-card compact-summary-card" aria-label="What you need to know">
-          <h2>What you need to know</h2>
-          <div class="facts compact-facts">
-            <div class="fact">
-              <strong>Why it was recalled</strong>
-              <span class="summary-value-clamped">{shortHazard}</span>
+        <aside class="detail-card recall-summary-card compact-summary-card" aria-label="Recall summary">
+          <h2>Recall summary</h2>
+          <div class="summary-list">
+            <div class="summary-item">
+              <strong>Reason</strong>
+              <p>{view.reason}</p>
             </div>
-            <div class="fact">
-              <strong>What to do</strong>
-              <span class="summary-value-clamped">{shortRemedy}</span>
+            <div class="summary-item">
+              <strong>Action</strong>
+              <p>{view.action}</p>
             </div>
-            <div class="fact">
-              <strong>Recalled on</strong>
-              <span>{recall.recallDate}</span>
-            </div>
-            <div class="fact">
-              <strong>Units affected</strong>
-              <span>{affectedUnitsSummary}</span>
-            </div>
-            <div class="fact">
-              <strong>Record ID</strong>
-              <span>{recall.id}</span>
-            </div>
-            <div class="fact">
-              <strong>{sourceLinkLabel}</strong>
-              {recall.sourceUrl ? (
+            <div class="summary-meta-row">
+              <span>
+                <strong>Recall date</strong>
+                {view.recallDate}
+              </span>
+              {view.units ? (
                 <span>
-                  <a class="source-link source-link-small" href={recall.sourceUrl} target="_blank" rel="noopener noreferrer">
-                    {sourceLinkText}
-                  </a>
+                  <strong>{recall.source === 'FDA' ? 'Quantity' : 'Units'}</strong>
+                  {view.units}
                 </span>
-              ) : (
-                <span>Not listed</span>
-              )}
+              ) : null}
             </div>
           </div>
+          {view.officialSourceUrl ? (
+            <a class="source-link source-link-small" href={view.officialSourceUrl} target="_blank" rel="noopener noreferrer">
+              {view.officialSourceLabel}
+            </a>
+          ) : null}
         </aside>
       </section>
 
-      <section class="section detail-grid">
-        <article class="detail-card">
-          <h2>Is this your product?</h2>
-          <p class="section-note product-compare-note">Compare these details with your product label, packaging, or purchase record.</p>
-          <div class="facts">
-            <div class="fact">
-              <strong>Product name</strong>
-              <span>{recall.productNames.length ? recall.productNames.join(', ') : recall.primaryProductName}</span>
-            </div>
-            <div class="fact">
-              <strong>Brand/company</strong>
-              <span>{displayBrandNames.join(', ')}</span>
-            </div>
-            {identifierHints.length ? (
-              <div class="fact">
-                <strong>Model, UPC, lot, or date-code hints</strong>
-                <span>{identifierHints.join(', ')}</span>
+      {view.identificationDetails.length ? (
+        <section class="section">
+          <article class="detail-card detail-section-card">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Affected item</p>
+                <h2>How to identify the recalled product</h2>
               </div>
-            ) : null}
-            {recall.recallNumber ? (
-              <div class="fact">
-                <strong>Recall number</strong>
-                <span>{recall.recallNumber}</span>
-              </div>
-            ) : null}
-            {sourceBrandNames.length ? (
-              <p class="also-listed-note">Also listed as: {sourceBrandNames.join(', ')}</p>
-            ) : null}
-          </div>
-        </article>
+            </div>
+            <div class="detail-fact-grid">
+              {view.identificationDetails.map((fact) => (
+                <div class="detail-fact">
+                  <strong>{fact.label}</strong>
+                  {Array.isArray(fact.value) ? (
+                    <ul>
+                      {fact.value.map((item) => <li>{item}</li>)}
+                    </ul>
+                  ) : (
+                    <span>{fact.value}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </article>
+        </section>
+      ) : null}
 
-        <article class="detail-card">
-          <h2>What to check</h2>
-          <ul class="check-list">
-            {whatToCheckItems.map((item) => <li>{item}</li>)}
-          </ul>
-          <p class="disclaimer-copy">{NO_MATCH_DISCLAIMER}</p>
+      {view.actionParagraphs.length ? (
+        <section class="section">
+          <article class="detail-card detail-section-card">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Action</p>
+                <h2>What to do next</h2>
+              </div>
+            </div>
+            <div class="detail-prose">
+              {view.actionParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+            </div>
+            {view.consumerContact ? (
+              <div class="detail-fact-grid detail-action-facts">
+                <div class="detail-fact">
+                  <strong>Consumer contact</strong>
+                  <span>{view.consumerContact}</span>
+                </div>
+              </div>
+            ) : null}
+          </article>
+        </section>
+      ) : null}
+
+      {view.soldAt.length ? (
+        <section class="section">
+          <article class="detail-card detail-section-card">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Purchase details</p>
+                <h2>Where it was sold</h2>
+              </div>
+            </div>
+            <div class="detail-fact-grid">
+              <div class="detail-fact">
+                <strong>{recall.source === 'FDA' ? 'Distribution' : 'Sold at'}</strong>
+                <ul>
+                  {view.soldAt.map((item) => <li>{item}</li>)}
+                </ul>
+              </div>
+            </div>
+          </article>
+        </section>
+      ) : null}
+
+      {companyDetails.length ? (
+        <section class="section">
+          <article class="detail-card detail-section-card">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Company</p>
+                <h2>Company and manufacturing details</h2>
+              </div>
+            </div>
+            <div class="detail-fact-grid">
+              {companyDetails.map((fact) => (
+                <div class="detail-fact">
+                  <strong>{fact.label}</strong>
+                  <ul>
+                    {fact.value.map((item) => <li>{item}</li>)}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </article>
+        </section>
+      ) : null}
+
+      {view.incidents.length ? (
+        <section class="section">
+          <article class="detail-card detail-section-card">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Incidents</p>
+                <h2>Incidents reported</h2>
+              </div>
+            </div>
+            <div class="detail-fact-grid">
+              <div class="detail-fact">
+                <strong>Reports</strong>
+                <ul>
+                  {view.incidents.map((item) => <li>{item}</li>)}
+                </ul>
+              </div>
+            </div>
+          </article>
+        </section>
+      ) : null}
+
+      <section class="section official-source-section">
+        <article class="detail-card official-source-card">
+          <div>
+            <p class="eyebrow">Official source</p>
+            <h2>Official notice title</h2>
+            <p>{view.officialTitle}</p>
+            {view.recallNumber ? <p class="official-recall-number">Recall number: {view.recallNumber}</p> : null}
+          </div>
+          {view.officialSourceUrl ? (
+            <a class="source-link source-link-small" href={view.officialSourceUrl} target="_blank" rel="noopener noreferrer">
+              {view.officialSourceLabel}
+            </a>
+          ) : null}
         </article>
       </section>
 
       <section class="section">
         <div class="section-header">
           <div>
-            <p class="eyebrow">Brand recall history</p>
+            <p class="eyebrow">Brand history</p>
             <h2>Other recalls from this brand or company</h2>
-            <p class="section-note">Based on matching brand and company names.</p>
           </div>
         </div>
-        {companyRecallHistory.length ? (
+        {view.companyRecallHistory.length ? (
           <div class="product-grid detail-related-grid">
-            {companyRecallHistory.map((historyRecall) => (
+            {view.companyRecallHistory.map((historyRecall) => (
               <article class="product-card detail-related-card">
                 <a class="image-shell" href={historyRecall.detailPath} aria-label={`View recall for ${historyRecall.title}`}>
                   {historyRecall.primaryImageUrl ? (
@@ -233,16 +267,16 @@ const description = `${visitorTitle} with photos, product details, hazard, remed
                       loading="lazy"
                     />
                   ) : (
-                    <span class="image-placeholder">{historyRecall.source === 'FDA' ? 'FDA food notice' : 'Recall notice'}</span>
+                    <span class="image-placeholder">{historyRecall.source === 'FDA' ? 'FDA food recall' : 'Recall notice'}</span>
                   )}
                 </a>
                 <div class="card-body">
                   <div class="meta-row">
-                    <span class="badge-source">{historyRecall.sourceLabel}</span>
+                    <span class="badge-source">{recallSourceBadge(historyRecall)}</span>
                     <span class="badge-date">{historyRecall.recallDate}</span>
                   </div>
                   <h3><a href={historyRecall.detailPath}>{historyRecall.title}</a></h3>
-                  <p>{historyRecall.hazard || historyRecall.reason || 'Hazard/reason not listed in local data'}</p>
+                  <p>{historyRecall.hazard || historyRecall.reason || 'Hazard or reason not listed'}</p>
                   <a class="btn btn-primary" href={historyRecall.detailPath}>View recall</a>
                 </div>
               </article>
@@ -250,7 +284,7 @@ const description = `${visitorTitle} with photos, product details, hazard, remed
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No other recalls from this brand or company were found in the current local dataset.</p>
+            <p>No other recalls from this brand or company were found in the current dataset.</p>
           </div>
         )}
       </section>
@@ -259,13 +293,13 @@ const description = `${visitorTitle} with photos, product details, hazard, remed
         <div class="section-header">
           <div>
             <p class="eyebrow">Related recalls</p>
-            <h2>Similar recalls you may want to check</h2>
-            <p class="section-note">Based on product type, hazard, and category.</p>
+            <h2>Similar recalls</h2>
+            <p class="section-note">Based on product type, hazard, or category.</p>
           </div>
         </div>
-        {relatedRecalls.length ? (
+        {view.relatedRecalls.length ? (
           <div class="product-grid detail-related-grid">
-            {relatedRecalls.map((relatedRecall) => (
+            {view.relatedRecalls.map((relatedRecall) => (
               <article class="product-card detail-related-card">
                 <a class="image-shell" href={relatedRecall.detailPath} aria-label={`View recall for ${relatedRecall.title}`}>
                   {relatedRecall.primaryImageUrl ? (
@@ -275,16 +309,16 @@ const description = `${visitorTitle} with photos, product details, hazard, remed
                       loading="lazy"
                     />
                   ) : (
-                    <span class="image-placeholder">{relatedRecall.source === 'FDA' ? 'FDA food notice' : 'Recall notice'}</span>
+                    <span class="image-placeholder">{relatedRecall.source === 'FDA' ? 'FDA food recall' : 'Recall notice'}</span>
                   )}
                 </a>
                 <div class="card-body">
                   <div class="meta-row">
-                    <span class="badge-source">{relatedRecall.sourceLabel}</span>
+                    <span class="badge-source">{recallSourceBadge(relatedRecall)}</span>
                     <span class="badge-date">{relatedRecall.recallDate}</span>
                   </div>
                   <h3><a href={relatedRecall.detailPath}>{relatedRecall.title}</a></h3>
-                  <p>{relatedRecall.hazard || relatedRecall.reason || 'Hazard/reason not listed in local data'}</p>
+                  <p>{relatedRecall.hazard || relatedRecall.reason || 'Hazard or reason not listed'}</p>
                   <a class="btn btn-primary" href={relatedRecall.detailPath}>View recall</a>
                 </div>
               </article>
@@ -292,8 +326,8 @@ const description = `${visitorTitle} with photos, product details, hazard, remed
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No closely related recalls were found in the current local dataset.</p>
-            <a class="btn btn-secondary" href={categoryFallbackPath}>Browse {recall.categoryLabel} recalls</a>
+            <p>No similar recalls were found in the current dataset.</p>
+            <a class="btn btn-secondary" href={categoryFallbackPath}>Browse {view.categoryLabel} recalls</a>
           </div>
         )}
       </section>
@@ -311,7 +345,7 @@ const description = `${visitorTitle} with photos, product details, hazard, remed
     </main>
 
     <footer class="page-footer">
-      Recall Radar uses local CPSC and FDA/openFDA processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
+      Always verify recall details against official notices, manufacturers, and applicable government agencies.
     </footer>
   </body>
 </html>
