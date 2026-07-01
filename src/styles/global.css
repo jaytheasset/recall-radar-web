@@ -1131,11 +1131,32 @@ button:disabled {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
-
-.source-attribution {
-  display: grid;
-  gap: 0.22rem;
+.detail-risk-line {
+  max-width: 760px;
+  margin-top: 0.7rem;
+  color: var(--danger);
+  font-size: clamp(0.94rem, 1.5vw, 1.05rem);
+  font-weight: 820;
 }
+
+.detail-report-page .fact strong {
+  color: var(--source);
+  font-size: 0.86rem;
+  font-weight: 820;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.product-compare-note {
+  margin-bottom: 0.9rem;
+}
+
+.also-listed-note {
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 
 .source-link {
   width: fit-content;
@@ -1175,80 +1196,6 @@ button:disabled {
 
 .detail-related-card p {
   font-size: 0.8rem;
-}
-
-.source-fields-section {
-  padding-top: clamp(0.9rem, 2vw, 1.4rem);
-}
-
-.source-fields-accordion {
-  border: 0;
-  border-radius: 24px;
-  box-shadow: 0 18px 42px rgba(17, 24, 39, 0.08);
-}
-
-.source-fields-accordion summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  cursor: pointer;
-  list-style: none;
-  padding: clamp(1rem, 2vw, 1.15rem);
-}
-
-.source-fields-accordion summary::-webkit-details-marker {
-  display: none;
-}
-
-.source-fields-title,
-.source-fields-subtitle {
-  display: block;
-}
-
-.source-fields-title {
-  color: var(--ink);
-  font-size: 1rem;
-  font-weight: 850;
-}
-
-.source-fields-subtitle {
-  margin-top: 0.2rem;
-  color: var(--muted);
-  font-size: 0.86rem;
-}
-
-.source-fields-hint {
-  flex: 0 0 auto;
-  border-radius: 999px;
-  padding: 0.42rem 0.68rem;
-  background: #F5F6F8;
-  color: var(--source);
-  font-size: 0.78rem;
-  font-weight: 820;
-}
-
-.source-fields-accordion[open] .source-fields-hint {
-  background: var(--black);
-  color: #FFFFFF;
-}
-
-.source-fields-body {
-  border-top: 1px solid rgba(17, 24, 39, 0.08);
-  padding: clamp(1rem, 2vw, 1.15rem);
-}
-
-.source-fields-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
-.source-fields-grid .fact {
-  gap: 0.28rem;
-  min-width: 0;
-  border-radius: 16px;
-  padding: 0.82rem;
-  background: #F5F6F8;
 }
 
 .source-name-list,
@@ -1403,14 +1350,6 @@ button:disabled {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .source-fields-accordion summary {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .source-fields-grid {
-    grid-template-columns: 1fr;
-  }
 
   .hero-search,
   .search-form,

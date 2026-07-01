@@ -29,7 +29,7 @@ function joinLimited(values: string[], maxItems = 3): string {
   return remaining > 0 ? `${limited.join(', ')} and ${remaining} more` : limited.join(', ');
 }
 
-function identifierHintsFor(recall: SiteRecall): string[] {
+export function getRecallIdentifierHints(recall: SiteRecall): string[] {
   const text = [recall.title, recall.description, ...recall.productNames].join(' ');
   const matches = IDENTIFIER_PATTERNS.flatMap((pattern) =>
     [...text.matchAll(pattern)].map((match) => truncate(match[0], 80))
@@ -42,33 +42,33 @@ export function getWhatToCheckItems(recall: SiteRecall): string[] {
   const items: string[] = [];
   const productNames = unique(recall.productNames);
   const brandNames = unique(recall.displayBrandNames.length ? recall.displayBrandNames : recall.brandNames);
-  const identifierHints = identifierHintsFor(recall);
+  const identifierHints = getRecallIdentifierHints(recall);
 
   if (productNames.length) {
-    items.push(`Compare the product name against the local record: ${joinLimited(productNames)}.`);
+    items.push(`Compare the product name and label with: ${joinLimited(productNames)}.`);
   }
 
   if (brandNames.length) {
-    items.push(`Compare the brand or company name against the local record: ${joinLimited(brandNames)}.`);
+    items.push(`Compare the brand or company name with: ${joinLimited(brandNames)}.`);
   }
 
   if (recall.recallNumber) {
-    items.push(`Check recall number ${recall.recallNumber} against the official source.`);
+    items.push(`Check recall number ${recall.recallNumber} in the official notice.`);
   }
 
   for (const hint of identifierHints) {
-    items.push(`Look for identifier text from the local record: ${hint}.`);
+    items.push(`Look for model, UPC, lot, or date-code details like: ${hint}.`);
   }
 
   if (recall.affectedUnits) {
-    items.push(`Review the affected units note: ${truncate(recall.affectedUnits, 90)}.`);
+    items.push(`Review whether your item is included in the affected units: ${truncate(recall.affectedUnits, 90)}.`);
   }
 
   if (recall.primaryImageUrl) {
-    items.push('Compare the product photo with official notice images where available.');
+    items.push('Check the product photo against your item.');
   }
 
-  items.push('Verify model, UPC, lot, date-code, and remedy details with the official source before taking action.');
+  items.push('Review the remedy before using or keeping the product.');
 
   return unique(items).slice(0, 7);
 }

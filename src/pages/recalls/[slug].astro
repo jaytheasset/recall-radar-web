@@ -1,6 +1,6 @@
 ---
 import { categoryRoutes, siteRecalls } from '../../lib/recall-data';
-import { getWhatToCheckItems } from '../../lib/recall-checklist';
+import { getRecallIdentifierHints, getWhatToCheckItems } from '../../lib/recall-checklist';
 import { getCompanyRecallHistory, getRelatedRecalls } from '../../lib/related-recalls';
 import { NO_MATCH_DISCLAIMER } from '../../lib/recall-search';
 import '../../styles/global.css';
@@ -13,26 +13,12 @@ export function getStaticPaths() {
 }
 
 const { recall } = Astro.props;
-const title = `${recall.title} | Recall Radar`;
-const description = `${recall.title} local recall record with product, brand, hazard, remedy, company recall history, related recalls, and official source attribution.`;
-const sourceLinkText = recall.source === 'FDA' ? 'Source: FDA/openFDA record' : 'Source: CPSC recall notice';
-const displayBrandNames = recall.displayBrandNames.length ? recall.displayBrandNames : [recall.primaryBrand];
-const sourceBrandNames = recall.brandNames.filter(
-  (rawName: string) => !displayBrandNames.some((displayName: string) => displayName.toLowerCase() === rawName.toLowerCase())
-);
-const galleryImages = recall.images.length ? recall.images : [];
-const whatToCheckItems = getWhatToCheckItems(recall);
-const companyRecallHistory = getCompanyRecallHistory(recall, siteRecalls, 4);
-const companyHistoryIds = new Set(companyRecallHistory.map((historyRecall) => historyRecall.id));
-const relatedRecalls = getRelatedRecalls(recall, siteRecalls, 4, companyHistoryIds);
-const categoryRoute = categoryRoutes.find((route) => route.category === recall.category);
-const categoryFallbackPath = categoryRoute?.href ?? `/checker?category=${recall.category}`;
 const cleanText = (value?: string | null) => (value ?? '').replace(/\s+/g, ' ').trim();
 const shortenText = (value?: string | null, maxLength = 140) => {
   const text = cleanText(value);
 
   if (!text) {
-    return 'Not listed in local data';
+    return 'Not listed';
   }
 
   if (text.length <= maxLength) {
@@ -45,19 +31,52 @@ const shortenText = (value?: string | null, maxLength = 140) => {
 
   return `${clipped.slice(0, cutPoint).trim()}...`;
 };
+const displayBrandNames = recall.displayBrandNames.length ? recall.displayBrandNames : [recall.primaryBrand];
+const sourceBrandNames = recall.brandNames.filter(
+  (rawName: string) => !displayBrandNames.some((displayName: string) => displayName.toLowerCase() === rawName.toLowerCase())
+);
+const galleryImages = recall.images.length ? recall.images : [];
+const whatToCheckItems = getWhatToCheckItems(recall);
+const identifierHints = getRecallIdentifierHints(recall);
+const companyRecallHistory = getCompanyRecallHistory(recall, siteRecalls, 4);
+const companyHistoryIds = new Set(companyRecallHistory.map((historyRecall) => historyRecall.id));
+const relatedRecalls = getRelatedRecalls(recall, siteRecalls, 4, companyHistoryIds);
+const categoryRoute = categoryRoutes.find((route) => route.category === recall.category);
+const categoryFallbackPath = categoryRoute?.href ?? `/checker?category=${recall.category}`;
+const sourceLinkText = recall.source === 'FDA' ? 'Official record: FDA/openFDA' : 'Official notice: CPSC';
+const sourceLinkLabel = recall.source === 'FDA' ? 'Official record' : 'Official notice';
+const simplifyTitlePart = (value?: string | null) =>
+  cleanText(value)
+    .replace(/\s+recalled\b.*$/i, '')
+    .replace(/\s+recalls\b.*$/i, '')
+    .replace(/\s+due to\b.*$/i, '')
+    .replace(/\s+risk of\b.*$/i, '')
+    .replace(/\s+because of\b.*$/i, '')
+    .replace(/\s+recall(ed|s)?\b/gi, '')
+    .trim();
+const isUsefulName = (value: string) => Boolean(value && !/^(unknown|not listed|various|n\/a)$/i.test(value));
+const titleProduct = simplifyTitlePart(recall.primaryProductName || recall.productNames[0] || recall.title);
+const titleBrand = simplifyTitlePart(displayBrandNames[0]);
+const titleBase =
+  isUsefulName(titleBrand) && titleProduct && !titleProduct.toLowerCase().includes(titleBrand.toLowerCase())
+    ? `${titleBrand} ${titleProduct}`
+    : titleProduct || simplifyTitlePart(recall.title);
+const visitorTitle = `${shortenText(titleBase || recall.title, 86)} recall`;
 const productSummary = shortenText(recall.primaryProductName, 72);
 const brandSummary = shortenText(displayBrandNames.join(', '), 88);
 const shortHazard = shortenText(recall.hazard || recall.reason, 130);
 const shortRemedy = shortenText(recall.remedy, 125);
 const affectedUnitsSummary = shortenText(recall.affectedUnits || recall.productQuantity, 82);
-const pageIntro = `Local ${recall.source === 'FDA' ? 'FDA/openFDA' : 'CPSC'} recall record for ${productSummary} from ${brandSummary}.`;
-const sourceProductNames = cleanText(recall.productNames.length ? recall.productNames.join(', ') : recall.primaryProductName);
-const sourceBrandField = cleanText(recall.brandNames.length ? recall.brandNames.join(', ') : displayBrandNames.join(', '));
-const sourceHazardField = cleanText(recall.hazard || recall.reason) || 'Not listed in local data';
-const sourceRemedyField = cleanText(recall.remedy) || 'Not listed in local data';
-const sourceAffectedField = cleanText(recall.affectedUnits || recall.productQuantity) || 'Not listed in local data';
-const sourceRecordField = recall.recallNumber ? `${recall.recallNumber} / ${recall.id}` : recall.id;
-const fdaClassificationStatus = [recall.classification, recall.status].filter(Boolean).join(' / ');
+const riskHazard = cleanText(recall.hazard || recall.reason) ? shortenText(recall.hazard || recall.reason, 52) : 'Recall notice';
+const riskRemedy = cleanText(recall.remedy) ? shortenText(recall.remedy, 42) : '';
+const riskLine = [
+  riskHazard,
+  riskRemedy,
+  recall.recallDate ? `Recalled ${recall.recallDate}` : 'Recall date not listed'
+].filter(Boolean).join(' - ');
+const pageIntro = `This recall involves ${productSummary} from ${brandSummary}. Check the product photos and details below before using or keeping it.`;
+const title = `${visitorTitle} | Recall Radar`;
+const description = `${visitorTitle} with photos, product details, hazard, remedy, related recalls, and official notice link.`;
 ---
 
 <html lang="en">
@@ -88,7 +107,8 @@ const fdaClassificationStatus = [recall.classification, recall.status].filter(Bo
           <span class="badge-date">{recall.recallDate}</span>
           <span class="tag">{recall.categoryLabel}</span>
         </div>
-        <h1 class="detail-title">{recall.title}</h1>
+        <h1 class="detail-title">{visitorTitle}</h1>
+        <p class="detail-risk-line">{riskLine}</p>
         <p class="lead detail-intro">{pageIntro}</p>
       </section>
 
@@ -114,27 +134,23 @@ const fdaClassificationStatus = [recall.classification, recall.status].filter(Bo
           </div>
         </article>
 
-        <aside class="detail-card recall-summary-card compact-summary-card" aria-label="Recall summary">
-          <h2>Recall summary</h2>
+        <aside class="detail-card recall-summary-card compact-summary-card" aria-label="What you need to know">
+          <h2>What you need to know</h2>
           <div class="facts compact-facts">
             <div class="fact">
-              <strong>Source</strong>
-              <span>{recall.sourceLabel}</span>
-            </div>
-            <div class="fact">
-              <strong>Recall date</strong>
-              <span>{recall.recallDate}</span>
-            </div>
-            <div class="fact">
-              <strong>Hazard</strong>
+              <strong>Why it was recalled</strong>
               <span class="summary-value-clamped">{shortHazard}</span>
             </div>
             <div class="fact">
-              <strong>Remedy</strong>
+              <strong>What to do</strong>
               <span class="summary-value-clamped">{shortRemedy}</span>
             </div>
             <div class="fact">
-              <strong>Affected units</strong>
+              <strong>Recalled on</strong>
+              <span>{recall.recallDate}</span>
+            </div>
+            <div class="fact">
+              <strong>Units affected</strong>
               <span>{affectedUnitsSummary}</span>
             </div>
             <div class="fact">
@@ -142,10 +158,9 @@ const fdaClassificationStatus = [recall.classification, recall.status].filter(Bo
               <span>{recall.id}</span>
             </div>
             <div class="fact">
-              <strong>Official source</strong>
+              <strong>{sourceLinkLabel}</strong>
               {recall.sourceUrl ? (
-                <span class="source-attribution">
-                  <span>{recall.sourceLabel}</span>
+                <span>
                   <a class="source-link source-link-small" href={recall.sourceUrl} target="_blank" rel="noopener noreferrer">
                     {sourceLinkText}
                   </a>
@@ -160,32 +175,21 @@ const fdaClassificationStatus = [recall.classification, recall.status].filter(Bo
 
       <section class="section detail-grid">
         <article class="detail-card">
-          <h2>Affected products</h2>
+          <h2>Is this your product?</h2>
+          <p class="section-note product-compare-note">Compare these details with your product label, packaging, or purchase record.</p>
           <div class="facts">
             <div class="fact">
-              <strong>Products</strong>
+              <strong>Product name</strong>
               <span>{recall.productNames.length ? recall.productNames.join(', ') : recall.primaryProductName}</span>
             </div>
             <div class="fact">
-              <strong>Brands / companies</strong>
+              <strong>Brand/company</strong>
               <span>{displayBrandNames.join(', ')}</span>
             </div>
-            {sourceBrandNames.length ? (
+            {identifierHints.length ? (
               <div class="fact">
-                <strong>Raw source names</strong>
-                <span>{sourceBrandNames.join(', ')}</span>
-              </div>
-            ) : null}
-            {recall.classification ? (
-              <div class="fact">
-                <strong>Classification</strong>
-                <span>{recall.classification}</span>
-              </div>
-            ) : null}
-            {recall.status ? (
-              <div class="fact">
-                <strong>Status</strong>
-                <span>{recall.status}</span>
+                <strong>Model, UPC, lot, or date-code hints</strong>
+                <span>{identifierHints.join(', ')}</span>
               </div>
             ) : null}
             {recall.recallNumber ? (
@@ -194,11 +198,8 @@ const fdaClassificationStatus = [recall.classification, recall.status].filter(Bo
                 <span>{recall.recallNumber}</span>
               </div>
             ) : null}
-            {recall.distributionPattern ? (
-              <div class="fact">
-                <strong>Distribution</strong>
-                <span>{recall.distributionPattern}</span>
-              </div>
+            {sourceBrandNames.length ? (
+              <p class="also-listed-note">Also listed as: {sourceBrandNames.join(', ')}</p>
             ) : null}
           </div>
         </article>
@@ -212,85 +213,12 @@ const fdaClassificationStatus = [recall.classification, recall.status].filter(Bo
         </article>
       </section>
 
-      <section class="section source-fields-section">
-        <div class="section-header">
-          <div>
-            <p class="eyebrow">Source attribution</p>
-            <h2>Official source fields</h2>
-            <p class="section-note">Structured fields from the local {recall.source === 'FDA' ? 'FDA/openFDA' : 'CPSC'} record.</p>
-          </div>
-        </div>
-        <details class="detail-card source-fields-accordion">
-          <summary>
-            <span>
-              <span class="source-fields-title">Review official fields used by Recall Radar</span>
-              <span class="source-fields-subtitle">Collapsed by default. No iframe, raw JSON, or full official page copy.</span>
-            </span>
-            <span class="source-fields-hint">Open fields</span>
-          </summary>
-          <div class="source-fields-body">
-            <div class="facts source-fields-grid">
-              <div class="fact">
-                <strong>Source</strong>
-                <span>{recall.sourceLabel}</span>
-              </div>
-              <div class="fact">
-                <strong>Recall date</strong>
-                <span>{recall.recallDate}</span>
-              </div>
-              <div class="fact">
-                <strong>Product name</strong>
-                <span>{sourceProductNames || 'Not listed in local data'}</span>
-              </div>
-              <div class="fact">
-                <strong>Brand/company</strong>
-                <span>{sourceBrandField || 'Not listed in local data'}</span>
-              </div>
-              <div class="fact">
-                <strong>Hazard</strong>
-                <span>{sourceHazardField}</span>
-              </div>
-              <div class="fact">
-                <strong>Remedy</strong>
-                <span>{sourceRemedyField}</span>
-              </div>
-              <div class="fact">
-                <strong>Affected units / product quantity</strong>
-                <span>{sourceAffectedField}</span>
-              </div>
-              <div class="fact">
-                <strong>Recall number / record ID</strong>
-                <span>{sourceRecordField}</span>
-              </div>
-              {recall.source === 'FDA' && fdaClassificationStatus ? (
-                <div class="fact">
-                  <strong>Classification/status</strong>
-                  <span>{fdaClassificationStatus}</span>
-                </div>
-              ) : null}
-              <div class="fact">
-                <strong>Official source</strong>
-                {recall.sourceUrl ? (
-                  <span class="source-attribution">
-                    <a class="source-link source-link-small" href={recall.sourceUrl} target="_blank" rel="noopener noreferrer">
-                      {sourceLinkText}
-                    </a>
-                  </span>
-                ) : (
-                  <span>Not listed</span>
-                )}
-              </div>
-            </div>
-          </div>
-        </details>
-      </section>
-
       <section class="section">
         <div class="section-header">
           <div>
-            <p class="eyebrow">Company recall history</p>
-            <h2>Other local recalls linked to this brand/company</h2>
-            <p class="section-note">Matched conservatively by normalized brand/company name and raw source names.</p>
+            <p class="eyebrow">Brand recall history</p>
+            <h2>Other recalls from this brand or company</h2>
+            <p class="section-note">Based on matching brand and company names.</p>
           </div>
         </div>
         {companyRecallHistory.length ? (
@@ -322,7 +250,7 @@ const fdaClassificationStatus = [recall.classification, recall.status].filter(Bo
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No other local recalls linked to this brand/company in the current dataset.</p>
+            <p>No other recalls from this brand or company were found in the current local dataset.</p>
           </div>
         )}
       </section>
@@ -331,8 +259,8 @@ const fdaClassificationStatus = [recall.classification, recall.status].filter(Bo
         <div class="section-header">
           <div>
             <p class="eyebrow">Related recalls</p>
-            <h2>Similar local recall records</h2>
-            <p class="section-note">Matched by category, hazard keywords, product terms, and source as a tie-breaker.</p>
+            <h2>Similar recalls you may want to check</h2>
+            <p class="section-note">Based on product type, hazard, and category.</p>
           </div>
         </div>
         {relatedRecalls.length ? (
@@ -364,7 +292,7 @@ const fdaClassificationStatus = [recall.classification, recall.status].filter(Bo
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No strong related local recalls were found for this record.</p>
+            <p>No closely related recalls were found in the current local dataset.</p>
             <a class="btn btn-secondary" href={categoryFallbackPath}>Browse {recall.categoryLabel} recalls</a>
           </div>
         )}
@@ -375,7 +303,7 @@ const fdaClassificationStatus = [recall.classification, recall.status].filter(Bo
           <a class="btn btn-primary" href="/checker">Check another product</a>
           {recall.primaryBrandSlug ? (
             <a class="btn btn-secondary" href={`/brands/${recall.primaryBrandSlug}`}>
-              Monitor this brand locally
+              View this brand page
             </a>
           ) : null}
         </div>
