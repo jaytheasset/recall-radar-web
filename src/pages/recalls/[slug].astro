@@ -51,6 +51,13 @@ const shortHazard = shortenText(recall.hazard || recall.reason, 130);
 const shortRemedy = shortenText(recall.remedy, 125);
 const affectedUnitsSummary = shortenText(recall.affectedUnits || recall.productQuantity, 82);
 const pageIntro = `Local ${recall.source === 'FDA' ? 'FDA/openFDA' : 'CPSC'} recall record for ${productSummary} from ${brandSummary}.`;
+const sourceProductNames = cleanText(recall.productNames.length ? recall.productNames.join(', ') : recall.primaryProductName);
+const sourceBrandField = cleanText(recall.brandNames.length ? recall.brandNames.join(', ') : displayBrandNames.join(', '));
+const sourceHazardField = cleanText(recall.hazard || recall.reason) || 'Not listed in local data';
+const sourceRemedyField = cleanText(recall.remedy) || 'Not listed in local data';
+const sourceAffectedField = cleanText(recall.affectedUnits || recall.productQuantity) || 'Not listed in local data';
+const sourceRecordField = recall.recallNumber ? `${recall.recallNumber} / ${recall.id}` : recall.id;
+const fdaClassificationStatus = [recall.classification, recall.status].filter(Boolean).join(' / ');
 ---
 
 <html lang="en">
@@ -203,6 +210,79 @@ const pageIntro = `Local ${recall.source === 'FDA' ? 'FDA/openFDA' : 'CPSC'} rec
           </ul>
           <p class="disclaimer-copy">{NO_MATCH_DISCLAIMER}</p>
         </article>
+      </section>
+
+      <section class="section source-fields-section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Source attribution</p>
+            <h2>Official source fields</h2>
+            <p class="section-note">Structured fields from the local {recall.source === 'FDA' ? 'FDA/openFDA' : 'CPSC'} record.</p>
+          </div>
+        </div>
+        <details class="detail-card source-fields-accordion">
+          <summary>
+            <span>
+              <span class="source-fields-title">Review official fields used by Recall Radar</span>
+              <span class="source-fields-subtitle">Collapsed by default. No iframe, raw JSON, or full official page copy.</span>
+            </span>
+            <span class="source-fields-hint">Open fields</span>
+          </summary>
+          <div class="source-fields-body">
+            <div class="facts source-fields-grid">
+              <div class="fact">
+                <strong>Source</strong>
+                <span>{recall.sourceLabel}</span>
+              </div>
+              <div class="fact">
+                <strong>Recall date</strong>
+                <span>{recall.recallDate}</span>
+              </div>
+              <div class="fact">
+                <strong>Product name</strong>
+                <span>{sourceProductNames || 'Not listed in local data'}</span>
+              </div>
+              <div class="fact">
+                <strong>Brand/company</strong>
+                <span>{sourceBrandField || 'Not listed in local data'}</span>
+              </div>
+              <div class="fact">
+                <strong>Hazard</strong>
+                <span>{sourceHazardField}</span>
+              </div>
+              <div class="fact">
+                <strong>Remedy</strong>
+                <span>{sourceRemedyField}</span>
+              </div>
+              <div class="fact">
+                <strong>Affected units / product quantity</strong>
+                <span>{sourceAffectedField}</span>
+              </div>
+              <div class="fact">
+                <strong>Recall number / record ID</strong>
+                <span>{sourceRecordField}</span>
+              </div>
+              {recall.source === 'FDA' && fdaClassificationStatus ? (
+                <div class="fact">
+                  <strong>Classification/status</strong>
+                  <span>{fdaClassificationStatus}</span>
+                </div>
+              ) : null}
+              <div class="fact">
+                <strong>Official source</strong>
+                {recall.sourceUrl ? (
+                  <span class="source-attribution">
+                    <a class="source-link source-link-small" href={recall.sourceUrl} target="_blank" rel="noopener noreferrer">
+                      {sourceLinkText}
+                    </a>
+                  </span>
+                ) : (
+                  <span>Not listed</span>
+                )}
+              </div>
+            </div>
+          </div>
+        </details>
       </section>
 
       <section class="section">
