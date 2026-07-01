@@ -126,6 +126,19 @@ function rawText(raw: RawObject, key: string): string {
   return safeText(raw[key]);
 }
 
+function splitRawText(raw: RawObject, key: string): string[] {
+  const value = raw[key];
+  if (Array.isArray(value)) {
+    return uniqueNonEmpty(value.flatMap((item) => safeText(item).split(/[|¤\n;]/)).map(cleanText));
+  }
+
+  return uniqueNonEmpty(
+    rawText(raw, key)
+      .split(/[|¤\n;]/)
+      .map(cleanText)
+  );
+}
+
 function valuesFrom(raw: RawObject, key: string, property = 'Name'): string[] {
   return uniqueNonEmpty(rawArray(raw, key).map((item) => safeText(item[property])));
 }
@@ -357,12 +370,79 @@ function buildFdaView(recall: SiteRecall, raw: RawObject): SourceDetailView {
   };
 }
 
+function buildRappelConsoView(recall: SiteRecall, raw: RawObject): SourceDetailView {
+  const productName = firstNonEmpty([rawText(raw, 'libelle'), rawText(raw, 'modeles_ou_references'), ...recall.productNames, recall.primaryProductName], 'Product');
+  const brandName = firstNonEmpty([rawText(raw, 'marque_produit'), ...recall.displayBrandNames, recall.primaryBrand], 'Brand not listed');
+  const identifiers = uniqueNonEmpty([
+    ...splitRawText(raw, 'identification_produits'),
+    ...identifierDetails([productName, rawText(raw, 'modeles_ou_references'), recall.description].join(' '))
+  ]);
+  const reason = firstNonEmpty([rawText(raw, 'motif_rappel'), rawText(raw, 'risques_encourus'), recall.reason ?? '', recall.hazard], 'Reason not listed.');
+  const action = firstNonEmpty(
+    [
+      splitRawText(raw, 'conduites_a_tenir_par_le_consommateur').join('; '),
+      rawText(raw, 'modalites_de_compensation'),
+      rawText(raw, 'preconisations_sanitaires'),
+      recall.remedy
+    ],
+    getRecallDefaultActionFallback(recall.source)
+  );
+  const distribution = uniqueNonEmpty([rawText(raw, 'zone_geographique_de_vente'), rawText(raw, 'distributeurs'), recall.distributionPattern ?? '']);
+  const captions = imageCaptions(raw, recall);
+  const description = firstNonEmpty(
+    [
+      rawText(raw, 'modeles_ou_references'),
+      rawText(raw, 'informations_complementaires'),
+      rawText(raw, 'description_complementaire_risque'),
+      recall.description
+    ],
+    productName
+  );
+  const details: DetailFact[] = [];
+
+  addFact(details, 'Product', productName);
+  addFact(details, 'Brand or company', brandName);
+  addFact(details, 'GTIN, barcode, lot, batch, or date details', identifiers);
+  addFact(details, 'Package or model details', rawText(raw, 'conditionnements') || rawText(raw, 'modeles_ou_references'));
+  addFact(details, 'Distribution or sales area', distribution);
+  addFact(details, 'Image captions', captions);
+
+  return {
+    displayTitle: displayTitleFor(productName, recall.title),
+    officialTitle: recall.title,
+    productName,
+    brandName,
+    recallDate: formatDate(rawText(raw, 'date_publication') || recall.recallDate),
+    recallNumber: rawText(raw, 'numero_fiche') || rawText(raw, 'rappel_guid') || recall.recallNumber || '',
+    imageCaptions: captions,
+    reason,
+    action,
+    actionDetail: action,
+    actionParagraphs: paragraphs(action),
+    description,
+    identificationDetails: details,
+    consumerContact: rawText(raw, 'numero_contact'),
+    soldAt: distribution,
+    incidents: [],
+    importer: splitRawText(raw, 'distributeurs'),
+    manufacturer: [],
+    manufacturedIn: [],
+    units: rawText(raw, 'conditionnements') || recall.affectedUnits,
+    fdaDetails: []
+  };
+}
+
 export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall[]): RecallDetailView {
   const raw = rawFor(recall);
   const companyRecallHistory = getCompanyRecallHistory(recall, allRecalls, 4);
   const companyHistoryIds = new Set(companyRecallHistory.map((historyRecall) => historyRecall.id));
   const relatedRecalls = getRelatedRecalls(recall, allRecalls, 4, companyHistoryIds);
-  const sourceSpecificView = recall.source === 'FDA' ? buildFdaView(recall, raw) : buildCpscView(recall, raw);
+  const sourceSpecificView =
+    recall.source === 'FDA'
+      ? buildFdaView(recall, raw)
+      : recall.source === 'FR_RAPPELCONSO'
+        ? buildRappelConsoView(recall, raw)
+        : buildCpscView(recall, raw);
   const productIntro = sourceSpecificView.productName
     ? `This recall involves ${sourceSpecificView.productName}`
     : 'This recall involves a recalled product';

@@ -8,6 +8,7 @@ const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 export const canonicalProcessedPath = resolve(projectRoot, 'data/processed/recalls.json');
 export const cpscProcessedPath = resolve(projectRoot, 'data/processed/cpsc-recalls.json');
 export const fdaProcessedPath = resolve(projectRoot, 'data/processed/fda-recalls.json');
+export const rappelConsoProcessedPath = resolve(projectRoot, 'data/processed/rappelconso-recalls.json');
 
 type MergeResult = ProcessedRecallFile & {
   countsBySource: Record<RecallSource, number>;
@@ -69,21 +70,24 @@ function mergeRecords(records: NormalizedRecall[]): NormalizedRecall[] {
 function countBySource(records: NormalizedRecall[]): Record<RecallSource, number> {
   return {
     CPSC: records.filter((record) => record.source === 'CPSC').length,
-    FDA: records.filter((record) => record.source === 'FDA').length
+    FDA: records.filter((record) => record.source === 'FDA').length,
+    FR_RAPPELCONSO: records.filter((record) => record.source === 'FR_RAPPELCONSO').length
   };
 }
 
 export async function mergeProcessedRecalls(): Promise<MergeResult> {
-  const [canonicalFile, cpscFile, fdaFile] = await Promise.all([
+  const [canonicalFile, cpscFile, fdaFile, rappelConsoFile] = await Promise.all([
     readProcessedFile(canonicalProcessedPath),
     readProcessedFile(cpscProcessedPath),
-    readProcessedFile(fdaProcessedPath)
+    readProcessedFile(fdaProcessedPath),
+    readProcessedFile(rappelConsoProcessedPath)
   ]);
   const cpscRecords = sourceRecords(cpscFile, 'CPSC').length
     ? sourceRecords(cpscFile, 'CPSC')
     : sourceRecords(canonicalFile, 'CPSC');
   const fdaRecords = sourceRecords(fdaFile, 'FDA');
-  const records = mergeRecords([...cpscRecords, ...fdaRecords]);
+  const rappelConsoRecords = sourceRecords(rappelConsoFile, 'FR_RAPPELCONSO');
+  const records = mergeRecords([...cpscRecords, ...fdaRecords, ...rappelConsoRecords]);
 
   if (records.length === 0) {
     throw new Error('Recall merge produced zero records; canonical processed data was not overwritten.');

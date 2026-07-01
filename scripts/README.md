@@ -6,6 +6,7 @@ Current rules:
 
 - The public CPSC recall API is allowed only when a task asks for CPSC refreshes.
 - The public openFDA food enforcement API is allowed only when a task asks for FDA/openFDA food recall refreshes.
+- The public RappelConso open data endpoint is allowed only when a task asks for France RappelConso refreshes.
 - UI-only phases should use the existing local `data/processed/recalls.json` file and should not fetch unless a later task explicitly asks for fresh data.
 - Do not connect databases.
 - Do not write secrets.
@@ -74,4 +75,35 @@ To rebuild FDA processed data from the saved raw file:
 npm run normalize:fda-food
 ```
 
-The canonical `data/processed/recalls.json` file is the local site source and can contain both CPSC and FDA records.
+## France RappelConso Fetch
+
+```powershell
+npm run fetch:rappelconso
+```
+
+This calls the RappelConso V2 GTIN-spaced data.economie.gouv.fr records endpoint:
+
+`https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/rappelconso-v2-gtin-espaces/records`
+
+Default behavior:
+
+- Requests the 100 most recent RappelConso records ordered by `date_publication desc`.
+- Saves a bounded raw response wrapper to `data/raw/rappelconso-recalls.json`.
+- Saves normalized France RappelConso records to `data/processed/rappelconso-recalls.json`.
+- Rebuilds the merged canonical file at `data/processed/recalls.json`.
+- Adds `fetchedAt` to the raw output.
+- Refuses to overwrite processed output when the endpoint returns zero records.
+
+Optional limit:
+
+```powershell
+npm run fetch:rappelconso -- --limit=50
+```
+
+To rebuild RappelConso processed data from the saved raw file:
+
+```powershell
+npm run normalize:rappelconso
+```
+
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, and France RappelConso records.

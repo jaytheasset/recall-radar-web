@@ -5,6 +5,7 @@ import {
   dataSourceLabel,
   processedCpscRecordCount,
   processedFdaRecordCount,
+  processedFranceRappelConsoRecordCount,
   processedLocalRecordCount,
   siteRecalls,
   usingProcessedLocalData
@@ -108,6 +109,7 @@ const dateOptions = [
             <>
               <span class="tag">{processedCpscRecordCount} consumer product notices</span>
               <span class="tag">{processedFdaRecordCount} food enforcement notices</span>
+              <span class="tag">{processedFranceRappelConsoRecordCount} France RappelConso notices</span>
             </>
           ) : null}
         </div>
@@ -248,7 +250,7 @@ const dateOptions = [
       const list = document.querySelector<HTMLElement>('#result-list');
 
       type SearchItem = ReturnType<typeof searchRecalls>['items'][number];
-      type SourceFilter = 'all' | 'CPSC' | 'FDA';
+      type SourceFilter = 'all' | 'CPSC' | 'FDA' | 'FR_RAPPELCONSO';
       type CategoryFilter =
         | 'all'
         | 'baby-kids'
@@ -267,7 +269,7 @@ const dateOptions = [
         date: DateFilter;
       };
 
-      const sourceValues: SourceFilter[] = ['all', 'CPSC', 'FDA'];
+      const sourceValues: SourceFilter[] = ['all', 'CPSC', 'FDA', 'FR_RAPPELCONSO'];
       const categoryValues: CategoryFilter[] = [
         'all',
         'baby-kids',
@@ -298,7 +300,11 @@ const dateOptions = [
           const sourceMatches = state.source === 'all' || recall.source === state.source;
           const categoryMatches =
             state.category === 'all' ||
-            (state.category === 'food' && (recall.rawCategory === 'food' || recall.source === 'FDA')) ||
+            (state.category === 'food' &&
+              (recall.rawCategory === 'food' ||
+                recall.rawCategory === 'alimentation' ||
+                recall.source === 'FDA' ||
+                recall.source === 'FR_RAPPELCONSO')) ||
             (state.category === 'general' && recall.category === 'general-consumer-product') ||
             recall.category === state.category;
           const recallTime = Date.parse(recall.recallDate);

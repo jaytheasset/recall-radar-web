@@ -8,9 +8,11 @@ Recall Radar currently uses local JSON files only. The current seed sources are:
 
 - CPSC consumer product recalls: 301 records
 - FDA/openFDA food enforcement recalls: 100 records
+- France RappelConso product recalls: 100 records
 - Canonical merged file: `data/processed/recalls.json`
+- Total current records: 501
 
-The UI is positioned for a global consumer recall search experience, but this phase does not add live global coverage. The site remains static/local-first and does not use a backend, database, email service, account system, or runtime API call.
+The UI is positioned for a global consumer recall search experience. France RappelConso is included as the first non-U.S. source spike, but the site remains static/local-first and does not use a backend, database, email service, account system, or browser runtime API call.
 
 ## B. Current Source Flow
 
@@ -19,12 +21,15 @@ The existing source flow is:
 1. Raw or fetched source data is saved under `data/raw/`.
    - CPSC raw file: `data/raw/cpsc-recalls.json`
    - FDA/openFDA raw file: `data/raw/fda-food-recalls.json`
+   - France RappelConso raw file: `data/raw/rappelconso-recalls.json`
 2. Source-specific normalization scripts map raw records into `NormalizedRecall`.
    - CPSC normalizer: `scripts/normalize-cpsc.ts`
    - FDA/openFDA normalizer: `scripts/normalize-fda-food.ts`
+   - France RappelConso normalizer: `scripts/normalize-rappelconso.ts`
 3. Source-specific processed files are written under `data/processed/`.
    - CPSC processed file: `data/processed/cpsc-recalls.json`
    - FDA/openFDA processed file: `data/processed/fda-recalls.json`
+   - France RappelConso processed file: `data/processed/rappelconso-recalls.json`
 4. `scripts/merge-recalls.ts` merges source-specific processed files into the canonical file.
    - Canonical processed file: `data/processed/recalls.json`
 5. `src/data/recall-types.ts` defines the shared `NormalizedRecall` and `ProcessedRecallFile` contract.
@@ -39,6 +44,8 @@ Current package scripts:
 - `npm run normalize:cpsc`
 - `npm run fetch:fda-food`
 - `npm run normalize:fda-food`
+- `npm run fetch:rappelconso`
+- `npm run normalize:rappelconso`
 - `npm run build:data`
 
 Do not run fetch scripts in UI or planning phases unless a later task explicitly requests a data refresh.
@@ -63,6 +70,7 @@ The registry currently exposes only active seed sources through current coverage
 
 - `CPSC`
 - `FDA`
+- `FR_RAPPELCONSO`
 
 Future source planning notes must not become active filters until a real source connector, normalized data, and validation path exist.
 
@@ -154,9 +162,8 @@ These identifiers should be included in normalized fields when there is an obvio
 
 ## G. Future Source Priority Notes
 
-Future candidates to evaluate as planning notes only:
+France RappelConso is now active as the first non-U.S. source spike. Future candidates to evaluate as planning notes only:
 
-- France RappelConso
 - Canada Recalls and Safety Alerts
 - EU Safety Gate
 - UK FSA
@@ -170,8 +177,8 @@ These are not active filters or active coverage in this phase. They should not a
 
 This phase does not add:
 
-- New API ingestion
-- New countries as active coverage
+- Additional API ingestion beyond the current CPSC, FDA/openFDA, and RappelConso scripts
+- Additional countries as active coverage
 - Backend services
 - Database storage
 - Alerts or email sending

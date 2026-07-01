@@ -84,6 +84,8 @@ const processedFile = processedRecallData as ProcessedRecallFile;
 function normalize(value: string): string {
   return value
     .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
 }
@@ -108,6 +110,37 @@ function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
       ...record.brandNames
     ].join(' ')
   );
+
+  if (record.source === 'FR_RAPPELCONSO') {
+    if (textHasAny(text, ['alimentation', 'allergene', 'lait', 'arachide', 'noisette', 'sesame'])) {
+      return 'food-allergy';
+    }
+
+    if (textHasAny(text, ['bebe', 'bebes', 'enfant', 'enfants', 'jouet', 'jouets', 'puericulture'])) {
+      return 'baby-kids';
+    }
+
+    if (
+      textHasAny(text, [
+        'batterie',
+        'batteries',
+        'chargeur',
+        'chargeurs',
+        'electrique',
+        'electronique',
+        'appareils electriques',
+        'outils'
+      ])
+    ) {
+      return 'battery-electronics';
+    }
+
+    if (textHasAny(text, ['maison', 'habitat', 'electromenager', 'meuble', 'chauffage'])) {
+      return 'household-appliance';
+    }
+
+    return 'general-consumer-product';
+  }
 
   if (
     textHasAny(text, [
@@ -206,8 +239,8 @@ function safeText(value: unknown): string {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-function isOfficialCpscImageUrl(url: string): boolean {
-  return /^https:\/\/www\.cpsc\.gov\//i.test(url);
+function isOfficialRecallImageUrl(url: string): boolean {
+  return /^https:\/\/www\.cpsc\.gov\//i.test(url) || /^https:\/\/rappel\.conso\.gouv\.fr\/image\//i.test(url);
 }
 
 function normalizeImage(value: unknown, fallbackAlt: string): RecallImage | null {
@@ -216,7 +249,7 @@ function normalizeImage(value: unknown, fallbackAlt: string): RecallImage | null
   }
 
   const url = safeText(value.url) || safeText(value.URL);
-  if (!url || !isOfficialCpscImageUrl(url)) {
+  if (!url || !isOfficialRecallImageUrl(url)) {
     return null;
   }
 
@@ -249,7 +282,7 @@ function extractRecallImages(record: NormalizedRecall): RecallImage[] {
     .map((image) => normalizeImage(image, fallbackAlt))
     .filter((image): image is RecallImage => Boolean(image));
 
-  return record.source === 'CPSC' ? uniqueImages(images) : [];
+  return record.source === 'CPSC' || record.source === 'FR_RAPPELCONSO' ? uniqueImages(images) : [];
 }
 
 function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
@@ -343,12 +376,17 @@ export const usingProcessedLocalData = processedLocalRecalls.length > 0;
 export const processedLocalRecordCount = processedLocalRecalls.length;
 export const processedCpscRecordCount = processedLocalRecalls.filter((recall) => recall.source === 'CPSC').length;
 export const processedFdaRecordCount = processedLocalRecalls.filter((recall) => recall.source === 'FDA').length;
+export const processedFranceRappelConsoRecordCount = processedLocalRecalls.filter(
+  (recall) => recall.source === 'FR_RAPPELCONSO'
+).length;
 export const usingProcessedCpscData = processedCpscRecordCount > 0;
 export const usingProcessedFdaData = processedFdaRecordCount > 0;
+export const usingProcessedFranceRappelConsoData = processedFranceRappelConsoRecordCount > 0;
 export const dataSourceLabel = usingProcessedLocalData
   ? [
       usingProcessedCpscData ? getRecallSourceLabel('CPSC') : '',
-      usingProcessedFdaData ? getRecallSourceLabel('FDA') : ''
+      usingProcessedFdaData ? getRecallSourceLabel('FDA') : '',
+      usingProcessedFranceRappelConsoData ? getRecallSourceLabel('FR_RAPPELCONSO') : ''
     ]
       .filter(Boolean)
       .join(' + ')

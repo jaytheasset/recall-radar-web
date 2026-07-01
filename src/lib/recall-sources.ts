@@ -1,4 +1,4 @@
-export type RecallSourceId = 'CPSC' | 'FDA' | 'Mock';
+export type RecallSourceId = 'CPSC' | 'FDA' | 'FR_RAPPELCONSO' | 'Mock';
 export type CurrentCoverageSourceId = Exclude<RecallSourceId, 'Mock'>;
 export type RecallSourceType = 'official-api' | 'sample';
 
@@ -112,6 +112,50 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     officialVerificationCopy:
       'Use the official notice to confirm affected lots, dates, distribution, product quantity, classification, status, and instructions.'
   },
+  FR_RAPPELCONSO: {
+    id: 'FR_RAPPELCONSO',
+    marketCode: 'FR',
+    marketLabel: 'France',
+    agencyLabel: 'RappelConso',
+    sourceType: 'official-api',
+    displayLabel: 'France · RappelConso',
+    noticeTypeLabel: 'Product recall notice',
+    productScopeLabel: 'Food, consumer products, vehicles, and other recall notices',
+    identifierTypes: [
+      'GTIN / barcode',
+      'model number',
+      'lot / batch code',
+      'expiration / use-by / best-before date',
+      'distribution details',
+      'recall reference'
+    ],
+    supportsImages: true,
+    supportsDistributionDetails: true,
+    rawPayloadNotes:
+      'RappelConso raw payloads can include numero_fiche, rappel_guid, categorie_produit, marque_produit, modeles_ou_references, identification_produits, zone_geographique_de_vente, distributeurs, motif_rappel, risques_encourus, conduites_a_tenir_par_le_consommateur, and liens_vers_les_images.',
+    officialSourceLabel: 'Source: France · RappelConso',
+    placeholderLabel: 'RappelConso notice',
+    reasonLabel: 'Reason',
+    actionLabel: 'Action',
+    quantityLabel: 'Quantity',
+    distributionLabel: 'Distribution',
+    defaultActionFallback: DEFAULT_ACTION_FALLBACK,
+    verificationIntro:
+      'Compare the details below with your product label, packaging, receipt, GTIN/barcode, lot code, or official notice. A matching search result does not confirm your exact product is included.',
+    verificationChecklist: [
+      'Product name and brand/company',
+      'GTIN/barcode if listed',
+      'Model, lot, batch, or date details if listed',
+      'Distribution or sales area details',
+      'Product photos or label details if available',
+      'Recall reference and publication date',
+      'Instructions in the official notice'
+    ],
+    sparseIdentificationCopy:
+      'This indexed notice may not list every identifier in a structured field. Review the official RappelConso notice, product label, and lot or date code carefully.',
+    officialVerificationCopy:
+      'Use the official notice to confirm affected products, identifiers, dates, distribution, and consumer instructions.'
+  },
   Mock: {
     id: 'Mock',
     marketCode: '',
@@ -147,10 +191,12 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
   }
 };
 
-const currentCoverageSources: CurrentCoverageSourceId[] = ['CPSC', 'FDA'];
+const currentCoverageSources: CurrentCoverageSourceId[] = ['CPSC', 'FDA', 'FR_RAPPELCONSO'];
 
 function normalizeSourceId(source: string): RecallSourceId {
-  return source === 'CPSC' || source === 'FDA' || source === 'Mock' ? source : 'Mock';
+  return source === 'CPSC' || source === 'FDA' || source === 'FR_RAPPELCONSO' || source === 'Mock'
+    ? source
+    : 'Mock';
 }
 
 export function getRecallSourceConfig(source: string): RecallSourceConfig {

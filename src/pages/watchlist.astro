@@ -3,6 +3,7 @@ import {
   dataSourceLabel,
   processedCpscRecordCount,
   processedFdaRecordCount,
+  processedFranceRappelConsoRecordCount,
   processedLocalRecordCount,
   siteRecalls,
   usingProcessedLocalData
@@ -83,6 +84,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
             <>
               <span class="tag">{processedCpscRecordCount} consumer product notices</span>
               <span class="tag">{processedFdaRecordCount} food enforcement notices</span>
+              <span class="tag">{processedFranceRappelConsoRecordCount} France RappelConso notices</span>
             </>
           ) : null}
         </div>
@@ -185,7 +187,11 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
           const sourceMatches = item.source === 'all' || recall.source === item.source;
           const categoryMatches =
             item.category === 'all' ||
-            (item.category === 'food' && (recall.rawCategory === 'food' || recall.source === 'FDA')) ||
+            (item.category === 'food' &&
+              (recall.rawCategory === 'food' ||
+                recall.rawCategory === 'alimentation' ||
+                recall.source === 'FDA' ||
+                recall.source === 'FR_RAPPELCONSO')) ||
             (item.category === 'general' && recall.category === 'general-consumer-product') ||
             recall.category === item.category;
 

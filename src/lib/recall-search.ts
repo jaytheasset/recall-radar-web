@@ -87,6 +87,8 @@ const ALLERGEN_TERMS = [
 function normalize(value: string): string {
   return value
     .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
 }
@@ -285,6 +287,10 @@ function sourceFields(recall: SiteRecall): string[] {
 export function getRecallIdentifierHint(recall: Pick<SiteRecall, 'source'>): string {
   if (recall.source === 'FDA') {
     return 'Check UPC/barcode, lot code, date, ingredient, distribution, and official notice details.';
+  }
+
+  if (recall.source === 'FR_RAPPELCONSO') {
+    return 'Check GTIN/barcode, model, lot, batch, date, distribution, and official notice details.';
   }
 
   if (recall.source === 'CPSC') {
