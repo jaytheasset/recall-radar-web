@@ -4,19 +4,23 @@ import {
   processedCpscRecordCount,
   processedFdaRecordCount,
   processedLocalRecordCount,
-  siteRecalls
+  siteRecalls,
+  usingProcessedLocalData
 } from '../lib/recall-data';
+import { sourceLabelForSource } from '../lib/source-display';
 import '../styles/global.css';
 
-const title = 'Recall Radar | Local product recall checker';
+const title = 'Recall Radar | Product recall search';
 const description =
-  'Recall Radar helps consumers search local CPSC and FDA/openFDA recall records by product, brand, model, UPC, lot code, or keyword.';
+  'Search official recall notices by product, brand, model, UPC, ingredient, or keyword. Recall Radar helps consumers discover possible recall matches and verify official notices.';
 const latestRecalls = siteRecalls.slice(0, 6);
 const babyCount = getRecallsByCategory('baby-kids').length;
 const batteryCount = getRecallsByCategory('battery-electronics').length;
 const foodCount = getRecallsByCategory('food-allergy').length;
 const householdCount = getRecallsByCategory('household-appliance').length;
-const countLine = `${processedLocalRecordCount} local records · ${processedCpscRecordCount} CPSC · ${processedFdaRecordCount} FDA/openFDA`;
+const countLine = usingProcessedLocalData
+  ? `Currently indexing ${processedLocalRecordCount} official U.S. recall notices · ${processedCpscRecordCount} CPSC · ${processedFdaRecordCount} FDA/openFDA`
+  : 'Demo notices are loaded for local preview.';
 const productTypes = [
   {
     label: 'Baby & Kids',
@@ -47,6 +51,16 @@ const productTypes = [
     description: 'Appliances and home products.'
   }
 ];
+
+function reasonLabelFor(source: string): string {
+  return source === 'FDA' ? 'Reason' : 'Hazard';
+}
+
+function reasonTextFor(recall: (typeof siteRecalls)[number]): string {
+  return recall.source === 'FDA'
+    ? recall.reason || recall.hazard || 'Reason not listed in the indexed notice'
+    : recall.hazard || recall.reason || 'Hazard not listed in the indexed notice';
+}
 ---
 
 <html lang="en">
@@ -72,15 +86,15 @@ const productTypes = [
     <main class="page-shell home-page">
       <section class="home-hero">
         <div class="home-hero-copy">
-          <h1>Find recalled products fast</h1>
+          <h1>Find product recalls before they find you.</h1>
           <p class="lead">
-            Search local CPSC and FDA/openFDA recall records by product, brand, model, UPC, lot code, or keyword.
+            Search official recall notices by product, brand, model, UPC, ingredient, or keyword. Recall Radar helps you discover possible matches and verify them with official sources.
           </p>
         </div>
 
-        <div class="home-search-panel" aria-label="Search local recall records">
+        <div class="home-search-panel" aria-label="Search official recall notices">
           <form class="home-search-module" action="/checker" method="get">
-            <label class="sr-only" for="home-recall-search">Product, brand, model, UPC, lot, or recall number</label>
+            <label class="sr-only" for="home-recall-search">Product, brand, model, UPC, ingredient, or keyword</label>
             <input
               id="home-recall-search"
               name="q"
@@ -98,6 +112,21 @@ const productTypes = [
           </div>
           <p class="data-count-line">{countLine}</p>
         </div>
+      </section>
+
+      <section class="section">
+        <article class="notice-panel">
+          <p class="eyebrow">Current coverage</p>
+          <h2>Official U.S. recall notices</h2>
+          <p>
+            Recall Radar currently indexes official U.S. recall notices from CPSC consumer product recalls and FDA/openFDA enforcement reports. More regions and source types can be added over time.
+          </p>
+          <div class="meta-row data-source-row">
+            <span class="badge-source">United States · CPSC</span>
+            <span class="badge-source">United States · FDA / openFDA</span>
+            <span class="tag">{processedLocalRecordCount} indexed notice{processedLocalRecordCount === 1 ? '' : 's'}</span>
+          </div>
+        </article>
       </section>
 
       <section class="section home-category-section">
@@ -144,7 +173,7 @@ const productTypes = [
               <span class="category-card-body">
                 <h3>{type.label}</h3>
                 <p>{type.description}</p>
-                <span class="category-count">{type.count} local record{type.count === 1 ? '' : 's'}</span>
+                <span class="category-count">{type.count} notice{type.count === 1 ? '' : 's'}</span>
                 <span class="btn btn-link">Browse recalls</span>
               </span>
             </a>
@@ -157,7 +186,7 @@ const productTypes = [
           <div>
             <h2>Recently recalled products</h2>
           </div>
-          <a class="btn btn-secondary" href="/checker">Search all records</a>
+          <a class="btn btn-secondary" href="/checker">Search all notices</a>
         </div>
         <div class="product-grid">
           {latestRecalls.map((recall) => (
@@ -166,16 +195,18 @@ const productTypes = [
                 {recall.primaryImageUrl ? (
                   <img src={recall.primaryImageUrl} alt={recall.primaryImageAlt || recall.title} loading="lazy" />
                 ) : (
-                  <span class="image-placeholder">{recall.source === 'FDA' ? 'FDA food notice' : 'Recall notice'}</span>
+                  <span class="image-placeholder">{recall.source === 'FDA' ? 'FDA notice' : 'Recall notice'}</span>
                 )}
               </a>
               <div class="card-body">
+                <h3><a href={recall.detailPath}>{recall.primaryProductName || recall.title}</a></h3>
+                <span class="home-card-hazard">{reasonLabelFor(recall.source)}: {reasonTextFor(recall)}</span>
+                {recall.remedy ? <p>Action: {recall.remedy}</p> : null}
                 <div class="home-card-meta">
-                  <span>{recall.sourceLabel}</span>
+                  <span>{sourceLabelForSource(recall.source)}</span>
+                  <span>{recall.categoryLabel}</span>
                   <span>{recall.recallDate}</span>
                 </div>
-                <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-                <span class="home-card-hazard">{recall.hazard || recall.reason || 'Hazard/reason not listed in local data'}</span>
                 <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
               </div>
             </article>
@@ -187,7 +218,7 @@ const productTypes = [
         <div class="signup-panel compact-cta home-watchlist-cta">
           <div>
             <h2>Monitor saved searches in this browser</h2>
-            <p>Local demo only &mdash; no email is sent.</p>
+            <p>Local browser demo only &mdash; no email is sent.</p>
           </div>
           <div class="link-row">
             <a class="btn btn-primary" href="/watchlist">Open watchlist</a>
@@ -198,7 +229,7 @@ const productTypes = [
     </main>
 
     <footer class="page-footer">
-      Recall Radar uses local CPSC and FDA/openFDA processed data when available and local mock fallback data otherwise. Always verify against official recall notices.
+      Recall Radar indexes official recall notices for local search. A match is not a final safety determination; always verify affected models, lots, dates, and remedies with the official notice.
     </footer>
   </body>
 </html>
