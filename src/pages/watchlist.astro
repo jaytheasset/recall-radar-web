@@ -12,7 +12,7 @@ import '../styles/global.css';
 
 const title = 'Local Watchlist | Recall Radar';
 const description =
-  'Save local Recall Radar search terms and brands in browser localStorage, then preview matching CPSC and FDA/openFDA records without a backend.';
+  'Monitor local Recall Radar search terms and brands in browser localStorage, then preview matching CPSC and FDA/openFDA recall signals without a backend.';
 const watchlistRecalls = siteRecalls.map((recall) => ({
   id: recall.id,
   source: recall.source,
@@ -60,18 +60,18 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
-        <a href="/baby-product-recalls">Baby Product Recalls</a>
-        <a href="/battery-recalls">Battery & Electronics Recalls</a>
-        <a href="/food-allergy-recalls">Food Allergy Recalls</a>
+        <a href="/baby-product-recalls">Baby & Kids</a>
+        <a href="/battery-recalls">Batteries & Electronics</a>
+        <a href="/food-allergy-recalls">Food & Allergy</a>
       </nav>
     </header>
 
     <main class="page-shell">
-      <section class="section">
-        <p class="eyebrow">Local browser demo</p>
-        <h1>Watchlist</h1>
+      <section class="section monitor-hero">
+        <p class="eyebrow">Watchlist / Monitor</p>
+        <h1>Local Watchlist</h1>
         <p class="lead">
-          Save searches and brands in this browser only. Matching previews are generated from the local processed recall data file.
+          Monitor saved searches and brands in this browser. Matching recall signal previews are generated from the local processed recall data file.
         </p>
         <div class="meta-row data-source-row">
           <span class="status-pill">{dataSourceLabel}</span>
@@ -90,7 +90,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 
       <section class="section">
         <div class="watchlist-layout">
-          <article class="notice-panel">
+          <article class="notice-panel monitor-panel">
             <h2>Local demo only &mdash; no email is sent</h2>
             <p>
               This form is only a product UI demonstration. It does not submit, send, store, or transmit an email address.
@@ -105,8 +105,8 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
             </form>
           </article>
 
-          <article class="notice-panel">
-            <h2>Saved Items</h2>
+          <article class="notice-panel monitor-panel">
+            <h2>Saved monitors</h2>
             <p>
               Saved searches and brands stay in localStorage for this browser profile. No server, database, API endpoint, or email service is used.
             </p>
@@ -121,16 +121,17 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       <section class="section">
         <div class="section-header">
           <div>
-            <h2>Matching Local Recall Previews</h2>
-            <p class="section-note">Preview matches are generated locally from saved searches and brands.</p>
+            <p class="eyebrow">Local monitoring console</p>
+            <h2>Matching recall signals</h2>
+            <p class="section-note">Signal previews are generated locally from saved searches and brands.</p>
           </div>
-          <a class="button-link button-secondary" href="/checker">Add a search</a>
+          <a class="button-link button-secondary" href="/checker">Add a monitored search</a>
         </div>
         <p class="disclaimer-copy">
           No matching recall found does not guarantee a product is safe. Always verify with the official recall notice, manufacturer, and applicable government agency.
         </p>
         <div id="empty-watchlist" class="notice-panel">
-          <p>No saved searches or brands yet. Use the checker or a brand page to add local watchlist items.</p>
+          <p>No saved searches or brands yet. Use the Product Recall Checker or a brand monitor page to add local watchlist items.</p>
         </div>
         <div id="watchlist-items" class="watchlist-items"></div>
       </section>
@@ -237,7 +238,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 
         const details = document.createElement('a');
         details.href = recall.detailPath;
-        details.textContent = 'Details';
+        details.textContent = 'Signal report';
 
         article.append(meta, heading, summary, hazard, details);
         return article;
@@ -276,7 +277,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         details.textContent =
           item.type === 'search'
             ? `${sourceLabel(item.source)} / ${categoryLabel(item.category)}`
-            : `Brand page: /brands/${item.slug}`;
+            : `Brand monitor page: /brands/${item.slug}`;
         title.append(heading, details);
 
         const remove = document.createElement('button');
@@ -297,7 +298,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
           list.replaceChildren(...matches.map(createRecallPreview));
         } else {
           const empty = document.createElement('p');
-          empty.textContent = 'No matching local recall previews for this saved item right now.';
+          empty.textContent = 'No matching recall signals for this saved item in the local dataset right now.';
           list.append(empty);
         }
 

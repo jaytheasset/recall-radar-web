@@ -49,21 +49,21 @@ export type BrandRecallGroup = {
 export const categoryRoutes = [
   {
     href: '/baby-product-recalls',
-    label: 'Baby Product Recalls',
+    label: 'Baby & Kids Gear',
     category: 'baby-kids',
-    description: 'Browse baby, infant, nursery, and kids recalls from local data.'
+    description: 'Scan baby, infant, nursery, toy, and kids gear recall signals.'
   },
   {
     href: '/battery-recalls',
-    label: 'Battery & Electronics Recalls',
+    label: 'Batteries & Electronics',
     category: 'battery-electronics',
-    description: 'Browse battery, charger, lithium-ion, and electronics recalls from local data.'
+    description: 'Scan battery, charger, lithium-ion, and electronics recall signals.'
   },
   {
     href: '/food-allergy-recalls',
-    label: 'Food Allergy Recalls',
+    label: 'Food & Allergy',
     category: 'food-allergy',
-    description: 'Browse food, allergy, and undeclared allergen recalls from local data.'
+    description: 'Scan food, allergy, and undeclared allergen recall signals.'
   }
 ] as const;
 

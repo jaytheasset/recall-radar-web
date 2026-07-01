@@ -1,7 +1,6 @@
 ---
 import {
   brandGroups,
-  categoryRoutes,
   dataSourceLabel,
   processedCpscRecordCount,
   processedFdaRecordCount,
@@ -11,13 +10,53 @@ import {
 } from '../lib/recall-data';
 import '../styles/global.css';
 
-const title = 'Product Recall Checker | Recall Radar';
+const title = 'Product Safety Radar | Recall Radar';
 const description =
-  'Recall Radar is a local product recall checker for searching CPSC and FDA/openFDA local data by brand, product, category, or keyword.';
-const featuredRecalls = siteRecalls.slice(0, 6);
+  'Recall Radar is a local product safety radar for scanning CPSC and FDA/openFDA recall signals by product, brand, model, UPC, lot code, or keyword.';
+const latestSignals = siteRecalls.slice(0, 6);
 const latestCpscRecalls = siteRecalls.filter((recall) => recall.source === 'CPSC').slice(0, 3);
 const latestFdaRecalls = siteRecalls.filter((recall) => recall.source === 'FDA').slice(0, 3);
 const featuredBrands = brandGroups.slice(0, 24);
+const scanZones = [
+  {
+    label: 'Baby & Kids Gear',
+    href: '/baby-product-recalls',
+    description: 'Cribs, sleepers, toys, nursery gear, and child-focused product signals.'
+  },
+  {
+    label: 'Batteries & Electronics',
+    href: '/battery-recalls',
+    description: 'Battery packs, chargers, power banks, devices, and electronics signals.'
+  },
+  {
+    label: 'Food & Allergy',
+    href: '/food-allergy-recalls',
+    description: 'FDA/openFDA food notices, undeclared allergens, and grocery product signals.'
+  },
+  {
+    label: 'Household Products',
+    href: '/checker?category=household-appliance',
+    description: 'Appliances, furniture, fixtures, and general consumer product signals.'
+  }
+];
+const workflowSteps = [
+  {
+    title: 'Search',
+    text: 'Enter a product, brand, model, UPC, lot code, recall number, or keyword.'
+  },
+  {
+    title: 'Review signals',
+    text: 'Compare exact, possible, and related recall signals from local CPSC and FDA/openFDA records.'
+  },
+  {
+    title: 'Verify source',
+    text: 'Open the official source link before taking action.'
+  },
+  {
+    title: 'Monitor locally',
+    text: 'Save searches and brands in this browser with the local watchlist demo.'
+  }
+];
 ---
 
 <html lang="en">
@@ -34,63 +73,67 @@ const featuredBrands = brandGroups.slice(0, 24);
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
-        <a href="/baby-product-recalls">Baby Product Recalls</a>
-        <a href="/battery-recalls">Battery & Electronics Recalls</a>
-        <a href="/food-allergy-recalls">Food Allergy Recalls</a>
+        <a href="/baby-product-recalls">Baby & Kids</a>
+        <a href="/battery-recalls">Batteries & Electronics</a>
+        <a href="/food-allergy-recalls">Food & Allergy</a>
       </nav>
     </header>
 
     <main class="page-shell">
-      <section class="hero">
-        <div>
-          <p class="eyebrow">Recall Radar</p>
-          <h1>Check if a product has been recalled</h1>
-          <p class="lead">Search local CPSC and FDA/openFDA recall records by product, brand, model, UPC, lot, or keyword.</p>
-          <div class="meta-row data-source-row">
+      <section class="hero product-radar-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Product Safety Radar</p>
+          <h1>Scan a product for recall signals</h1>
+          <p class="lead">
+            Recall Radar searches local CPSC and FDA/openFDA recall records by product, brand, model, UPC,
+            lot code, or keyword.
+          </p>
+          <div class="source-strip" aria-label="Local recall data coverage">
             <span class="status-pill">{dataSourceLabel}</span>
-          </div>
-          <div class="metric-grid" aria-label="Local recall record counts">
-            <div class="metric">
-              <strong>{usingProcessedLocalData ? processedLocalRecordCount : featuredRecalls.length}</strong>
-              <span>{usingProcessedLocalData ? 'Total local records' : 'Demo fallback records'}</span>
-            </div>
-            <div class="metric">
-              <strong>{processedCpscRecordCount}</strong>
-              <span>CPSC records</span>
-            </div>
-            <div class="metric">
-              <strong>{processedFdaRecordCount}</strong>
-              <span>FDA/openFDA records</span>
-            </div>
-          </div>
-          <div class="trust-row" aria-label="Recall Radar trust indicators">
-            <span class="tag source-tag">Local CPSC + FDA/openFDA data</span>
+            <span class="tag">
+              {usingProcessedLocalData ? `${processedLocalRecordCount} local records` : 'Demo fallback records'}
+            </span>
+            <span class="tag">{processedCpscRecordCount} CPSC</span>
+            <span class="tag">{processedFdaRecordCount} FDA/openFDA</span>
             <span class="tag">Official source links</span>
             <span class="tag match-tag">No safety guarantee</span>
           </div>
-          <div class="category-band" aria-label="Recall categories">
-            {categoryRoutes.map((route) => (
-              <a class="category-link" href={route.href}>
-                {route.label}
-                <span>{route.description}</span>
-              </a>
-            ))}
+          <div class="hero-actions">
+            <a class="button-link" href="/checker">Open Product Recall Checker</a>
+            <a class="button-link button-secondary" href="/watchlist">Monitor locally</a>
           </div>
         </div>
-        <section class="search-panel" aria-labelledby="home-search-title">
-          <h2 id="home-search-title">Product Recall Checker</h2>
+        <section class="search-panel scan-panel" aria-labelledby="home-search-title">
+          <div class="scan-panel-header">
+            <div>
+              <p class="eyebrow">Product Recall Scanner</p>
+              <h2 id="home-search-title">Scan local recall signals</h2>
+            </div>
+            <span class="tag source-tag">Local dataset</span>
+          </div>
+          <div class="radar-visual" aria-hidden="true">
+            <span class="radar-ring radar-ring-one"></span>
+            <span class="radar-ring radar-ring-two"></span>
+            <span class="radar-ring radar-ring-three"></span>
+            <span class="scan-line"></span>
+            <span class="signal-dot signal-dot-one"></span>
+            <span class="signal-dot signal-dot-two"></span>
+            <span class="signal-dot signal-dot-three"></span>
+            <span class="radar-core">R</span>
+          </div>
           <form class="search-form" action="/checker" method="get">
             <label>
-              Search
-              <input name="q" type="search" placeholder="Brand, product, model, or keyword" />
+              Product, brand, model, UPC, lot, or recall number
+              <input name="q" type="search" placeholder="Brand, product, model, UPC, lot, or recall number" />
             </label>
-            <button type="submit">Check</button>
+            <button type="submit">Scan</button>
           </form>
           <div class="example-searches" aria-label="Example searches">
             <span>Examples:</span>
-            <a class="tag" href="/checker?q=arizer">arizer</a>
-            <a class="tag" href="/checker?q=pistachio&source=FDA">pistachio in FDA</a>
-            <a class="tag" href="/checker?q=smoke&source=CPSC">smoke in CPSC</a>
+            <a class="tag" href="/checker?q=baby%20sleeper">baby sleeper</a>
+            <a class="tag" href="/checker?q=power%20bank">power bank</a>
+            <a class="tag" href="/checker?q=pistachio&source=FDA">pistachio</a>
+            <a class="tag" href="/checker?q=smoke%20detector&source=CPSC">smoke detector</a>
           </div>
         </section>
       </section>
@@ -98,37 +141,38 @@ const featuredBrands = brandGroups.slice(0, 24);
       <section class="section">
         <div class="section-header">
           <div>
-            <h2>Latest Recalls by Source</h2>
-            <p class="section-note">Separate local CPSC and FDA/openFDA views from the merged local data file.</p>
+            <p class="eyebrow">Recall signals</p>
+            <h2>Latest recall signals</h2>
+            <p class="section-note">Recent source-backed records from the local merged CPSC and FDA/openFDA dataset.</p>
           </div>
-          <a class="button-link button-secondary" href="/checker">Search all</a>
+          <a class="button-link button-secondary" href="/checker">Scan all records</a>
         </div>
         <div class="source-latest-grid">
           <section class="source-latest-column" aria-labelledby="latest-cpsc-title">
-            <h3 id="latest-cpsc-title">Local CPSC data</h3>
+            <h3 id="latest-cpsc-title">CPSC signal stream</h3>
             {latestCpscRecalls.map((recall) => (
-              <article class="recall-card">
+              <article class="recall-card signal-card">
                 <div class="meta-row">
                   <span class="tag source-tag">{recall.sourceLabel}</span>
                   <span class="tag">{recall.recallDate}</span>
                 </div>
                 <h3><a href={recall.detailPath}>{recall.title}</a></h3>
                 <p>{recall.hazard || recall.description}</p>
-                <a href={recall.detailPath}>Details</a>
+                <a href={recall.detailPath}>Signal report</a>
               </article>
             ))}
           </section>
           <section class="source-latest-column" aria-labelledby="latest-fda-title">
-            <h3 id="latest-fda-title">Local FDA/openFDA data</h3>
+            <h3 id="latest-fda-title">FDA/openFDA signal stream</h3>
             {latestFdaRecalls.map((recall) => (
-              <article class="recall-card">
+              <article class="recall-card signal-card">
                 <div class="meta-row">
                   <span class="tag source-tag">{recall.sourceLabel}</span>
                   <span class="tag">{recall.recallDate}</span>
                 </div>
                 <h3><a href={recall.detailPath}>{recall.title}</a></h3>
                 <p>{recall.hazard || recall.reason || recall.description}</p>
-                <a href={recall.detailPath}>Details</a>
+                <a href={recall.detailPath}>Signal report</a>
               </article>
             ))}
           </section>
@@ -138,14 +182,53 @@ const featuredBrands = brandGroups.slice(0, 24);
       <section class="section">
         <div class="section-header">
           <div>
-            <h2>Latest Local Recall Records</h2>
+            <p class="eyebrow">Scan zones</p>
+            <h2>Choose a scan zone</h2>
+            <p class="section-note">Focused entry points for common consumer product recall categories.</p>
+          </div>
+        </div>
+        <div class="scan-zone-grid">
+          {scanZones.map((zone) => (
+            <a class="scan-zone-card" href={zone.href}>
+              <span class="scan-zone-marker" aria-hidden="true"></span>
+              <strong>{zone.label}</strong>
+              <span>{zone.description}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">How it works</p>
+            <h2>Search, review, verify, monitor</h2>
+            <p class="section-note">Recall Radar helps you find local recall signals, then points you back to official source records.</p>
+          </div>
+        </div>
+        <div class="step-grid">
+          {workflowSteps.map((step, index) => (
+            <article class="step-card">
+              <span class="step-number">{index + 1}</span>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Source-backed records</p>
+            <h2>Latest local signal reports</h2>
             <p class="section-note">Generated from the local processed recall data file.</p>
           </div>
-          <a class="button-link button-secondary" href="/checker">Search all</a>
+          <a class="button-link button-secondary" href="/checker">Scan all records</a>
         </div>
         <div class="grid">
-          {featuredRecalls.map((recall) => (
-            <article class="recall-card">
+          {latestSignals.map((recall) => (
+            <article class="recall-card signal-card">
               <div class="meta-row">
                 <span class="tag source-tag">{recall.sourceLabel}</span>
                 <span class="tag">{recall.categoryLabel}</span>
@@ -155,9 +238,9 @@ const featuredBrands = brandGroups.slice(0, 24);
               <p>{recall.description}</p>
               <div class="link-row">
                 {recall.primaryBrandSlug ? (
-                  <a href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} recall page</a>
+                  <a href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} monitor page</a>
                 ) : null}
-                <a href={recall.detailPath}>Details</a>
+                <a href={recall.detailPath}>Signal report</a>
               </div>
             </article>
           ))}
@@ -167,19 +250,23 @@ const featuredBrands = brandGroups.slice(0, 24);
       <section class="section">
         <div class="signup-panel">
           <div>
-            <h2>Local Watchlist & Alert Demo</h2>
-            <p>Save searches and brands in this browser only, then preview matching local recall records.</p>
+            <p class="eyebrow">Watchlist / Monitor</p>
+            <h2>Monitor brands and searches locally</h2>
+            <p>Save searches and brands in this browser only, then preview matching recall signals. Local demo only - no email is sent.</p>
           </div>
           <div class="link-row">
             <a class="button-link" href="/watchlist">Open watchlist</a>
-            <a class="button-link button-secondary" href="/checker?q=pistachio&source=FDA">Try a saved search</a>
+            <a class="button-link button-secondary" href="/checker?q=pistachio&source=FDA">Try a monitored search</a>
           </div>
         </div>
       </section>
 
       <section class="section">
         <div class="section-header">
-          <h2>Brand Recall Pages</h2>
+          <div>
+            <p class="eyebrow">Brand monitor pages</p>
+            <h2>Browse brand recall signals</h2>
+          </div>
         </div>
         <div class="tag-row">
           {featuredBrands.map((group) => <a class="tag" href={`/brands/${group.slug}`}>{group.brand}</a>)}

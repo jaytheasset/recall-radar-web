@@ -2,9 +2,9 @@
 import { getRecallsByCategory } from '../lib/recall-data';
 import '../styles/global.css';
 
-const title = 'Battery & Electronics Recalls | Recall Radar';
+const title = 'Battery & Electronics Recall Signals | Recall Radar';
 const description =
-  'Browse local CPSC Battery and Electronics Recalls in Recall Radar, including lithium battery packs, power banks, chargers, and electronics.';
+  'Scan local CPSC battery and electronics recall signals in Recall Radar, including lithium battery packs, power banks, chargers, and electronics.';
 const recalls = getRecallsByCategory('battery-electronics');
 ---
 
@@ -22,28 +22,34 @@ const recalls = getRecallsByCategory('battery-electronics');
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
-        <a href="/baby-product-recalls">Baby Product Recalls</a>
-        <a href="/battery-recalls">Battery & Electronics Recalls</a>
-        <a href="/food-allergy-recalls">Food Allergy Recalls</a>
+        <a href="/baby-product-recalls">Baby & Kids</a>
+        <a href="/battery-recalls">Batteries & Electronics</a>
+        <a href="/food-allergy-recalls">Food & Allergy</a>
       </nav>
     </header>
 
     <main class="page-shell">
       <section class="section">
-        <p class="eyebrow">Recall category</p>
+        <p class="eyebrow">Scan zone</p>
         <div class="meta-row data-source-row">
           <span class="status-pill">Local CPSC data</span>
           <span class="tag">{recalls.length} record{recalls.length === 1 ? '' : 's'}</span>
         </div>
-        <h1>Battery & Electronics Recalls</h1>
-        <p class="lead">Local recall pages for batteries, power banks, charging accessories, and electronics.</p>
+        <h1>Battery & Electronics Recall Signals</h1>
+        <p class="lead">A conservative local scan zone for batteries, power banks, charging accessories, and electronics recall signals.</p>
       </section>
 
       <section class="section">
+        <div class="section-header">
+          <div>
+            <h2>Source-backed signals</h2>
+            <p class="section-note">Shown only when local classification identifies a battery or electronics signal.</p>
+          </div>
+        </div>
         {recalls.length ? (
           <div class="grid">
             {recalls.map((recall) => (
-              <article class="recall-card">
+              <article class="recall-card signal-card">
                 <div class="meta-row">
                   <span class="tag source-tag">{recall.sourceLabel}</span>
                   <span class="tag">{recall.recallDate}</span>
@@ -51,19 +57,19 @@ const recalls = getRecallsByCategory('battery-electronics');
                 <h3><a href={recall.detailPath}>{recall.title}</a></h3>
                 <p>Product: {recall.primaryProductName}</p>
                 <p>Brand/company: {recall.primaryBrand}</p>
-                <p>Hazard: {recall.hazard || 'Not listed in local data'}</p>
+                <p>Hazard signal: {recall.hazard || 'Not listed in local data'}</p>
                 <div class="link-row">
                   {recall.primaryBrandSlug ? (
-                    <a href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} recall page</a>
+                    <a href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} monitor page</a>
                   ) : null}
-                  <a href={recall.detailPath}>Details</a>
+                  <a href={recall.detailPath}>Signal report</a>
                 </div>
               </article>
             ))}
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No local CPSC records are currently classified in this category.</p>
+            <p>No local CPSC records are currently classified in this scan zone.</p>
           </div>
         )}
       </section>

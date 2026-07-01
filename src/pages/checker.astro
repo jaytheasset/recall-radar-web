@@ -13,7 +13,7 @@ import '../styles/global.css';
 
 const title = 'Product Recall Checker | Recall Radar';
 const description =
-  'Search local processed CPSC and FDA/openFDA recall data with the Recall Radar Product Recall Checker by product name, brand, category, or keyword.';
+  'Scan local processed CPSC and FDA/openFDA recall signals with the Recall Radar Product Recall Checker by product name, brand, category, or keyword.';
 const featuredBrands = brandGroups.slice(0, 24);
 const checkerRecalls = siteRecalls.map((recall) => ({
   id: recall.id,
@@ -86,16 +86,16 @@ const dateOptions = [
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
-        <a href="/baby-product-recalls">Baby Product Recalls</a>
-        <a href="/battery-recalls">Battery & Electronics Recalls</a>
-        <a href="/food-allergy-recalls">Food Allergy Recalls</a>
+        <a href="/baby-product-recalls">Baby & Kids</a>
+        <a href="/battery-recalls">Batteries & Electronics</a>
+        <a href="/food-allergy-recalls">Food & Allergy</a>
       </nav>
     </header>
 
     <main class="page-shell">
-      <section class="section">
-        <p class="eyebrow">Recall Radar</p>
-        <h1>Product Recall Checker</h1>
+      <section class="section scanner-hero">
+        <p class="eyebrow">Product Recall Scanner</p>
+        <h1>Scan local recall signals</h1>
         <p class="lead">Search local recall records by keyword, product, brand, model, UPC, lot, or recall number.</p>
         <div class="meta-row data-source-row">
           <span class="status-pill">{dataSourceLabel}</span>
@@ -110,21 +110,27 @@ const dateOptions = [
           ) : null}
         </div>
 
-        <section class="search-panel" aria-labelledby="checker-form-title">
-          <h2 id="checker-form-title">Search Local Recall Data</h2>
+        <section class="search-panel scanner-console" aria-labelledby="checker-form-title">
+          <div class="scan-panel-header">
+            <div>
+              <p class="eyebrow">Scanning console</p>
+              <h2 id="checker-form-title">Product Recall Checker</h2>
+            </div>
+            <span class="tag source-tag">Source-backed records</span>
+          </div>
           <form id="recall-search-form" class="search-form checker-search-form">
             <label class="search-query-field">
-              Search
+              Scan term
               <input
                 id="recall-query"
                 name="q"
                 type="search"
-                placeholder="Keyword, product, brand, model, UPC, lot, or recall number"
+                placeholder="Brand, product, model, UPC, lot, or recall number"
                 autocomplete="off"
               />
             </label>
-            <button type="submit">Search local data</button>
-            <button id="save-search-watchlist" class="button-secondary" type="button">Save this search</button>
+            <button type="submit">Scan</button>
+            <button id="save-search-watchlist" class="button-secondary" type="button">Monitor this search</button>
             <div class="filter-grid" aria-label="Local recall search filters">
               <label>
                 Source
@@ -155,14 +161,18 @@ const dateOptions = [
           <p id="save-search-status" class="form-note" hidden></p>
           <div class="example-searches" aria-label="Example searches">
             <span>Examples:</span>
-            <a class="tag" href="/checker?q=arizer">arizer</a>
+            <a class="tag" href="/checker?q=baby%20sleeper">baby sleeper</a>
+            <a class="tag" href="/checker?q=power%20bank">power bank</a>
             <a class="tag" href="/checker?q=pistachio&source=FDA">pistachio in FDA</a>
-            <a class="tag" href="/checker?q=smoke&source=CPSC">smoke in CPSC</a>
+            <a class="tag" href="/checker?q=smoke%20detector&source=CPSC">smoke detector in CPSC</a>
           </div>
+          <p class="disclaimer-copy">
+            No matching recall found does not guarantee a product is safe. Always verify with the official recall notice, manufacturer, and applicable government agency.
+          </p>
           <div id="search-results" class="notice-panel result-panel" hidden>
             <div class="meta-row">
-              <span id="result-match" class="status-pill">No local match</span>
-              <span id="result-count" class="tag">0 results</span>
+              <span id="result-match" class="status-pill">No local signal</span>
+              <span id="result-count" class="tag">0 signals</span>
               <span id="result-filter-summary" class="tag">All local data</span>
             </div>
             <p id="result-summary"></p>
@@ -174,7 +184,7 @@ const dateOptions = [
 
       <section class="section">
         <div class="section-header">
-          <h2>Recall Categories</h2>
+          <h2>Scan Zones</h2>
         </div>
         <div class="category-band">
           {categoryRoutes.map((route) => (
@@ -188,7 +198,7 @@ const dateOptions = [
 
       <section class="section">
         <div class="section-header">
-          <h2>Brand Recall Pages</h2>
+          <h2>Brand Monitor Pages</h2>
         </div>
         <div class="tag-row">
           {featuredBrands.map((group) => <a class="tag" href={`/brands/${group.slug}`}>{group.brand}</a>)}
@@ -385,13 +395,13 @@ const dateOptions = [
         if (recall.primaryBrandSlug) {
           const brand = document.createElement('a');
           brand.href = `/brands/${recall.primaryBrandSlug}`;
-          brand.textContent = `${recall.primaryBrand} recall page`;
+          brand.textContent = `${recall.primaryBrand} monitor page`;
           links.append(brand);
         }
 
         const details = document.createElement('a');
         details.href = recall.detailPath;
-        details.textContent = 'Details';
+        details.textContent = 'Signal report';
 
         meta.append(
           createTag(MATCH_LABELS[match].replace(' local match', ''), 'tag match-tag'),
@@ -458,12 +468,12 @@ const dateOptions = [
 
         if (!state.query) {
           panel.dataset.match = 'none';
-          matchLabel.textContent = 'Search local data';
-          countLabel.textContent = `${filteredRecalls.length} available record${
-            filteredRecalls.length === 1 ? '' : 's'
-          }`;
-          summary.textContent =
-            'Enter a product, brand, model, UPC, lot, recall number, or keyword to search the filtered local recall data.';
+        matchLabel.textContent = 'Scan local data';
+        countLabel.textContent = `${filteredRecalls.length} available record${
+          filteredRecalls.length === 1 ? '' : 's'
+        }`;
+        summary.textContent =
+            'Enter a product, brand, model, UPC, lot, recall number, or keyword to scan the filtered local recall data.';
           list.replaceChildren();
           return;
         }
@@ -472,11 +482,11 @@ const dateOptions = [
         const sortedItems = sortItems(result.items, state.sort);
         panel.dataset.match = result.match;
         matchLabel.textContent = MATCH_LABELS[result.match];
-        countLabel.textContent = `${sortedItems.length} result${sortedItems.length === 1 ? '' : 's'}`;
+        countLabel.textContent = `${sortedItems.length} signal${sortedItems.length === 1 ? '' : 's'}`;
         summary.textContent =
           result.match === 'none'
-            ? `No local recall matched "${state.query}" with the selected filters.`
-            : `Local matches for "${state.query}" with the selected filters.`;
+            ? 'No matching recall signal found in the local dataset.'
+            : `Recall signals for "${state.query}" with the selected filters.`;
 
         if (state.sort === 'best') {
           const groupedResults = (['exact', 'possible', 'related'] as const)
@@ -489,7 +499,7 @@ const dateOptions = [
           list.replaceChildren(...groupedResults);
         } else {
           list.replaceChildren(
-            ...(sortedItems.length ? [createResultGroup('Sorted local matches', sortedItems)] : [])
+            ...(sortedItems.length ? [createResultGroup('Sorted recall signals', sortedItems)] : [])
           );
         }
       }
@@ -508,7 +518,7 @@ const dateOptions = [
 
         saveSearchStatus.hidden = false;
         if (!state.query) {
-          saveSearchStatus.textContent = 'Enter a search term before saving it to the local watchlist.';
+          saveSearchStatus.textContent = 'Enter a scan term before monitoring it in the local watchlist.';
           return;
         }
 
@@ -517,7 +527,7 @@ const dateOptions = [
           source: state.source,
           category: state.category
         });
-        saveSearchStatus.textContent = `Saved "${item.query}" to this browser's local watchlist.`;
+        saveSearchStatus.textContent = `Monitoring "${item.query}" in this browser's local watchlist.`;
       }
 
       form?.addEventListener('submit', (event) => {

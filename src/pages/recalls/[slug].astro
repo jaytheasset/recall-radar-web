@@ -11,8 +11,8 @@ export function getStaticPaths() {
 }
 
 const { recall } = Astro.props;
-const title = `${recall.title} | Recall Radar`;
-const description = `${recall.title} local recall detail page with source, product, brand, hazard, remedy, affected units, and official notice link.`;
+const title = `${recall.title} Signal Report | Recall Radar`;
+const description = `${recall.title} local recall signal report with source, product, brand, hazard, remedy, affected units, and official notice link.`;
 const sourceLinkLabel = recall.source === 'FDA' ? 'Official FDA/openFDA Reference' : 'Official CPSC Notice';
 const sourceLinkText = recall.source === 'FDA' ? 'Open official FDA/openFDA reference' : 'Open official CPSC notice';
 const displayBrandNames = recall.displayBrandNames.length ? recall.displayBrandNames : [recall.primaryBrand];
@@ -40,15 +40,15 @@ const whatToCheckItems = [
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
-        <a href="/baby-product-recalls">Baby Product Recalls</a>
-        <a href="/battery-recalls">Battery & Electronics Recalls</a>
-        <a href="/food-allergy-recalls">Food Allergy Recalls</a>
+        <a href="/baby-product-recalls">Baby & Kids</a>
+        <a href="/battery-recalls">Batteries & Electronics</a>
+        <a href="/food-allergy-recalls">Food & Allergy</a>
       </nav>
     </header>
 
     <main class="page-shell">
       <section class="section">
-        <p class="eyebrow">Recall detail</p>
+        <p class="eyebrow">Source-backed signal report</p>
         <div class="meta-row data-source-row">
           <span class="status-pill">{recall.sourceLabel}</span>
           <span class="tag">{recall.categoryLabel}</span>
@@ -58,9 +58,10 @@ const whatToCheckItems = [
       </section>
 
       <section class="section detail-grid">
-        <aside class="facts" aria-label="Recall facts">
+        <aside class="facts source-record" aria-label="Source record">
+          <h2>Source record</h2>
           <div class="fact">
-            <strong>Primary Brand / Company</strong>
+            <strong>Brand / company</strong>
             {recall.primaryBrandSlug ? (
               <a href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand}</a>
             ) : (
@@ -90,7 +91,7 @@ const whatToCheckItems = [
         </aside>
 
         <article class="notice-panel">
-          <h2>Recall Details</h2>
+          <h2>Recall signal summary</h2>
           <div class="facts">
             <div class="fact">
               <strong>Affected Products</strong>
@@ -107,11 +108,11 @@ const whatToCheckItems = [
               </div>
             ) : null}
             <div class="fact">
-              <strong>Hazard</strong>
+              <strong>Hazard signal</strong>
               <span>{recall.hazard || 'Not listed in local data'}</span>
             </div>
             <div class="fact">
-              <strong>Remedy</strong>
+              <strong>Remedy / consumer action</strong>
               <span>{recall.remedy || 'Not listed in local data'}</span>
             </div>
             <div class="fact">
@@ -148,7 +149,7 @@ const whatToCheckItems = [
 
       <section class="section">
         <article class="notice-panel">
-          <h2>What to check</h2>
+          <h2>What to verify</h2>
           <ul class="check-list">
             {whatToCheckItems.map((item) => <li>{item}</li>)}
           </ul>
@@ -158,10 +159,10 @@ const whatToCheckItems = [
 
       <section class="section">
         <div class="link-row">
-          <a class="button-link" href="/checker">Check another product</a>
+          <a class="button-link" href="/checker">Scan another product</a>
           {recall.primaryBrandSlug ? (
             <a class="button-link button-secondary" href={`/brands/${recall.primaryBrandSlug}`}>
-              Brand recall page
+              Brand monitor page
             </a>
           ) : null}
         </div>
