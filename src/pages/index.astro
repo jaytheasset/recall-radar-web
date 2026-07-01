@@ -1,6 +1,5 @@
 ---
 import {
-  dataSourceLabel,
   getRecallsByCategory,
   processedCpscRecordCount,
   processedFdaRecordCount,
@@ -23,39 +22,25 @@ const productTypes = [
     label: 'Baby & Kids',
     href: '/baby-product-recalls',
     count: babyCount,
-    description: 'Cribs, sleepers, toys, nursery gear, and child-focused recalls.'
+    description: 'Cribs, sleepers, toys, and nursery gear.'
   },
   {
     label: 'Batteries & Electronics',
     href: '/battery-recalls',
     count: batteryCount,
-    description: 'Power banks, chargers, lithium-ion batteries, and devices.'
+    description: 'Power banks, chargers, batteries, and devices.'
   },
   {
     label: 'Food & Allergy',
     href: '/food-allergy-recalls',
     count: foodCount,
-    description: 'FDA/openFDA food recalls, allergen notices, UPCs, and lot codes.'
+    description: 'Food recalls, allergens, UPCs, and lot codes.'
   },
   {
     label: 'Household Products',
     href: '/checker?category=household-appliance',
     count: householdCount,
     description: 'Appliances, furniture, fixtures, and home products.'
-  }
-];
-const workflowSteps = [
-  {
-    title: 'Search the product',
-    text: 'Enter a brand, product, model, UPC, lot code, recall number, or keyword.'
-  },
-  {
-    title: 'Compare product details',
-    text: 'Review names, images when available, dates, hazards, remedies, and source labels.'
-  },
-  {
-    title: 'Verify with official source',
-    text: 'Open the official CPSC or FDA/openFDA notice before making decisions.'
   }
 ];
 ---
@@ -94,8 +79,6 @@ const workflowSteps = [
             </span>
             <span>{processedCpscRecordCount} CPSC</span>
             <span>{processedFdaRecordCount} FDA/openFDA</span>
-            <span>Official source links</span>
-            <span>No safety guarantee</span>
           </div>
         </div>
 
@@ -103,7 +86,6 @@ const workflowSteps = [
           <div>
             <p class="eyebrow">Product Recall Checker</p>
             <h2 id="hero-search-title">Search the local recall file</h2>
-            <p class="section-note">{dataSourceLabel}</p>
           </div>
           <form class="hero-search" action="/checker" method="get">
             <label>
@@ -125,9 +107,7 @@ const workflowSteps = [
       <section class="section">
         <div class="section-header">
           <div>
-            <p class="eyebrow">Recently recalled products</p>
             <h2>Recently recalled products</h2>
-            <p class="section-note">One focused set of current local recall records, with CPSC product images when available.</p>
           </div>
           <a class="btn btn-secondary" href="/checker">Search all records</a>
         </div>
@@ -148,7 +128,7 @@ const workflowSteps = [
                 </div>
                 <h3><a href={recall.detailPath}>{recall.title}</a></h3>
                 <p>{recall.hazard || recall.reason || recall.description}</p>
-                <a class="btn btn-ghost" href={recall.detailPath}>View recall</a>
+                <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
               </div>
             </article>
           ))}
@@ -158,7 +138,6 @@ const workflowSteps = [
       <section class="section">
         <div class="section-header">
           <div>
-            <p class="eyebrow">Browse by product type</p>
             <h2>Browse recalls by product type</h2>
           </div>
         </div>
@@ -177,33 +156,14 @@ const workflowSteps = [
       </section>
 
       <section class="section">
-        <div class="section-header">
-          <div>
-            <p class="eyebrow">How to use Recall Radar</p>
-            <h2>Check the product, then verify the notice</h2>
-          </div>
-        </div>
-        <div class="step-grid">
-          {workflowSteps.map((step, index) => (
-            <article class="step-card">
-              <span class="step-number">{index + 1}</span>
-              <h3>{step.title}</h3>
-              <p>{step.text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section class="section">
         <div class="signup-panel compact-cta">
           <div>
-            <p class="eyebrow">Local watchlist</p>
-            <h2>Monitor saved searches and brands in this browser</h2>
-            <p>Save searches or brands locally, then preview matching recall cards from the existing local dataset. Local demo only - no email is sent.</p>
+            <h2>Monitor saved searches in this browser</h2>
+            <p>Local demo only - no email is sent.</p>
           </div>
           <div class="link-row">
             <a class="btn btn-primary" href="/watchlist">Open watchlist</a>
-            <a class="btn btn-secondary" href="/checker?q=pistachio&source=FDA">Try a food search</a>
+            <a class="btn btn-secondary" href="/checker?q=pistachio&source=FDA">Try pistachio</a>
           </div>
         </div>
       </section>
