@@ -13,8 +13,8 @@ export function getStaticPaths() {
 const { recall } = Astro.props;
 const title = `${recall.title} | Recall Radar`;
 const description = `${recall.title} local recall detail page with source, product, brand, hazard, remedy, affected units, and official notice link.`;
-const sourceLinkLabel = recall.source === 'FDA' ? 'FDA/openFDA Reference' : 'Official CPSC Notice';
-const sourceLinkText = recall.source === 'FDA' ? 'Open FDA/openFDA reference' : 'Open official CPSC notice';
+const sourceLinkLabel = recall.source === 'FDA' ? 'Official FDA/openFDA Reference' : 'Official CPSC Notice';
+const sourceLinkText = recall.source === 'FDA' ? 'Open official FDA/openFDA reference' : 'Open official CPSC notice';
 const displayBrandNames = recall.displayBrandNames.length ? recall.displayBrandNames : [recall.primaryBrand];
 const sourceBrandNames = recall.brandNames.filter(
   (rawName: string) => !displayBrandNames.some((displayName: string) => displayName.toLowerCase() === rawName.toLowerCase())

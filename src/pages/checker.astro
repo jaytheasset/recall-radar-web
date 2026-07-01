@@ -95,7 +95,7 @@ const dateOptions = [
       <section class="section">
         <p class="eyebrow">Recall Radar</p>
         <h1>Product Recall Checker</h1>
-        <p class="lead">Search product recalls by brand, model, category, or keyword.</p>
+        <p class="lead">Search local recall records by keyword, product, brand, model, UPC, lot, or recall number.</p>
         <div class="meta-row data-source-row">
           <span class="status-pill">{dataSourceLabel}</span>
           <span class="tag">
@@ -110,7 +110,7 @@ const dateOptions = [
         </div>
 
         <section class="search-panel" aria-labelledby="checker-form-title">
-          <h2 id="checker-form-title">Check Local Recall Data</h2>
+          <h2 id="checker-form-title">Search Local Recall Data</h2>
           <form id="recall-search-form" class="search-form checker-search-form">
             <label class="search-query-field">
               Search
@@ -347,7 +347,7 @@ const dateOptions = [
       function createResultCard(item: SearchItem): HTMLElement {
         const { recall, match } = item;
         const article = document.createElement('article');
-        article.className = 'recall-card';
+        article.className = 'recall-card result-card';
 
         const meta = document.createElement('div');
         meta.className = 'meta-row';

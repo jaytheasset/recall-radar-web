@@ -47,6 +47,8 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 
 - `/`
 - `/checker`
+- `/checker?q=pistachio&source=FDA`
+- `/checker?q=smoke&source=CPSC`
 - `/baby-product-recalls`
 - `/battery-recalls`
 - `/food-allergy-recalls`
@@ -57,6 +59,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm page labels identify FDA records as local FDA/openFDA data.
 - Confirm category pages show a matching local record count.
 - Confirm `/food-allergy-recalls` shows FDA/openFDA food records before CPSC food/allergy records when FDA records exist.
+- Confirm core pages remain readable at narrow mobile widths and long titles/labels wrap instead of overflowing.
 
 ## Brand Pages
 
