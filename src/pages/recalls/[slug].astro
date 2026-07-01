@@ -27,7 +27,30 @@ const companyHistoryIds = new Set(companyRecallHistory.map((historyRecall) => hi
 const relatedRecalls = getRelatedRecalls(recall, siteRecalls, 4, companyHistoryIds);
 const categoryRoute = categoryRoutes.find((route) => route.category === recall.category);
 const categoryFallbackPath = categoryRoute?.href ?? `/checker?category=${recall.category}`;
-const pageIntro = `Local ${recall.source === 'FDA' ? 'FDA/openFDA' : 'CPSC'} recall record for ${recall.primaryProductName} from ${displayBrandNames.join(', ')}. Review the structured fields below and verify details with the official source.`;
+const cleanText = (value?: string | null) => (value ?? '').replace(/\s+/g, ' ').trim();
+const shortenText = (value?: string | null, maxLength = 140) => {
+  const text = cleanText(value);
+
+  if (!text) {
+    return 'Not listed in local data';
+  }
+
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  const clipped = text.slice(0, maxLength);
+  const lastSpace = clipped.lastIndexOf(' ');
+  const cutPoint = lastSpace > Math.floor(maxLength * 0.62) ? lastSpace : maxLength;
+
+  return `${clipped.slice(0, cutPoint).trim()}...`;
+};
+const productSummary = shortenText(recall.primaryProductName, 72);
+const brandSummary = shortenText(displayBrandNames.join(', '), 88);
+const shortHazard = shortenText(recall.hazard || recall.reason, 130);
+const shortRemedy = shortenText(recall.remedy, 125);
+const affectedUnitsSummary = shortenText(recall.affectedUnits || recall.productQuantity, 82);
+const pageIntro = `Local ${recall.source === 'FDA' ? 'FDA/openFDA' : 'CPSC'} recall record for ${productSummary} from ${brandSummary}.`;
 ---
 
 <html lang="en">
@@ -50,41 +73,43 @@ const pageIntro = `Local ${recall.source === 'FDA' ? 'FDA/openFDA' : 'CPSC'} rec
       </nav>
     </header>
 
-    <main class="page-shell">
-      <section class="section">
+    <main class="page-shell detail-report-page">
+      <section class="section detail-report-hero">
         <p class="eyebrow">Recall report</p>
         <div class="meta-row data-source-row">
           <span class="badge-source">{recall.sourceLabel}</span>
           <span class="badge-date">{recall.recallDate}</span>
           <span class="tag">{recall.categoryLabel}</span>
         </div>
-        <h1>{recall.title}</h1>
-        <p class="lead">{pageIntro}</p>
+        <h1 class="detail-title">{recall.title}</h1>
+        <p class="lead detail-intro">{pageIntro}</p>
       </section>
 
-      <section class="section detail-grid">
-        <div class="detail-gallery" aria-label="Product images">
-          <div class="image-shell image-shell-large">
-            {recall.primaryImageUrl ? (
-              <img src={recall.primaryImageUrl} alt={recall.primaryImageAlt || recall.title} loading="lazy" />
-            ) : (
-              <span class="image-placeholder">{recall.source === 'FDA' ? 'FDA food notice' : 'Recall notice'}</span>
-            )}
-          </div>
-          {galleryImages.length > 1 ? (
-            <div class="thumbnail-grid" aria-label="Additional product images">
-              {galleryImages.slice(1, 7).map((image) => (
-                <div class="image-shell">
-                  <img src={image.url} alt={image.alt || image.caption || recall.title} loading="lazy" />
-                </div>
-              ))}
+      <section class="section detail-grid detail-main-grid">
+        <article class="detail-gallery-card" aria-label="Product images">
+          <div class="detail-gallery">
+            <div class="image-shell image-shell-large">
+              {recall.primaryImageUrl ? (
+                <img src={recall.primaryImageUrl} alt={recall.primaryImageAlt || recall.title} loading="lazy" />
+              ) : (
+                <span class="image-placeholder">{recall.source === 'FDA' ? 'FDA food notice' : 'Recall notice'}</span>
+              )}
             </div>
-          ) : null}
-        </div>
+            {galleryImages.length > 1 ? (
+              <div class="thumbnail-grid detail-thumbnail-grid" aria-label="Additional product images">
+                {galleryImages.slice(1, 7).map((image) => (
+                  <div class="image-shell">
+                    <img src={image.url} alt={image.alt || image.caption || recall.title} loading="lazy" />
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        </article>
 
-        <aside class="detail-card recall-summary-card" aria-label="Recall summary">
+        <aside class="detail-card recall-summary-card compact-summary-card" aria-label="Recall summary">
           <h2>Recall summary</h2>
-          <div class="facts">
+          <div class="facts compact-facts">
             <div class="fact">
               <strong>Source</strong>
               <span>{recall.sourceLabel}</span>
@@ -95,15 +120,15 @@ const pageIntro = `Local ${recall.source === 'FDA' ? 'FDA/openFDA' : 'CPSC'} rec
             </div>
             <div class="fact">
               <strong>Hazard</strong>
-              <span>{recall.hazard || recall.reason || 'Not listed in local data'}</span>
+              <span class="summary-value-clamped">{shortHazard}</span>
             </div>
             <div class="fact">
               <strong>Remedy</strong>
-              <span>{recall.remedy || 'Not listed in local data'}</span>
+              <span class="summary-value-clamped">{shortRemedy}</span>
             </div>
             <div class="fact">
               <strong>Affected units</strong>
-              <span>{recall.affectedUnits || recall.productQuantity || 'Not listed in local data'}</span>
+              <span>{affectedUnitsSummary}</span>
             </div>
             <div class="fact">
               <strong>Record ID</strong>
@@ -114,7 +139,7 @@ const pageIntro = `Local ${recall.source === 'FDA' ? 'FDA/openFDA' : 'CPSC'} rec
               {recall.sourceUrl ? (
                 <span class="source-attribution">
                   <span>{recall.sourceLabel}</span>
-                  <a class="source-link" href={recall.sourceUrl} target="_blank" rel="noopener noreferrer">
+                  <a class="source-link source-link-small" href={recall.sourceUrl} target="_blank" rel="noopener noreferrer">
                     {sourceLinkText}
                   </a>
                 </span>
@@ -189,9 +214,9 @@ const pageIntro = `Local ${recall.source === 'FDA' ? 'FDA/openFDA' : 'CPSC'} rec
           </div>
         </div>
         {companyRecallHistory.length ? (
-          <div class="product-grid">
+          <div class="product-grid detail-related-grid">
             {companyRecallHistory.map((historyRecall) => (
-              <article class="product-card">
+              <article class="product-card detail-related-card">
                 <a class="image-shell" href={historyRecall.detailPath} aria-label={`View recall for ${historyRecall.title}`}>
                   {historyRecall.primaryImageUrl ? (
                     <img
@@ -231,9 +256,9 @@ const pageIntro = `Local ${recall.source === 'FDA' ? 'FDA/openFDA' : 'CPSC'} rec
           </div>
         </div>
         {relatedRecalls.length ? (
-          <div class="product-grid">
+          <div class="product-grid detail-related-grid">
             {relatedRecalls.map((relatedRecall) => (
-              <article class="product-card">
+              <article class="product-card detail-related-card">
                 <a class="image-shell" href={relatedRecall.detailPath} aria-label={`View recall for ${relatedRecall.title}`}>
                   {relatedRecall.primaryImageUrl ? (
                     <img
