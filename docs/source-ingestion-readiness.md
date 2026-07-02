@@ -89,7 +89,11 @@ EU Safety Gate update expectations for the current spike:
 - Default limit: `EU_SAFETY_GATE_LIMIT=100`
 - Expected `EU_SAFETY_GATE` count: 100
 - Expected canonical total: 701
+- Explicit refresh command: `npm run update:eu-safety-gate`
 - Local-only validation sequence: `npm run data:eu-safety-gate:normalize`, `npm run data:merge`, `npm run audit:eu-safety-gate`
+- Commit together for the current spike: `data/raw/eu-safety-gate-recalls.json`, `data/processed/eu-safety-gate-recalls.json`, and `data/processed/recalls.json`
+- Block or investigate the merge if EU count is 0, duplicate ids exist, slug collisions exist, suspicious category mappings exist, any EU record maps to `food-allergy`, source filter values change, or total/source counts change unexpectedly.
+- Future larger EU pulls should reconsider raw payload commits because Safety Gate detail records are verbose.
 - Full EU Safety Gate backfill remains a separate phase.
 
 ## C. Current Source Registry

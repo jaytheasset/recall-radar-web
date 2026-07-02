@@ -429,6 +429,9 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
       : '',
     summary.duplicateIds.length > 0 ? `Duplicate ids found: ${summary.duplicateIds.length}.` : '',
     summary.slugCollisions.length > 0 ? `Slug collisions found: ${summary.slugCollisions.length}.` : '',
+    (summary.siteCategoryDistribution['food-allergy'] ?? 0) > 0
+      ? `EU Safety Gate records mapped to food-allergy: ${summary.siteCategoryDistribution['food-allergy']}.`
+      : '',
     summary.suspiciousCategoryMappings.length > 0
       ? `Suspicious EU category mappings found: ${summary.suspiciousCategoryMappings.length}.`
       : '',
@@ -479,7 +482,9 @@ async function runAudit(): Promise<void> {
           sourceFilterValues: sourceFilters
         },
         operationalSummary: {
+          passed,
           source: summary.source,
+          euSafetyGateCount: summary.total,
           totalProcessedCount: canonicalCounts.total,
           countsBySource: {
             CPSC: canonicalCounts.CPSC,
@@ -488,8 +493,13 @@ async function runAudit(): Promise<void> {
             CA_RECALLS: canonicalCounts.CA_RECALLS,
             EU_SAFETY_GATE: canonicalCounts.EU_SAFETY_GATE
           },
+          duplicateIds: summary.duplicateIds.length,
+          slugCollisions: summary.slugCollisions.length,
+          suspiciousCategoryMappings: summary.suspiciousCategoryMappings.length,
+          foodAllergyCategoryMappings: summary.siteCategoryDistribution['food-allergy'] ?? 0,
           recordsWithImages: summary.recordsWithImages,
           recordsWithOfficialNoticeUrlShape: summary.recordsWithOfficialNoticeUrlShape,
+          identifierCoverage: summary.siteIdentifierCoverage,
           sourceFilterValues: sourceFilters,
           warnings: summary.warnings
         },

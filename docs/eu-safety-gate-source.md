@@ -59,6 +59,104 @@ npm run update:eu-safety-gate
 
 `update:eu-safety-gate` performs a network fetch and then runs the EU audit. It is not part of `npm run check` or `npm run build`.
 
+## Operational Update Strategy
+
+EU Safety Gate updates are an explicit maintenance workflow for the existing 100-record static source. They are not part of normal builds, checks, or UI work.
+
+Current defaults and paths:
+
+- Default limit: `EU_SAFETY_GATE_LIMIT=100`
+- Raw file: `data/raw/eu-safety-gate-recalls.json`
+- Processed EU file: `data/processed/eu-safety-gate-recalls.json`
+- Canonical merged file: `data/processed/recalls.json`
+- Fetch script: `scripts/fetch-eu-safety-gate.ts`
+- Normalize script: `scripts/normalize-eu-safety-gate.ts`
+- Merge script: `scripts/merge-recalls.ts`
+- Audit script: `scripts/audit-eu-safety-gate.ts`
+
+Current explicit network refresh:
+
+```powershell
+npm run update:eu-safety-gate
+```
+
+The update command currently runs:
+
+1. `npm run data:eu-safety-gate:fetch`
+2. the fetch script writes `data/raw/eu-safety-gate-recalls.json`
+3. the fetch script normalizes EU records into `data/processed/eu-safety-gate-recalls.json`
+4. the fetch script rebuilds `data/processed/recalls.json`
+5. `npm run audit:eu-safety-gate`
+
+Equivalent manual sequence:
+
+```powershell
+npm run data:eu-safety-gate:fetch
+npm run audit:eu-safety-gate
+```
+
+Local-only validation from the committed raw file:
+
+```powershell
+npm run data:eu-safety-gate:normalize
+npm run data:merge
+npm run audit:eu-safety-gate
+```
+
+Use the local-only sequence during QA phases that should not call the Safety Gate endpoint. `data:eu-safety-gate:normalize` reads the committed raw file and rewrites the EU processed file; `data:merge` rebuilds the canonical merged file from all processed source files.
+
+Expected counts after the current 100-record spike:
+
+- CPSC: 301
+- FDA/openFDA: 100
+- France RappelConso: 100
+- Canada Recalls and Safety Alerts: 100
+- EU Safety Gate: 100
+- Total: 701
+
+Limit controls:
+
+- Default remains `EU_SAFETY_GATE_LIMIT=100`.
+- A smaller or same-size refresh can use `npm run fetch:eu-safety-gate -- --limit=50` or `$env:EU_SAFETY_GATE_LIMIT = "100"`.
+- Do not silently pull all Safety Gate records.
+- Do not increase the default above 100 in this phase.
+- A higher limit or full backfill must be a separate phase with page-count, brand-page growth, raw-size, and build-time review before merge.
+
+Diff review:
+
+- Review `data/raw/eu-safety-gate-recalls.json` first for count, endpoint, limit, total available, and unexpectedly large payload changes.
+- Review `data/processed/eu-safety-gate-recalls.json` for stable ids, official URLs, source id, title quality, category mapping, identifiers, risk text, measures, dates, images, and raw payload preservation.
+- Review `data/processed/recalls.json` for expected total/source counts and stable merge behavior.
+- Run `npm run audit:eu-safety-gate` before committing updated data.
+
+Commit strategy:
+
+- For the 100-record spike, commit `data/raw/eu-safety-gate-recalls.json`, `data/processed/eu-safety-gate-recalls.json`, and `data/processed/recalls.json` together when the audit passes.
+- For future larger EU pulls, reconsider committing the full raw file because Safety Gate payloads are verbose.
+- Future options include a smaller committed raw fixture plus normalized processed records, or script-generated local maintenance data outside ordinary UI branches.
+- Any full backfill should measure build page count and brand page growth before merge.
+
+Merge blockers:
+
+- `EU_SAFETY_GATE` count is `0`.
+- Duplicate ids are present.
+- Slug collisions are present.
+- Suspicious category mappings are present.
+- Any EU Safety Gate record maps to `food-allergy`.
+- Too many records are missing source URLs, titles, recall dates, product names, risk/reason text, measure/action text, or raw payloads.
+- Source filter values change from `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`.
+- Canonical source counts or total count change unexpectedly without an explicit explanation.
+
+Known properties that should not fail the audit by themselves:
+
+- EU Safety Gate covers dangerous non-food product alerts, not food recall coverage.
+- Not all records have brand/company values.
+- Not all records have barcode, GTIN, model/type, batch, or serial fields.
+- Measures can be authority actions rather than consumer-facing recall remedies.
+- Raw payloads are verbose.
+- There is no cross-source dedupe yet.
+- The site reads static processed data only.
+
 ## Files
 
 - Fetch script: `scripts/fetch-eu-safety-gate.ts`

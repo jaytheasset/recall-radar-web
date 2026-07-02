@@ -66,6 +66,9 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm EU audit reports barcode, model/type, batch/serial, risk type, notifying country, country of origin, countries concerned or market detail coverage.
 - Confirm EU audit reports no suspicious category mappings and no EU records are mapped to food/allergy.
 - Confirm EU detail pages show Safety Gate risk type, identifiers, notifying country, country of origin, countries concerned when present, and the official Safety Gate source link.
+- Confirm `npm run update:eu-safety-gate` remains an explicit refresh command and is not part of `npm run check` or `npm run build`.
+- Confirm the default EU Safety Gate limit remains `EU_SAFETY_GATE_LIMIT=100`.
+- Confirm EU raw, EU processed, and canonical processed data are reviewed and committed together after a successful EU update.
 
 ## Pages
 

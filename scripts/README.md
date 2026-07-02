@@ -263,6 +263,8 @@ To run the explicit EU Safety Gate refresh workflow, including network fetch and
 npm run update:eu-safety-gate
 ```
 
+`update:eu-safety-gate` runs `data:eu-safety-gate:fetch` and then `audit:eu-safety-gate`. The fetch script saves the bounded raw response, normalizes EU records, rebuilds `data/processed/recalls.json`, and refuses to overwrite data when the endpoint returns zero records.
+
 For local-only validation from the existing raw file:
 
 ```powershell
@@ -272,5 +274,7 @@ npm run audit:eu-safety-gate
 ```
 
 Do not wire EU Safety Gate fetches into `npm run check`, `npm run build`, or UI tests.
+
+For the current 100-record EU spike, commit the raw EU file, processed EU file, and merged canonical processed file together only after the EU audit passes. For larger future EU pulls, reconsider the raw commit strategy because Safety Gate detail payloads are verbose.
 
 The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, and EU Safety Gate records.

@@ -85,6 +85,15 @@ The EU Safety Gate fetch script calls official EU Safety Gate endpoints only:
 
 It fetches a bounded default of 100 recent dangerous non-food product alerts, writes only after non-empty records return, and each raw file includes a `fetchedAt` timestamp.
 
+EU Safety Gate operational update strategy:
+
+- Explicit refresh command: `npm run update:eu-safety-gate`
+- The refresh command fetches the bounded Safety Gate data, writes raw EU data, normalizes EU records, rebuilds `data/processed/recalls.json`, and runs `npm run audit:eu-safety-gate`.
+- Local-only validation sequence: `npm run data:eu-safety-gate:normalize`, `npm run data:merge`, `npm run audit:eu-safety-gate`.
+- Default limit remains `EU_SAFETY_GATE_LIMIT=100`; full EU backfill is a separate phase.
+- For the current 100-record spike, commit `data/raw/eu-safety-gate-recalls.json`, `data/processed/eu-safety-gate-recalls.json`, and `data/processed/recalls.json` together only after audit passes.
+- Block or investigate an EU data merge if source counts change unexpectedly, duplicate ids or slug collisions appear, suspicious category mappings appear, or any EU record maps to `food-allergy`.
+
 Normalized records use `src/data/recall-types.ts` and include `id`, `source`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard`, `remedy`, `recallDate`, `affectedUnits`, `description`, `slug`, and `raw`. FDA, France, Canada, and EU records can also include `classification`, `reason`, `distributionPattern`, `productQuantity`, `recallNumber`, `status`, and official image fields when available.
 
 Do not call fetch scripts during UI-only phases unless a later task explicitly asks for fresh local data.
@@ -185,4 +194,4 @@ The watchlist is not an alert backend. It uses only browser `localStorage`; ther
 
 ## Guardrails
 
-Keep this repo local-only. Do not add remotes, secrets, deployments, databases, or external API calls except the local public CPSC and FDA/openFDA fetch scripts when explicitly requested for data-pipeline phases.
+Keep this repo static/local-first. Do not add secrets, deployments, databases, or runtime source calls. Only run source fetch scripts when a data-pipeline or source-refresh phase explicitly requests them.
