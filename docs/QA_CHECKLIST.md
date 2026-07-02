@@ -178,6 +178,16 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm consumer-facing coverage copy says indexed notices and official source feeds, not complete global coverage.
 - Confirm long source labels wrap cleanly on checker, watchlist, category, brand, and detail pages at mobile widths.
 
+## I18n Foundation
+
+- Confirm current launch UI remains English-only.
+- Confirm `src/lib/i18n.ts` supports only `en`.
+- Confirm no locale routes such as `/en` or `/ko` were added.
+- Confirm no browser language detection, IP redirect, `hreflang`, or localized sitemap behavior was added.
+- Confirm official source text remains untranslated and source-traceable.
+- Confirm future i18n planning is documented in `docs/i18n-foundation.md`.
+- Confirm practical string boundaries are documented in `docs/i18n-string-audit.md`.
+
 ## Watchlist Demo
 
 - Confirm `/checker?q=pistachio&source=FDA` can save a search to browser localStorage.

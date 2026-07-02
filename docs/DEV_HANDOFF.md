@@ -235,6 +235,17 @@ Phase 8 adds a static `/watchlist` page and browser-only watchlist UX.
 
 The watchlist is not an alert backend. It uses only browser `localStorage`; there is no API endpoint, server persistence, database, email service, external dependency, or network request.
 
+## I18n Foundation
+
+Phase 15 adds planning docs for future multilingual UI support without wiring localization into the visible app.
+
+- `docs/i18n-foundation.md` defines translation boundaries, future locale planning, source-language policy, SEO considerations, and deferred items.
+- `docs/i18n-string-audit.md` audits the main UI areas and identifies which strings are product-owned UI versus source-derived recall fields.
+- `src/lib/i18n.ts` contains an English-only message dictionary for future typed message work. It is not connected to pages yet.
+- Current launch UI remains English-only.
+- Official source text remains in the source language and should not be automatically translated or rewritten as official notice truth.
+- Locale routes such as `/en` or `/ko`, browser language detection, `hreflang`, translated slugs, translated source records, and LLM translation are deferred.
+
 ## Guardrails
 
 Keep this repo static/local-first. Do not add secrets, deployments, databases, or runtime source calls. Only run source fetch scripts when a data-pipeline or source-refresh phase explicitly requests them.
