@@ -65,7 +65,15 @@ Current package scripts:
 
 Do not run fetch scripts in UI or planning phases unless a later task explicitly requests a data refresh.
 `npm run update:rappelconso` is an explicit France RappelConso refresh workflow that performs a network fetch and audit; it is not part of `npm run check` or `npm run build`.
-`npm run update:canada` is an explicit Canada refresh workflow that performs a network fetch and audit; it is not part of `npm run check` or `npm run build`.
+`npm run update:canada` is an explicit Canada refresh workflow that performs a bounded network fetch, writes raw Canada data, normalizes Canada records, rebuilds the canonical merged file, and runs the Canada audit; it is not part of `npm run check` or `npm run build`.
+
+Canada update expectations for the current spike:
+
+- Default limit: `CANADA_RECALLS_LIMIT=100`
+- Expected `CA_RECALLS` count: 100
+- Expected canonical total: 601
+- Local-only validation sequence: `npm run data:canada:normalize`, `npm run data:merge`, `npm run audit:canada`
+- Full Canada backfill remains a separate phase.
 
 ## C. Current Source Registry
 

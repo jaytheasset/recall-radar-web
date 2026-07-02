@@ -67,6 +67,101 @@ npm run update:canada
 
 `update:canada` performs a network fetch and then runs the Canada audit. It is not part of `npm run check` or `npm run build`.
 
+## Operational Update Strategy
+
+Canada is currently maintained as a bounded 100-record static source. It is safe to refresh only when the task explicitly asks for Canada data maintenance.
+
+Current paths:
+
+- Raw local file: `data/raw/canada-recalls.json`
+- Processed Canada source file: `data/processed/canada-recalls.json`
+- Canonical merged processed file: `data/processed/recalls.json`
+
+Default limit:
+
+- `CANADA_RECALLS_LIMIT=100`
+- `npm run fetch:canada` also accepts `-- --limit=100`
+- The default must remain 100 until a separate full-backfill phase is approved.
+- The fetch script clamps limits to a small bounded range and does not silently ingest the full Canada feed.
+
+The normal refresh command is:
+
+```powershell
+npm run update:canada
+```
+
+`update:canada` runs the explicit maintenance pipeline:
+
+1. Fetch the official Canada JSON feed with the bounded limit.
+2. Save `data/raw/canada-recalls.json`.
+3. Normalize the bounded Canada records into `data/processed/canada-recalls.json`.
+4. Merge all processed source files into `data/processed/recalls.json`.
+5. Run `npm run audit:canada`.
+
+For local-only validation without a network request, use the committed raw file:
+
+```powershell
+npm run data:canada:normalize
+npm run data:merge
+npm run audit:canada
+```
+
+After the current 100-record spike, expected counts are:
+
+- `CA_RECALLS`: 100
+- `FR_RAPPELCONSO`: 100
+- `CPSC`: 301
+- `FDA`: 100
+- Total: 601
+
+If the Canada limit changes, expect these values to change:
+
+- `data/raw/canada-recalls.json` `limit`, `count`, and record list
+- `data/processed/canada-recalls.json` `count` and record list
+- `data/processed/recalls.json` total count and `countsBySource.CA_RECALLS`
+- Generated static page count after `npm run build`
+
+Review diffs before committing:
+
+```powershell
+git status --short
+git diff --stat
+git diff -- data/raw/canada-recalls.json data/processed/canada-recalls.json data/processed/recalls.json
+npm run audit:canada
+```
+
+Commit strategy for the 100-record spike:
+
+- Commit `data/raw/canada-recalls.json`.
+- Commit `data/processed/canada-recalls.json`.
+- Commit `data/processed/recalls.json`.
+- Commit script or documentation changes in the same maintenance change only when they directly explain or support the refresh.
+
+For a future full Canada backfill:
+
+- Reconsider committing huge raw exports before adding them to git.
+- Consider committing a smaller raw fixture while generating larger processed output during explicit maintenance.
+- Revisit static build size, page count, and review ergonomics before merging.
+- Treat full backfill as a separate phase.
+
+Merge should be blocked or investigated if:
+
+- `CA_RECALLS` count is 0.
+- Duplicate ids are found.
+- Slug collisions are found.
+- Suspicious category mappings are found.
+- Source URL, title, or recall date missing counts exceed the audit threshold.
+- Official Canada URL shape no longer matches the selected feed.
+- Source filter values differ from `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`.
+- Total processed count changes unexpectedly without a written explanation.
+
+Known current Canada limitations should not block by themselves:
+
+- No stable image links.
+- No structured distribution field in the current 100-record spike.
+- No structured UPC/model/lot values in the current 100-record spike.
+- Some records lack structured brand/company or action text.
+
 ## Field Mapping
 
 The selected Canada JSON feed currently exposes summary fields:
@@ -138,6 +233,7 @@ The normalizer only extracts identifier-like text when it is explicit in the sum
 - distribution details
 - official Canada URL shape
 - suspicious category mappings
+- source filter values
 
 Current expected counts:
 

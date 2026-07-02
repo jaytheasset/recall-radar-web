@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { NormalizedRecall, ProcessedRecallFile, RecallSource } from '../src/data/recall-types.ts';
+import { getSourceOptionsForCurrentCoverage } from '../src/lib/recall-sources.ts';
 
 type AuditIssue = {
   id: string;
@@ -31,6 +32,7 @@ type SourceCounts = Record<RecallSource, number> & {
   total: number;
 };
 
+const expectedSourceFilterValues = ['all', 'CPSC', 'FDA', 'FR_RAPPELCONSO', 'CA_RECALLS'];
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const processedPath = resolve(projectRoot, 'data/processed/canada-recalls.json');
 const canonicalProcessedPath = resolve(projectRoot, 'data/processed/recalls.json');
@@ -139,6 +141,10 @@ function expectedNumber(name: string, fallback: number): number {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
+function sourceFilterValues(): string[] {
+  return ['all', ...getSourceOptionsForCurrentCoverage().map((option) => option.value)];
+}
+
 async function readProcessedCanadaRecords(): Promise<NormalizedRecall[]> {
   const text = await readFile(processedPath, 'utf8');
   const payload = JSON.parse(text) as ProcessedRecallFile;
@@ -242,7 +248,7 @@ function audit(records: NormalizedRecall[]): AuditSummary {
   };
 }
 
-function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts): string[] {
+function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sourceFilters: string[]): string[] {
   const expectedCounts: SourceCounts = {
     total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 601),
     CPSC: expectedNumber('EXPECTED_CPSC_COUNT', 301),
@@ -281,6 +287,9 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts): st
     summary.missing.recallDate > severeMissingThreshold ? `Missing recall dates found: ${summary.missing.recallDate}.` : '',
     summary.recordsWithOfficialNoticeUrlShape !== summary.total
       ? `Official Canada URL shape mismatch count: ${summary.total - summary.recordsWithOfficialNoticeUrlShape}.`
+      : '',
+    sourceFilters.join('|') !== expectedSourceFilterValues.join('|')
+      ? `Source filter values changed unexpectedly: ${sourceFilters.join(', ')}.`
       : ''
   ].filter(Boolean);
 
@@ -295,7 +304,8 @@ async function runAudit(): Promise<void> {
 
   const summary = audit(records);
   const canonicalCounts = await readCanonicalCounts();
-  const blockers = buildBlockers(summary, canonicalCounts);
+  const sourceFilters = sourceFilterValues();
+  const blockers = buildBlockers(summary, canonicalCounts, sourceFilters);
   const passed = blockers.length === 0;
 
   console.log(
@@ -303,6 +313,16 @@ async function runAudit(): Promise<void> {
       {
         passed,
         blockers,
+        auditSummary: {
+          result: passed ? 'pass' : 'fail',
+          source: summary.source,
+          caRecallsCount: summary.total,
+          totalProcessedCount: canonicalCounts.total,
+          duplicateIds: summary.duplicateIds.length,
+          slugCollisions: summary.slugCollisions.length,
+          suspiciousCategoryMappings: summary.suspiciousCategoryMappings.length,
+          sourceFilterValues: sourceFilters
+        },
         operationalSummary: {
           source: summary.source,
           totalProcessedCount: canonicalCounts.total,
@@ -321,6 +341,7 @@ async function runAudit(): Promise<void> {
           recordsWithLotBatchCodeOrDateLikeValues: summary.recordsWithLotBatchCodeOrDateLikeValues,
           recordsWithDistributionDetails: summary.recordsWithDistributionDetails,
           recordsWithOfficialNoticeUrlShape: summary.recordsWithOfficialNoticeUrlShape,
+          sourceFilterValues: sourceFilters,
           warnings: summary.warnings
         },
         detail: summary

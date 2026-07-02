@@ -191,6 +191,8 @@ To run the explicit Canada refresh workflow, including network fetch and local a
 npm run update:canada
 ```
 
+`update:canada` is the intended maintenance command for the current 100-record Canada spike. It runs `data:canada:fetch`, and the fetch script saves raw data, normalizes Canada records, rebuilds the canonical merged file, and then `update:canada` runs `audit:canada`.
+
 For local-only validation from the existing raw file:
 
 ```powershell
@@ -198,5 +200,7 @@ npm run data:canada:normalize
 npm run data:merge
 npm run audit:canada
 ```
+
+Use the local-only sequence for validation phases that should not call the Canada endpoint. Do not wire Canada fetches into `npm run check`, `npm run build`, or UI tests.
 
 The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, and Canada Recalls and Safety Alerts records.
