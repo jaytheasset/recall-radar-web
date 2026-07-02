@@ -8,6 +8,7 @@ Current rules:
 - The public openFDA food enforcement API is allowed only when a task asks for FDA/openFDA food recall refreshes.
 - The public RappelConso open data endpoint is allowed only when a task asks for France RappelConso refreshes.
 - The public Canada Recalls and Safety Alerts open-data feed is allowed only when a task asks for Canada recall refreshes.
+- The official EU Safety Gate public API endpoints are allowed only when a task asks for EU Safety Gate refreshes.
 - UI-only phases should use the existing local `data/processed/recalls.json` file and should not fetch unless a later task explicitly asks for fresh data.
 - Do not connect databases.
 - Do not write secrets.
@@ -135,7 +136,7 @@ npm run data:merge
 npm run audit:rappelconso
 ```
 
-The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, and Canada records.
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada, and EU Safety Gate records.
 
 ## Canada Recalls and Safety Alerts Fetch
 
@@ -203,4 +204,73 @@ npm run audit:canada
 
 Use the local-only sequence for validation phases that should not call the Canada endpoint. Do not wire Canada fetches into `npm run check`, `npm run build`, or UI tests.
 
-The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, and Canada Recalls and Safety Alerts records.
+## EU Safety Gate Fetch
+
+```powershell
+npm run fetch:eu-safety-gate
+```
+
+This calls official EU Safety Gate endpoints exposed by the Safety Gate web app:
+
+`https://ec.europa.eu/safety-gate-alerts/public/api/notification/mostRecent/?`
+
+and detail records at:
+
+`https://ec.europa.eu/safety-gate-alerts/public/api/notification/{id}?language=en`
+
+Default behavior:
+
+- Requests the 100 most recent EU Safety Gate notifications.
+- Fetches official structured detail JSON for each bounded notification.
+- Saves the bounded raw response wrapper to `data/raw/eu-safety-gate-recalls.json`.
+- Saves normalized EU Safety Gate records to `data/processed/eu-safety-gate-recalls.json`.
+- Rebuilds the merged canonical file at `data/processed/recalls.json`.
+- Adds `fetchedAt` to the raw output.
+- Refuses to overwrite processed output when the API returns zero records.
+- Uses official Safety Gate image URLs when official photo ids are present.
+
+Optional limit:
+
+```powershell
+npm run fetch:eu-safety-gate -- --limit=50
+```
+
+The default EU Safety Gate limit is 100. It can also be set with an environment variable:
+
+```powershell
+$env:EU_SAFETY_GATE_LIMIT = "100"
+npm run fetch:eu-safety-gate
+Remove-Item Env:EU_SAFETY_GATE_LIMIT
+```
+
+To rebuild EU Safety Gate processed data from the saved raw file:
+
+```powershell
+npm run normalize:eu-safety-gate
+```
+
+To audit the current local EU Safety Gate processed data without making network calls:
+
+```powershell
+npm run audit:eu-safety-gate
+```
+
+The EU audit reports source counts, duplicate ids, slug collisions, missing required fields, category distribution, official URL shape, image availability, barcode-like text, and model/batch-like text.
+
+To run the explicit EU Safety Gate refresh workflow, including network fetch and local audit:
+
+```powershell
+npm run update:eu-safety-gate
+```
+
+For local-only validation from the existing raw file:
+
+```powershell
+npm run data:eu-safety-gate:normalize
+npm run data:merge
+npm run audit:eu-safety-gate
+```
+
+Do not wire EU Safety Gate fetches into `npm run check`, `npm run build`, or UI tests.
+
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, and EU Safety Gate records.

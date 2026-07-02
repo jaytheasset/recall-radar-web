@@ -21,7 +21,7 @@ Phase 8 adds a bounded Canada source spike, not a full Canada backfill.
 - Processed source file: `data/processed/canada-recalls.json`
 - Canonical merged file: `data/processed/recalls.json`
 - Current Canada records: 100
-- Current canonical total: 601
+- Current canonical total after Phase 9 EU Safety Gate: 701
 
 The selected JSON feed returns the broader open-data file. The fetch script sorts records by `Last updated` newest first and writes only the bounded first 100 records into the local raw file.
 

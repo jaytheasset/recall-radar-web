@@ -2,6 +2,8 @@
 
 France RappelConso is the first non-U.S. official source spike in Recall Radar.
 
+Current canonical total after Phase 9 EU Safety Gate is 701 records. Older audit notes in this document may reference the historical 601-record Phase 8 total.
+
 ## Source
 
 Official references:

@@ -214,6 +214,51 @@ function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
     return 'general-consumer-product';
   }
 
+  if (record.source === 'EU_SAFETY_GATE') {
+    const rawCategory = normalize(record.category);
+
+    if (rawCategory.includes('toys') || textHasAny(text, ['toy', 'toys', 'child', 'children', 'baby', 'infant'])) {
+      return 'baby-kids';
+    }
+
+    if (
+      textHasAny(text, [
+        'battery',
+        'batteries',
+        'charger',
+        'charging',
+        'lithium',
+        'power bank',
+        'usb',
+        'laser',
+        'electrical',
+        'electronics'
+      ])
+    ) {
+      return 'battery-electronics';
+    }
+
+    if (
+      rawCategory.includes('electrical appliances') ||
+      textHasAny(text, [
+        'appliance',
+        'household',
+        'kitchen',
+        'furniture',
+        'lamp',
+        'lighting',
+        'heater',
+        'cooker',
+        'iron',
+        'hair dryer'
+      ])
+    ) {
+      return 'household-appliance';
+    }
+
+    return 'general-consumer-product';
+  }
+
   if (
     textHasAny(text, [
       'baby',
@@ -312,7 +357,11 @@ function safeText(value: unknown): string {
 }
 
 function isOfficialRecallImageUrl(url: string): boolean {
-  return /^https:\/\/www\.cpsc\.gov\//i.test(url) || /^https:\/\/rappel\.conso\.gouv\.fr\/image\//i.test(url);
+  return (
+    /^https:\/\/www\.cpsc\.gov\//i.test(url) ||
+    /^https:\/\/rappel\.conso\.gouv\.fr\/image\//i.test(url) ||
+    /^https:\/\/ec\.europa\.eu\/safety-gate-alerts\/public\/api\/notification\/image\//i.test(url)
+  );
 }
 
 function normalizeImage(value: unknown, fallbackAlt: string): RecallImage | null {
@@ -354,7 +403,9 @@ function extractRecallImages(record: NormalizedRecall): RecallImage[] {
     .map((image) => normalizeImage(image, fallbackAlt))
     .filter((image): image is RecallImage => Boolean(image));
 
-  return record.source === 'CPSC' || record.source === 'FR_RAPPELCONSO' ? uniqueImages(images) : [];
+  return record.source === 'CPSC' || record.source === 'FR_RAPPELCONSO' || record.source === 'EU_SAFETY_GATE'
+    ? uniqueImages(images)
+    : [];
 }
 
 function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
@@ -364,7 +415,7 @@ function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
   const displayBrandNames = uniqueNonEmpty(normalizedBrands.map((brand) => brand.displayName));
   const productNames = uniqueNonEmpty(record.productNames);
   const primaryBrandInfo = normalizedBrands[0];
-  const primaryBrand = primaryBrandInfo?.displayName ?? `${record.source} record`;
+  const primaryBrand = primaryBrandInfo?.displayName ?? `${getRecallSourceLabel(record.source)} record`;
   const primaryProductName = firstNonEmpty(productNames, 'Product not listed');
   const slug = recallSlug(record.title, record.id, {
     productNames,
@@ -452,16 +503,21 @@ export const processedFranceRappelConsoRecordCount = processedLocalRecalls.filte
   (recall) => recall.source === 'FR_RAPPELCONSO'
 ).length;
 export const processedCanadaRecordCount = processedLocalRecalls.filter((recall) => recall.source === 'CA_RECALLS').length;
+export const processedEuSafetyGateRecordCount = processedLocalRecalls.filter(
+  (recall) => recall.source === 'EU_SAFETY_GATE'
+).length;
 export const usingProcessedCpscData = processedCpscRecordCount > 0;
 export const usingProcessedFdaData = processedFdaRecordCount > 0;
 export const usingProcessedFranceRappelConsoData = processedFranceRappelConsoRecordCount > 0;
 export const usingProcessedCanadaData = processedCanadaRecordCount > 0;
+export const usingProcessedEuSafetyGateData = processedEuSafetyGateRecordCount > 0;
 export const dataSourceLabel = usingProcessedLocalData
   ? [
       usingProcessedCpscData ? getRecallSourceLabel('CPSC') : '',
       usingProcessedFdaData ? getRecallSourceLabel('FDA') : '',
       usingProcessedFranceRappelConsoData ? getRecallSourceLabel('FR_RAPPELCONSO') : '',
-      usingProcessedCanadaData ? getRecallSourceLabel('CA_RECALLS') : ''
+      usingProcessedCanadaData ? getRecallSourceLabel('CA_RECALLS') : '',
+      usingProcessedEuSafetyGateData ? getRecallSourceLabel('EU_SAFETY_GATE') : ''
     ]
       .filter(Boolean)
       .join(' + ')

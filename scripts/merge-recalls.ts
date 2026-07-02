@@ -10,6 +10,7 @@ export const cpscProcessedPath = resolve(projectRoot, 'data/processed/cpsc-recal
 export const fdaProcessedPath = resolve(projectRoot, 'data/processed/fda-recalls.json');
 export const rappelConsoProcessedPath = resolve(projectRoot, 'data/processed/rappelconso-recalls.json');
 export const canadaProcessedPath = resolve(projectRoot, 'data/processed/canada-recalls.json');
+export const euSafetyGateProcessedPath = resolve(projectRoot, 'data/processed/eu-safety-gate-recalls.json');
 
 type MergeResult = ProcessedRecallFile & {
   countsBySource: Record<RecallSource, number>;
@@ -73,17 +74,19 @@ function countBySource(records: NormalizedRecall[]): Record<RecallSource, number
     CPSC: records.filter((record) => record.source === 'CPSC').length,
     FDA: records.filter((record) => record.source === 'FDA').length,
     FR_RAPPELCONSO: records.filter((record) => record.source === 'FR_RAPPELCONSO').length,
-    CA_RECALLS: records.filter((record) => record.source === 'CA_RECALLS').length
+    CA_RECALLS: records.filter((record) => record.source === 'CA_RECALLS').length,
+    EU_SAFETY_GATE: records.filter((record) => record.source === 'EU_SAFETY_GATE').length
   };
 }
 
 export async function mergeProcessedRecalls(): Promise<MergeResult> {
-  const [canonicalFile, cpscFile, fdaFile, rappelConsoFile, canadaFile] = await Promise.all([
+  const [canonicalFile, cpscFile, fdaFile, rappelConsoFile, canadaFile, euSafetyGateFile] = await Promise.all([
     readProcessedFile(canonicalProcessedPath),
     readProcessedFile(cpscProcessedPath),
     readProcessedFile(fdaProcessedPath),
     readProcessedFile(rappelConsoProcessedPath),
-    readProcessedFile(canadaProcessedPath)
+    readProcessedFile(canadaProcessedPath),
+    readProcessedFile(euSafetyGateProcessedPath)
   ]);
   const cpscRecords = sourceRecords(cpscFile, 'CPSC').length
     ? sourceRecords(cpscFile, 'CPSC')
@@ -91,7 +94,14 @@ export async function mergeProcessedRecalls(): Promise<MergeResult> {
   const fdaRecords = sourceRecords(fdaFile, 'FDA');
   const rappelConsoRecords = sourceRecords(rappelConsoFile, 'FR_RAPPELCONSO');
   const canadaRecords = sourceRecords(canadaFile, 'CA_RECALLS');
-  const records = mergeRecords([...cpscRecords, ...fdaRecords, ...rappelConsoRecords, ...canadaRecords]);
+  const euSafetyGateRecords = sourceRecords(euSafetyGateFile, 'EU_SAFETY_GATE');
+  const records = mergeRecords([
+    ...cpscRecords,
+    ...fdaRecords,
+    ...rappelConsoRecords,
+    ...canadaRecords,
+    ...euSafetyGateRecords
+  ]);
 
   if (records.length === 0) {
     throw new Error('Recall merge produced zero records; canonical processed data was not overwritten.');

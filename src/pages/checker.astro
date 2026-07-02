@@ -5,6 +5,7 @@ import {
   dataSourceLabel,
   processedCanadaRecordCount,
   processedCpscRecordCount,
+  processedEuSafetyGateRecordCount,
   processedFdaRecordCount,
   processedFranceRappelConsoRecordCount,
   processedLocalRecordCount,
@@ -112,6 +113,7 @@ const dateOptions = [
               <span class="tag">{processedFdaRecordCount} food enforcement notices</span>
               <span class="tag">{processedFranceRappelConsoRecordCount} France RappelConso notices</span>
               <span class="tag">{processedCanadaRecordCount} Canada recall and safety alert notices</span>
+              <span class="tag">{processedEuSafetyGateRecordCount} EU Safety Gate alerts</span>
             </>
           ) : null}
         </div>
@@ -252,7 +254,7 @@ const dateOptions = [
       const list = document.querySelector<HTMLElement>('#result-list');
 
       type SearchItem = ReturnType<typeof searchRecalls>['items'][number];
-      type SourceFilter = 'all' | 'CPSC' | 'FDA' | 'FR_RAPPELCONSO' | 'CA_RECALLS';
+      type SourceFilter = 'all' | 'CPSC' | 'FDA' | 'FR_RAPPELCONSO' | 'CA_RECALLS' | 'EU_SAFETY_GATE';
       type CategoryFilter =
         | 'all'
         | 'baby-kids'
@@ -271,7 +273,7 @@ const dateOptions = [
         date: DateFilter;
       };
 
-      const sourceValues: SourceFilter[] = ['all', 'CPSC', 'FDA', 'FR_RAPPELCONSO', 'CA_RECALLS'];
+      const sourceValues: SourceFilter[] = ['all', 'CPSC', 'FDA', 'FR_RAPPELCONSO', 'CA_RECALLS', 'EU_SAFETY_GATE'];
       const categoryValues: CategoryFilter[] = [
         'all',
         'baby-kids',

@@ -52,23 +52,51 @@ Commands:
 - `npm run normalize:cpsc` rebuilds processed recall data from `data/raw/cpsc-recalls.json`.
 - `npm run fetch:fda-food` fetches recent public openFDA food enforcement JSON and writes local files.
 - `npm run normalize:fda-food` rebuilds FDA processed recall data from `data/raw/fda-food-recalls.json`.
-- `npm run build:data` currently runs the CPSC fetch pipeline and the FDA/openFDA fetch pipeline.
+- `npm run fetch:rappelconso` fetches the bounded France RappelConso source spike.
+- `npm run normalize:rappelconso` rebuilds RappelConso processed data from `data/raw/rappelconso-recalls.json`.
+- `npm run fetch:canada` fetches the bounded Canada Recalls and Safety Alerts source spike.
+- `npm run normalize:canada` rebuilds Canada processed data from `data/raw/canada-recalls.json`.
+- `npm run fetch:eu-safety-gate` fetches the bounded EU Safety Gate source spike.
+- `npm run normalize:eu-safety-gate` rebuilds EU Safety Gate processed data from `data/raw/eu-safety-gate-recalls.json`.
+- `npm run build:data` currently runs the CPSC, FDA/openFDA, France RappelConso, Canada, and EU Safety Gate fetch pipelines.
 
 Local output files:
 
 - `data/raw/cpsc-recalls.json`
 - `data/raw/fda-food-recalls.json`
+- `data/raw/rappelconso-recalls.json`
+- `data/raw/canada-recalls.json`
+- `data/raw/eu-safety-gate-recalls.json`
 - `data/processed/cpsc-recalls.json`
 - `data/processed/fda-recalls.json`
+- `data/processed/rappelconso-recalls.json`
+- `data/processed/canada-recalls.json`
+- `data/processed/eu-safety-gate-recalls.json`
 - `data/processed/recalls.json`
 
 The fetch script calls `https://www.saferproducts.gov/RestWebServices/Recall` without an API key. It writes only after the API returns non-empty records, and each raw file includes a `fetchedAt` timestamp.
 
 The FDA/openFDA fetch script calls `https://api.fda.gov/food/enforcement.json` without an API key. It fetches a limited set of recent records, writes only after the API returns non-empty records, and each raw file includes a `fetchedAt` timestamp.
 
-Normalized records use `src/data/recall-types.ts` and include `id`, `source`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard`, `remedy`, `recallDate`, `affectedUnits`, `description`, `slug`, and `raw`. FDA records can also include `classification`, `reason`, `distributionPattern`, `productQuantity`, `recallNumber`, and `status`.
+The EU Safety Gate fetch script calls official EU Safety Gate endpoints only:
+
+- `https://ec.europa.eu/safety-gate-alerts/public/api/notification/mostRecent/?`
+- `https://ec.europa.eu/safety-gate-alerts/public/api/notification/{id}?language=en`
+
+It fetches a bounded default of 100 recent dangerous non-food product alerts, writes only after non-empty records return, and each raw file includes a `fetchedAt` timestamp.
+
+Normalized records use `src/data/recall-types.ts` and include `id`, `source`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard`, `remedy`, `recallDate`, `affectedUnits`, `description`, `slug`, and `raw`. FDA, France, Canada, and EU records can also include `classification`, `reason`, `distributionPattern`, `productQuantity`, `recallNumber`, `status`, and official image fields when available.
 
 Do not call fetch scripts during UI-only phases unless a later task explicitly asks for fresh local data.
+
+Phase 9 EU Safety Gate current counts:
+
+- CPSC: 301
+- FDA/openFDA: 100
+- France RappelConso: 100
+- Canada Recalls and Safety Alerts: 100
+- EU Safety Gate: 100
+- Total: 701
 
 ## Site Data Loader
 

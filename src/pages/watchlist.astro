@@ -3,6 +3,7 @@ import {
   dataSourceLabel,
   processedCanadaRecordCount,
   processedCpscRecordCount,
+  processedEuSafetyGateRecordCount,
   processedFdaRecordCount,
   processedFranceRappelConsoRecordCount,
   processedLocalRecordCount,
@@ -87,6 +88,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
               <span class="tag">{processedFdaRecordCount} food enforcement notices</span>
               <span class="tag">{processedFranceRappelConsoRecordCount} France RappelConso notices</span>
               <span class="tag">{processedCanadaRecordCount} Canada recall and safety alert notices</span>
+              <span class="tag">{processedEuSafetyGateRecordCount} EU Safety Gate alerts</span>
             </>
           ) : null}
         </div>

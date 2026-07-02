@@ -15,6 +15,13 @@
 - `npm run normalize:cpsc`
 - `npm run fetch:fda-food`
 - `npm run normalize:fda-food`
+- `npm run fetch:rappelconso`
+- `npm run normalize:rappelconso`
+- `npm run fetch:canada`
+- `npm run normalize:canada`
+- `npm run fetch:eu-safety-gate`
+- `npm run normalize:eu-safety-gate`
+- `npm run audit:eu-safety-gate`
 - `npm run dev`
 - `npm run preview`
 
@@ -43,21 +50,38 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm canonical records preserve existing CPSC records and append FDA records by stable id.
 - Confirm canonical records are sorted by `recallDate` descending where possible.
 
+## EU Safety Gate Pipeline
+
+- Confirm `npm run fetch:eu-safety-gate` saves `data/raw/eu-safety-gate-recalls.json`.
+- Confirm `npm run fetch:eu-safety-gate` saves `data/processed/eu-safety-gate-recalls.json`.
+- Confirm `npm run fetch:eu-safety-gate` rebuilds canonical `data/processed/recalls.json`.
+- Confirm raw EU output includes `fetchedAt`.
+- Confirm EU records include `source: EU_SAFETY_GATE`, `sourceUrl`, `title`, `productNames`, `category`, `hazard` or `reason`, `recallDate`, `description`, `slug`, and `raw`.
+- Confirm the EU source label renders as `European Union · Safety Gate`.
+- Confirm official Safety Gate detail URLs use `https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/{id}`.
+- Confirm official Safety Gate image URLs use `https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/{photoId}` where images are available.
+- Confirm canonical records preserve existing CPSC, FDA/openFDA, France RappelConso, and Canada records and append bounded EU Safety Gate records by stable id.
+- Confirm canonical records are sorted by `recallDate` descending where possible.
+- Confirm `npm run audit:eu-safety-gate` passes.
+
 ## Pages
 
 - `/`
 - `/checker`
 - `/checker?q=pistachio&source=FDA`
 - `/checker?q=smoke&source=CPSC`
+- `/checker?q=toy&source=EU_SAFETY_GATE`
 - `/watchlist`
 - `/baby-product-recalls`
 - `/battery-recalls`
 - `/food-allergy-recalls`
 - one real CPSC `/recalls/[slug]` page
 - one real FDA `/recalls/[slug]` page, when FDA data has been fetched
+- one real EU Safety Gate `/recalls/[slug]` page, when EU data has been fetched
 - one normalized real CPSC `/brands/[brand]` page
 - Confirm page labels identify CPSC records as local CPSC data.
 - Confirm page labels identify FDA records as local FDA/openFDA data.
+- Confirm page labels identify EU records as European Union Safety Gate records.
 - Confirm category pages show a matching local record count.
 - Confirm `/food-allergy-recalls` shows FDA/openFDA food records before CPSC food/allergy records when FDA records exist.
 - Confirm core pages remain readable at narrow mobile widths and long titles/labels wrap instead of overflowing.
@@ -85,6 +109,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm `/checker?q=arizer` reads the URL query on load and renders local results.
 - Confirm `/checker?q=pistachio&source=FDA` applies the FDA/openFDA source filter.
 - Confirm `/checker?q=smoke&source=CPSC` applies the CPSC source filter.
+- Confirm `/checker?q=toy&source=EU_SAFETY_GATE` applies the EU Safety Gate source filter.
 - Confirm source, category, sort, and date filter changes update the URL query string.
 - Confirm category filters include all, baby/kids, battery/electronics, food/allergy, household/appliance, food, and general.
 - Confirm sort options include best match, newest first, and oldest first.
@@ -96,6 +121,15 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - `smoke detector` returns possible or related local matches when detector records exist.
 - `not-a-real-product` returns no local match.
 - Confirm result cards show match badges, source label, recall date, product/brand context, hazard summary, and detail links.
+
+## Source Counts
+
+- Confirm CPSC count is 301.
+- Confirm FDA/openFDA count is 100.
+- Confirm France RappelConso count is 100.
+- Confirm Canada Recalls and Safety Alerts count is 100.
+- Confirm EU Safety Gate count is 100.
+- Confirm total canonical count is 701.
 
 ## Watchlist Demo
 

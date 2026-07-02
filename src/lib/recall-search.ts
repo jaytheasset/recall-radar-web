@@ -68,7 +68,9 @@ const IDENTIFIER_TERMS = [
   'recall number',
   'fda recall number',
   'cpsc recall number',
-  'alert id'
+  'alert id',
+  'safety gate reference',
+  'safety gate'
 ];
 
 const ALLERGEN_TERMS = [
@@ -298,6 +300,10 @@ export function getRecallIdentifierHint(recall: Pick<SiteRecall, 'source'>): str
 
   if (recall.source === 'CA_RECALLS') {
     return 'Check UPC/barcode, model, item, lot, batch, date, DIN/NPN if listed, recall or alert id, and official notice details.';
+  }
+
+  if (recall.source === 'EU_SAFETY_GATE') {
+    return 'Check Safety Gate reference, barcode, model, batch, product photos, reporting country, country of origin, and official alert details.';
   }
 
   if (recall.source === 'CPSC') {

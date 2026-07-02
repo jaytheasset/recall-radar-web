@@ -126,6 +126,11 @@ function rawText(raw: RawObject, key: string): string {
   return safeText(raw[key]);
 }
 
+function rawObject(raw: RawObject, key: string): RawObject {
+  const value = raw[key];
+  return isObject(value) ? value : {};
+}
+
 function splitRawText(raw: RawObject, key: string): string[] {
   const value = raw[key];
   if (Array.isArray(value)) {
@@ -141,6 +146,24 @@ function splitRawText(raw: RawObject, key: string): string[] {
 
 function valuesFrom(raw: RawObject, key: string, property = 'Name'): string[] {
   return uniqueNonEmpty(rawArray(raw, key).map((item) => safeText(item[property])));
+}
+
+function versionFor(raw: RawObject, languageCode = 'EN'): RawObject {
+  return (
+    rawArray(raw, 'versions').find((version) => {
+      const language = rawObject(version, 'language');
+      return safeText(language.key).toUpperCase() === languageCode.toUpperCase();
+    }) ??
+    rawArray(raw, 'versions')[0] ??
+    {}
+  );
+}
+
+function titleCaseCode(value: string): string {
+  return cleanText(value)
+    .replace(/[_-]+/g, ' ')
+    .toLowerCase()
+    .replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
 }
 
 function addFact(facts: DetailFact[], label: string, value: string | string[]): void {
@@ -483,6 +506,109 @@ function buildCanadaView(recall: SiteRecall, raw: RawObject): SourceDetailView {
   };
 }
 
+function buildEuSafetyGateView(recall: SiteRecall, raw: RawObject): SourceDetailView {
+  const product = rawObject(raw, 'product');
+  const risk = rawObject(raw, 'risk');
+  const measureTaken = rawObject(raw, 'measureTaken');
+  const traceability = rawObject(raw, 'traceability');
+  const country = rawObject(raw, 'country');
+  const productCategory = rawObject(product, 'productCategory');
+  const productVersion = versionFor(product);
+  const riskVersion = versionFor(risk);
+  const brands = uniqueNonEmpty([
+    ...rawArray(product, 'brands').map((brand) => safeText(brand.brand) || safeText(brand.name)),
+    ...recall.displayBrandNames,
+    ...recall.brandNames
+  ]);
+  const productName = firstNonEmpty(
+    [
+      safeText(productVersion.name),
+      rawText(product, 'name'),
+      rawText(product, 'nameSpecific'),
+      safeText(productVersion.description),
+      recall.primaryProductName
+    ],
+    'Product'
+  );
+  const brandName = firstNonEmpty(brands, 'Brand not listed');
+  const barcodes = valuesFrom(product, 'barcodes', 'barcode');
+  const modelTypes = valuesFrom(product, 'modelTypes', 'modelType');
+  const batchNumbers = uniqueNonEmpty(rawArray(product, 'batchNumbers').flatMap((item) => Object.values(item).map(safeText)));
+  const identifiers = uniqueNonEmpty([...barcodes, ...modelTypes, ...batchNumbers]);
+  const riskTypes = rawArray(risk, 'riskType').map((item) => titleCaseCode(safeText(item.name) || safeText(item.key)));
+  const reason = firstNonEmpty(
+    [safeText(riskVersion.riskDescription), riskTypes.join(', '), recall.reason ?? '', recall.hazard],
+    'Risk not listed.'
+  );
+  const measures = rawArray(measureTaken, 'measures').map((measure) => {
+    const category = rawObject(measure, 'measureCategory');
+    const type = rawObject(measure, 'measureType');
+    const version = versionFor(measure);
+    const label = firstNonEmpty([safeText(version.measureCategoryOther), safeText(category.name), safeText(category.key)]);
+    const typeLabel = firstNonEmpty([safeText(type.name), safeText(type.key)]);
+
+    return uniqueNonEmpty([typeLabel ? titleCaseCode(typeLabel) : '', label ? titleCaseCode(label) : '']).join(': ');
+  });
+  const action = firstNonEmpty(
+    [uniqueNonEmpty(measures).join('; '), recall.remedy],
+    getRecallDefaultActionFallback(recall.source)
+  );
+  const origin = rawObject(traceability, 'countryOrigin');
+  const soldOnline = rawObject(traceability, 'isSoldOnline');
+  const reportingCountry = firstNonEmpty([safeText(country.name), safeText(country.key)]);
+  const countryOfOrigin = firstNonEmpty([safeText(origin.name), safeText(origin.key)]);
+  const description = firstNonEmpty(
+    [
+      safeText(productVersion.description),
+      safeText(productVersion.packageDescription),
+      recall.description,
+      productName
+    ],
+    productName
+  );
+  const details: DetailFact[] = [];
+
+  addFact(details, 'Product', productName);
+  addFact(details, 'Brand or company', brandName);
+  addFact(details, 'Safety Gate reference', rawText(raw, 'reference') || recall.recallNumber || '');
+  addFact(details, 'Barcode, model, or batch details', identifiers);
+  addFact(details, 'Product category', safeText(productCategory.name) || recall.rawCategory);
+  addFact(details, 'Reporting country', reportingCountry);
+  addFact(details, 'Country of origin', countryOfOrigin);
+  addFact(details, 'Sold online', titleCaseCode(firstNonEmpty([safeText(soldOnline.name), safeText(soldOnline.key)])));
+  addFact(details, 'Package details', safeText(productVersion.packageDescription));
+
+  return {
+    displayTitle: displayTitleFor(productName, recall.title),
+    officialTitle: recall.title,
+    productName,
+    brandName,
+    recallDate: formatDate(rawText(raw, 'publicationDate') || recall.recallDate),
+    recallNumber: rawText(raw, 'reference') || recall.recallNumber || '',
+    imageCaptions: imageCaptions(raw, recall),
+    reason,
+    action,
+    actionDetail: action,
+    actionParagraphs: paragraphs(action),
+    description,
+    identificationDetails: details,
+    consumerContact: '',
+    soldAt: uniqueNonEmpty([
+      reportingCountry ? `Reporting country: ${reportingCountry}` : '',
+      countryOfOrigin ? `Country of origin: ${countryOfOrigin}` : '',
+      titleCaseCode(firstNonEmpty([safeText(soldOnline.name), safeText(soldOnline.key)]))
+        ? `Sold online: ${titleCaseCode(firstNonEmpty([safeText(soldOnline.name), safeText(soldOnline.key)]))}`
+        : ''
+    ]),
+    incidents: [],
+    importer: [],
+    manufacturer: [],
+    manufacturedIn: countryOfOrigin ? [countryOfOrigin] : [],
+    units: recall.affectedUnits || recall.productQuantity || '',
+    fdaDetails: details
+  };
+}
+
 export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall[]): RecallDetailView {
   const raw = rawFor(recall);
   const companyRecallHistory = getCompanyRecallHistory(recall, allRecalls, 4);
@@ -495,7 +621,9 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
         ? buildRappelConsoView(recall, raw)
         : recall.source === 'CA_RECALLS'
           ? buildCanadaView(recall, raw)
-          : buildCpscView(recall, raw);
+          : recall.source === 'EU_SAFETY_GATE'
+            ? buildEuSafetyGateView(recall, raw)
+            : buildCpscView(recall, raw);
   const productIntro = sourceSpecificView.productName
     ? `This recall involves ${sourceSpecificView.productName}`
     : 'This recall involves a recalled product';

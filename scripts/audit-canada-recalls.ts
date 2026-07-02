@@ -32,7 +32,7 @@ type SourceCounts = Record<RecallSource, number> & {
   total: number;
 };
 
-const expectedSourceFilterValues = ['all', 'CPSC', 'FDA', 'FR_RAPPELCONSO', 'CA_RECALLS'];
+const expectedSourceFilterValues = ['all', 'CPSC', 'FDA', 'FR_RAPPELCONSO', 'CA_RECALLS', 'EU_SAFETY_GATE'];
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const processedPath = resolve(projectRoot, 'data/processed/canada-recalls.json');
 const canonicalProcessedPath = resolve(projectRoot, 'data/processed/recalls.json');
@@ -161,7 +161,8 @@ async function readCanonicalCounts(): Promise<SourceCounts> {
     CPSC: records.filter((record) => record.source === 'CPSC').length,
     FDA: records.filter((record) => record.source === 'FDA').length,
     FR_RAPPELCONSO: records.filter((record) => record.source === 'FR_RAPPELCONSO').length,
-    CA_RECALLS: records.filter((record) => record.source === 'CA_RECALLS').length
+    CA_RECALLS: records.filter((record) => record.source === 'CA_RECALLS').length,
+    EU_SAFETY_GATE: records.filter((record) => record.source === 'EU_SAFETY_GATE').length
   };
 }
 
@@ -250,11 +251,12 @@ function audit(records: NormalizedRecall[]): AuditSummary {
 
 function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sourceFilters: string[]): string[] {
   const expectedCounts: SourceCounts = {
-    total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 601),
+    total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 701),
     CPSC: expectedNumber('EXPECTED_CPSC_COUNT', 301),
     FDA: expectedNumber('EXPECTED_FDA_COUNT', 100),
     FR_RAPPELCONSO: expectedNumber('EXPECTED_RAPPELCONSO_COUNT', 100),
-    CA_RECALLS: expectedNumber('EXPECTED_CANADA_RECALLS_COUNT', 100)
+    CA_RECALLS: expectedNumber('EXPECTED_CANADA_RECALLS_COUNT', 100),
+    EU_SAFETY_GATE: expectedNumber('EXPECTED_EU_SAFETY_GATE_COUNT', 100)
   };
   const severeMissingThreshold = Math.max(1, Math.floor(summary.total * 0.05));
   const blockers = [
@@ -276,6 +278,9 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
       : '',
     canonicalCounts.CA_RECALLS !== expectedCounts.CA_RECALLS
       ? `Canonical CA_RECALLS count ${canonicalCounts.CA_RECALLS} does not match expected ${expectedCounts.CA_RECALLS}.`
+      : '',
+    canonicalCounts.EU_SAFETY_GATE !== expectedCounts.EU_SAFETY_GATE
+      ? `EU_SAFETY_GATE count ${canonicalCounts.EU_SAFETY_GATE} does not match expected ${expectedCounts.EU_SAFETY_GATE}.`
       : '',
     summary.duplicateIds.length > 0 ? `Duplicate ids found: ${summary.duplicateIds.length}.` : '',
     summary.slugCollisions.length > 0 ? `Slug collisions found: ${summary.slugCollisions.length}.` : '',
@@ -330,7 +335,8 @@ async function runAudit(): Promise<void> {
             CPSC: canonicalCounts.CPSC,
             FDA: canonicalCounts.FDA,
             FR_RAPPELCONSO: canonicalCounts.FR_RAPPELCONSO,
-            CA_RECALLS: canonicalCounts.CA_RECALLS
+            CA_RECALLS: canonicalCounts.CA_RECALLS,
+            EU_SAFETY_GATE: canonicalCounts.EU_SAFETY_GATE
           },
           duplicateIds: summary.duplicateIds.length,
           slugCollisions: summary.slugCollisions.length,

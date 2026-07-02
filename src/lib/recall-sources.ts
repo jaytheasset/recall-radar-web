@@ -1,4 +1,4 @@
-export type RecallSourceId = 'CPSC' | 'FDA' | 'FR_RAPPELCONSO' | 'CA_RECALLS' | 'Mock';
+export type RecallSourceId = 'CPSC' | 'FDA' | 'FR_RAPPELCONSO' | 'CA_RECALLS' | 'EU_SAFETY_GATE' | 'Mock';
 export type CurrentCoverageSourceId = Exclude<RecallSourceId, 'Mock'>;
 export type RecallSourceType = 'official-api' | 'sample';
 
@@ -202,6 +202,51 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     officialVerificationCopy:
       'Use the official notice to confirm affected products, identifiers, dates, distribution, classification, and instructions.'
   },
+  EU_SAFETY_GATE: {
+    id: 'EU_SAFETY_GATE',
+    marketCode: 'EU',
+    marketLabel: 'European Union',
+    agencyLabel: 'Safety Gate',
+    sourceType: 'official-api',
+    displayLabel: 'European Union · Safety Gate',
+    noticeTypeLabel: 'Safety Gate alert',
+    productScopeLabel: 'Dangerous non-food consumer products',
+    identifierTypes: [
+      'Safety Gate reference',
+      'barcode',
+      'model number',
+      'batch number',
+      'product name',
+      'brand/company',
+      'country of origin'
+    ],
+    supportsImages: true,
+    supportsDistributionDetails: true,
+    rawPayloadNotes:
+      'EU Safety Gate raw payloads can include notification reference, reporting country, product category, brands, barcodes, model types, batch numbers, product versions, risk details, measures, traceability, and official product photos.',
+    officialSourceLabel: 'Source: European Union · Safety Gate',
+    placeholderLabel: 'Safety Gate alert',
+    reasonLabel: 'Risk',
+    actionLabel: 'Measure',
+    quantityLabel: 'Quantity',
+    distributionLabel: 'Market details',
+    defaultActionFallback: DEFAULT_ACTION_FALLBACK,
+    verificationIntro:
+      'Compare the details below with your product label, packaging, barcode, model, batch information, product photos, or official Safety Gate alert. A matching search result does not confirm your exact product is included.',
+    verificationChecklist: [
+      'Product name and brand/company',
+      'Safety Gate reference',
+      'Barcode if listed',
+      'Model or batch details if listed',
+      'Product photos and package details',
+      'Reporting country and country of origin',
+      'Measure/action in the official alert'
+    ],
+    sparseIdentificationCopy:
+      'This indexed alert may not list every identifier in a structured field. Review the official Safety Gate alert and product label carefully.',
+    officialVerificationCopy:
+      'Use the official Safety Gate alert to confirm affected products, identifiers, risks, measures, reporting country, and country of origin.'
+  },
   Mock: {
     id: 'Mock',
     marketCode: '',
@@ -237,13 +282,20 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
   }
 };
 
-const currentCoverageSources: CurrentCoverageSourceId[] = ['CPSC', 'FDA', 'FR_RAPPELCONSO', 'CA_RECALLS'];
+const currentCoverageSources: CurrentCoverageSourceId[] = [
+  'CPSC',
+  'FDA',
+  'FR_RAPPELCONSO',
+  'CA_RECALLS',
+  'EU_SAFETY_GATE'
+];
 
 function normalizeSourceId(source: string): RecallSourceId {
   return source === 'CPSC' ||
     source === 'FDA' ||
     source === 'FR_RAPPELCONSO' ||
     source === 'CA_RECALLS' ||
+    source === 'EU_SAFETY_GATE' ||
     source === 'Mock'
     ? source
     : 'Mock';
