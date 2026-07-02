@@ -255,7 +255,7 @@ To audit the current local EU Safety Gate processed data without making network 
 npm run audit:eu-safety-gate
 ```
 
-The EU audit reports source counts, duplicate ids, slug collisions, missing required fields, category distribution, official URL shape, image availability, barcode-like text, and model/batch-like text.
+The EU audit reports source counts, duplicate ids, slug collisions, missing required fields, raw and site category distribution, official URL shape, image availability, barcode-like text, model/type text, batch/serial text, risk type coverage, notifying country, country of origin, countries concerned or market details, and suspicious category mappings.
 
 To run the explicit EU Safety Gate refresh workflow, including network fetch and local audit:
 

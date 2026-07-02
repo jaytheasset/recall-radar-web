@@ -555,8 +555,14 @@ function buildEuSafetyGateView(recall: SiteRecall, raw: RawObject): SourceDetail
   );
   const origin = rawObject(traceability, 'countryOrigin');
   const soldOnline = rawObject(traceability, 'isSoldOnline');
-  const reportingCountry = firstNonEmpty([safeText(country.name), safeText(country.key)]);
+  const notifyingCountry = firstNonEmpty([safeText(country.name), safeText(country.key)]);
   const countryOfOrigin = firstNonEmpty([safeText(origin.name), safeText(origin.key)]);
+  const countriesConcerned = uniqueNonEmpty(
+    rawArray(raw, 'reactingCountries').map((item) => {
+      const reactingCountry = rawObject(item, 'country');
+      return safeText(item.name) || safeText(item.key) || safeText(reactingCountry.name) || safeText(reactingCountry.key);
+    })
+  );
   const description = firstNonEmpty(
     [
       safeText(productVersion.description),
@@ -572,9 +578,11 @@ function buildEuSafetyGateView(recall: SiteRecall, raw: RawObject): SourceDetail
   addFact(details, 'Brand or company', brandName);
   addFact(details, 'Safety Gate reference', rawText(raw, 'reference') || recall.recallNumber || '');
   addFact(details, 'Barcode, model, or batch details', identifiers);
+  addFact(details, 'Risk type', riskTypes);
   addFact(details, 'Product category', safeText(productCategory.name) || recall.rawCategory);
-  addFact(details, 'Reporting country', reportingCountry);
+  addFact(details, 'Notifying country', notifyingCountry);
   addFact(details, 'Country of origin', countryOfOrigin);
+  addFact(details, 'Countries concerned', countriesConcerned);
   addFact(details, 'Sold online', titleCaseCode(firstNonEmpty([safeText(soldOnline.name), safeText(soldOnline.key)])));
   addFact(details, 'Package details', safeText(productVersion.packageDescription));
 
@@ -594,8 +602,9 @@ function buildEuSafetyGateView(recall: SiteRecall, raw: RawObject): SourceDetail
     identificationDetails: details,
     consumerContact: '',
     soldAt: uniqueNonEmpty([
-      reportingCountry ? `Reporting country: ${reportingCountry}` : '',
+      notifyingCountry ? `Notifying country: ${notifyingCountry}` : '',
       countryOfOrigin ? `Country of origin: ${countryOfOrigin}` : '',
+      countriesConcerned.length ? `Countries concerned: ${countriesConcerned.join(', ')}` : '',
       titleCaseCode(firstNonEmpty([safeText(soldOnline.name), safeText(soldOnline.key)]))
         ? `Sold online: ${titleCaseCode(firstNonEmpty([safeText(soldOnline.name), safeText(soldOnline.key)]))}`
         : ''

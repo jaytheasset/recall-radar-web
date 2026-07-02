@@ -102,6 +102,15 @@ function valuesFromObjects(items: Record<string, unknown>[], keys: string[]): st
   );
 }
 
+function namesFromCountryObjects(items: Record<string, unknown>[]): string[] {
+  return uniqueNonEmpty(
+    items.map((item) => {
+      const country = asObject(item.country);
+      return firstNonEmpty([item.name, item.key, country.name, country.key]);
+    })
+  );
+}
+
 function officialDetailUrl(id: string): string {
   return `https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/${encodeURIComponent(id)}`;
 }
@@ -146,14 +155,33 @@ function measureSummary(measureTaken: Record<string, unknown>): string {
   return uniqueNonEmpty(measures).join('; ');
 }
 
-function productIdentifiers(product: Record<string, unknown>): string[] {
+type ProductIdentifierGroups = {
+  barcodes: string[];
+  models: string[];
+  batches: string[];
+};
+
+function productIdentifierGroups(product: Record<string, unknown>): ProductIdentifierGroups {
   const barcodes = valuesFromObjects(asArray(product.barcodes), ['barcode', 'value']);
   const batches = uniqueNonEmpty(
     asArray(product.batchNumbers).flatMap((item) => Object.values(item).map(asString))
   );
   const models = valuesFromObjects(asArray(product.modelTypes), ['modelType', 'value']);
 
-  return uniqueNonEmpty([...barcodes, ...batches, ...models]);
+  return { barcodes, models, batches };
+}
+
+function productIdentifiers(product: Record<string, unknown>): string[] {
+  const groups = productIdentifierGroups(product);
+  return uniqueNonEmpty([...groups.barcodes, ...groups.models, ...groups.batches]);
+}
+
+function identifierSummary(groups: ProductIdentifierGroups): string[] {
+  return uniqueNonEmpty([
+    groups.barcodes.length ? `Barcodes: ${groups.barcodes.join(', ')}` : '',
+    groups.models.length ? `Model/type: ${groups.models.join(', ')}` : '',
+    groups.batches.length ? `Batch/serial: ${groups.batches.join(', ')}` : ''
+  ]);
 }
 
 function sourceReference(raw: EuSafetyGateRaw): string {
@@ -166,19 +194,29 @@ function descriptionFor(input: {
   measureTaken: Record<string, unknown>;
   traceability: Record<string, unknown>;
   identifiers: string[];
+  identifierSummaries: string[];
+  riskTypes: string[];
+  notifyingCountry: string;
+  countriesConcerned: string[];
 }): string {
   const origin = asObject(input.traceability.countryOrigin);
   const soldOnline = asObject(input.traceability.isSoldOnline);
+  const countryOfOrigin = firstNonEmpty([origin.name, origin.key]);
+  const soldOnlineValue = firstNonEmpty([soldOnline.name, soldOnline.key]);
 
   return uniqueNonEmpty([
     asString(input.productVersion.description),
     asString(input.productVersion.packageDescription),
     input.identifiers.length ? `Identifiers: ${input.identifiers.join(', ')}` : '',
+    ...input.identifierSummaries,
+    input.riskTypes.length ? `Risk type: ${input.riskTypes.join(', ')}` : '',
     asString(input.riskVersion.riskDescription),
     asString(input.riskVersion.legalProvision),
     measureSummary(input.measureTaken),
-    firstNonEmpty([origin.name, origin.key]) ? `Country of origin: ${firstNonEmpty([origin.name, origin.key])}` : '',
-    firstNonEmpty([soldOnline.name, soldOnline.key]) ? `Sold online: ${labelize(firstNonEmpty([soldOnline.name, soldOnline.key]))}` : ''
+    input.notifyingCountry ? `Notifying country: ${input.notifyingCountry}` : '',
+    countryOfOrigin ? `Country of origin: ${countryOfOrigin}` : '',
+    input.countriesConcerned.length ? `Countries concerned: ${input.countriesConcerned.join(', ')}` : '',
+    soldOnlineValue ? `Sold online: ${labelize(soldOnlineValue)}` : ''
   ]).join(' ');
 }
 
@@ -230,7 +268,9 @@ export function normalizeEuSafetyGateRecords(records: EuSafetyGateRaw[]): Normal
       const productCategory = asObject(product.productCategory);
       const productVersion = versionText(product, 'EN');
       const riskVersion = versionText(risk, 'EN');
+      const identifierGroups = productIdentifierGroups(product);
       const identifiers = productIdentifiers(product);
+      const identifierSummaries = identifierSummary(identifierGroups);
       const brands = valuesFromObjects(asArray(product.brands), ['brand', 'name']);
       const productName = firstNonEmpty(
         [
@@ -244,6 +284,12 @@ export function normalizeEuSafetyGateRecords(records: EuSafetyGateRaw[]): Normal
       );
       const category = firstNonEmpty([productCategory.name, productCategory.key, productVersion.productCategoryOther], 'Safety Gate alert');
       const riskTypes = valuesFromObjects(asArray(risk.riskType), ['name', 'key']).map(labelize);
+      const notifyingCountry = firstNonEmpty([country.name, country.key]);
+      const countryOfOrigin = firstNonEmpty([
+        asObject(traceability.countryOrigin).name,
+        asObject(traceability.countryOrigin).key
+      ]);
+      const countriesConcerned = namesFromCountryObjects(asArray(raw.reactingCountries)).map(labelize);
       const hazard = firstNonEmpty(
         [riskVersion.riskDescription, riskTypes.join(', '), riskVersion.riskTypeOther],
         'Risk not listed.'
@@ -259,7 +305,11 @@ export function normalizeEuSafetyGateRecords(records: EuSafetyGateRaw[]): Normal
         riskVersion,
         measureTaken,
         traceability,
-        identifiers
+        identifiers,
+        identifierSummaries,
+        riskTypes,
+        notifyingCountry,
+        countriesConcerned
       });
 
       return {
@@ -279,8 +329,9 @@ export function normalizeEuSafetyGateRecords(records: EuSafetyGateRaw[]): Normal
         classification: uniqueNonEmpty([asString(notificationType.code), labelize(notificationType.name)]).join(' / '),
         reason: hazard,
         distributionPattern: uniqueNonEmpty([
-          firstNonEmpty([country.name, country.key]),
-          firstNonEmpty([asObject(traceability.countryOrigin).name, asObject(traceability.countryOrigin).key])
+          notifyingCountry,
+          countryOfOrigin,
+          countriesConcerned.length ? `Countries concerned: ${countriesConcerned.join(', ')}` : ''
         ]).join(' / '),
         productQuantity: '',
         recallNumber: reference,

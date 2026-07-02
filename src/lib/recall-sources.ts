@@ -218,14 +218,17 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
       'batch number',
       'product name',
       'brand/company',
-      'country of origin'
+      'risk type',
+      'notifying country',
+      'country of origin',
+      'countries concerned'
     ],
     supportsImages: true,
     supportsDistributionDetails: true,
     rawPayloadNotes:
       'EU Safety Gate raw payloads can include notification reference, reporting country, product category, brands, barcodes, model types, batch numbers, product versions, risk details, measures, traceability, and official product photos.',
     officialSourceLabel: 'Source: European Union · Safety Gate',
-    placeholderLabel: 'Safety Gate alert',
+    placeholderLabel: 'Safety Gate notice',
     reasonLabel: 'Risk',
     actionLabel: 'Measure',
     quantityLabel: 'Quantity',
@@ -239,13 +242,13 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
       'Barcode if listed',
       'Model or batch details if listed',
       'Product photos and package details',
-      'Reporting country and country of origin',
+      'Notifying country and country of origin',
       'Measure/action in the official alert'
     ],
     sparseIdentificationCopy:
-      'This indexed alert may not list every identifier in a structured field. Review the official Safety Gate alert and product label carefully.',
+      'This indexed notice may not list every identifier in a structured field. Review the official notice and product label carefully.',
     officialVerificationCopy:
-      'Use the official Safety Gate alert to confirm affected products, identifiers, risks, measures, reporting country, and country of origin.'
+      'Use the official Safety Gate alert to confirm affected products, identifiers, risks, measures, notifying country, country of origin, and countries concerned.'
   },
   Mock: {
     id: 'Mock',

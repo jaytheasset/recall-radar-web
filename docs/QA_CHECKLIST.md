@@ -63,6 +63,9 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm canonical records preserve existing CPSC, FDA/openFDA, France RappelConso, and Canada records and append bounded EU Safety Gate records by stable id.
 - Confirm canonical records are sorted by `recallDate` descending where possible.
 - Confirm `npm run audit:eu-safety-gate` passes.
+- Confirm EU audit reports barcode, model/type, batch/serial, risk type, notifying country, country of origin, countries concerned or market detail coverage.
+- Confirm EU audit reports no suspicious category mappings and no EU records are mapped to food/allergy.
+- Confirm EU detail pages show Safety Gate risk type, identifiers, notifying country, country of origin, countries concerned when present, and the official Safety Gate source link.
 
 ## Pages
 

@@ -84,7 +84,7 @@ EU records are mapped into `NormalizedRecall`:
 - `recallDate`: publication date
 - `classification`: notification type code/name
 - `recallNumber`: Safety Gate reference, such as `SR/01950/26`
-- `distributionPattern`: reporting country and country of origin when available
+- `distributionPattern`: notifying country, country of origin, and countries concerned when available
 - `images`: official Safety Gate image endpoint URLs
 - `raw`: original Safety Gate detail payload
 
@@ -110,8 +110,67 @@ Current EU audit checks:
 - official detail URL shape
 - official image URL availability
 - barcode-like identifier coverage
-- model/batch-like identifier coverage
+- model/type identifier coverage
+- batch/serial identifier coverage
+- risk type coverage
+- notifying country coverage
+- country of origin coverage
+- countries concerned or market detail coverage
 - raw category distribution
+- conservative site category distribution
+- suspicious category mappings
+
+## Phase 9.1 QA Notes
+
+Phase 9.1 did not fetch Safety Gate again. The QA pass regenerated normalized EU data from the committed raw file, then audited the committed processed files.
+
+Audit method:
+
+- Read `data/processed/eu-safety-gate-recalls.json`.
+- Read canonical `data/processed/recalls.json`.
+- Check the source id `EU_SAFETY_GATE` and the unchanged source filter values: `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`.
+- Check duplicate ids, slug collisions, required fields, official URL shape, image availability, identifier coverage, country coverage, and suspicious category mappings.
+
+Current audited counts:
+
+- EU Safety Gate records: 100
+- Total canonical records: 701
+- Source counts: CPSC 301, FDA/openFDA 100, France RappelConso 100, Canada Recalls and Safety Alerts 100, EU Safety Gate 100
+
+Current EU source characteristics from the 100-record spike:
+
+- Official product images: present on all 100 records
+- Official alert URL shape: present on all 100 records
+- Brand/company present: 69 records
+- Barcode-like values: 64 records
+- Model/type values: 78 records
+- Batch/serial values: 37 records
+- Risk type values: 100 records
+- Notifying country values: 100 records
+- Country of origin values: 100 records
+- Countries concerned values: 23 records
+- Countries concerned or market details: 100 records
+
+Phase 9.1 fixes:
+
+- Added labeled barcode, model/type, and batch/serial summaries to normalized EU descriptions so search can match important identifiers more reliably.
+- Added risk type, notifying country, country of origin, and countries concerned text to normalized EU records where present.
+- Kept EU Safety Gate mapped as dangerous non-food product coverage; no EU records should map to food/allergy.
+- Made EU category mapping conservative: toys and childcare map to baby/kids; clear electrical appliances and electronics map to batteries/electronics; furniture and lighting chains map to household/appliance; vehicles, machinery, cosmetics, chemicals, jewelry, protective equipment, hobby/sports equipment, laser pointers, lighters, clothing, and construction products remain general consumer product.
+- Added detail-page structured fields for Safety Gate risk type, notifying country, country of origin, countries concerned, and identifiers.
+- Aligned the Safety Gate placeholder label to `Safety Gate notice`.
+
+Raw/processed size note:
+
+Safety Gate detail payloads are verbose because they include nested product versions, risk versions, traceability, measures, country objects, and photo metadata. The 100-record spike intentionally creates larger raw and processed diffs than CPSC/FDA-only work. A full EU backfill should be a separate phase and should reconsider whether to commit full raw payloads, keep a smaller raw fixture, or commit normalized records only.
+
+Deferred:
+
+- No full EU backfill.
+- No higher record limit.
+- No new countries.
+- No backend, database, registration, email, alert backend, LLM feature, or affiliate behavior.
+- No broad UI redesign.
 
 ## Known Limits
 

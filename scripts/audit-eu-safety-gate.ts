@@ -20,9 +20,11 @@ type AuditSummary = {
   duplicateIds: AuditIssue[];
   missing: Record<string, number>;
   rawCategoryDistribution: Record<string, number>;
+  siteCategoryDistribution: Record<string, number>;
   siteIdentifierCoverage: Record<string, number>;
   recordsWithImages: number;
   recordsWithOfficialNoticeUrlShape: number;
+  suspiciousCategoryMappings: AuditIssue[];
   slugCollisions: AuditIssue[];
   warnings: string[];
 };
@@ -43,6 +45,48 @@ function compactIssue(record: NormalizedRecall, detail?: string): AuditIssue {
     title: record.title,
     ...(detail ? { detail } : {})
   };
+}
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function asObject(value: unknown): Record<string, unknown> {
+  return isObject(value) ? value : {};
+}
+
+function asArray(value: unknown): Record<string, unknown>[] {
+  return Array.isArray(value) ? value.filter(isObject) : [];
+}
+
+function asString(value: unknown): string {
+  return typeof value === 'string' || typeof value === 'number'
+    ? String(value)
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+    : '';
+}
+
+function uniqueNonEmpty(values: string[]): string[] {
+  return [...new Set(values.map((value) => value.trim()).filter(Boolean))];
+}
+
+function valuesFromObjects(items: Record<string, unknown>[], keys: string[]): string[] {
+  return uniqueNonEmpty(items.flatMap((item) => keys.map((key) => asString(item[key]))));
+}
+
+function normalizeText(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+function textHasAny(text: string, terms: string[]): boolean {
+  return terms.some((term) => text.includes(term));
 }
 
 function countMissing(records: NormalizedRecall[], test: (record: NormalizedRecall) => boolean): number {
@@ -78,6 +122,168 @@ function hasModelOrBatchLikeValue(record: NormalizedRecall): boolean {
   ].some((pattern) => pattern.test(text));
 }
 
+function rawProduct(record: NormalizedRecall): Record<string, unknown> {
+  return asObject(asObject(record.raw).product);
+}
+
+function rawRisk(record: NormalizedRecall): Record<string, unknown> {
+  return asObject(asObject(record.raw).risk);
+}
+
+function rawTraceability(record: NormalizedRecall): Record<string, unknown> {
+  return asObject(asObject(record.raw).traceability);
+}
+
+function rawIdentifierGroups(record: NormalizedRecall): {
+  barcodes: string[];
+  models: string[];
+  batches: string[];
+} {
+  const product = rawProduct(record);
+  return {
+    barcodes: valuesFromObjects(asArray(product.barcodes), ['barcode', 'value']),
+    models: valuesFromObjects(asArray(product.modelTypes), ['modelType', 'value']),
+    batches: uniqueNonEmpty(asArray(product.batchNumbers).flatMap((item) => Object.values(item).map(asString)))
+  };
+}
+
+function rawRiskTypes(record: NormalizedRecall): string[] {
+  return valuesFromObjects(asArray(rawRisk(record).riskType), ['name', 'key']);
+}
+
+function rawCountryValue(record: NormalizedRecall, key: 'country' | 'countryOrigin'): string {
+  if (key === 'country') {
+    const country = asObject(asObject(record.raw).country);
+    return valuesFromObjects([country], ['name', 'key'])[0] ?? '';
+  }
+
+  const origin = asObject(rawTraceability(record).countryOrigin);
+  return valuesFromObjects([origin], ['name', 'key'])[0] ?? '';
+}
+
+function rawCountriesConcerned(record: NormalizedRecall): string[] {
+  return uniqueNonEmpty(
+    asArray(asObject(record.raw).reactingCountries).map((item) => {
+      const country = asObject(item.country);
+      return valuesFromObjects([item, country], ['name', 'key'])[0] ?? '';
+    })
+  );
+}
+
+function classifyEuSafetyGateCategory(record: NormalizedRecall): string {
+  const rawCategory = normalizeText(record.category);
+  const productText = normalizeText(
+    [record.title, record.category, ...record.productNames, ...record.brandNames].join(' ')
+  );
+
+  if (
+    rawCategory.includes('toys') ||
+    rawCategory.includes('childcare') ||
+    textHasAny(productText, ['toy', 'toys', 'childcare article', 'baby', 'infant'])
+  ) {
+    return 'baby-kids';
+  }
+
+  if (
+    textHasAny(rawCategory, [
+      'motor vehicles',
+      'machinery',
+      'cosmetics',
+      'chemical products',
+      'jewellery',
+      'jewelry',
+      'protective equipment',
+      'hobby sports equipment',
+      'laser pointers',
+      'lighters',
+      'clothing',
+      'construction products'
+    ])
+  ) {
+    return 'general-consumer-product';
+  }
+
+  if (
+    rawCategory.includes('electrical appliances') ||
+    textHasAny(productText, [
+      'battery',
+      'batteries',
+      'charger',
+      'charging',
+      'lithium',
+      'power bank',
+      'power supply',
+      'adapter',
+      'usb',
+      'electronics'
+    ])
+  ) {
+    return 'battery-electronics';
+  }
+
+  if (
+    rawCategory.includes('furniture') ||
+    rawCategory.includes('lighting chains') ||
+    textHasAny(productText, [
+      'appliance',
+      'household',
+      'kitchen',
+      'furniture',
+      'lamp',
+      'lighting',
+      'heater',
+      'cooker',
+      'iron',
+      'hair dryer'
+    ])
+  ) {
+    return 'household-appliance';
+  }
+
+  return 'general-consumer-product';
+}
+
+function suspiciousCategoryMapping(record: NormalizedRecall): string {
+  const rawCategory = normalizeText(record.category);
+  const mapped = classifyEuSafetyGateCategory(record);
+  const generalCategories = [
+    'motor vehicles',
+    'machinery',
+    'cosmetics',
+    'chemical products',
+    'jewellery',
+    'jewelry',
+    'protective equipment',
+    'hobby sports equipment',
+    'laser pointers',
+    'lighters',
+    'clothing',
+    'construction products'
+  ];
+
+  if (mapped === 'food-allergy') {
+    return 'EU Safety Gate dangerous non-food product mapped to food-allergy.';
+  }
+
+  if (textHasAny(rawCategory, generalCategories) && mapped !== 'general-consumer-product') {
+    return `General EU category "${record.category}" mapped to ${mapped}.`;
+  }
+
+  if ((rawCategory.includes('toys') || rawCategory.includes('childcare')) && mapped !== 'baby-kids') {
+    return `Toy/childcare EU category "${record.category}" mapped to ${mapped}.`;
+  }
+
+  if (rawCategory.includes('electrical appliances') && mapped !== 'battery-electronics') {
+    return `Electrical appliance EU category "${record.category}" mapped to ${mapped}.`;
+  }
+
+  if ((rawCategory.includes('furniture') || rawCategory.includes('lighting chains')) && mapped !== 'household-appliance') {
+    return `Household-like EU category "${record.category}" mapped to ${mapped}.`;
+  }
+
+  return '';
+}
+
 async function readProcessedEuSafetyGateRecords(): Promise<NormalizedRecall[]> {
   const text = await readFile(processedPath, 'utf8');
   const payload = JSON.parse(text) as ProcessedRecallFile;
@@ -105,11 +311,13 @@ function audit(records: NormalizedRecall[]): AuditSummary {
   const idCounts = new Map<string, number>();
   const slugCounts = new Map<string, number>();
   const rawCategoryDistribution: Record<string, number> = {};
+  const siteCategoryDistribution: Record<string, number> = {};
 
   for (const record of records) {
     idCounts.set(record.id, (idCounts.get(record.id) ?? 0) + 1);
     slugCounts.set(record.slug, (slugCounts.get(record.slug) ?? 0) + 1);
     increment(rawCategoryDistribution, record.category || '(missing)');
+    increment(siteCategoryDistribution, classifyEuSafetyGateCategory(record));
   }
 
   const duplicateIds = records
@@ -119,8 +327,26 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     .filter((record) => (slugCounts.get(record.slug) ?? 0) > 1)
     .map((record) => compactIssue(record, record.slug));
   const recordsWithImages = records.filter((record) => (record.images?.length ?? 0) > 0).length;
-  const barcodeCoverage = records.filter(hasBarcodeLikeValue).length;
-  const modelOrBatchCoverage = records.filter(hasModelOrBatchLikeValue).length;
+  const recordsWithBarcodes = records.filter((record) => rawIdentifierGroups(record).barcodes.length > 0 || hasBarcodeLikeValue(record)).length;
+  const recordsWithModels = records.filter((record) => rawIdentifierGroups(record).models.length > 0).length;
+  const recordsWithBatches = records.filter((record) => rawIdentifierGroups(record).batches.length > 0).length;
+  const recordsWithModelOrBatchLikeText = records.filter(hasModelOrBatchLikeValue).length;
+  const recordsWithAnyIdentifiers = records.filter((record) => {
+    const groups = rawIdentifierGroups(record);
+    return (
+      groups.barcodes.length > 0 ||
+      groups.models.length > 0 ||
+      groups.batches.length > 0 ||
+      hasBarcodeLikeValue(record) ||
+      hasModelOrBatchLikeValue(record)
+    );
+  }).length;
+  const suspiciousCategoryMappings = records
+    .map((record) => {
+      const detail = suspiciousCategoryMapping(record);
+      return detail ? compactIssue(record, detail) : null;
+    })
+    .filter((issue): issue is AuditIssue => Boolean(issue));
   const warningMessages = [
     records.filter((record) => record.brandNames.length > 0).length === 0
       ? 'EU Safety Gate records may omit brand/company when the alert marks brand as unknown.'
@@ -133,21 +359,35 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     total: records.length,
     duplicateIds,
     missing: {
+      source: countMissing(records, (record) => record.source !== 'EU_SAFETY_GATE'),
       sourceUrl: countMissing(records, (record) => !record.sourceUrl),
       title: countMissing(records, (record) => !record.title),
       recallDate: countMissing(records, (record) => !record.recallDate),
       productNames: countMissing(records, (record) => record.productNames.length === 0),
+      brandNames: countMissing(records, (record) => record.brandNames.length === 0),
       hazardOrReason: countMissing(records, (record) => !record.hazard && !record.reason),
       remedyOrAction: countMissing(records, (record) => !record.remedy),
       rawPayload: countMissing(records, (record) => !record.raw)
     },
     rawCategoryDistribution,
+    siteCategoryDistribution,
     siteIdentifierCoverage: {
-      barcodeLikeValues: barcodeCoverage,
-      modelOrBatchLikeValues: modelOrBatchCoverage
+      barcodeLikeValues: recordsWithBarcodes,
+      modelTypeValues: recordsWithModels,
+      batchSerialValues: recordsWithBatches,
+      modelOrBatchLikeText: recordsWithModelOrBatchLikeText,
+      anyIdentifierValues: recordsWithAnyIdentifiers,
+      riskTypeValues: records.filter((record) => rawRiskTypes(record).length > 0).length,
+      notifyingCountryValues: records.filter((record) => rawCountryValue(record, 'country')).length,
+      countryOfOriginValues: records.filter((record) => rawCountryValue(record, 'countryOrigin')).length,
+      countriesConcernedValues: records.filter((record) => rawCountriesConcerned(record).length > 0).length,
+      countriesConcernedOrMarketValues: records.filter(
+        (record) => rawCountriesConcerned(record).length > 0 || Boolean(record.distributionPattern)
+      ).length
     },
     recordsWithImages,
     recordsWithOfficialNoticeUrlShape: records.filter((record) => looksLikeOfficialNoticeUrl(record.sourceUrl)).length,
+    suspiciousCategoryMappings,
     slugCollisions,
     warnings: warningMessages
   };
@@ -189,9 +429,20 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
       : '',
     summary.duplicateIds.length > 0 ? `Duplicate ids found: ${summary.duplicateIds.length}.` : '',
     summary.slugCollisions.length > 0 ? `Slug collisions found: ${summary.slugCollisions.length}.` : '',
+    summary.suspiciousCategoryMappings.length > 0
+      ? `Suspicious EU category mappings found: ${summary.suspiciousCategoryMappings.length}.`
+      : '',
     summary.missing.sourceUrl > severeMissingThreshold ? `Missing source URLs found: ${summary.missing.sourceUrl}.` : '',
     summary.missing.title > severeMissingThreshold ? `Missing titles found: ${summary.missing.title}.` : '',
     summary.missing.recallDate > severeMissingThreshold ? `Missing recall dates found: ${summary.missing.recallDate}.` : '',
+    summary.missing.productNames > severeMissingThreshold ? `Missing product names found: ${summary.missing.productNames}.` : '',
+    summary.missing.hazardOrReason > severeMissingThreshold
+      ? `Missing risk or reason fields found: ${summary.missing.hazardOrReason}.`
+      : '',
+    summary.missing.remedyOrAction > severeMissingThreshold
+      ? `Missing measure or action fields found: ${summary.missing.remedyOrAction}.`
+      : '',
+    summary.missing.rawPayload > severeMissingThreshold ? `Missing raw payloads found: ${summary.missing.rawPayload}.` : '',
     summary.recordsWithOfficialNoticeUrlShape !== summary.total
       ? `Official EU Safety Gate URL shape mismatch count: ${summary.total - summary.recordsWithOfficialNoticeUrlShape}.`
       : '',
@@ -246,6 +497,9 @@ async function runAudit(): Promise<void> {
           ...summary,
           rawCategoryDistribution: Object.fromEntries(
             Object.entries(summary.rawCategoryDistribution).sort((a, b) => b[1] - a[1])
+          ),
+          siteCategoryDistribution: Object.fromEntries(
+            Object.entries(summary.siteCategoryDistribution).sort((a, b) => b[1] - a[1])
           )
         }
       },

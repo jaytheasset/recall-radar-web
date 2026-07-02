@@ -216,22 +216,51 @@ function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
 
   if (record.source === 'EU_SAFETY_GATE') {
     const rawCategory = normalize(record.category);
+    const productText = normalize(
+      [record.title, record.category, ...record.productNames, ...record.brandNames].join(' ')
+    );
 
-    if (rawCategory.includes('toys') || textHasAny(text, ['toy', 'toys', 'child', 'children', 'baby', 'infant'])) {
+    // Safety Gate covers dangerous non-food products. Keep this mapping conservative
+    // so vehicles, cosmetics, chemicals, PPE, and similar alerts do not enter narrow categories.
+    if (
+      rawCategory.includes('toys') ||
+      rawCategory.includes('childcare') ||
+      textHasAny(productText, ['toy', 'toys', 'childcare article', 'baby', 'infant'])
+    ) {
       return 'baby-kids';
     }
 
     if (
-      textHasAny(text, [
+      textHasAny(rawCategory, [
+        'motor vehicles',
+        'machinery',
+        'cosmetics',
+        'chemical products',
+        'jewellery',
+        'jewelry',
+        'protective equipment',
+        'hobby sports equipment',
+        'laser pointers',
+        'lighters',
+        'clothing',
+        'construction products'
+      ])
+    ) {
+      return 'general-consumer-product';
+    }
+
+    if (
+      rawCategory.includes('electrical appliances') ||
+      textHasAny(productText, [
         'battery',
         'batteries',
         'charger',
         'charging',
         'lithium',
         'power bank',
+        'power supply',
+        'adapter',
         'usb',
-        'laser',
-        'electrical',
         'electronics'
       ])
     ) {
@@ -239,8 +268,9 @@ function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
     }
 
     if (
-      rawCategory.includes('electrical appliances') ||
-      textHasAny(text, [
+      rawCategory.includes('furniture') ||
+      rawCategory.includes('lighting chains') ||
+      textHasAny(productText, [
         'appliance',
         'household',
         'kitchen',
