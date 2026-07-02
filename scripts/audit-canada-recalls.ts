@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { NormalizedRecall, ProcessedRecallFile } from '../src/data/recall-types.ts';
+import type { NormalizedRecall, ProcessedRecallFile, RecallSource } from '../src/data/recall-types.ts';
 
 type AuditIssue = {
   id: string;
@@ -10,34 +10,30 @@ type AuditIssue = {
 };
 
 type AuditSummary = {
-  source: 'FR_RAPPELCONSO';
+  source: 'CA_RECALLS';
   total: number;
   duplicateIds: AuditIssue[];
   missing: Record<string, number>;
   rawCategoryDistribution: Record<string, number>;
   siteCategoryDistribution: Record<string, number>;
   recordsWithImages: number;
-  recordsWithGtinOrBarcodeLikeValues: number;
+  recordsWithUpcOrBarcodeLikeValues: number;
   recordsWithLotBatchCodeOrDateLikeValues: number;
   recordsWithDistributionDetails: number;
   recordsWithOfficialNoticeUrlShape: number;
-  veryLongTitles: AuditIssue[];
   slugCollisions: AuditIssue[];
   suspiciousCategoryMappings: AuditIssue[];
+  warnings: string[];
+};
+
+type SourceCounts = Record<RecallSource, number> & {
+  total: number;
 };
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const processedPath = resolve(projectRoot, 'data/processed/rappelconso-recalls.json');
+const processedPath = resolve(projectRoot, 'data/processed/canada-recalls.json');
 const canonicalProcessedPath = resolve(projectRoot, 'data/processed/recalls.json');
 const runtimeEnv = (process as typeof process & { env?: Record<string, string | undefined> }).env ?? {};
-
-type SourceCounts = {
-  total: number;
-  CPSC: number;
-  FDA: number;
-  FR_RAPPELCONSO: number;
-  CA_RECALLS: number;
-};
 
 function normalize(value: string): string {
   return value
@@ -64,12 +60,15 @@ function compactIssue(record: NormalizedRecall, detail?: string): AuditIssue {
   };
 }
 
-function classifyFrenchRecall(record: NormalizedRecall): string {
+function classifyCanadaRecall(record: NormalizedRecall): string {
   const rawCategory = normalize(record.category);
+  const raw = record.raw && typeof record.raw === 'object' ? (record.raw as Record<string, unknown>) : {};
+  const organization = normalize(String(raw.Organization ?? ''));
   const text = normalize(
     [
       record.title,
       record.category,
+      organization,
       record.description,
       record.hazard,
       record.remedy,
@@ -78,57 +77,39 @@ function classifyFrenchRecall(record: NormalizedRecall): string {
     ].join(' ')
   );
 
-  // Keep French mapping conservative. Do not let English fragments inside French words drive categories.
-  if (rawCategory.includes('automobiles') || rawCategory.includes('moyens de deplacement')) {
-    return 'general-consumer-product';
-  }
-
-  if (rawCategory.includes('appareils electriques')) {
-    return 'household-appliance';
-  }
-
-  if (hasAny(text, ['alimentation', 'allergene', 'lait', 'arachide', 'noisette', 'sesame'])) {
+  if (organization === 'cfia' || hasAny(text, ['food', 'allergen', 'allergy', 'undeclared', 'salmonella', 'listeria', 'milk', 'egg', 'wheat', 'sesame', 'pistachio'])) {
     return 'food-allergy';
   }
 
-  if (hasAny(text, ['bebe', 'bebes', 'enfant', 'enfants', 'jouet', 'jouets', 'puericulture'])) {
+  if (hasAny(text, ['baby', 'child', 'children', 'infant', 'toy', 'nursery', 'kids'])) {
     return 'baby-kids';
   }
 
-  if (hasAny(text, ['batterie', 'batteries', 'chargeur', 'chargeurs', 'electronique'])) {
+  if (hasAny(text, ['battery', 'batteries', 'charger', 'charging', 'electronics', 'power bank', 'lithium'])) {
     return 'battery-electronics';
   }
 
-  if (
-    hasAny(text, [
-      'appareils electriques',
-      'cuiseur',
-      'vapeur',
-      'maison',
-      'habitat',
-      'electromenager',
-      'meuble',
-      'chauffage'
-    ])
-  ) {
+  if (hasAny(text, ['appliance', 'household', 'kitchenware', 'tableware', 'air conditioner', 'heat pump']) || rawCategory.includes('household')) {
     return 'household-appliance';
   }
 
   return 'general-consumer-product';
 }
 
-function hasGtinOrBarcodeLikeValue(record: NormalizedRecall): boolean {
-  return /\b\d{8,14}\b/.test([record.title, record.description, ...record.productNames].join(' '));
+function hasUpcOrBarcodeLikeValue(record: NormalizedRecall): boolean {
+  return /\b(?:upc|barcode)\b|\b\d{8,14}\b/i.test(
+    [record.title, record.description, record.affectedUnits, ...record.productNames].join(' ')
+  );
 }
 
 function hasLotBatchCodeOrDateLikeValue(record: NormalizedRecall): boolean {
-  return /\b(lot|batch|code|date|durabilit|consommation|limite|ddm|dlc)\b/i.test(
+  return /\b(lot|batch|code|best before|best-by|use by|expiry|expiration|exp|model|item|din|npn)\b/i.test(
     [record.title, record.description, record.affectedUnits, ...record.productNames].join(' ')
   );
 }
 
 function looksLikeOfficialNoticeUrl(value: string): boolean {
-  return /^https:\/\/rappel\.conso\.gouv\.fr\/fiche-rappel\/\d+\/(?:interne|rapex)$/i.test(value);
+  return /^https:\/\/recalls-rappels\.canada\.ca\/en\/alert-recall\/[a-z0-9-]+$/i.test(value);
 }
 
 function countMissing(records: NormalizedRecall[], test: (record: NormalizedRecall) => boolean): number {
@@ -140,12 +121,10 @@ function expectedNumber(name: string, fallback: number): number {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-async function readProcessedRappelConsoRecords(): Promise<NormalizedRecall[]> {
+async function readProcessedCanadaRecords(): Promise<NormalizedRecall[]> {
   const text = await readFile(processedPath, 'utf8');
   const payload = JSON.parse(text) as ProcessedRecallFile;
-  return Array.isArray(payload.records)
-    ? payload.records.filter((record) => record.source === 'FR_RAPPELCONSO')
-    : [];
+  return Array.isArray(payload.records) ? payload.records.filter((record) => record.source === 'CA_RECALLS') : [];
 }
 
 async function readCanonicalCounts(): Promise<SourceCounts> {
@@ -172,7 +151,7 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     idCounts.set(record.id, (idCounts.get(record.id) ?? 0) + 1);
     slugCounts.set(record.slug, (slugCounts.get(record.slug) ?? 0) + 1);
     increment(rawCategoryDistribution, record.category || '(missing)');
-    increment(siteCategoryDistribution, classifyFrenchRecall(record));
+    increment(siteCategoryDistribution, classifyCanadaRecall(record));
   }
 
   const duplicateIds = records
@@ -182,37 +161,43 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     .filter((record) => (slugCounts.get(record.slug) ?? 0) > 1)
     .map((record) => compactIssue(record, record.slug));
   const suspiciousCategoryMappings = records
-    .map((record) => ({ record, siteCategory: classifyFrenchRecall(record) }))
+    .map((record) => ({ record, siteCategory: classifyCanadaRecall(record) }))
     .filter(({ record, siteCategory }) => {
-      const rawCategory = normalize(record.category);
-      const fullText = normalize(
-        [
-          record.title,
-          record.description,
-          record.hazard,
-          record.reason ?? '',
-          ...record.productNames,
-          ...record.brandNames
-        ].join(' ')
-      );
+      const text = normalize([record.title, record.category, record.description, record.hazard, record.reason ?? ''].join(' '));
+
+      if (siteCategory === 'food-allergy') {
+        return !hasAny(text, ['cfia', 'food', 'allergen', 'allergy', 'salmonella', 'listeria', 'milk', 'egg', 'wheat', 'sesame']);
+      }
+
       if (siteCategory === 'baby-kids') {
-        return !hasAny(rawCategory, ['bebe', 'bebes', 'enfant', 'enfants']) && !hasAny(fullText, ['kids', 'enfant', 'enfants', 'jouet']);
+        return !hasAny(text, ['baby', 'child', 'children', 'infant', 'toy', 'nursery', 'kids']);
       }
 
       if (siteCategory === 'battery-electronics') {
-        return !hasAny(rawCategory, ['electrique', 'electronique']) && !hasAny(fullText, ['batterie', 'chargeur', 'electronique']);
-      }
-
-      if (siteCategory === 'food-allergy') {
-        return !hasAny(rawCategory, ['alimentation']) && !hasAny(fullText, ['allergene', 'lait', 'arachide', 'noisette', 'sesame']);
+        return !hasAny(text, ['battery', 'charger', 'electronics', 'power bank', 'lithium']);
       }
 
       return false;
     })
     .map(({ record, siteCategory }) => compactIssue(record, `${record.category} -> ${siteCategory}`));
 
+  const warnings = [
+    countMissing(records, (record) => record.brandNames.length === 0) > 0
+      ? 'Some Canada open-data records do not expose brand/company in a structured field.'
+      : '',
+    countMissing(records, (record) => !record.remedy) > 0
+      ? 'Some Canada open-data records do not expose action text in the JSON feed.'
+      : '',
+    records.filter((record) => Boolean(record.distributionPattern)).length === 0
+      ? 'The selected Canada open-data JSON feed does not include structured distribution details.'
+      : '',
+    records.filter((record) => (record.images?.length ?? 0) > 0).length === 0
+      ? 'The selected Canada open-data JSON feed does not include stable image links.'
+      : ''
+  ].filter(Boolean);
+
   return {
-    source: 'FR_RAPPELCONSO',
+    source: 'CA_RECALLS',
     total: records.length,
     duplicateIds,
     missing: {
@@ -228,13 +213,13 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     rawCategoryDistribution,
     siteCategoryDistribution,
     recordsWithImages: records.filter((record) => (record.images?.length ?? 0) > 0).length,
-    recordsWithGtinOrBarcodeLikeValues: records.filter(hasGtinOrBarcodeLikeValue).length,
+    recordsWithUpcOrBarcodeLikeValues: records.filter(hasUpcOrBarcodeLikeValue).length,
     recordsWithLotBatchCodeOrDateLikeValues: records.filter(hasLotBatchCodeOrDateLikeValue).length,
     recordsWithDistributionDetails: records.filter((record) => Boolean(record.distributionPattern)).length,
     recordsWithOfficialNoticeUrlShape: records.filter((record) => looksLikeOfficialNoticeUrl(record.sourceUrl)).length,
-    veryLongTitles: records.filter((record) => record.title.length > 120).map((record) => compactIssue(record, `${record.title.length} chars`)),
     slugCollisions,
-    suspiciousCategoryMappings
+    suspiciousCategoryMappings,
+    warnings
   };
 }
 
@@ -246,10 +231,11 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts): st
     FR_RAPPELCONSO: expectedNumber('EXPECTED_RAPPELCONSO_COUNT', 100),
     CA_RECALLS: expectedNumber('EXPECTED_CANADA_RECALLS_COUNT', 100)
   };
+  const severeMissingThreshold = Math.max(1, Math.floor(summary.total * 0.05));
   const blockers = [
-    summary.total === 0 ? 'FR_RAPPELCONSO count is 0.' : '',
-    summary.total !== expectedCounts.FR_RAPPELCONSO
-      ? `FR_RAPPELCONSO count ${summary.total} does not match expected ${expectedCounts.FR_RAPPELCONSO}.`
+    summary.total === 0 ? 'CA_RECALLS count is 0.' : '',
+    summary.total !== expectedCounts.CA_RECALLS
+      ? `CA_RECALLS count ${summary.total} does not match expected ${expectedCounts.CA_RECALLS}.`
       : '',
     canonicalCounts.total !== expectedCounts.total
       ? `Total processed count ${canonicalCounts.total} does not match expected ${expectedCounts.total}.`
@@ -261,7 +247,7 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts): st
       ? `FDA count ${canonicalCounts.FDA} does not match expected ${expectedCounts.FDA}.`
       : '',
     canonicalCounts.FR_RAPPELCONSO !== expectedCounts.FR_RAPPELCONSO
-      ? `Canonical FR_RAPPELCONSO count ${canonicalCounts.FR_RAPPELCONSO} does not match expected ${expectedCounts.FR_RAPPELCONSO}.`
+      ? `FR_RAPPELCONSO count ${canonicalCounts.FR_RAPPELCONSO} does not match expected ${expectedCounts.FR_RAPPELCONSO}.`
       : '',
     canonicalCounts.CA_RECALLS !== expectedCounts.CA_RECALLS
       ? `Canonical CA_RECALLS count ${canonicalCounts.CA_RECALLS} does not match expected ${expectedCounts.CA_RECALLS}.`
@@ -271,13 +257,11 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts): st
     summary.suspiciousCategoryMappings.length > 0
       ? `Suspicious category mappings found: ${summary.suspiciousCategoryMappings.length}.`
       : '',
-    summary.missing.sourceUrl > 0 ? `Missing source URLs found: ${summary.missing.sourceUrl}.` : '',
-    summary.missing.title > 0 ? `Missing titles found: ${summary.missing.title}.` : '',
-    summary.missing.recallDate > 0 ? `Missing recall dates found: ${summary.missing.recallDate}.` : '',
+    summary.missing.sourceUrl > severeMissingThreshold ? `Missing source URLs found: ${summary.missing.sourceUrl}.` : '',
+    summary.missing.title > severeMissingThreshold ? `Missing titles found: ${summary.missing.title}.` : '',
+    summary.missing.recallDate > severeMissingThreshold ? `Missing recall dates found: ${summary.missing.recallDate}.` : '',
     summary.recordsWithOfficialNoticeUrlShape !== summary.total
-      ? `Official RappelConso URL shape mismatch count: ${
-          summary.total - summary.recordsWithOfficialNoticeUrlShape
-        }.`
+      ? `Official Canada URL shape mismatch count: ${summary.total - summary.recordsWithOfficialNoticeUrlShape}.`
       : ''
   ].filter(Boolean);
 
@@ -285,9 +269,9 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts): st
 }
 
 async function runAudit(): Promise<void> {
-  const records = await readProcessedRappelConsoRecords();
+  const records = await readProcessedCanadaRecords();
   if (records.length === 0) {
-    throw new Error(`No FR_RAPPELCONSO records found in ${processedPath}`);
+    throw new Error(`No CA_RECALLS records found in ${processedPath}`);
   }
 
   const summary = audit(records);
@@ -313,10 +297,11 @@ async function runAudit(): Promise<void> {
           slugCollisions: summary.slugCollisions.length,
           suspiciousCategoryMappings: summary.suspiciousCategoryMappings.length,
           recordsWithImages: summary.recordsWithImages,
-          recordsWithGtinOrBarcodeLikeValues: summary.recordsWithGtinOrBarcodeLikeValues,
+          recordsWithUpcOrBarcodeLikeValues: summary.recordsWithUpcOrBarcodeLikeValues,
           recordsWithLotBatchCodeOrDateLikeValues: summary.recordsWithLotBatchCodeOrDateLikeValues,
           recordsWithDistributionDetails: summary.recordsWithDistributionDetails,
-          recordsWithOfficialNoticeUrlShape: summary.recordsWithOfficialNoticeUrlShape
+          recordsWithOfficialNoticeUrlShape: summary.recordsWithOfficialNoticeUrlShape,
+          warnings: summary.warnings
         },
         detail: summary
       },

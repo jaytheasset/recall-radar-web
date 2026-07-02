@@ -249,7 +249,7 @@ function identifierDetails(text: string): string[] {
     /\bRN\s*[0-9]{4,}\b/gi,
     /\bFCC ID\s*["']?[A-Z0-9-]+["']?/gi,
     /\b(?:model|model number|model no\.?)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/gi,
-    /\b(?:date of manufacture|date code|best by|use by|sell by|expiration date|exp\.?)\s*["']?[A-Z0-9][A-Z0-9 ,./_-]{2,30}["']?/gi,
+    /\b(?:date of manufacture|date code|best by|use by|sell by|expiration date|expiry date)\s*["']?[A-Z0-9][A-Z0-9 ,./_-]{2,30}["']?/gi,
     /"[^"]{2,80}"/g
   ];
 
@@ -432,6 +432,54 @@ function buildRappelConsoView(recall: SiteRecall, raw: RawObject): SourceDetailV
   };
 }
 
+function buildCanadaView(recall: SiteRecall, raw: RawObject): SourceDetailView {
+  const productName = firstNonEmpty([rawText(raw, 'Product'), ...recall.productNames, recall.primaryProductName], 'Product');
+  const brandName = firstNonEmpty([...recall.displayBrandNames, ...recall.brandNames], '');
+  const officialTitle = rawText(raw, 'Title') || recall.title;
+  const organization = rawText(raw, 'Organization');
+  const reason = firstNonEmpty([rawText(raw, 'Issue'), recall.reason ?? '', recall.hazard], 'Reason not listed.');
+  const action = firstNonEmpty(
+    [rawText(raw, 'What you should do'), recall.remedy],
+    getRecallDefaultActionFallback(recall.source)
+  );
+  const identifiers = uniqueNonEmpty(
+    identifierDetails([officialTitle, productName, recall.description, rawText(raw, 'What you should do')].join(' '))
+  );
+  const details: DetailFact[] = [];
+
+  addFact(details, 'Product', productName);
+  addFact(details, 'Brand or company', brandName);
+  addFact(details, 'UPC, barcode, model, item, lot, batch, date, DIN, or NPN details', identifiers);
+  addFact(details, 'Category', rawText(raw, 'Category') || recall.rawCategory);
+  addFact(details, 'Published by', organization);
+  addFact(details, 'Recall or alert id', rawText(raw, 'NID') || recall.recallNumber || '');
+  addFact(details, 'Classification or status', uniqueNonEmpty([rawText(raw, 'Recall class'), recall.status ?? '']));
+
+  return {
+    displayTitle: displayTitleFor(productName, officialTitle),
+    officialTitle,
+    productName,
+    brandName,
+    recallDate: formatDate(rawText(raw, 'Last updated') || recall.recallDate),
+    recallNumber: rawText(raw, 'NID') || recall.recallNumber || '',
+    imageCaptions: [],
+    reason,
+    action,
+    actionDetail: action,
+    actionParagraphs: paragraphs(action),
+    description: recall.description || productName,
+    identificationDetails: details,
+    consumerContact: '',
+    soldAt: uniqueNonEmpty([recall.distributionPattern ?? '']),
+    incidents: [],
+    importer: [],
+    manufacturer: [],
+    manufacturedIn: [],
+    units: recall.affectedUnits || recall.productQuantity || '',
+    fdaDetails: details
+  };
+}
+
 export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall[]): RecallDetailView {
   const raw = rawFor(recall);
   const companyRecallHistory = getCompanyRecallHistory(recall, allRecalls, 4);
@@ -442,7 +490,9 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
       ? buildFdaView(recall, raw)
       : recall.source === 'FR_RAPPELCONSO'
         ? buildRappelConsoView(recall, raw)
-        : buildCpscView(recall, raw);
+        : recall.source === 'CA_RECALLS'
+          ? buildCanadaView(recall, raw)
+          : buildCpscView(recall, raw);
   const productIntro = sourceSpecificView.productName
     ? `This recall involves ${sourceSpecificView.productName}`
     : 'This recall involves a recalled product';

@@ -7,6 +7,7 @@ Current rules:
 - The public CPSC recall API is allowed only when a task asks for CPSC refreshes.
 - The public openFDA food enforcement API is allowed only when a task asks for FDA/openFDA food recall refreshes.
 - The public RappelConso open data endpoint is allowed only when a task asks for France RappelConso refreshes.
+- The public Canada Recalls and Safety Alerts open-data feed is allowed only when a task asks for Canada recall refreshes.
 - UI-only phases should use the existing local `data/processed/recalls.json` file and should not fetch unless a later task explicitly asks for fresh data.
 - Do not connect databases.
 - Do not write secrets.
@@ -134,4 +135,66 @@ npm run data:merge
 npm run audit:rappelconso
 ```
 
-The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, and France RappelConso records.
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, and Canada records.
+
+## Canada Recalls and Safety Alerts Fetch
+
+```powershell
+npm run fetch:canada
+```
+
+This calls the official Canada Recalls and Safety Alerts open-data JSON feed:
+
+`https://recalls-rappels.canada.ca/sites/default/files/opendata-donneesouvertes/HCRSAMOpenData.json`
+
+Default behavior:
+
+- Downloads the official open-data JSON feed.
+- Sorts records by `Last updated` newest first.
+- Saves only the bounded 100-record spike to `data/raw/canada-recalls.json`.
+- Saves normalized Canada records to `data/processed/canada-recalls.json`.
+- Rebuilds the merged canonical file at `data/processed/recalls.json`.
+- Adds `fetchedAt` to the raw output.
+- Refuses to overwrite processed output when the feed returns zero records.
+
+Optional limit:
+
+```powershell
+npm run fetch:canada -- --limit=50
+```
+
+The default Canada limit is 100. It can also be set with an environment variable:
+
+```powershell
+$env:CANADA_RECALLS_LIMIT = "100"
+npm run fetch:canada
+Remove-Item Env:CANADA_RECALLS_LIMIT
+```
+
+To rebuild Canada processed data from the saved raw file:
+
+```powershell
+npm run normalize:canada
+```
+
+To audit the current local Canada processed data without making network calls:
+
+```powershell
+npm run audit:canada
+```
+
+To run the explicit Canada refresh workflow, including network fetch and local audit:
+
+```powershell
+npm run update:canada
+```
+
+For local-only validation from the existing raw file:
+
+```powershell
+npm run data:canada:normalize
+npm run data:merge
+npm run audit:canada
+```
+
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, and Canada Recalls and Safety Alerts records.

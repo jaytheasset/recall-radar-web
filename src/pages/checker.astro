@@ -3,6 +3,7 @@ import {
   brandGroups,
   categoryRoutes,
   dataSourceLabel,
+  processedCanadaRecordCount,
   processedCpscRecordCount,
   processedFdaRecordCount,
   processedFranceRappelConsoRecordCount,
@@ -110,6 +111,7 @@ const dateOptions = [
               <span class="tag">{processedCpscRecordCount} consumer product notices</span>
               <span class="tag">{processedFdaRecordCount} food enforcement notices</span>
               <span class="tag">{processedFranceRappelConsoRecordCount} France RappelConso notices</span>
+              <span class="tag">{processedCanadaRecordCount} Canada recall and safety alert notices</span>
             </>
           ) : null}
         </div>
@@ -250,7 +252,7 @@ const dateOptions = [
       const list = document.querySelector<HTMLElement>('#result-list');
 
       type SearchItem = ReturnType<typeof searchRecalls>['items'][number];
-      type SourceFilter = 'all' | 'CPSC' | 'FDA' | 'FR_RAPPELCONSO';
+      type SourceFilter = 'all' | 'CPSC' | 'FDA' | 'FR_RAPPELCONSO' | 'CA_RECALLS';
       type CategoryFilter =
         | 'all'
         | 'baby-kids'
@@ -269,7 +271,7 @@ const dateOptions = [
         date: DateFilter;
       };
 
-      const sourceValues: SourceFilter[] = ['all', 'CPSC', 'FDA', 'FR_RAPPELCONSO'];
+      const sourceValues: SourceFilter[] = ['all', 'CPSC', 'FDA', 'FR_RAPPELCONSO', 'CA_RECALLS'];
       const categoryValues: CategoryFilter[] = [
         'all',
         'baby-kids',
@@ -304,7 +306,8 @@ const dateOptions = [
               (recall.rawCategory === 'food' ||
                 recall.rawCategory === 'alimentation' ||
                 recall.source === 'FDA' ||
-                recall.source === 'FR_RAPPELCONSO')) ||
+                recall.source === 'FR_RAPPELCONSO' ||
+                (recall.source === 'CA_RECALLS' && recall.category === 'food-allergy'))) ||
             (state.category === 'general' && recall.category === 'general-consumer-product') ||
             recall.category === state.category;
           const recallTime = Date.parse(recall.recallDate);

@@ -162,6 +162,48 @@ function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
     return 'general-consumer-product';
   }
 
+  if (record.source === 'CA_RECALLS') {
+    const rawCategory = normalize(record.category);
+    const raw = isObject(record.raw) ? record.raw : {};
+    const organization = normalize(safeText(raw.Organization));
+
+    if (
+      organization === 'cfia' ||
+      textHasAny(text, [
+        'food',
+        'allergen',
+        'allergy',
+        'undeclared',
+        'salmonella',
+        'listeria',
+        'milk',
+        'egg',
+        'wheat',
+        'sesame',
+        'pistachio'
+      ])
+    ) {
+      return 'food-allergy';
+    }
+
+    if (textHasAny(text, ['baby', 'child', 'children', 'infant', 'toy', 'nursery', 'kids'])) {
+      return 'baby-kids';
+    }
+
+    if (textHasAny(text, ['battery', 'batteries', 'charger', 'charging', 'electronics', 'power bank', 'lithium'])) {
+      return 'battery-electronics';
+    }
+
+    if (
+      rawCategory.includes('household') ||
+      textHasAny(text, ['appliance', 'household', 'kitchenware', 'tableware', 'air conditioner', 'heat pump'])
+    ) {
+      return 'household-appliance';
+    }
+
+    return 'general-consumer-product';
+  }
+
   if (
     textHasAny(text, [
       'baby',
@@ -399,14 +441,17 @@ export const processedFdaRecordCount = processedLocalRecalls.filter((recall) => 
 export const processedFranceRappelConsoRecordCount = processedLocalRecalls.filter(
   (recall) => recall.source === 'FR_RAPPELCONSO'
 ).length;
+export const processedCanadaRecordCount = processedLocalRecalls.filter((recall) => recall.source === 'CA_RECALLS').length;
 export const usingProcessedCpscData = processedCpscRecordCount > 0;
 export const usingProcessedFdaData = processedFdaRecordCount > 0;
 export const usingProcessedFranceRappelConsoData = processedFranceRappelConsoRecordCount > 0;
+export const usingProcessedCanadaData = processedCanadaRecordCount > 0;
 export const dataSourceLabel = usingProcessedLocalData
   ? [
       usingProcessedCpscData ? getRecallSourceLabel('CPSC') : '',
       usingProcessedFdaData ? getRecallSourceLabel('FDA') : '',
-      usingProcessedFranceRappelConsoData ? getRecallSourceLabel('FR_RAPPELCONSO') : ''
+      usingProcessedFranceRappelConsoData ? getRecallSourceLabel('FR_RAPPELCONSO') : '',
+      usingProcessedCanadaData ? getRecallSourceLabel('CA_RECALLS') : ''
     ]
       .filter(Boolean)
       .join(' + ')

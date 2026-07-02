@@ -63,9 +63,12 @@ const IDENTIFIER_TERMS = [
   'item no',
   'sku',
   'serial',
+  'din',
+  'npn',
   'recall number',
   'fda recall number',
-  'cpsc recall number'
+  'cpsc recall number',
+  'alert id'
 ];
 
 const ALLERGEN_TERMS = [
@@ -291,6 +294,10 @@ export function getRecallIdentifierHint(recall: Pick<SiteRecall, 'source'>): str
 
   if (recall.source === 'FR_RAPPELCONSO') {
     return 'Check GTIN/barcode, model, lot, batch, date, distribution, and official notice details.';
+  }
+
+  if (recall.source === 'CA_RECALLS') {
+    return 'Check UPC/barcode, model, item, lot, batch, date, DIN/NPN if listed, recall or alert id, and official notice details.';
   }
 
   if (recall.source === 'CPSC') {

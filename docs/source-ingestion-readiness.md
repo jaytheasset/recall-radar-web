@@ -9,10 +9,11 @@ Recall Radar currently uses local JSON files only. The current seed sources are:
 - CPSC consumer product recalls: 301 records
 - FDA/openFDA food enforcement recalls: 100 records
 - France RappelConso product recalls: 100 records
+- Canada Recalls and Safety Alerts: 100 records
 - Canonical merged file: `data/processed/recalls.json`
-- Total current records: 501
+- Total current records: 601
 
-The UI is positioned for a global consumer recall search experience. France RappelConso is included as the first non-U.S. source spike, but the site remains static/local-first and does not use a backend, database, email service, account system, or browser runtime API call.
+The UI is positioned for a global consumer recall search experience. France RappelConso is included as the first non-U.S. source spike, and Canada Recalls and Safety Alerts is included as the second non-U.S. source spike. The site remains static/local-first and does not use a backend, database, email service, account system, or browser runtime API call.
 
 ## B. Current Source Flow
 
@@ -22,14 +23,17 @@ The existing source flow is:
    - CPSC raw file: `data/raw/cpsc-recalls.json`
    - FDA/openFDA raw file: `data/raw/fda-food-recalls.json`
    - France RappelConso raw file: `data/raw/rappelconso-recalls.json`
+   - Canada raw file: `data/raw/canada-recalls.json`
 2. Source-specific normalization scripts map raw records into `NormalizedRecall`.
    - CPSC normalizer: `scripts/normalize-cpsc.ts`
    - FDA/openFDA normalizer: `scripts/normalize-fda-food.ts`
    - France RappelConso normalizer: `scripts/normalize-rappelconso.ts`
+   - Canada normalizer: `scripts/normalize-canada-recalls.ts`
 3. Source-specific processed files are written under `data/processed/`.
    - CPSC processed file: `data/processed/cpsc-recalls.json`
    - FDA/openFDA processed file: `data/processed/fda-recalls.json`
    - France RappelConso processed file: `data/processed/rappelconso-recalls.json`
+   - Canada processed file: `data/processed/canada-recalls.json`
 4. `scripts/merge-recalls.ts` merges source-specific processed files into the canonical file.
    - Canonical processed file: `data/processed/recalls.json`
 5. `src/data/recall-types.ts` defines the shared `NormalizedRecall` and `ProcessedRecallFile` contract.
@@ -46,15 +50,22 @@ Current package scripts:
 - `npm run normalize:fda-food`
 - `npm run fetch:rappelconso`
 - `npm run normalize:rappelconso`
+- `npm run fetch:canada`
+- `npm run normalize:canada`
 - `npm run data:rappelconso:fetch`
 - `npm run data:rappelconso:normalize`
+- `npm run data:canada:fetch`
+- `npm run data:canada:normalize`
 - `npm run data:merge`
 - `npm run audit:rappelconso`
+- `npm run audit:canada`
 - `npm run update:rappelconso`
+- `npm run update:canada`
 - `npm run build:data`
 
 Do not run fetch scripts in UI or planning phases unless a later task explicitly requests a data refresh.
 `npm run update:rappelconso` is an explicit France RappelConso refresh workflow that performs a network fetch and audit; it is not part of `npm run check` or `npm run build`.
+`npm run update:canada` is an explicit Canada refresh workflow that performs a network fetch and audit; it is not part of `npm run check` or `npm run build`.
 
 ## C. Current Source Registry
 
@@ -77,6 +88,7 @@ The registry currently exposes only active seed sources through current coverage
 - `CPSC`
 - `FDA`
 - `FR_RAPPELCONSO`
+- `CA_RECALLS`
 
 Future source planning notes must not become active filters until a real source connector, normalized data, and validation path exist.
 
@@ -168,9 +180,8 @@ These identifiers should be included in normalized fields when there is an obvio
 
 ## G. Future Source Priority Notes
 
-France RappelConso is now active as the first non-U.S. source spike. Future candidates to evaluate as planning notes only:
+France RappelConso is active as the first non-U.S. source spike. Canada Recalls and Safety Alerts is active as the second non-U.S. source spike. Future candidates to evaluate as planning notes only:
 
-- Canada Recalls and Safety Alerts
 - EU Safety Gate
 - UK FSA
 - Korea SafetyKorea / MFDS
@@ -183,7 +194,7 @@ These are not active filters or active coverage in this phase. They should not a
 
 This phase does not add:
 
-- Additional API ingestion beyond the current CPSC, FDA/openFDA, and RappelConso scripts
+- Additional API ingestion beyond the current CPSC, FDA/openFDA, RappelConso, and Canada scripts
 - Additional countries as active coverage
 - Backend services
 - Database storage

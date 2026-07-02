@@ -120,9 +120,10 @@ Remove-Item Env:RAPPELCONSO_LIMIT
 Expected counts for the current spike:
 
 - `FR_RAPPELCONSO`: 100
-- Total: 501
 - CPSC: 301
 - FDA/openFDA: 100
+- `CA_RECALLS`: 100
+- Total: 601
 
 The audit uses these expected counts by default. If the limit is intentionally changed in a later phase, update the expected audit environment variables for that run and explain the count change in the commit:
 
@@ -130,6 +131,7 @@ The audit uses these expected counts by default. If the limit is intentionally c
 - `EXPECTED_TOTAL_RECALL_COUNT`
 - `EXPECTED_CPSC_COUNT`
 - `EXPECTED_FDA_COUNT`
+- `EXPECTED_CANADA_RECALLS_COUNT`
 
 Safe diff review after refresh:
 

@@ -1,4 +1,4 @@
-export type RecallSourceId = 'CPSC' | 'FDA' | 'FR_RAPPELCONSO' | 'Mock';
+export type RecallSourceId = 'CPSC' | 'FDA' | 'FR_RAPPELCONSO' | 'CA_RECALLS' | 'Mock';
 export type CurrentCoverageSourceId = Exclude<RecallSourceId, 'Mock'>;
 export type RecallSourceType = 'official-api' | 'sample';
 
@@ -156,6 +156,52 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     officialVerificationCopy:
       'Use the official notice to confirm affected products, identifiers, dates, distribution, and consumer instructions.'
   },
+  CA_RECALLS: {
+    id: 'CA_RECALLS',
+    marketCode: 'CA',
+    marketLabel: 'Canada',
+    agencyLabel: 'Recalls and Safety Alerts',
+    sourceType: 'official-api',
+    displayLabel: 'Canada · Recalls and Safety Alerts',
+    noticeTypeLabel: 'Recall and safety alert',
+    productScopeLabel: 'Consumer products, food, health products, vehicles, and safety alerts',
+    identifierTypes: [
+      'UPC / barcode',
+      'model number',
+      'lot / batch code',
+      'expiration / best-before / use-by date',
+      'product number / item number',
+      'DIN / NPN',
+      'recall or alert id',
+      'distribution details'
+    ],
+    supportsImages: false,
+    supportsDistributionDetails: false,
+    rawPayloadNotes:
+      'Canada Recalls and Safety Alerts open-data records include NID, Title, URL, Organization, Product, Issue, What you should do, Category, Recall class, Last updated, and Archived. Detailed affected product tables and images are not included in the selected JSON feed.',
+    officialSourceLabel: 'Source: Canada · Recalls and Safety Alerts',
+    placeholderLabel: 'Canada recall notice',
+    reasonLabel: 'Reason',
+    actionLabel: 'Action',
+    quantityLabel: 'Quantity',
+    distributionLabel: 'Distribution',
+    defaultActionFallback: DEFAULT_ACTION_FALLBACK,
+    verificationIntro:
+      'Compare the details below with your product label, packaging, receipt, UPC/barcode, lot code, model details, or official notice. A matching search result does not confirm your exact product is included.',
+    verificationChecklist: [
+      'Product name and brand/company',
+      'UPC/barcode if listed',
+      'Model, item, lot, batch, or date details if listed',
+      'Affected product size, variant, or package details',
+      'Distribution or affected market details',
+      'Recall or alert id and publication date',
+      'Instructions in the official notice'
+    ],
+    sparseIdentificationCopy:
+      'This indexed Canada open-data record may not list every identifier in a structured field. Review the official notice, product label, and lot or date code carefully.',
+    officialVerificationCopy:
+      'Use the official notice to confirm affected products, identifiers, dates, distribution, classification, and instructions.'
+  },
   Mock: {
     id: 'Mock',
     marketCode: '',
@@ -191,10 +237,14 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
   }
 };
 
-const currentCoverageSources: CurrentCoverageSourceId[] = ['CPSC', 'FDA', 'FR_RAPPELCONSO'];
+const currentCoverageSources: CurrentCoverageSourceId[] = ['CPSC', 'FDA', 'FR_RAPPELCONSO', 'CA_RECALLS'];
 
 function normalizeSourceId(source: string): RecallSourceId {
-  return source === 'CPSC' || source === 'FDA' || source === 'FR_RAPPELCONSO' || source === 'Mock'
+  return source === 'CPSC' ||
+    source === 'FDA' ||
+    source === 'FR_RAPPELCONSO' ||
+    source === 'CA_RECALLS' ||
+    source === 'Mock'
     ? source
     : 'Mock';
 }

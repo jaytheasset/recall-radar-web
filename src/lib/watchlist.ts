@@ -1,6 +1,6 @@
 export const WATCHLIST_STORAGE_KEY = 'recall-radar-watchlist-v1';
 
-export type WatchlistSourceFilter = 'all' | 'CPSC' | 'FDA' | 'FR_RAPPELCONSO';
+export type WatchlistSourceFilter = 'all' | 'CPSC' | 'FDA' | 'FR_RAPPELCONSO' | 'CA_RECALLS';
 export type WatchlistCategoryFilter =
   | 'all'
   | 'baby-kids'

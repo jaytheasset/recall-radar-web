@@ -1,4 +1,4 @@
-export type RecallSource = 'CPSC' | 'FDA' | 'FR_RAPPELCONSO';
+export type RecallSource = 'CPSC' | 'FDA' | 'FR_RAPPELCONSO' | 'CA_RECALLS';
 export type ProcessedRecallSource = RecallSource | 'MULTI';
 
 export type RecallImage = {

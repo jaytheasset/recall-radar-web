@@ -1,6 +1,7 @@
 ---
 import {
   dataSourceLabel,
+  processedCanadaRecordCount,
   processedCpscRecordCount,
   processedFdaRecordCount,
   processedFranceRappelConsoRecordCount,
@@ -85,6 +86,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
               <span class="tag">{processedCpscRecordCount} consumer product notices</span>
               <span class="tag">{processedFdaRecordCount} food enforcement notices</span>
               <span class="tag">{processedFranceRappelConsoRecordCount} France RappelConso notices</span>
+              <span class="tag">{processedCanadaRecordCount} Canada recall and safety alert notices</span>
             </>
           ) : null}
         </div>
@@ -191,7 +193,8 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
               (recall.rawCategory === 'food' ||
                 recall.rawCategory === 'alimentation' ||
                 recall.source === 'FDA' ||
-                recall.source === 'FR_RAPPELCONSO')) ||
+                recall.source === 'FR_RAPPELCONSO' ||
+                (recall.source === 'CA_RECALLS' && recall.category === 'food-allergy'))) ||
             (item.category === 'general' && recall.category === 'general-consumer-product') ||
             recall.category === item.category;
 
