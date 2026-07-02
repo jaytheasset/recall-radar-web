@@ -73,7 +73,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 
     <main class="page-shell">
       <section class="section">
-        <p class="eyebrow">Saved recall monitor</p>
+        <p class="eyebrow">Browser watchlist</p>
         <h1>Saved in this browser</h1>
         <p class="lead">
           Save searches and brands in this browser, then preview matching recall notices from indexed sources.
@@ -99,16 +99,16 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       <section class="section">
         <div class="watchlist-layout">
           <article class="detail-card">
-            <h2>Email alerts are not enabled yet</h2>
+            <h2>Email preview only</h2>
             <p>
-              This field previews future alert preferences. It does not submit, send, store, or transmit an email address.
+              This non-submitting form previews a future preference. It does not send, store, or transmit an email address.
             </p>
             <form id="demo-alert-form" class="signup-form">
               <label>
                 Email preview
                 <input type="email" placeholder="you@example.com" autocomplete="off" />
               </label>
-              <button class="btn btn-primary" type="submit">Preview future alert</button>
+              <button class="btn btn-primary" type="submit">Preview preference</button>
               <p id="demo-alert-status" class="form-note" hidden></p>
             </form>
           </article>
@@ -133,7 +133,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
             <h2>Saved recall previews</h2>
             <p class="section-note">Cards are matched in this browser from indexed notices.</p>
           </div>
-          <a class="btn btn-secondary" href="/checker">Add a monitored search</a>
+          <a class="btn btn-secondary" href="/checker">Save another search</a>
         </div>
         <p class="disclaimer-copy">
           Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
@@ -429,7 +429,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         if (demoAlertStatus) {
           demoAlertStatus.hidden = false;
           demoAlertStatus.textContent =
-            'No email is sent or stored. This preview stays in your browser field only.';
+            'No email is sent or stored. The value stays only in this browser field.';
         }
       });
 

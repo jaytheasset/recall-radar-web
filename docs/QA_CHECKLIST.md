@@ -169,6 +169,8 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm active source filter values are `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, and `UK_FSA`.
 - Confirm Korea, Japan, and Australia do not appear as active source filters.
 - Confirm `npm run audit:sources` reports no unknown source ids, no duplicate ids, no active source with zero records, and no source-registry/data mismatch.
+- Confirm consumer-facing coverage copy says indexed notices and official source feeds, not complete global coverage.
+- Confirm long source labels wrap cleanly on checker, watchlist, category, brand, and detail pages at mobile widths.
 
 ## Watchlist Demo
 

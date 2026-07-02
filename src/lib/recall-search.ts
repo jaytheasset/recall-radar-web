@@ -299,23 +299,23 @@ function sourceFields(recall: SiteRecall): string[] {
 
 export function getRecallIdentifierHint(recall: Pick<SiteRecall, 'source'>): string {
   if (recall.source === 'FDA') {
-    return 'Check UPC/barcode, lot code, date, ingredient, distribution, and official notice details.';
+    return 'Check UPC/barcode, lot or date code, ingredient, distribution, and official notice details.';
   }
 
   if (recall.source === 'FR_RAPPELCONSO') {
-    return 'Check GTIN/barcode, model, lot, batch, date, distribution, and official notice details.';
+    return 'Check GTIN/barcode, model, lot or date code, distribution, and official notice details.';
   }
 
   if (recall.source === 'CA_RECALLS') {
-    return 'Check UPC/barcode, model, item, lot, batch, date, DIN/NPN if listed, recall or alert id, and official notice details.';
+    return 'Check UPC/barcode, model or item number, lot/date code, DIN/NPN if listed, and official notice details.';
   }
 
   if (recall.source === 'EU_SAFETY_GATE') {
-    return 'Check Safety Gate reference, barcode, model, batch, product photos, reporting country, country of origin, and official alert details.';
+    return 'Check Safety Gate reference, barcode, model or batch, product photos, market details, and official alert.';
   }
 
   if (recall.source === 'UK_FSA') {
-    return 'Check FSA alert reference, product name, pack size, batch or lot code, best-before or use-by date, allergen or risk details, and official notice details.';
+    return 'Check FSA reference, product name, pack size, batch/date code, allergen details, and official notice.';
   }
 
   if (recall.source === 'CPSC') {

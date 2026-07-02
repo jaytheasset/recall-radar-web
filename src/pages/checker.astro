@@ -102,7 +102,7 @@ const dateOptions = [
       <section class="section">
         <p class="eyebrow">Product recall search</p>
         <h1>Search product recalls</h1>
-        <p class="lead">Enter a product, brand, model number, UPC/barcode, lot code, ingredient, allergen, or keyword.</p>
+        <p class="lead">Search official recall notices by product, brand, model number, UPC/barcode, lot code, ingredient, allergen, or keyword.</p>
         <div class="meta-row data-source-row">
           <span class="status-pill">{dataSourceLabel}</span>
           <span class="tag">
@@ -601,7 +601,7 @@ const dateOptions = [
             filteredRecalls.length === 1 ? '' : 's'
           }`;
           summary.textContent =
-            'Search recalls by product, brand, model, UPC/barcode, lot code, ingredient, or keyword.';
+            'Search official recall notices by product, brand, model, UPC/barcode, lot code, ingredient, or keyword.';
           list.replaceChildren();
           return;
         }

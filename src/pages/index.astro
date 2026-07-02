@@ -15,7 +15,7 @@ import '../styles/global.css';
 
 const title = 'Recall Radar | Global product recall search';
 const description =
-  'Recall Radar helps consumers search product recalls by brand, product name, model number, UPC/barcode, lot code, ingredient, or keyword.';
+  'Recall Radar helps consumers search official product recall notices across markets by brand, product name, model number, UPC/barcode, lot code, ingredient, or keyword.';
 const latestRecalls = siteRecalls.slice(0, 6);
 const babyCount = getRecallsByCategory('baby-kids').length;
 const batteryCount = getRecallsByCategory('battery-electronics').length;
@@ -29,7 +29,7 @@ const activeSourceCount = [
   processedEuSafetyGateRecordCount,
   processedUkFsaRecordCount
 ].filter((count) => count > 0).length;
-const countLine = `${processedLocalRecordCount} indexed recall notices from ${activeSourceCount} official source feeds. Coverage is expanding and is not comprehensive worldwide.`;
+const countLine = `${processedLocalRecordCount} indexed recall notices from ${activeSourceCount} official source feeds. Coverage is expanding and remains limited to indexed sources.`;
 const productTypes = [
   {
     label: 'Baby & Kids',
@@ -85,9 +85,9 @@ const productTypes = [
     <main class="page-shell home-page">
       <section class="home-hero">
         <div class="home-hero-copy">
-          <h1>Check product recalls, wherever you bought it.</h1>
+          <h1>Search official recall notices across markets.</h1>
           <p class="lead">
-            Search product recalls by brand, product name, model number, UPC/barcode, lot code, ingredient, or keyword.
+            Search by brand, product, model, barcode, lot code, ingredient, or keyword.
           </p>
         </div>
 

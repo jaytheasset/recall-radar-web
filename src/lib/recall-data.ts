@@ -548,17 +548,16 @@ export const usingProcessedFranceRappelConsoData = processedFranceRappelConsoRec
 export const usingProcessedCanadaData = processedCanadaRecordCount > 0;
 export const usingProcessedEuSafetyGateData = processedEuSafetyGateRecordCount > 0;
 export const usingProcessedUkFsaData = processedUkFsaRecordCount > 0;
+export const processedActiveSourceCount = [
+  usingProcessedCpscData,
+  usingProcessedFdaData,
+  usingProcessedFranceRappelConsoData,
+  usingProcessedCanadaData,
+  usingProcessedEuSafetyGateData,
+  usingProcessedUkFsaData
+].filter(Boolean).length;
 export const dataSourceLabel = usingProcessedLocalData
-  ? [
-      usingProcessedCpscData ? getRecallSourceLabel('CPSC') : '',
-      usingProcessedFdaData ? getRecallSourceLabel('FDA') : '',
-      usingProcessedFranceRappelConsoData ? getRecallSourceLabel('FR_RAPPELCONSO') : '',
-      usingProcessedCanadaData ? getRecallSourceLabel('CA_RECALLS') : '',
-      usingProcessedEuSafetyGateData ? getRecallSourceLabel('EU_SAFETY_GATE') : '',
-      usingProcessedUkFsaData ? getRecallSourceLabel('UK_FSA') : ''
-    ]
-      .filter(Boolean)
-      .join(' + ')
+  ? `${processedActiveSourceCount} official source feed${processedActiveSourceCount === 1 ? '' : 's'}`
   : getRecallSourceLabel('Mock');
 export const siteRecalls = (usingProcessedLocalData ? processedLocalRecalls : fallbackMockRecalls).sort(
   sortByDateDescending

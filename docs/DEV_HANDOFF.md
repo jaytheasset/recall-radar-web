@@ -187,16 +187,16 @@ Example:
 - `searchRecalls`
 - `getRecallMatch`
 - `MATCH_LABELS`
-- `NO_MATCH_DISCLAIMER`
+- `SEARCH_RESULTS_DISCLAIMER`
 
 Match types are `exact`, `possible`, `related`, and `none`.
 
-The checker renders grouped local results with match badges, recall date, source label, product/brand context, hazard summary, category, and detail links. Keep the required no-match disclaimer exact wherever search results appear.
+The checker renders grouped indexed-notice results with match badges, recall date, source label, product/brand context, reason/risk summary, category, and detail links. Keep the generic search disclaimer and no-result warning consistent wherever search results appear.
 
 Phase 7 added local-only search controls on `/checker`:
 
 - keyword/product/brand/model/UPC/lot text query
-- source filter for all records, CPSC, or FDA/openFDA
+- source filter for all markets plus `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, and `UK_FSA`
 - category filter for baby/kids, battery/electronics, food/allergy, household/appliance, food, and general records
 - sort controls for best match, newest first, and oldest first
 - optional date windows for last 30 days, last 90 days, and all time
@@ -221,8 +221,8 @@ Phase 8 adds a static `/watchlist` page and browser-only watchlist UX.
 - Users can save search terms from `/checker` with source and category preferences.
 - Users can save normalized brand pages from `/brands/[brand]`.
 - Users can remove individual saved items or clear the watchlist.
-- `/watchlist` embeds the existing local recall data at build time and previews matching local recall records in the browser.
-- The demo alert form is labeled `Local demo only - no email is sent`; it does not submit, send, store, or transmit email addresses.
+- `/watchlist` embeds the existing indexed notices at build time and previews matching recall records in the browser.
+- The email preview form is non-submitting UI only; it does not submit, send, store, or transmit email addresses.
 
 The watchlist is not an alert backend. It uses only browser `localStorage`; there is no API endpoint, server persistence, database, email service, external dependency, or network request.
 

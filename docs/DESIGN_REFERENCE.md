@@ -125,7 +125,7 @@ Relevant pattern to adapt: a trustworthy consumer landing page, not a dashboard.
 - Small white or soft-gray panel.
 - Text:
   - "Monitor saved searches in this browser"
-  - "Local demo only - no email is sent."
+  - "No account or email alerts are enabled yet."
 - Buttons:
   - Open watchlist
   - Try pistachio
@@ -136,7 +136,7 @@ Relevant pattern to adapt: a trustworthy consumer landing page, not a dashboard.
 - No duplicate latest sections.
 - No paragraph descriptions in homepage cards.
 - Max 6 latest recall cards.
-- One featured recall only.
+- No featured recall section on the current homepage baseline.
 - Search must be visually dominant.
 - Product imagery must be visually important.
 - Category section must be compact.

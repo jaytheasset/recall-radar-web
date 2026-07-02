@@ -507,6 +507,7 @@ button:disabled {
 .badge-date {
   display: inline-flex;
   align-items: center;
+  max-width: 100%;
   min-height: 26px;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -516,7 +517,18 @@ button:disabled {
   font-size: 0.78rem;
   font-weight: 760;
   line-height: 1.2;
+  text-align: left;
   overflow-wrap: anywhere;
+}
+
+.data-source-row .tag,
+.data-source-row .status-pill,
+.data-source-row .badge-source,
+.data-source-row .badge-date,
+.result-card-badges .tag,
+.result-card-badges .badge-source,
+.result-card-badges .badge-date {
+  white-space: normal;
 }
 
 .badge-source,
