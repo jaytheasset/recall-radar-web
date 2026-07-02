@@ -130,9 +130,14 @@ The UK FSA audit checks:
 - missing required fields
 - official notice URL shape
 - batch/date detail coverage
+- pack size coverage
 - allergen or risk label coverage
+- retailer, store, distribution, or food-business detail coverage
+- image and related-media availability
+- alert type distribution
 - classification distribution
 - conservative food/allergy site category mapping
+- suspicious category mappings
 
 Current audited characteristics:
 
@@ -140,15 +145,60 @@ Current audited characteristics:
 - Total canonical records: 801
 - Official notice URL shape: 100 records
 - Batch/date-like details: 34 records
-- Allergen or risk labels: 84 records
+- Pack size values: 95 records
+- Allergen or risk labels: 85 records
+- Retailer, store, distribution, or food-business details: 98 records
+- Images normalized for product cards: 0 records
+- Related media notices in raw payloads: 96 records
 - Site category mapping: 100 records mapped to food/allergy
 - Classification distribution: 52 Allergy Alert, 46 Product Recall Information Notice, 2 Food Alert For Action
 
+## Phase 10.1 QA
+
+Phase 10.1 used the committed local files only:
+
+- `data/raw/uk-fsa-alerts.json`
+- `data/processed/uk-fsa-alerts.json`
+- `data/processed/recalls.json`
+
+The QA method was:
+
+1. Re-run the UK FSA audit against processed data.
+2. Inspect representative Allergy Alert, Product Recall Information Notice, and Food Alert For Action records.
+3. Regenerate processed UK FSA data from the committed raw file after mapping fixes.
+4. Re-run UK FSA, EU Safety Gate, Canada, and RappelConso audits plus Astro check/build.
+
+Phase 10.1 fixes:
+
+- Hardened the UK FSA audit to report pack size, related media, image availability, retailer/distribution-like details, alert type distribution, and suspicious category mappings.
+- Kept all 100 UK FSA records conservatively mapped to `food-allergy`.
+- Corrected Food Alert For Action brand/company mapping so generic instructions such as "Food businesses selling these products..." are not displayed as a brand or company.
+- Added title-based supplier/manufacturer extraction for Food Alert For Action notices when the source title clearly names the responsible business.
+- Adjusted UK FSA detail intro copy so food alerts do not read like non-food consumer-product notices.
+
+Phase 10.1 audited distribution summary:
+
+- Alert types: 52 Allergy Alert, 46 Product Recall Information Notice, 2 Food Alert For Action
+- Site category: 100 food/allergy
+- Batch/date-like details: 34 records
+- Pack size values: 95 records
+- Allergen or ingredient/risk labels: 85 records
+- Retailer, store, distribution, or food-business details: 98 records
+- Product-card images: 0 records
+- Related media notices: 96 records
+
 ## Known Limits
 
+- UK FSA Food Alerts are food/allergy-focused and do not cover all UK product recalls.
 - This is a bounded 100-record spike, not a full UK FSA backfill.
 - Some FSA records do not expose batch, lot, best-before, or use-by details in structured fields.
+- Some alerts may include multiple affected products.
+- Some records have sparse brand/company or action text.
 - Some records use `alerts.food.gov.uk`; older or current records may use `www.food.gov.uk`.
 - No official product image normalization is included for UK FSA records in this phase.
+- UK FSA raw/detail payloads can be verbose. The 100-record spike already creates sizeable raw and processed diffs.
+- Full backfill should be a separate phase and should reconsider raw-file commit strategy.
+- Future optimization may store a smaller raw fixture or only normalized processed records.
 - There is no cross-source dedupe yet.
 - The site reads static processed data only.
+- There is no runtime freshness; updates require an explicit maintenance workflow.

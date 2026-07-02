@@ -120,6 +120,12 @@ Phase 10 current source counts:
 - UK FSA Food Alerts: 100
 - Total: 801
 
+Phase 10.1 UK FSA QA notes:
+
+- `scripts/audit-uk-fsa-alerts.ts` reports pack size, batch/date, allergen/risk, retailer/distribution-like details, image availability, related-media availability, alert type distribution, and suspicious category mappings.
+- UK FSA records remain conservatively routed to food/allergy because the source is food alerts, allergy alerts, product recall information notices, and food alerts for action.
+- Food Alert For Action records avoid treating generic "Food businesses selling these products..." instructions as a brand/company name.
+
 ## Site Data Loader
 
 `src/lib/recall-data.ts`:

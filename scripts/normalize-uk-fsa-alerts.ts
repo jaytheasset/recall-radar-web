@@ -216,10 +216,38 @@ function relatedMediaTitles(raw: UkFsaAlertRaw): string[] {
   return uniqueNonEmpty(rawObjects(raw, 'relatedMedia').map((media) => objectText(media, 'title')));
 }
 
+function isGenericFoodBusinessInstruction(value: string): boolean {
+  return /\bfood businesses\b.*\b(?:stop sales|product withdrawals|product recalls|selling these products)\b/i.test(value);
+}
+
+function titleBusinessNames(raw: UkFsaAlertRaw): string[] {
+  const title = asString(raw.title);
+  const matches = [
+    title.match(/\bsupplied by\s+(.+?)$/i)?.[1],
+    title.match(/\bmanufactured by\s+(.+?)$/i)?.[1]
+  ];
+
+  return uniqueNonEmpty(
+    matches.map((value) =>
+      asString(value)
+        .replace(/\s+because\b.*$/i, '')
+        .replace(/\s+as a precaution\b.*$/i, '')
+        .replace(/\s+following\b.*$/i, '')
+        .trim()
+    )
+  );
+}
+
+function businessName(value: unknown): string {
+  const name = isObject(value) ? asString(value.commonName) : '';
+  return name && !isGenericFoodBusinessInstruction(name) ? name : '';
+}
+
 function reportingBusinesses(raw: UkFsaAlertRaw): string[] {
   return uniqueNonEmpty([
-    objectText(raw.reportingBusiness, 'commonName'),
-    objectText(raw.otherBusiness, 'commonName')
+    ...titleBusinessNames(raw),
+    businessName(raw.reportingBusiness),
+    businessName(raw.otherBusiness)
   ]);
 }
 

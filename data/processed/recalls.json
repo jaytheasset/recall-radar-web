@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T04:40:53.100Z",
+  "generatedAt": "2026-07-02T08:09:00.432Z",
   "source": "MULTI",
   "count": 801,
   "countsBySource": {
@@ -68326,7 +68326,7 @@
       "sourceUrl": "https://alerts.food.gov.uk/news-alerts/alert/fsa-fafa-01-2026",
       "title": "Food Alert \"For Action\": To: Food Businesses and Consumers who have purchased and sold frozen products supplied by Inarah’s Frozen Foods Ltd",
       "brandNames": [
-        "Food businesses selling these products in the UK are advised to immediately stop sales, undertake product withdrawals and where there have been retail sales, to undertake product"
+        "Inarah’s Frozen Foods Ltd"
       ],
       "productNames": [
         "Inarah’s Frozen Foods – All Frozen Products",
@@ -108605,7 +108605,7 @@
       "sourceUrl": "https://www.food.gov.uk/news-alerts/alert/fsa-fafa-02-2025-update-1",
       "title": "Update 1 Food Alert \"For Action\": To: Consumers who have purchased and Food Businesses who have purchased and sold Jolly Rancher products manufactured by The Hershey...",
       "brandNames": [
-        "Food businesses selling these products in the UK are advised to immediately stop sales, undertake product withdrawals and, where there have been retail sales, to undertake product"
+        "The Hershey Company"
       ],
       "productNames": [
         "Jolly Rancher Hard Candy (all flavours)",

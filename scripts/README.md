@@ -328,7 +328,7 @@ To audit the current local UK FSA processed data without making network calls:
 npm run audit:uk-fsa
 ```
 
-The UK FSA audit reports source counts, duplicate ids, slug collisions, missing required fields, classification distribution, official URL shape, batch/date detail coverage, allergen or risk label coverage, source filter values, and food/allergy category mapping.
+The UK FSA audit reports source counts, duplicate ids, slug collisions, missing required fields, alert type distribution, official URL shape, batch/date detail coverage, pack size coverage, allergen or risk label coverage, retailer/distribution-like detail coverage, image and related-media availability, source filter values, suspicious category mappings, and food/allergy category mapping.
 
 To run the explicit UK FSA refresh workflow, including network fetch and local audit:
 
@@ -346,6 +346,6 @@ npm run audit:uk-fsa
 
 Do not wire UK FSA fetches into `npm run check`, `npm run build`, or UI tests.
 
-For the current 100-record UK FSA spike, commit the raw UK FSA file, processed UK FSA file, and merged canonical processed file together only after the UK FSA audit passes.
+For the current 100-record UK FSA spike, commit the raw UK FSA file, processed UK FSA file, and merged canonical processed file together only after the UK FSA audit passes. UK FSA detail payloads can be verbose, so any future full backfill should reconsider whether to commit full raw detail payloads, a smaller fixture, or only normalized processed records.
 
 The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, and UK FSA Food Alerts records.

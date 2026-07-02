@@ -99,6 +99,7 @@ function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
     return 'food-allergy';
   }
 
+  // UK FSA Food Alerts are food/allergy/action notices, not a general consumer-product source.
   if (record.source === 'UK_FSA') {
     return 'food-allergy';
   }

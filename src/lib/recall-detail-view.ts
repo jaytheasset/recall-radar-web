@@ -556,6 +556,33 @@ function ukFsaClassification(raw: RawObject): string {
   return uniqueNonEmpty(ukFsaTypeCodes(raw).map((code) => labels[code] ?? code)).join('; ');
 }
 
+function isGenericFoodBusinessInstruction(value: string): boolean {
+  return /\bfood businesses\b.*\b(?:stop sales|product withdrawals|product recalls|selling these products)\b/i.test(value);
+}
+
+function ukFsaBusinessName(value: unknown): string {
+  const name = isObject(value) ? safeText(value.commonName) : '';
+  return name && !isGenericFoodBusinessInstruction(name) ? name : '';
+}
+
+function ukFsaTitleBusinessNames(raw: RawObject): string[] {
+  const title = rawText(raw, 'title');
+  const matches = [
+    title.match(/\bsupplied by\s+(.+?)$/i)?.[1],
+    title.match(/\bmanufactured by\s+(.+?)$/i)?.[1]
+  ];
+
+  return uniqueNonEmpty(
+    matches.map((value) =>
+      safeText(value)
+        .replace(/\s+because\b.*$/i, '')
+        .replace(/\s+as a precaution\b.*$/i, '')
+        .replace(/\s+following\b.*$/i, '')
+        .trim()
+    )
+  );
+}
+
 function ukFsaProductDetails(product: RawObject): string[] {
   return uniqueNonEmpty([
     safeText(product.productName),
@@ -579,10 +606,16 @@ function buildUkFsaView(recall: SiteRecall, raw: RawObject): SourceDetailView {
   );
   const reportingBusiness = rawObject(raw, 'reportingBusiness');
   const otherBusiness = rawObject(raw, 'otherBusiness');
-  const brandName = firstNonEmpty(
-    [safeText(reportingBusiness.commonName), safeText(otherBusiness.commonName), ...recall.displayBrandNames, recall.primaryBrand],
-    'Business not listed'
+  const businesses = uniqueNonEmpty(
+    [
+      ...ukFsaTitleBusinessNames(raw),
+      ukFsaBusinessName(reportingBusiness),
+      ukFsaBusinessName(otherBusiness),
+      ...recall.displayBrandNames,
+      recall.primaryBrand
+    ].filter((value) => !isGenericFoodBusinessInstruction(value))
   );
+  const brandName = firstNonEmpty(businesses, 'Business not listed');
   const riskLabels = uniqueNonEmpty(
     problems.flatMap((problem) => [
       ...labelValuesFrom(problem.allergen),
@@ -639,7 +672,7 @@ function buildUkFsaView(recall: SiteRecall, raw: RawObject): SourceDetailView {
     soldAt: uniqueNonEmpty([recall.distributionPattern ?? 'United Kingdom']),
     incidents: [],
     importer: [],
-    manufacturer: uniqueNonEmpty([safeText(reportingBusiness.commonName), safeText(otherBusiness.commonName)]),
+    manufacturer: businesses,
     manufacturedIn: [],
     units: productSummaries.join('; ') || recall.affectedUnits || recall.productQuantity || '',
     fdaDetails: details,
@@ -780,6 +813,10 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
     ? `This recall involves ${sourceSpecificView.productName}`
     : 'This recall involves a recalled product';
   const brandIntro = sourceSpecificView.brandName ? ` from ${sourceSpecificView.brandName}` : '';
+  const introSentence =
+    recall.source === 'UK_FSA'
+      ? `${productIntro}${brandIntro}. Compare the package, batch, date, allergen, and action details with the official FSA notice before eating, serving, selling, or returning it.`
+      : `${productIntro}${brandIntro}. Review the photos and details below before using, keeping, selling, or giving it away.`;
 
   return {
     ...sourceSpecificView,
@@ -787,7 +824,7 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
     categoryLabel: recall.categoryLabel,
     productImages: recall.images,
     primaryImageAlt: recall.primaryImageAlt || `${sourceSpecificView.productName} recall product image`,
-    introSentence: `${productIntro}${brandIntro}. Review the photos and details below before using, keeping, selling, or giving it away.`,
+    introSentence,
     reasonLabel: getRecallReasonLabel(recall.source),
     actionLabel: getRecallActionLabel(recall.source),
     verificationIntro: getRecallVerificationIntro(recall.source),

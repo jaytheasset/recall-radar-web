@@ -22,8 +22,13 @@ type AuditSummary = {
   classificationDistribution: Record<string, number>;
   siteCategoryDistribution: Record<string, number>;
   recordsWithBatchOrDateDetails: number;
+  recordsWithPackSizeValues: number;
   recordsWithAllergenOrRiskLabels: number;
+  recordsWithRetailerOrDistributionDetails: number;
+  recordsWithImages: number;
+  recordsWithRelatedMedia: number;
   recordsWithOfficialNoticeUrlShape: number;
+  suspiciousCategoryMappings: AuditIssue[];
   slugCollisions: AuditIssue[];
   warnings: string[];
 };
@@ -88,10 +93,31 @@ function hasBatchOrDateLikeValue(record: NormalizedRecall): boolean {
   );
 }
 
+function hasPackSizeValue(record: NormalizedRecall): boolean {
+  return /\b(?:pack size|pack|all pack sizes|\d+(?:\.\d+)?\s?(?:g|kg|ml|l|litre|litres|oz|lb|per pack|packs?|pieces?|bars?|bottles?|jars?))\b/i.test(
+    [record.productQuantity ?? '', record.affectedUnits, record.description, ...record.productNames].join(' ')
+  );
+}
+
 function hasAllergenOrRiskLabel(record: NormalizedRecall): boolean {
-  return /\b(?:allergen|allergy|undeclared|milk|egg|peanut|nut|soya|soy|wheat|gluten|mustard|sesame|celery|sulphite|listeria|salmonella|contamination|foreign body|plastic|metal)\b/i.test(
+  return /\b(?:allergen|allergy|ingredient|ingredients|undeclared|milk|egg|peanut|tree nut|almond|cashew|walnut|nut|soya|soy|wheat|gluten|mustard|sesame|celery|sulphite|sulphites|fish|shellfish|listeria|salmonella|contamination|foreign body|plastic|metal)\b/i.test(
     [record.title, record.description, record.hazard, record.reason ?? '', ...record.productNames].join(' ')
   );
+}
+
+function hasRetailerOrDistributionDetail(record: NormalizedRecall): boolean {
+  return /\b(?:retail|retailer|stores?|supermarket|sold|stocked|pharmac(?:y|ies)|food businesses|distribution|distributed|purchased|where you bought|where it was bought|return (?:it|the product) to)\b/i.test(
+    [record.title, record.description, record.remedy, record.distributionPattern ?? '', ...record.brandNames].join(' ')
+  );
+}
+
+function hasImage(record: NormalizedRecall): boolean {
+  return Boolean(record.primaryImageUrl || (Array.isArray(record.images) && record.images.length > 0));
+}
+
+function hasRelatedMedia(record: NormalizedRecall): boolean {
+  const raw = record.raw as { relatedMedia?: unknown } | undefined;
+  return Array.isArray(raw?.relatedMedia) ? raw.relatedMedia.length > 0 : Boolean(raw?.relatedMedia);
 }
 
 function classifyUkFsa(record: NormalizedRecall): string {
@@ -155,7 +181,14 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     .filter((record) => (slugCounts.get(record.slug) ?? 0) > 1)
     .map((record) => compactIssue(record, record.slug));
   const recordsWithBatchOrDateDetails = records.filter(hasBatchOrDateLikeValue).length;
+  const recordsWithPackSizeValues = records.filter(hasPackSizeValue).length;
   const recordsWithAllergenOrRiskLabels = records.filter(hasAllergenOrRiskLabel).length;
+  const recordsWithRetailerOrDistributionDetails = records.filter(hasRetailerOrDistributionDetail).length;
+  const recordsWithImages = records.filter(hasImage).length;
+  const recordsWithRelatedMedia = records.filter(hasRelatedMedia).length;
+  const suspiciousCategoryMappings = records
+    .filter((record) => classifyUkFsa(record) !== 'food-allergy')
+    .map((record) => compactIssue(record, record.category));
 
   return {
     source: 'UK_FSA',
@@ -175,15 +208,24 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     classificationDistribution,
     siteCategoryDistribution,
     recordsWithBatchOrDateDetails,
+    recordsWithPackSizeValues,
     recordsWithAllergenOrRiskLabels,
+    recordsWithRetailerOrDistributionDetails,
+    recordsWithImages,
+    recordsWithRelatedMedia,
     recordsWithOfficialNoticeUrlShape: records.filter((record) => looksLikeOfficialNoticeUrl(record.sourceUrl)).length,
+    suspiciousCategoryMappings,
     slugCollisions,
     warnings: [
       recordsWithBatchOrDateDetails === 0
         ? 'No UK FSA records exposed batch, lot, best-before, or use-by details in the selected spike.'
         : '',
+      recordsWithPackSizeValues === 0 ? 'No UK FSA records exposed pack size values in the selected spike.' : '',
       recordsWithAllergenOrRiskLabels === 0
         ? 'No UK FSA records exposed allergen, pathogen, or risk labels in the selected spike.'
+        : '',
+      recordsWithRetailerOrDistributionDetails === 0
+        ? 'No UK FSA records exposed retailer, store, distribution, or food-business details in the selected spike.'
         : ''
     ].filter(Boolean)
   };
@@ -232,6 +274,9 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
     (summary.siteCategoryDistribution['general-consumer-product'] ?? 0) > 0
       ? `UK FSA records mapped outside food/allergy: ${summary.siteCategoryDistribution['general-consumer-product']}.`
       : '',
+    summary.suspiciousCategoryMappings.length > 0
+      ? `Suspicious UK FSA category mappings found: ${summary.suspiciousCategoryMappings.length}.`
+      : '',
     summary.missing.source > 0 ? `Non-UK_FSA source records found in UK processed file: ${summary.missing.source}.` : '',
     summary.missing.sourceUrl > severeMissingThreshold ? `Missing source URLs found: ${summary.missing.sourceUrl}.` : '',
     summary.missing.title > severeMissingThreshold ? `Missing titles found: ${summary.missing.title}.` : '',
@@ -277,6 +322,7 @@ async function runAudit(): Promise<void> {
           totalProcessedCount: canonicalCounts.total,
           duplicateIds: summary.duplicateIds.length,
           slugCollisions: summary.slugCollisions.length,
+          categoryDistribution: summary.siteCategoryDistribution,
           sourceFilterValues: sourceFilters
         },
         operationalSummary: {
@@ -293,7 +339,14 @@ async function runAudit(): Promise<void> {
           duplicateIds: summary.duplicateIds.length,
           slugCollisions: summary.slugCollisions.length,
           recordsWithBatchOrDateDetails: summary.recordsWithBatchOrDateDetails,
+          recordsWithPackSizeValues: summary.recordsWithPackSizeValues,
           recordsWithAllergenOrRiskLabels: summary.recordsWithAllergenOrRiskLabels,
+          recordsWithRetailerOrDistributionDetails: summary.recordsWithRetailerOrDistributionDetails,
+          recordsWithImages: summary.recordsWithImages,
+          recordsWithRelatedMedia: summary.recordsWithRelatedMedia,
+          alertTypeDistribution: summary.classificationDistribution,
+          categoryDistribution: summary.siteCategoryDistribution,
+          suspiciousCategoryMappings: summary.suspiciousCategoryMappings.length,
           recordsWithOfficialNoticeUrlShape: summary.recordsWithOfficialNoticeUrlShape,
           sourceFilterValues: sourceFilters,
           warnings: summary.warnings

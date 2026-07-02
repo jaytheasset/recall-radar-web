@@ -208,22 +208,23 @@ A future source connector should preserve or extract these identifiers when avai
 
 These identifiers should be included in normalized fields when there is an obvious shared field, and otherwise preserved in `raw` for detail extraction and search match reasons.
 
-## G. Future Source Priority Notes
+## G. Source Priority Notes
 
-France RappelConso is active as the first non-U.S. source spike. Canada Recalls and Safety Alerts is active as the second non-U.S. source spike. EU Safety Gate is active as the first regional multi-country source spike. Future candidates to evaluate as planning notes only:
+France RappelConso is active as the first non-U.S. source spike. Canada Recalls and Safety Alerts is active as the second non-U.S. source spike. EU Safety Gate is active as the first regional multi-country source spike. UK FSA Food Alerts is active as the first UK food/allergy-focused source spike.
 
-- UK FSA
+Future candidates to evaluate as planning notes only:
+
 - Korea SafetyKorea / MFDS
 - Australia Product Safety
 - Japan Consumer Affairs Agency
 
-These are not active filters or active coverage in this phase. They should not appear in consumer-facing source filters until real data ingestion, source labels, validation, and product detail behavior are implemented.
+These future candidates are not active filters or active coverage in this phase. They should not appear in consumer-facing source filters until real data ingestion, source labels, validation, and product detail behavior are implemented.
 
 ## H. Non-Goals
 
 This phase does not add:
 
-- Additional API ingestion beyond the current CPSC, FDA/openFDA, RappelConso, Canada, and EU Safety Gate scripts
+- Additional API ingestion beyond the current CPSC, FDA/openFDA, RappelConso, Canada, EU Safety Gate, and UK FSA scripts
 - Additional countries as active coverage
 - Backend services
 - Database storage
