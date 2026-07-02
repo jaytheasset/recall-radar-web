@@ -309,23 +309,30 @@ async function runAudit(): Promise<void> {
   const sourceFilters = sourceFilterValues();
   const blockers = buildBlockers(summary, canonicalCounts, sourceFilters);
   const passed = blockers.length === 0;
+  const foodAllergyMappingCount = summary.siteCategoryDistribution['food-allergy'] ?? 0;
+  const summaryLine = `${passed ? 'PASS' : 'FAIL'} UK_FSA=${summary.total} total=${canonicalCounts.total} food-allergy=${foodAllergyMappingCount} duplicateIds=${summary.duplicateIds.length} slugCollisions=${summary.slugCollisions.length} suspiciousCategoryMappings=${summary.suspiciousCategoryMappings.length}`;
 
   console.log(
     JSON.stringify(
       {
         passed,
+        summaryLine,
         blockers,
         auditSummary: {
           result: passed ? 'pass' : 'fail',
           source: summary.source,
           ukFsaCount: summary.total,
           totalProcessedCount: canonicalCounts.total,
+          blockerCount: blockers.length,
           duplicateIds: summary.duplicateIds.length,
           slugCollisions: summary.slugCollisions.length,
+          suspiciousCategoryMappings: summary.suspiciousCategoryMappings.length,
+          foodAllergyMappingCount,
           categoryDistribution: summary.siteCategoryDistribution,
           sourceFilterValues: sourceFilters
         },
         operationalSummary: {
+          auditPassed: passed,
           source: summary.source,
           totalProcessedCount: canonicalCounts.total,
           countsBySource: {
@@ -338,6 +345,7 @@ async function runAudit(): Promise<void> {
           },
           duplicateIds: summary.duplicateIds.length,
           slugCollisions: summary.slugCollisions.length,
+          foodAllergyMappingCount,
           recordsWithBatchOrDateDetails: summary.recordsWithBatchOrDateDetails,
           recordsWithPackSizeValues: summary.recordsWithPackSizeValues,
           recordsWithAllergenOrRiskLabels: summary.recordsWithAllergenOrRiskLabels,

@@ -126,6 +126,12 @@ Phase 10.1 UK FSA QA notes:
 - UK FSA records remain conservatively routed to food/allergy because the source is food alerts, allergy alerts, product recall information notices, and food alerts for action.
 - Food Alert For Action records avoid treating generic "Food businesses selling these products..." instructions as a brand/company name.
 
+Phase 10.2 UK FSA update workflow:
+
+- `npm run update:uk-fsa` is the explicit network refresh workflow and runs fetch, normalize, merge, and audit in sequence.
+- Local-only validation should use `npm run data:uk-fsa:normalize`, `npm run data:merge`, and `npm run audit:uk-fsa`.
+- Keep `UK_FSA_LIMIT=100` as the default until a separate full-backfill phase reviews raw file size, page count, brand page growth, and commit strategy.
+
 ## Site Data Loader
 
 `src/lib/recall-data.ts`:

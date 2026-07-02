@@ -25,7 +25,7 @@
     "update:rappelconso": "npm run data:rappelconso:fetch && npm run audit:rappelconso",
     "update:canada": "npm run data:canada:fetch && npm run audit:canada",
     "update:eu-safety-gate": "npm run data:eu-safety-gate:fetch && npm run audit:eu-safety-gate",
-    "update:uk-fsa": "npm run data:uk-fsa:fetch && npm run audit:uk-fsa",
+    "update:uk-fsa": "npm run data:uk-fsa:fetch && npm run data:uk-fsa:normalize && npm run data:merge && npm run audit:uk-fsa",
     "audit:rappelconso": "node --experimental-strip-types scripts/audit-rappelconso.ts",
     "audit:canada": "node --experimental-strip-types scripts/audit-canada-recalls.ts",
     "audit:eu-safety-gate": "node --experimental-strip-types scripts/audit-eu-safety-gate.ts",

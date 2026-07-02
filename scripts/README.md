@@ -336,6 +336,8 @@ To run the explicit UK FSA refresh workflow, including network fetch and local a
 npm run update:uk-fsa
 ```
 
+`update:uk-fsa` runs `data:uk-fsa:fetch`, `data:uk-fsa:normalize`, `data:merge`, and `audit:uk-fsa` in that order. The fetch step already writes raw, processed, and canonical files; the explicit normalize and merge steps make the final files reproducible from the saved raw payload before audit.
+
 For local-only validation from the existing raw file:
 
 ```powershell

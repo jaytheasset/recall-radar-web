@@ -89,6 +89,8 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm UK FSA detail pages show FSA alert reference, pack size, batch/date details when present, allergen/risk details, consumer action, and the official FSA source link.
 - Confirm Food Alert For Action records do not display generic instructions such as "Food businesses selling these products..." as the brand or company name.
 - Confirm `npm run update:uk-fsa` remains an explicit refresh command and is not part of `npm run check` or `npm run build`.
+- Confirm `npm run update:uk-fsa` is documented as fetch, normalize, merge, then audit.
+- For no-network QA phases, confirm `npm run data:uk-fsa:normalize`, `npm run data:merge`, and `npm run audit:uk-fsa` validate the committed raw file path without calling the UK FSA endpoint.
 - Confirm the default UK FSA limit remains `UK_FSA_LIMIT=100`.
 
 ## Pages

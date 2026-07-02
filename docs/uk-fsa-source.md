@@ -56,7 +56,7 @@ Run the explicit UK FSA refresh workflow:
 npm run update:uk-fsa
 ```
 
-`update:uk-fsa` performs a network fetch and then runs the UK FSA audit. It is not part of `npm run check` or `npm run build`.
+`update:uk-fsa` performs a network fetch, normalizes UK FSA records from the saved raw file, rebuilds the canonical merged file, and then runs the UK FSA audit. It is not part of `npm run check` or `npm run build`.
 
 ## Operational Update Strategy
 
@@ -72,6 +72,23 @@ Current defaults and paths:
 - Normalize script: `scripts/normalize-uk-fsa-alerts.ts`
 - Merge script: `scripts/merge-recalls.ts`
 - Audit script: `scripts/audit-uk-fsa-alerts.ts`
+
+Network refresh sequence:
+
+```powershell
+npm run update:uk-fsa
+```
+
+The combined command currently runs:
+
+```powershell
+npm run data:uk-fsa:fetch
+npm run data:uk-fsa:normalize
+npm run data:merge
+npm run audit:uk-fsa
+```
+
+`data:uk-fsa:fetch` writes `data/raw/uk-fsa-alerts.json`, normalizes UK FSA records, and rebuilds the merged canonical file as a defensive fetch workflow. The explicit normalize and merge steps intentionally run again from the saved raw file so the final committed data can be reproduced from local files after the fetch completes.
 
 Local-only validation from the committed raw file:
 
@@ -95,9 +112,61 @@ Limit controls:
 
 - Default remains `UK_FSA_LIMIT=100`.
 - A smaller or same-size refresh can use `npm run fetch:uk-fsa -- --limit=50` or `$env:UK_FSA_LIMIT = "100"`.
+- If the limit changes, expected `UK_FSA` and total canonical counts must be updated deliberately in the audit environment or follow-up code/docs. A count change without explanation should block merge.
 - Do not silently pull all FSA Food Alerts records.
 - Do not increase the default above 100 in this phase.
 - A higher limit or full backfill must be a separate phase with page-count, brand-page growth, raw-size, and build-time review before merge.
+
+Safe review sequence after a refresh:
+
+```powershell
+git diff --stat
+git diff -- data/raw/uk-fsa-alerts.json data/processed/uk-fsa-alerts.json data/processed/recalls.json
+npm run audit:uk-fsa
+npm run audit:eu-safety-gate
+npm run audit:canada
+npm run audit:rappelconso
+npm run check
+npm run build
+```
+
+Commit strategy for the current 100-record spike:
+
+- Commit `data/raw/uk-fsa-alerts.json`.
+- Commit `data/processed/uk-fsa-alerts.json`.
+- Commit `data/processed/recalls.json`.
+- Commit script and documentation changes in the same update when they explain count, mapping, or audit behavior.
+- Do not commit only the canonical merged file after a UK FSA refresh; keep the raw and source-specific processed file together so the update can be reviewed.
+
+For future larger UK FSA pulls:
+
+- Reconsider raw file commit strategy because raw/detail payloads can be verbose.
+- Consider committing only a smaller raw fixture plus normalized processed records.
+- Consider script-generated local maintenance data outside the static MVP commit path.
+- Treat full backfill as a separate phase.
+- Measure build page count and brand page growth before merge.
+
+Merge-blocking criteria:
+
+- `UK_FSA` count is `0`.
+- Duplicate ids are found.
+- Slug collisions are found.
+- Suspicious category mappings are found.
+- UK FSA records stop mapping to `food-allergy` unexpectedly.
+- Missing source URLs, titles, recall dates, product names, reason fields, action fields, or raw payloads exceed audit thresholds.
+- Source filter values differ from `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, and `UK_FSA`.
+- Total processed count changes unexpectedly without a documented limit change.
+- Official FSA notice URL shape changes unexpectedly.
+
+Known current limitations should not block by themselves:
+
+- Not all alerts have batch, lot, or date fields.
+- Not all alerts have images.
+- Some alerts include multiple affected products.
+- Some alerts have sparse brand/company or action text.
+- UK FSA Food Alerts do not cover all UK product recalls.
+- There is no cross-source dedupe yet.
+- Static processed data has no runtime freshness.
 
 ## Normalized Mapping
 
