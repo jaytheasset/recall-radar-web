@@ -351,3 +351,21 @@ Do not wire UK FSA fetches into `npm run check`, `npm run build`, or UI tests.
 For the current 100-record UK FSA spike, commit the raw UK FSA file, processed UK FSA file, and merged canonical processed file together only after the UK FSA audit passes. UK FSA detail payloads can be verbose, so any future full backfill should reconsider whether to commit full raw detail payloads, a smaller fixture, or only normalized processed records.
 
 The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, and UK FSA Food Alerts records.
+
+## Integrated Source Audit
+
+```powershell
+npm run audit:sources
+```
+
+This is a local-only launch-readiness audit for the canonical merged file. It reads `data/processed/recalls.json`, checks the six active source ids and expected counts, verifies the active source registry matches the canonical data, reports duplicate ids, reports sparse fields by source, and summarizes category distribution by source.
+
+Expected current counts:
+
+- CPSC: 301
+- FDA/openFDA: 100
+- France RappelConso: 100
+- Canada Recalls and Safety Alerts: 100
+- EU Safety Gate: 100
+- UK FSA Food Alerts: 100
+- Total: 801

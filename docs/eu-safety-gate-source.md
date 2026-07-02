@@ -24,7 +24,7 @@ No third-party mirror and no HTML scraping are used.
 - Display label: `European Union · Safety Gate`
 - Default limit: `EU_SAFETY_GATE_LIMIT=100`
 - Current EU records: 100
-- Current canonical total: 701
+- Current canonical total after Phase 10.2 UK FSA: 801
 - Static/local-first only: the built site reads `data/processed/recalls.json`
 - No runtime API calls from the browser
 - No backend, database, account system, email, product registration, alert backend, LLM feature, or affiliate behavior
@@ -112,7 +112,7 @@ Expected counts after the current 100-record spike:
 - France RappelConso: 100
 - Canada Recalls and Safety Alerts: 100
 - EU Safety Gate: 100
-- Total: 701
+- Total: 801
 
 Limit controls:
 
@@ -195,7 +195,7 @@ Current expected counts:
 - France RappelConso: 100
 - Canada Recalls and Safety Alerts: 100
 - EU Safety Gate: 100
-- Total: 701
+- Total: 801
 
 Current EU audit checks:
 
@@ -232,7 +232,7 @@ Audit method:
 Current audited counts:
 
 - EU Safety Gate records: 100
-- Total canonical records: 701
+- Total canonical records: 801
 - Source counts: CPSC 301, FDA/openFDA 100, France RappelConso 100, Canada Recalls and Safety Alerts 100, EU Safety Gate 100
 
 Current EU source characteristics from the 100-record spike:

@@ -60,6 +60,7 @@ Commands:
 - `npm run normalize:eu-safety-gate` rebuilds EU Safety Gate processed data from `data/raw/eu-safety-gate-recalls.json`.
 - `npm run fetch:uk-fsa` fetches the bounded UK FSA Food Alerts source spike.
 - `npm run normalize:uk-fsa` rebuilds UK FSA processed data from `data/raw/uk-fsa-alerts.json`.
+- `npm run audit:sources` audits integrated source counts, active source ids, duplicate ids, sparse fields, and category distribution without making network calls.
 - `npm run audit:uk-fsa` audits the bounded UK FSA source spike.
 - `npm run build:data` currently runs the CPSC, FDA/openFDA, France RappelConso, Canada, EU Safety Gate, and UK FSA fetch pipelines.
 
@@ -131,6 +132,15 @@ Phase 10.2 UK FSA update workflow:
 - `npm run update:uk-fsa` is the explicit network refresh workflow and runs fetch, normalize, merge, and audit in sequence.
 - Local-only validation should use `npm run data:uk-fsa:normalize`, `npm run data:merge`, and `npm run audit:uk-fsa`.
 - Keep `UK_FSA_LIMIT=100` as the default until a separate full-backfill phase reviews raw file size, page count, brand page growth, and commit strategy.
+
+Phase 11 integrated source QA:
+
+- Active source ids are `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, and `UK_FSA`.
+- `npm run audit:sources` verifies the integrated source registry and canonical `data/processed/recalls.json` stay aligned.
+- Current expected counts are 301 CPSC, 100 FDA/openFDA, 100 France RappelConso, 100 Canada Recalls and Safety Alerts, 100 EU Safety Gate, and 100 UK FSA Food Alerts, for 801 total records.
+- Current static build output is around 1382 pages, and `data/processed/recalls.json` is around 5.8 MB.
+- Full backfills should measure canonical data size, detail page count, brand page count, build time, and static output size before merge.
+- Cross-source dedupe is not implemented yet; source-prefixed ids are preserved.
 
 ## Site Data Loader
 

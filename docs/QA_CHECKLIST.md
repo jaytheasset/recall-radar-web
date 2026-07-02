@@ -4,7 +4,7 @@
 
 - Confirm the project folder is `C:\Users\pc\codex-projects\recall-radar-web`.
 - Confirm no files from other projects were copied or reused.
-- Confirm no Git remote is configured.
+- Confirm the intended Git remote is `origin` for `jaytheasset/recall-radar-web` when a phase requires a branch push.
 - Confirm no real `.env` files exist.
 
 ## Commands
@@ -21,6 +21,7 @@
 - `npm run normalize:canada`
 - `npm run fetch:eu-safety-gate`
 - `npm run normalize:eu-safety-gate`
+- `npm run audit:sources`
 - `npm run audit:eu-safety-gate`
 - `npm run fetch:uk-fsa`
 - `npm run normalize:uk-fsa`
@@ -65,6 +66,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm official Safety Gate image URLs use `https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/{photoId}` where images are available.
 - Confirm canonical records preserve existing CPSC, FDA/openFDA, France RappelConso, and Canada records and append bounded EU Safety Gate records by stable id.
 - Confirm canonical records are sorted by `recallDate` descending where possible.
+- Confirm `npm run audit:sources` passes with only active six-source coverage.
 - Confirm `npm run audit:eu-safety-gate` passes.
 - Confirm EU audit reports barcode, model/type, batch/serial, risk type, notifying country, country of origin, countries concerned or market detail coverage.
 - Confirm EU audit reports no suspicious category mappings and no EU records are mapped to food/allergy.
@@ -146,13 +148,13 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm source, category, sort, and date filter changes update the URL query string.
 - Confirm category filters include all, baby/kids, battery/electronics, food/allergy, household/appliance, food, and general.
 - Confirm sort options include best match, newest first, and oldest first.
-- A full CPSC recall title returns an exact local match.
-- A real CPSC brand name returns an exact or possible local match.
-- A real FDA recalling firm or food product returns an exact or possible local match when FDA records exist.
-- A normalized display brand name returns a local match.
-- `battery` returns possible or related local matches when battery records exist.
-- `smoke detector` returns possible or related local matches when detector records exist.
-- `not-a-real-product` returns no local match.
+- A full CPSC recall title returns an exact match.
+- A real CPSC brand name returns an exact or possible match.
+- A real FDA recalling firm or food product returns an exact or possible match when FDA records exist.
+- A normalized display brand name returns a match.
+- `battery` returns possible or related matches when battery records exist.
+- `smoke detector` returns possible or related matches when detector records exist.
+- `not-a-real-product` returns the no-clear-match warning.
 - Confirm result cards show match badges, source label, recall date, product/brand context, hazard summary, and detail links.
 
 ## Source Counts
@@ -164,6 +166,9 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm EU Safety Gate count is 100.
 - Confirm UK FSA Food Alerts count is 100.
 - Confirm total canonical count is 801.
+- Confirm active source filter values are `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, and `UK_FSA`.
+- Confirm Korea, Japan, and Australia do not appear as active source filters.
+- Confirm `npm run audit:sources` reports no unknown source ids, no duplicate ids, no active source with zero records, and no source-registry/data mismatch.
 
 ## Watchlist Demo
 
@@ -173,7 +178,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm `/watchlist` shows saved search terms, saved brands, source/category preferences, source labels, and detail links.
 - Confirm saved watchlist items can be removed individually.
 - Confirm all saved watchlist items can be cleared.
-- Confirm the demo alert form says local demo only and does not submit, send, store, or transmit an email address.
+- Confirm the email preview form does not submit, send, store, or transmit an email address.
 - Confirm watchlist matching results show the required disclaimer.
 
 ## Safety Copy
