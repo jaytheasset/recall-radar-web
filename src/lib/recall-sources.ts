@@ -1,4 +1,11 @@
-export type RecallSourceId = 'CPSC' | 'FDA' | 'FR_RAPPELCONSO' | 'CA_RECALLS' | 'EU_SAFETY_GATE' | 'Mock';
+export type RecallSourceId =
+  | 'CPSC'
+  | 'FDA'
+  | 'FR_RAPPELCONSO'
+  | 'CA_RECALLS'
+  | 'EU_SAFETY_GATE'
+  | 'UK_FSA'
+  | 'Mock';
 export type CurrentCoverageSourceId = Exclude<RecallSourceId, 'Mock'>;
 export type RecallSourceType = 'official-api' | 'sample';
 
@@ -250,6 +257,52 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     officialVerificationCopy:
       'Use the official Safety Gate alert to confirm affected products, identifiers, risks, measures, notifying country, country of origin, and countries concerned.'
   },
+  UK_FSA: {
+    id: 'UK_FSA',
+    marketCode: 'UK',
+    marketLabel: 'United Kingdom',
+    agencyLabel: 'FSA Food Alerts',
+    sourceType: 'official-api',
+    displayLabel: 'United Kingdom · FSA Food Alerts',
+    noticeTypeLabel: 'Food alert',
+    productScopeLabel: 'Food, allergy, and food alerts for action',
+    identifierTypes: [
+      'FSA alert reference',
+      'allergen',
+      'pathogen or contamination reason',
+      'batch or lot code',
+      'best-before / use-by date',
+      'pack size',
+      'product name',
+      'brand/company'
+    ],
+    supportsImages: false,
+    supportsDistributionDetails: true,
+    rawPayloadNotes:
+      'UK FSA Food Alerts records can include notation, title, description, alertURL, reportingBusiness, otherBusiness, problem risk statements, allergens/pathogens, productDetails, batchDescription, actionTaken, consumerAdvice, relatedMedia, status, and alert type.',
+    officialSourceLabel: 'Source: United Kingdom · FSA Food Alerts',
+    placeholderLabel: 'FSA food alert',
+    reasonLabel: 'Reason',
+    actionLabel: 'Consumer action',
+    quantityLabel: 'Pack or quantity',
+    distributionLabel: 'Market details',
+    defaultActionFallback: DEFAULT_ACTION_FALLBACK,
+    verificationIntro:
+      'Compare the details below with your food package, label, lot or batch code, use-by or best-before date, allergen information, and official FSA notice. A matching search result does not confirm your exact product is included.',
+    verificationChecklist: [
+      'Product name and brand/company',
+      'FSA alert reference',
+      'Pack size or package description',
+      'Batch, lot, best-before, or use-by details if listed',
+      'Allergen, pathogen, or contamination reason',
+      'Point-of-sale or customer notice details',
+      'Consumer action in the official notice'
+    ],
+    sparseIdentificationCopy:
+      'This indexed notice may not list every identifier in a structured field. Review the official FSA notice, food label, and batch or date code carefully.',
+    officialVerificationCopy:
+      'Use the official FSA notice to confirm affected products, pack sizes, batches, dates, allergens or risks, and consumer action.'
+  },
   Mock: {
     id: 'Mock',
     marketCode: '',
@@ -290,7 +343,8 @@ const currentCoverageSources: CurrentCoverageSourceId[] = [
   'FDA',
   'FR_RAPPELCONSO',
   'CA_RECALLS',
-  'EU_SAFETY_GATE'
+  'EU_SAFETY_GATE',
+  'UK_FSA'
 ];
 
 function normalizeSourceId(source: string): RecallSourceId {
@@ -299,6 +353,7 @@ function normalizeSourceId(source: string): RecallSourceId {
     source === 'FR_RAPPELCONSO' ||
     source === 'CA_RECALLS' ||
     source === 'EU_SAFETY_GATE' ||
+    source === 'UK_FSA' ||
     source === 'Mock'
     ? source
     : 'Mock';

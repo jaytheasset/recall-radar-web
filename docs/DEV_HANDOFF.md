@@ -58,7 +58,10 @@ Commands:
 - `npm run normalize:canada` rebuilds Canada processed data from `data/raw/canada-recalls.json`.
 - `npm run fetch:eu-safety-gate` fetches the bounded EU Safety Gate source spike.
 - `npm run normalize:eu-safety-gate` rebuilds EU Safety Gate processed data from `data/raw/eu-safety-gate-recalls.json`.
-- `npm run build:data` currently runs the CPSC, FDA/openFDA, France RappelConso, Canada, and EU Safety Gate fetch pipelines.
+- `npm run fetch:uk-fsa` fetches the bounded UK FSA Food Alerts source spike.
+- `npm run normalize:uk-fsa` rebuilds UK FSA processed data from `data/raw/uk-fsa-alerts.json`.
+- `npm run audit:uk-fsa` audits the bounded UK FSA source spike.
+- `npm run build:data` currently runs the CPSC, FDA/openFDA, France RappelConso, Canada, EU Safety Gate, and UK FSA fetch pipelines.
 
 Local output files:
 
@@ -67,11 +70,13 @@ Local output files:
 - `data/raw/rappelconso-recalls.json`
 - `data/raw/canada-recalls.json`
 - `data/raw/eu-safety-gate-recalls.json`
+- `data/raw/uk-fsa-alerts.json`
 - `data/processed/cpsc-recalls.json`
 - `data/processed/fda-recalls.json`
 - `data/processed/rappelconso-recalls.json`
 - `data/processed/canada-recalls.json`
 - `data/processed/eu-safety-gate-recalls.json`
+- `data/processed/uk-fsa-alerts.json`
 - `data/processed/recalls.json`
 
 The fetch script calls `https://www.saferproducts.gov/RestWebServices/Recall` without an API key. It writes only after the API returns non-empty records, and each raw file includes a `fetchedAt` timestamp.
@@ -84,6 +89,13 @@ The EU Safety Gate fetch script calls official EU Safety Gate endpoints only:
 - `https://ec.europa.eu/safety-gate-alerts/public/api/notification/{id}?language=en`
 
 It fetches a bounded default of 100 recent dangerous non-food product alerts, writes only after non-empty records return, and each raw file includes a `fetchedAt` timestamp.
+
+The UK FSA fetch script calls official FSA Food Alerts endpoints only:
+
+- `https://data.food.gov.uk/food-alerts/id.json?_limit=100&_sort=-created`
+- `https://data.food.gov.uk/food-alerts/id/{notation}.json`
+
+It fetches a bounded default of 100 recent food alerts, allergy alerts, product recall information notices, and food alerts for action. It writes only after non-empty records return, and each raw file includes a `fetchedAt` timestamp. See `docs/uk-fsa-source.md`.
 
 EU Safety Gate operational update strategy:
 
@@ -98,14 +110,15 @@ Normalized records use `src/data/recall-types.ts` and include `id`, `source`, `s
 
 Do not call fetch scripts during UI-only phases unless a later task explicitly asks for fresh local data.
 
-Phase 9 EU Safety Gate current counts:
+Phase 10 current source counts:
 
 - CPSC: 301
 - FDA/openFDA: 100
 - France RappelConso: 100
 - Canada Recalls and Safety Alerts: 100
 - EU Safety Gate: 100
-- Total: 701
+- UK FSA Food Alerts: 100
+- Total: 801
 
 ## Site Data Loader
 
@@ -113,15 +126,14 @@ Phase 9 EU Safety Gate current counts:
 
 - loads `data/processed/recalls.json` at build time
 - maps CPSC and FDA/openFDA records into a UI-safe `SiteRecall` shape
-- labels CPSC records as `Local CPSC data`
-- labels FDA records as `Local FDA/openFDA data`
+- routes source labels through `src/lib/recall-sources.ts`
 - builds concise recall detail slugs from cleaned title text, with product/brand fallback context
 - limits generated detail slugs at word boundaries while preserving uniqueness with the CPSC id
 - builds brand groups from `brandNames`
 - keeps raw CPSC brand/legal names on each recall
 - adds normalized consumer-facing brand display names and shorter brand slugs through `src/lib/brand-normalize.ts`
 - classifies records lightly into baby/kids, battery/electronics, food/allergy, household/appliance, or general consumer product
-- routes FDA/openFDA food records into the food/allergy page for local browsing
+- routes FDA/openFDA and UK FSA food records into the food/allergy page for browsing
 - falls back to mock records only when no processed records are available
 
 ## Brand Normalization

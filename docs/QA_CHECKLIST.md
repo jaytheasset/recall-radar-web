@@ -22,6 +22,9 @@
 - `npm run fetch:eu-safety-gate`
 - `npm run normalize:eu-safety-gate`
 - `npm run audit:eu-safety-gate`
+- `npm run fetch:uk-fsa`
+- `npm run normalize:uk-fsa`
+- `npm run audit:uk-fsa`
 - `npm run dev`
 - `npm run preview`
 
@@ -70,6 +73,23 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm the default EU Safety Gate limit remains `EU_SAFETY_GATE_LIMIT=100`.
 - Confirm EU raw, EU processed, and canonical processed data are reviewed and committed together after a successful EU update.
 
+## UK FSA Food Alerts Pipeline
+
+- Confirm `npm run fetch:uk-fsa` saves `data/raw/uk-fsa-alerts.json`.
+- Confirm `npm run fetch:uk-fsa` saves `data/processed/uk-fsa-alerts.json`.
+- Confirm `npm run fetch:uk-fsa` rebuilds canonical `data/processed/recalls.json`.
+- Confirm raw UK FSA output includes `fetchedAt`.
+- Confirm UK FSA records include `source: UK_FSA`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard` or `reason`, `recallDate`, `description`, `slug`, and `raw`.
+- Confirm the UK FSA source label renders as `United Kingdom · FSA Food Alerts`.
+- Confirm official FSA notice URLs use `https://alerts.food.gov.uk/news-alerts/alert/{notation}` or `https://www.food.gov.uk/news-alerts/alert/{notation}`.
+- Confirm canonical records preserve existing CPSC, FDA/openFDA, France RappelConso, Canada, and EU Safety Gate records and append bounded UK FSA records by stable id.
+- Confirm canonical records are sorted by `recallDate` descending where possible.
+- Confirm `npm run audit:uk-fsa` passes.
+- Confirm UK FSA audit reports classification distribution, batch/date detail coverage, allergen or risk label coverage, official URL shape, and source filter values.
+- Confirm UK FSA detail pages show FSA alert reference, pack size, batch/date details when present, allergen/risk details, consumer action, and the official FSA source link.
+- Confirm `npm run update:uk-fsa` remains an explicit refresh command and is not part of `npm run check` or `npm run build`.
+- Confirm the default UK FSA limit remains `UK_FSA_LIMIT=100`.
+
 ## Pages
 
 - `/`
@@ -77,6 +97,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - `/checker?q=pistachio&source=FDA`
 - `/checker?q=smoke&source=CPSC`
 - `/checker?q=toy&source=EU_SAFETY_GATE`
+- `/checker?source=UK_FSA`
 - `/watchlist`
 - `/baby-product-recalls`
 - `/battery-recalls`
@@ -84,10 +105,11 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - one real CPSC `/recalls/[slug]` page
 - one real FDA `/recalls/[slug]` page, when FDA data has been fetched
 - one real EU Safety Gate `/recalls/[slug]` page, when EU data has been fetched
+- one real UK FSA `/recalls/[slug]` page, when UK FSA data has been fetched
 - one normalized real CPSC `/brands/[brand]` page
-- Confirm page labels identify CPSC records as local CPSC data.
-- Confirm page labels identify FDA records as local FDA/openFDA data.
+- Confirm source labels render through `src/lib/recall-sources.ts`.
 - Confirm page labels identify EU records as European Union Safety Gate records.
+- Confirm page labels identify UK FSA records as United Kingdom FSA Food Alerts records.
 - Confirm category pages show a matching local record count.
 - Confirm `/food-allergy-recalls` shows FDA/openFDA food records before CPSC food/allergy records when FDA records exist.
 - Confirm core pages remain readable at narrow mobile widths and long titles/labels wrap instead of overflowing.
@@ -116,6 +138,8 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm `/checker?q=pistachio&source=FDA` applies the FDA/openFDA source filter.
 - Confirm `/checker?q=smoke&source=CPSC` applies the CPSC source filter.
 - Confirm `/checker?q=toy&source=EU_SAFETY_GATE` applies the EU Safety Gate source filter.
+- Confirm `/checker?source=UK_FSA` applies the UK FSA source filter.
+- Confirm a real UK FSA food, allergen, batch, or date query returns an exact or possible match when UK FSA records exist.
 - Confirm source, category, sort, and date filter changes update the URL query string.
 - Confirm category filters include all, baby/kids, battery/electronics, food/allergy, household/appliance, food, and general.
 - Confirm sort options include best match, newest first, and oldest first.
@@ -135,7 +159,8 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm France RappelConso count is 100.
 - Confirm Canada Recalls and Safety Alerts count is 100.
 - Confirm EU Safety Gate count is 100.
-- Confirm total canonical count is 701.
+- Confirm UK FSA Food Alerts count is 100.
+- Confirm total canonical count is 801.
 
 ## Watchlist Demo
 

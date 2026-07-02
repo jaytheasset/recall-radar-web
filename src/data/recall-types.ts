@@ -1,4 +1,10 @@
-export type RecallSource = 'CPSC' | 'FDA' | 'FR_RAPPELCONSO' | 'CA_RECALLS' | 'EU_SAFETY_GATE';
+export type RecallSource =
+  | 'CPSC'
+  | 'FDA'
+  | 'FR_RAPPELCONSO'
+  | 'CA_RECALLS'
+  | 'EU_SAFETY_GATE'
+  | 'UK_FSA';
 export type ProcessedRecallSource = RecallSource | 'MULTI';
 
 export type RecallImage = {

@@ -9,6 +9,7 @@ Current rules:
 - The public RappelConso open data endpoint is allowed only when a task asks for France RappelConso refreshes.
 - The public Canada Recalls and Safety Alerts open-data feed is allowed only when a task asks for Canada recall refreshes.
 - The official EU Safety Gate public API endpoints are allowed only when a task asks for EU Safety Gate refreshes.
+- The official UK FSA Food Alerts API endpoints are allowed only when a task asks for UK FSA refreshes.
 - UI-only phases should use the existing local `data/processed/recalls.json` file and should not fetch unless a later task explicitly asks for fresh data.
 - Do not connect databases.
 - Do not write secrets.
@@ -136,7 +137,7 @@ npm run data:merge
 npm run audit:rappelconso
 ```
 
-The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada, and EU Safety Gate records.
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada, EU Safety Gate, and UK FSA records.
 
 ## Canada Recalls and Safety Alerts Fetch
 
@@ -277,4 +278,74 @@ Do not wire EU Safety Gate fetches into `npm run check`, `npm run build`, or UI 
 
 For the current 100-record EU spike, commit the raw EU file, processed EU file, and merged canonical processed file together only after the EU audit passes. For larger future EU pulls, reconsider the raw commit strategy because Safety Gate detail payloads are verbose.
 
-The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, and EU Safety Gate records.
+## UK FSA Food Alerts Fetch
+
+```powershell
+npm run fetch:uk-fsa
+```
+
+This calls the official UK FSA Food Alerts linked-data API:
+
+`https://data.food.gov.uk/food-alerts/id.json?_limit=100&_sort=-created`
+
+and detail records at:
+
+`https://data.food.gov.uk/food-alerts/id/{notation}.json`
+
+Default behavior:
+
+- Requests the 100 most recent UK FSA Food Alerts records.
+- Fetches official structured detail JSON for each bounded alert.
+- Saves the bounded raw response wrapper to `data/raw/uk-fsa-alerts.json`.
+- Saves normalized UK FSA records to `data/processed/uk-fsa-alerts.json`.
+- Rebuilds the merged canonical file at `data/processed/recalls.json`.
+- Adds `fetchedAt` to the raw output.
+- Refuses to overwrite processed output when the API returns zero records.
+
+Optional limit:
+
+```powershell
+npm run fetch:uk-fsa -- --limit=50
+```
+
+The default UK FSA limit is 100. It can also be set with an environment variable:
+
+```powershell
+$env:UK_FSA_LIMIT = "100"
+npm run fetch:uk-fsa
+Remove-Item Env:UK_FSA_LIMIT
+```
+
+To rebuild UK FSA processed data from the saved raw file:
+
+```powershell
+npm run normalize:uk-fsa
+```
+
+To audit the current local UK FSA processed data without making network calls:
+
+```powershell
+npm run audit:uk-fsa
+```
+
+The UK FSA audit reports source counts, duplicate ids, slug collisions, missing required fields, classification distribution, official URL shape, batch/date detail coverage, allergen or risk label coverage, source filter values, and food/allergy category mapping.
+
+To run the explicit UK FSA refresh workflow, including network fetch and local audit:
+
+```powershell
+npm run update:uk-fsa
+```
+
+For local-only validation from the existing raw file:
+
+```powershell
+npm run data:uk-fsa:normalize
+npm run data:merge
+npm run audit:uk-fsa
+```
+
+Do not wire UK FSA fetches into `npm run check`, `npm run build`, or UI tests.
+
+For the current 100-record UK FSA spike, commit the raw UK FSA file, processed UK FSA file, and merged canonical processed file together only after the UK FSA audit passes.
+
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, and UK FSA Food Alerts records.

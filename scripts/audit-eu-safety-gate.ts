@@ -29,7 +29,7 @@ type AuditSummary = {
   warnings: string[];
 };
 
-const expectedSourceFilterValues = ['all', 'CPSC', 'FDA', 'FR_RAPPELCONSO', 'CA_RECALLS', 'EU_SAFETY_GATE'];
+const expectedSourceFilterValues = ['all', 'CPSC', 'FDA', 'FR_RAPPELCONSO', 'CA_RECALLS', 'EU_SAFETY_GATE', 'UK_FSA'];
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const processedPath = resolve(projectRoot, 'data/processed/eu-safety-gate-recalls.json');
 const canonicalProcessedPath = resolve(projectRoot, 'data/processed/recalls.json');
@@ -303,7 +303,8 @@ async function readCanonicalCounts(): Promise<SourceCounts> {
     FDA: records.filter((record) => record.source === 'FDA').length,
     FR_RAPPELCONSO: records.filter((record) => record.source === 'FR_RAPPELCONSO').length,
     CA_RECALLS: records.filter((record) => record.source === 'CA_RECALLS').length,
-    EU_SAFETY_GATE: records.filter((record) => record.source === 'EU_SAFETY_GATE').length
+    EU_SAFETY_GATE: records.filter((record) => record.source === 'EU_SAFETY_GATE').length,
+    UK_FSA: records.filter((record) => record.source === 'UK_FSA').length
   };
 }
 
@@ -395,12 +396,13 @@ function audit(records: NormalizedRecall[]): AuditSummary {
 
 function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sourceFilters: string[]): string[] {
   const expectedCounts: SourceCounts = {
-    total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 701),
+    total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 801),
     CPSC: expectedNumber('EXPECTED_CPSC_COUNT', 301),
     FDA: expectedNumber('EXPECTED_FDA_COUNT', 100),
     FR_RAPPELCONSO: expectedNumber('EXPECTED_RAPPELCONSO_COUNT', 100),
     CA_RECALLS: expectedNumber('EXPECTED_CANADA_RECALLS_COUNT', 100),
-    EU_SAFETY_GATE: expectedNumber('EXPECTED_EU_SAFETY_GATE_COUNT', 100)
+    EU_SAFETY_GATE: expectedNumber('EXPECTED_EU_SAFETY_GATE_COUNT', 100),
+    UK_FSA: expectedNumber('EXPECTED_UK_FSA_COUNT', 100)
   };
   const severeMissingThreshold = Math.max(1, Math.floor(summary.total * 0.05));
 
@@ -426,6 +428,9 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
       : '',
     canonicalCounts.EU_SAFETY_GATE !== expectedCounts.EU_SAFETY_GATE
       ? `Canonical EU_SAFETY_GATE count ${canonicalCounts.EU_SAFETY_GATE} does not match expected ${expectedCounts.EU_SAFETY_GATE}.`
+      : '',
+    canonicalCounts.UK_FSA !== expectedCounts.UK_FSA
+      ? `UK_FSA count ${canonicalCounts.UK_FSA} does not match expected ${expectedCounts.UK_FSA}.`
       : '',
     summary.duplicateIds.length > 0 ? `Duplicate ids found: ${summary.duplicateIds.length}.` : '',
     summary.slugCollisions.length > 0 ? `Slug collisions found: ${summary.slugCollisions.length}.` : '',
@@ -491,7 +496,8 @@ async function runAudit(): Promise<void> {
             FDA: canonicalCounts.FDA,
             FR_RAPPELCONSO: canonicalCounts.FR_RAPPELCONSO,
             CA_RECALLS: canonicalCounts.CA_RECALLS,
-            EU_SAFETY_GATE: canonicalCounts.EU_SAFETY_GATE
+            EU_SAFETY_GATE: canonicalCounts.EU_SAFETY_GATE,
+            UK_FSA: canonicalCounts.UK_FSA
           },
           duplicateIds: summary.duplicateIds.length,
           slugCollisions: summary.slugCollisions.length,

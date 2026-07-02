@@ -131,6 +131,35 @@ function rawObject(raw: RawObject, key: string): RawObject {
   return isObject(value) ? value : {};
 }
 
+function nestedObjects(value: unknown): RawObject[] {
+  if (Array.isArray(value)) {
+    return value.filter(isObject);
+  }
+
+  return isObject(value) ? [value] : [];
+}
+
+function valuesForKeys(value: unknown, keys: string[]): string[] {
+  return uniqueNonEmpty(nestedObjects(value).flatMap((item) => keys.map((key) => safeText(item[key]))));
+}
+
+function labelValuesFrom(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return uniqueNonEmpty(value.flatMap(labelValuesFrom));
+  }
+
+  if (isObject(value)) {
+    return uniqueNonEmpty([
+      safeText(value.label),
+      safeText(value.prefLabel),
+      safeText(value.notation),
+      safeText(value.riskStatement)
+    ]);
+  }
+
+  return uniqueNonEmpty([safeText(value)]);
+}
+
 function splitRawText(raw: RawObject, key: string): string[] {
   const value = raw[key];
   if (Array.isArray(value)) {
@@ -506,6 +535,118 @@ function buildCanadaView(recall: SiteRecall, raw: RawObject): SourceDetailView {
   };
 }
 
+function ukFsaTypeCodes(raw: RawObject): string[] {
+  return uniqueNonEmpty(
+    (Array.isArray(raw.type) ? raw.type : [raw.type])
+      .map((item) => {
+        const id = typeof item === 'string' ? item : isObject(item) ? safeText(item['@id']) : '';
+        return id.match(/\/def\/([A-Z]+)/i)?.[1]?.toUpperCase() ?? '';
+      })
+      .filter((code) => code && code !== 'ALERT')
+  );
+}
+
+function ukFsaClassification(raw: RawObject): string {
+  const labels: Record<string, string> = {
+    AA: 'Allergy Alert',
+    PRIN: 'Product Recall Information Notice',
+    FAFA: 'Food Alert For Action'
+  };
+
+  return uniqueNonEmpty(ukFsaTypeCodes(raw).map((code) => labels[code] ?? code)).join('; ');
+}
+
+function ukFsaProductDetails(product: RawObject): string[] {
+  return uniqueNonEmpty([
+    safeText(product.productName),
+    safeText(product.packSizeDescription),
+    ...valuesForKeys(product.batchDescription, [
+      'batchCode',
+      'lotCode',
+      'batchDescription',
+      'bestBeforeDescription',
+      'useByDescription'
+    ])
+  ]);
+}
+
+function buildUkFsaView(recall: SiteRecall, raw: RawObject): SourceDetailView {
+  const products = rawArray(raw, 'productDetails');
+  const problems = rawArray(raw, 'problem');
+  const productName = firstNonEmpty(
+    [...products.map((product) => safeText(product.productName)), ...recall.productNames, recall.primaryProductName],
+    'Product'
+  );
+  const reportingBusiness = rawObject(raw, 'reportingBusiness');
+  const otherBusiness = rawObject(raw, 'otherBusiness');
+  const brandName = firstNonEmpty(
+    [safeText(reportingBusiness.commonName), safeText(otherBusiness.commonName), ...recall.displayBrandNames, recall.primaryBrand],
+    'Business not listed'
+  );
+  const riskLabels = uniqueNonEmpty(
+    problems.flatMap((problem) => [
+      ...labelValuesFrom(problem.allergen),
+      ...labelValuesFrom(problem.pathogenRisk),
+      ...labelValuesFrom(problem.hazardCategory),
+      ...labelValuesFrom(problem.reason)
+    ])
+  );
+  const riskStatements = uniqueNonEmpty(problems.map((problem) => safeText(problem.riskStatement)));
+  const reason = firstNonEmpty([riskStatements.join(' '), riskLabels.join(', '), rawText(raw, 'description'), recall.reason ?? '', recall.hazard], 'Reason not listed.');
+  const actionTaken = rawText(raw, 'actionTaken');
+  const consumerAdvice = rawText(raw, 'consumerAdvice');
+  const action = firstNonEmpty([consumerAdvice, actionTaken, recall.remedy], getRecallDefaultActionFallback(recall.source));
+  const productSummaries = products.map((product) => ukFsaProductDetails(product).join(' / ')).filter(Boolean);
+  const packSizes = uniqueNonEmpty(products.map((product) => safeText(product.packSizeDescription)));
+  const batchDetails = uniqueNonEmpty(
+    products.flatMap((product) =>
+      valuesForKeys(product.batchDescription, [
+        'batchCode',
+        'lotCode',
+        'batchDescription',
+        'bestBeforeDescription',
+        'useByDescription'
+      ])
+    )
+  );
+  const relatedMedia = rawArray(raw, 'relatedMedia');
+  const details: DetailFact[] = [];
+
+  addFact(details, 'Product', productName);
+  addFact(details, 'Brand or company', brandName);
+  addFact(details, 'FSA alert reference', rawText(raw, 'notation') || recall.recallNumber || '');
+  addFact(details, 'Pack size', packSizes);
+  addFact(details, 'Batch, lot, best-before, or use-by details', batchDetails);
+  addFact(details, 'Allergen or risk details', riskLabels);
+  addFact(details, 'Product details', productSummaries);
+  addFact(details, 'Related source notice', relatedMedia.map((media) => safeText(media.title)));
+
+  return {
+    displayTitle: displayTitleFor(productName, rawText(raw, 'title') || recall.title),
+    officialTitle: rawText(raw, 'title') || recall.title,
+    productName,
+    brandName,
+    recallDate: formatDate(rawText(raw, 'created') || recall.recallDate),
+    recallNumber: rawText(raw, 'notation') || recall.recallNumber || '',
+    imageCaptions: [],
+    reason,
+    action,
+    actionDetail: uniqueNonEmpty([consumerAdvice, actionTaken]).join(' '),
+    actionParagraphs: paragraphs(uniqueNonEmpty([consumerAdvice, actionTaken]).join(' ') || action),
+    description: rawText(raw, 'description') || recall.description || productName,
+    identificationDetails: details,
+    consumerContact: '',
+    soldAt: uniqueNonEmpty([recall.distributionPattern ?? 'United Kingdom']),
+    incidents: [],
+    importer: [],
+    manufacturer: uniqueNonEmpty([safeText(reportingBusiness.commonName), safeText(otherBusiness.commonName)]),
+    manufacturedIn: [],
+    units: productSummaries.join('; ') || recall.affectedUnits || recall.productQuantity || '',
+    fdaDetails: details,
+    classification: ukFsaClassification(raw)
+  } as SourceDetailView;
+}
+
 function buildEuSafetyGateView(recall: SiteRecall, raw: RawObject): SourceDetailView {
   const product = rawObject(raw, 'product');
   const risk = rawObject(raw, 'risk');
@@ -632,7 +773,9 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
           ? buildCanadaView(recall, raw)
           : recall.source === 'EU_SAFETY_GATE'
             ? buildEuSafetyGateView(recall, raw)
-            : buildCpscView(recall, raw);
+            : recall.source === 'UK_FSA'
+              ? buildUkFsaView(recall, raw)
+              : buildCpscView(recall, raw);
   const productIntro = sourceSpecificView.productName
     ? `This recall involves ${sourceSpecificView.productName}`
     : 'This recall involves a recalled product';

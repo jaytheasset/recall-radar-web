@@ -7,6 +7,7 @@ import {
   processedFdaRecordCount,
   processedFranceRappelConsoRecordCount,
   processedLocalRecordCount,
+  processedUkFsaRecordCount,
   siteRecalls
 } from '../lib/recall-data';
 import { getRecallSourcePlaceholder } from '../lib/recall-sources';
@@ -20,7 +21,7 @@ const babyCount = getRecallsByCategory('baby-kids').length;
 const batteryCount = getRecallsByCategory('battery-electronics').length;
 const foodCount = getRecallsByCategory('food-allergy').length;
 const householdCount = getRecallsByCategory('household-appliance').length;
-const countLine = `${processedLocalRecordCount} indexed recall notices · ${processedCpscRecordCount} consumer product notices · ${processedFdaRecordCount} food enforcement notices · ${processedFranceRappelConsoRecordCount} France RappelConso notices · ${processedCanadaRecordCount} Canada recall and safety alert notices · ${processedEuSafetyGateRecordCount} EU Safety Gate alerts`;
+const countLine = `${processedLocalRecordCount} indexed recall notices · ${processedCpscRecordCount} consumer product notices · ${processedFdaRecordCount} food enforcement notices · ${processedFranceRappelConsoRecordCount} France RappelConso notices · ${processedCanadaRecordCount} Canada recall and safety alert notices · ${processedEuSafetyGateRecordCount} EU Safety Gate alerts · ${processedUkFsaRecordCount} UK FSA food alerts`;
 const productTypes = [
   {
     label: 'Baby & Kids',

@@ -6,7 +6,8 @@ export type WatchlistSourceFilter =
   | 'FDA'
   | 'FR_RAPPELCONSO'
   | 'CA_RECALLS'
-  | 'EU_SAFETY_GATE';
+  | 'EU_SAFETY_GATE'
+  | 'UK_FSA';
 export type WatchlistCategoryFilter =
   | 'all'
   | 'baby-kids'

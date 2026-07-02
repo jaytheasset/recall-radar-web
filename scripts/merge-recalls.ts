@@ -11,6 +11,7 @@ export const fdaProcessedPath = resolve(projectRoot, 'data/processed/fda-recalls
 export const rappelConsoProcessedPath = resolve(projectRoot, 'data/processed/rappelconso-recalls.json');
 export const canadaProcessedPath = resolve(projectRoot, 'data/processed/canada-recalls.json');
 export const euSafetyGateProcessedPath = resolve(projectRoot, 'data/processed/eu-safety-gate-recalls.json');
+export const ukFsaProcessedPath = resolve(projectRoot, 'data/processed/uk-fsa-alerts.json');
 
 type MergeResult = ProcessedRecallFile & {
   countsBySource: Record<RecallSource, number>;
@@ -75,18 +76,20 @@ function countBySource(records: NormalizedRecall[]): Record<RecallSource, number
     FDA: records.filter((record) => record.source === 'FDA').length,
     FR_RAPPELCONSO: records.filter((record) => record.source === 'FR_RAPPELCONSO').length,
     CA_RECALLS: records.filter((record) => record.source === 'CA_RECALLS').length,
-    EU_SAFETY_GATE: records.filter((record) => record.source === 'EU_SAFETY_GATE').length
+    EU_SAFETY_GATE: records.filter((record) => record.source === 'EU_SAFETY_GATE').length,
+    UK_FSA: records.filter((record) => record.source === 'UK_FSA').length
   };
 }
 
 export async function mergeProcessedRecalls(): Promise<MergeResult> {
-  const [canonicalFile, cpscFile, fdaFile, rappelConsoFile, canadaFile, euSafetyGateFile] = await Promise.all([
+  const [canonicalFile, cpscFile, fdaFile, rappelConsoFile, canadaFile, euSafetyGateFile, ukFsaFile] = await Promise.all([
     readProcessedFile(canonicalProcessedPath),
     readProcessedFile(cpscProcessedPath),
     readProcessedFile(fdaProcessedPath),
     readProcessedFile(rappelConsoProcessedPath),
     readProcessedFile(canadaProcessedPath),
-    readProcessedFile(euSafetyGateProcessedPath)
+    readProcessedFile(euSafetyGateProcessedPath),
+    readProcessedFile(ukFsaProcessedPath)
   ]);
   const cpscRecords = sourceRecords(cpscFile, 'CPSC').length
     ? sourceRecords(cpscFile, 'CPSC')
@@ -95,12 +98,14 @@ export async function mergeProcessedRecalls(): Promise<MergeResult> {
   const rappelConsoRecords = sourceRecords(rappelConsoFile, 'FR_RAPPELCONSO');
   const canadaRecords = sourceRecords(canadaFile, 'CA_RECALLS');
   const euSafetyGateRecords = sourceRecords(euSafetyGateFile, 'EU_SAFETY_GATE');
+  const ukFsaRecords = sourceRecords(ukFsaFile, 'UK_FSA');
   const records = mergeRecords([
     ...cpscRecords,
     ...fdaRecords,
     ...rappelConsoRecords,
     ...canadaRecords,
-    ...euSafetyGateRecords
+    ...euSafetyGateRecords,
+    ...ukFsaRecords
   ]);
 
   if (records.length === 0) {

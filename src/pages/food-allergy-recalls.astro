@@ -14,10 +14,12 @@ const recalls = getRecallsByCategory('food-allergy').sort((a, b) => {
   return b.recallDate.localeCompare(a.recallDate);
 });
 const fdaRecalls = recalls.filter((recall) => recall.source === 'FDA');
+const ukFsaRecalls = recalls.filter((recall) => recall.source === 'UK_FSA');
 const franceRecalls = recalls.filter((recall) => recall.source === 'FR_RAPPELCONSO');
 const canadaRecalls = recalls.filter((recall) => recall.source === 'CA_RECALLS');
 const cpscRelevantRecalls = recalls.filter((recall) => recall.source === 'CPSC');
 const fdaSourceLabel = getRecallSourceLabel('FDA');
+const ukFsaSourceLabel = getRecallSourceLabel('UK_FSA');
 const franceSourceLabel = getRecallSourceLabel('FR_RAPPELCONSO');
 const canadaSourceLabel = getRecallSourceLabel('CA_RECALLS');
 const cpscSourceLabel = getRecallSourceLabel('CPSC');
@@ -50,6 +52,7 @@ const cpscSourceLabel = getRecallSourceLabel('CPSC');
           <span class="badge-source">Product type</span>
           <span class="badge-date">{recalls.length} indexed notice{recalls.length === 1 ? '' : 's'}</span>
           <span class="tag">{fdaRecalls.length} {fdaSourceLabel}</span>
+          <span class="tag">{ukFsaRecalls.length} {ukFsaSourceLabel}</span>
           <span class="tag">{franceRecalls.length} {franceSourceLabel}</span>
           <span class="tag">{canadaRecalls.length} {canadaSourceLabel}</span>
           <span class="tag">{cpscRelevantRecalls.length} {cpscSourceLabel}</span>
@@ -96,6 +99,41 @@ const cpscSourceLabel = getRecallSourceLabel('CPSC');
           </div>
         )}
       </section>
+
+      {ukFsaRecalls.length ? (
+        <section class="section">
+          <div class="section-header">
+            <div>
+              <h2>UK FSA food alerts</h2>
+              <p class="section-note">Food, allergy, and food action alerts from {ukFsaSourceLabel}.</p>
+            </div>
+            <span class="badge-date">{ukFsaRecalls.length} indexed notice{ukFsaRecalls.length === 1 ? '' : 's'}</span>
+          </div>
+          <div class="product-grid">
+            {ukFsaRecalls.map((recall) => (
+              <article class="product-card">
+                <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
+                  <span class="image-placeholder">{getRecallSourcePlaceholder(recall.source)}</span>
+                </a>
+                <div class="card-body">
+                  <div class="meta-row">
+                    <span class="badge-source">{recall.sourceLabel}</span>
+                    <span class="badge-date">{recall.recallDate}</span>
+                  </div>
+                  <h3><a href={recall.detailPath}>{recall.title}</a></h3>
+                  <p>{recall.hazard || recall.reason || 'Hazard or reason not listed in the indexed notice.'}</p>
+                  <div class="link-row">
+                    {recall.primaryBrandSlug ? (
+                      <a class="btn btn-ghost" href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} page</a>
+                    ) : null}
+                    <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {franceRecalls.length ? (
         <section class="section">

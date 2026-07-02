@@ -99,6 +99,10 @@ function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
     return 'food-allergy';
   }
 
+  if (record.source === 'UK_FSA') {
+    return 'food-allergy';
+  }
+
   const text = normalize(
     [
       record.title,
@@ -536,18 +540,21 @@ export const processedCanadaRecordCount = processedLocalRecalls.filter((recall) 
 export const processedEuSafetyGateRecordCount = processedLocalRecalls.filter(
   (recall) => recall.source === 'EU_SAFETY_GATE'
 ).length;
+export const processedUkFsaRecordCount = processedLocalRecalls.filter((recall) => recall.source === 'UK_FSA').length;
 export const usingProcessedCpscData = processedCpscRecordCount > 0;
 export const usingProcessedFdaData = processedFdaRecordCount > 0;
 export const usingProcessedFranceRappelConsoData = processedFranceRappelConsoRecordCount > 0;
 export const usingProcessedCanadaData = processedCanadaRecordCount > 0;
 export const usingProcessedEuSafetyGateData = processedEuSafetyGateRecordCount > 0;
+export const usingProcessedUkFsaData = processedUkFsaRecordCount > 0;
 export const dataSourceLabel = usingProcessedLocalData
   ? [
       usingProcessedCpscData ? getRecallSourceLabel('CPSC') : '',
       usingProcessedFdaData ? getRecallSourceLabel('FDA') : '',
       usingProcessedFranceRappelConsoData ? getRecallSourceLabel('FR_RAPPELCONSO') : '',
       usingProcessedCanadaData ? getRecallSourceLabel('CA_RECALLS') : '',
-      usingProcessedEuSafetyGateData ? getRecallSourceLabel('EU_SAFETY_GATE') : ''
+      usingProcessedEuSafetyGateData ? getRecallSourceLabel('EU_SAFETY_GATE') : '',
+      usingProcessedUkFsaData ? getRecallSourceLabel('UK_FSA') : ''
     ]
       .filter(Boolean)
       .join(' + ')

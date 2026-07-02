@@ -9,6 +9,7 @@ import {
   processedFdaRecordCount,
   processedFranceRappelConsoRecordCount,
   processedLocalRecordCount,
+  processedUkFsaRecordCount,
   siteRecalls,
   usingProcessedLocalData
 } from '../lib/recall-data';
@@ -114,6 +115,7 @@ const dateOptions = [
               <span class="tag">{processedFranceRappelConsoRecordCount} France RappelConso notices</span>
               <span class="tag">{processedCanadaRecordCount} Canada recall and safety alert notices</span>
               <span class="tag">{processedEuSafetyGateRecordCount} EU Safety Gate alerts</span>
+              <span class="tag">{processedUkFsaRecordCount} UK FSA food alerts</span>
             </>
           ) : null}
         </div>
@@ -254,7 +256,14 @@ const dateOptions = [
       const list = document.querySelector<HTMLElement>('#result-list');
 
       type SearchItem = ReturnType<typeof searchRecalls>['items'][number];
-      type SourceFilter = 'all' | 'CPSC' | 'FDA' | 'FR_RAPPELCONSO' | 'CA_RECALLS' | 'EU_SAFETY_GATE';
+      type SourceFilter =
+        | 'all'
+        | 'CPSC'
+        | 'FDA'
+        | 'FR_RAPPELCONSO'
+        | 'CA_RECALLS'
+        | 'EU_SAFETY_GATE'
+        | 'UK_FSA';
       type CategoryFilter =
         | 'all'
         | 'baby-kids'
@@ -273,7 +282,15 @@ const dateOptions = [
         date: DateFilter;
       };
 
-      const sourceValues: SourceFilter[] = ['all', 'CPSC', 'FDA', 'FR_RAPPELCONSO', 'CA_RECALLS', 'EU_SAFETY_GATE'];
+      const sourceValues: SourceFilter[] = [
+        'all',
+        'CPSC',
+        'FDA',
+        'FR_RAPPELCONSO',
+        'CA_RECALLS',
+        'EU_SAFETY_GATE',
+        'UK_FSA'
+      ];
       const categoryValues: CategoryFilter[] = [
         'all',
         'baby-kids',
@@ -308,6 +325,7 @@ const dateOptions = [
               (recall.rawCategory === 'food' ||
                 recall.rawCategory === 'alimentation' ||
                 recall.source === 'FDA' ||
+                recall.source === 'UK_FSA' ||
                 recall.source === 'FR_RAPPELCONSO' ||
                 (recall.source === 'CA_RECALLS' && recall.category === 'food-allergy'))) ||
             (state.category === 'general' && recall.category === 'general-consumer-product') ||

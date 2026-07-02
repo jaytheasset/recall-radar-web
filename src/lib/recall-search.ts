@@ -70,7 +70,11 @@ const IDENTIFIER_TERMS = [
   'cpsc recall number',
   'alert id',
   'safety gate reference',
-  'safety gate'
+  'safety gate',
+  'fsa alert',
+  'fsa reference',
+  'best before',
+  'use by'
 ];
 
 const ALLERGEN_TERMS = [
@@ -86,7 +90,11 @@ const ALLERGEN_TERMS = [
   'sesame',
   'fish',
   'shellfish',
-  'pistachio'
+  'pistachio',
+  'mustard',
+  'celery',
+  'sulphites',
+  'soya'
 ];
 
 function normalize(value: string): string {
@@ -304,6 +312,10 @@ export function getRecallIdentifierHint(recall: Pick<SiteRecall, 'source'>): str
 
   if (recall.source === 'EU_SAFETY_GATE') {
     return 'Check Safety Gate reference, barcode, model, batch, product photos, reporting country, country of origin, and official alert details.';
+  }
+
+  if (recall.source === 'UK_FSA') {
+    return 'Check FSA alert reference, product name, pack size, batch or lot code, best-before or use-by date, allergen or risk details, and official notice details.';
   }
 
   if (recall.source === 'CPSC') {
