@@ -64,7 +64,15 @@ const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
             <figure class="detail-image-figure">
               <div class="image-shell image-shell-large">
                 {view.productImages[0] ? (
-                  <img src={view.productImages[0].url} alt={view.productImages[0].alt || view.primaryImageAlt} loading="lazy" />
+                  <>
+                    <img
+                      src={view.productImages[0].url}
+                      alt={view.productImages[0].alt || view.primaryImageAlt}
+                      loading="lazy"
+                      data-fallback-label={fallbackImageLabel}
+                    />
+                    <span class="image-placeholder image-placeholder-fallback" hidden>{fallbackImageLabel}</span>
+                  </>
                 ) : (
                   <span class="image-placeholder">{fallbackImageLabel}</span>
                 )}
@@ -76,7 +84,13 @@ const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
                 {view.productImages.slice(1, 7).map((image) => (
                   <figure class="detail-thumbnail">
                     <div class="image-shell">
-                      <img src={image.url} alt={image.alt || image.caption || view.primaryImageAlt} loading="lazy" />
+                      <img
+                        src={image.url}
+                        alt={image.alt || image.caption || view.primaryImageAlt}
+                        loading="lazy"
+                        data-fallback-label={fallbackImageLabel}
+                      />
+                      <span class="image-placeholder image-placeholder-fallback" hidden>{fallbackImageLabel}</span>
                     </div>
                     {image.caption ? <figcaption>{image.caption}</figcaption> : null}
                   </figure>
@@ -281,11 +295,17 @@ const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
               <article class="product-card detail-related-card">
                 <a class="image-shell" href={historyRecall.detailPath} aria-label={`View recall for ${historyRecall.title}`}>
                   {historyRecall.primaryImageUrl ? (
-                    <img
-                      src={historyRecall.primaryImageUrl}
-                      alt={historyRecall.primaryImageAlt || historyRecall.title}
-                      loading="lazy"
-                    />
+                    <>
+                      <img
+                        src={historyRecall.primaryImageUrl}
+                        alt={historyRecall.primaryImageAlt || historyRecall.title}
+                        loading="lazy"
+                        data-fallback-label={getRecallSourcePlaceholder(historyRecall.source)}
+                      />
+                      <span class="image-placeholder image-placeholder-fallback" hidden>
+                        {getRecallSourcePlaceholder(historyRecall.source)}
+                      </span>
+                    </>
                   ) : (
                     <span class="image-placeholder">{getRecallSourcePlaceholder(historyRecall.source)}</span>
                   )}
@@ -323,11 +343,17 @@ const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
               <article class="product-card detail-related-card">
                 <a class="image-shell" href={relatedRecall.detailPath} aria-label={`View recall for ${relatedRecall.title}`}>
                   {relatedRecall.primaryImageUrl ? (
-                    <img
-                      src={relatedRecall.primaryImageUrl}
-                      alt={relatedRecall.primaryImageAlt || relatedRecall.title}
-                      loading="lazy"
-                    />
+                    <>
+                      <img
+                        src={relatedRecall.primaryImageUrl}
+                        alt={relatedRecall.primaryImageAlt || relatedRecall.title}
+                        loading="lazy"
+                        data-fallback-label={getRecallSourcePlaceholder(relatedRecall.source)}
+                      />
+                      <span class="image-placeholder image-placeholder-fallback" hidden>
+                        {getRecallSourcePlaceholder(relatedRecall.source)}
+                      </span>
+                    </>
                   ) : (
                     <span class="image-placeholder">{getRecallSourcePlaceholder(relatedRecall.source)}</span>
                   )}
@@ -367,5 +393,10 @@ const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
     <footer class="page-footer">
       Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
     </footer>
+    <script>
+      import { initImageFallbacks } from '../../lib/image-fallback';
+
+      initImageFallbacks();
+    </script>
   </body>
 </html>

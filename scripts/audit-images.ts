@@ -1,0 +1,345 @@
+import { readFile } from 'node:fs/promises';
+
+type SourceSummary = {
+  source: string;
+  totalRecords: number;
+  recordsWithImageUrls: number;
+  recordsWithoutImageUrls: number;
+  recordsWithPrimaryImageUrl: number;
+  totalImageUrls: number;
+  uniqueImageUrls: number;
+  duplicateImageUrls: number;
+  hosts: Map<string, number>;
+  extensions: Map<string, number>;
+  suspicious: Map<string, number>;
+  live?: LiveSummary;
+};
+
+type LiveSummary = {
+  checked: number;
+  ok200: number;
+  redirect3xx: number;
+  forbidden403: number;
+  notFound404: number;
+  timeout: number;
+  other: number;
+};
+
+type RawObject = Record<string, unknown>;
+
+const processedFiles = [
+  'data/processed/recalls.json',
+  'data/processed/eu-safety-gate-recalls.json',
+  'data/processed/rappelconso-recalls.json',
+  'data/processed/canada-recalls.json',
+  'data/processed/uk-fsa-alerts.json'
+];
+
+const runtimeEnv = (process as typeof process & { env?: Record<string, string | undefined> }).env ?? {};
+const liveCheck = runtimeEnv.IMAGE_LIVE_CHECK === '1';
+const liveLimitPerSource = 20;
+const liveTimeoutMs = 5000;
+
+function isObject(value: unknown): value is RawObject {
+  return typeof value === 'object' && value !== null;
+}
+
+function stringValue(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function count(map: Map<string, number>, key: string): void {
+  map.set(key, (map.get(key) ?? 0) + 1);
+}
+
+function orderedObject(map: Map<string, number>): Record<string, number> {
+  return Object.fromEntries([...map.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])));
+}
+
+async function recordsFromFile(filePath: string): Promise<RawObject[]> {
+  const parsed = JSON.parse(await readFile(filePath, 'utf8')) as unknown;
+  const records = isObject(parsed) && Array.isArray(parsed.records) ? parsed.records : Array.isArray(parsed) ? parsed : [];
+  return records.filter(isObject);
+}
+
+function sourceFor(record: RawObject, fallback: string): string {
+  return stringValue(record.source) || fallback;
+}
+
+function addUrl(urls: string[], value: unknown): void {
+  if (typeof value !== 'string') {
+    return;
+  }
+
+  for (const part of value.split(/[|\n;]/)) {
+    urls.push(part.trim());
+  }
+}
+
+function imageUrlsFor(record: RawObject): string[] {
+  const urls: string[] = [];
+
+  addUrl(urls, record.primaryImageUrl);
+
+  if (Array.isArray(record.images)) {
+    for (const image of record.images) {
+      if (isObject(image)) {
+        addUrl(urls, image.url);
+        addUrl(urls, image.URL);
+      }
+    }
+  }
+
+  if (isObject(record.raw)) {
+    addUrl(urls, record.raw.primaryImageUrl);
+    addUrl(urls, record.raw.liens_vers_les_images);
+
+    if (Array.isArray(record.raw.Images)) {
+      for (const image of record.raw.Images) {
+        if (isObject(image)) {
+          addUrl(urls, image.url);
+          addUrl(urls, image.URL);
+        }
+      }
+    }
+  }
+
+  return urls.map((url) => url.trim()).filter((url, index, list) => url || list.indexOf(url) === index);
+}
+
+function extensionFor(url: URL): string {
+  const extension = url.pathname.match(/\.([a-z0-9]{2,6})$/i)?.[1]?.toLowerCase() ?? '';
+  return extension || 'api-or-no-extension';
+}
+
+function suspiciousReasons(rawUrl: string): string[] {
+  const reasons: string[] = [];
+  const url = rawUrl.trim();
+
+  if (!url) {
+    return ['empty'];
+  }
+
+  if (url.startsWith('/')) {
+    reasons.push('relative-url');
+  }
+
+  if (/^data:/i.test(url)) {
+    reasons.push('data-url');
+  }
+
+  if (!/^https?:\/\//i.test(url)) {
+    reasons.push('non-http-url');
+  }
+
+  try {
+    const parsed = new URL(url);
+    if (/^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/i.test(parsed.hostname)) {
+      reasons.push('localhost-url');
+    }
+
+    for (const key of parsed.searchParams.keys()) {
+      if (/token|session|signature|sig|apikey|api_key|access_token|auth/i.test(key)) {
+        reasons.push('token-like-param');
+      }
+    }
+  } catch {
+    reasons.push('invalid-url');
+  }
+
+  return reasons;
+}
+
+function getSummary(summaries: Map<string, SourceSummary>, source: string): SourceSummary {
+  const existing = summaries.get(source);
+  if (existing) {
+    return existing;
+  }
+
+  const summary: SourceSummary = {
+    source,
+    totalRecords: 0,
+    recordsWithImageUrls: 0,
+    recordsWithoutImageUrls: 0,
+    recordsWithPrimaryImageUrl: 0,
+    totalImageUrls: 0,
+    uniqueImageUrls: 0,
+    duplicateImageUrls: 0,
+    hosts: new Map(),
+    extensions: new Map(),
+    suspicious: new Map()
+  };
+  summaries.set(source, summary);
+  return summary;
+}
+
+async function fetchStatus(url: string): Promise<'200' | '3xx' | '403' | '404' | 'timeout' | 'other'> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), liveTimeoutMs);
+
+  async function request(method: 'HEAD' | 'GET'): Promise<Response> {
+    return fetch(url, {
+      method,
+      redirect: 'manual',
+      signal: controller.signal,
+      headers: method === 'GET' ? { range: 'bytes=0-1024' } : undefined
+    });
+  }
+
+  try {
+    let response = await request('HEAD');
+
+    if (response.status === 405 || response.status === 501) {
+      response = await request('GET');
+    }
+
+    if (response.status === 200) {
+      return '200';
+    }
+
+    if (response.status >= 300 && response.status < 400) {
+      return '3xx';
+    }
+
+    if (response.status === 403) {
+      return '403';
+    }
+
+    if (response.status === 404) {
+      return '404';
+    }
+
+    return 'other';
+  } catch (error) {
+    return error instanceof Error && error.name === 'AbortError' ? 'timeout' : 'other';
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function incrementLive(summary: LiveSummary, status: Awaited<ReturnType<typeof fetchStatus>>): void {
+  summary.checked += 1;
+  if (status === '200') {
+    summary.ok200 += 1;
+  } else if (status === '3xx') {
+    summary.redirect3xx += 1;
+  } else if (status === '403') {
+    summary.forbidden403 += 1;
+  } else if (status === '404') {
+    summary.notFound404 += 1;
+  } else if (status === 'timeout') {
+    summary.timeout += 1;
+  } else {
+    summary.other += 1;
+  }
+}
+
+async function run(): Promise<void> {
+  const summaries = new Map<string, SourceSummary>();
+  const sourceUrls = new Map<string, string[]>();
+
+  for (const file of processedFiles) {
+    const records = await recordsFromFile(file);
+    const fallbackSource = file.includes('eu-safety-gate')
+      ? 'EU_SAFETY_GATE'
+      : file.includes('rappelconso')
+        ? 'FR_RAPPELCONSO'
+        : file.includes('canada')
+          ? 'CA_RECALLS'
+          : file.includes('uk-fsa')
+            ? 'UK_FSA'
+            : 'UNKNOWN';
+
+    for (const record of records) {
+      const source = sourceFor(record, fallbackSource);
+
+      if (file !== 'data/processed/recalls.json') {
+        continue;
+      }
+
+      const summary = getSummary(summaries, source);
+      const urls = imageUrlsFor(record);
+      const uniqueUrls = [...new Set(urls.filter(Boolean))];
+      summary.totalRecords += 1;
+      summary.totalImageUrls += urls.length;
+      summary.uniqueImageUrls += uniqueUrls.length;
+      summary.duplicateImageUrls += urls.length - uniqueUrls.length;
+
+      if (uniqueUrls.length) {
+        summary.recordsWithImageUrls += 1;
+      } else {
+        summary.recordsWithoutImageUrls += 1;
+      }
+
+      if (stringValue(record.primaryImageUrl)) {
+        summary.recordsWithPrimaryImageUrl += 1;
+      }
+
+      for (const url of urls) {
+        for (const reason of suspiciousReasons(url)) {
+          count(summary.suspicious, reason);
+        }
+
+        try {
+          const parsed = new URL(url);
+          count(summary.hosts, parsed.hostname);
+          count(summary.extensions, extensionFor(parsed));
+        } catch {
+          // Suspicious reasons already capture invalid URLs.
+        }
+      }
+
+      sourceUrls.set(source, [...(sourceUrls.get(source) ?? []), ...uniqueUrls]);
+    }
+  }
+
+  if (liveCheck) {
+    for (const [source, urls] of sourceUrls.entries()) {
+      const summary = getSummary(summaries, source);
+      summary.live = {
+        checked: 0,
+        ok200: 0,
+        redirect3xx: 0,
+        forbidden403: 0,
+        notFound404: 0,
+        timeout: 0,
+        other: 0
+      };
+
+      for (const url of [...new Set(urls)].slice(0, liveLimitPerSource)) {
+        incrementLive(summary.live, await fetchStatus(url));
+      }
+    }
+  }
+
+  console.log(`Image audit mode: ${liveCheck ? 'live bounded check enabled' : 'local metadata only'}`);
+  console.log(`Files read: ${processedFiles.join(', ')}`);
+  console.log('');
+
+  for (const summary of [...summaries.values()].sort((a, b) => a.source.localeCompare(b.source))) {
+    console.log(`${summary.source}`);
+    console.log(`  total records: ${summary.totalRecords}`);
+    console.log(`  records with image URLs: ${summary.recordsWithImageUrls}`);
+    console.log(`  records with no image URLs: ${summary.recordsWithoutImageUrls}`);
+    console.log(`  records with primaryImageUrl: ${summary.recordsWithPrimaryImageUrl}`);
+    console.log(`  total image URL references: ${summary.totalImageUrls}`);
+    console.log(`  unique image URL references: ${summary.uniqueImageUrls}`);
+    console.log(`  duplicate image URL references: ${summary.duplicateImageUrls}`);
+    console.log(`  hosts: ${JSON.stringify(orderedObject(summary.hosts))}`);
+    console.log(`  extensions/types: ${JSON.stringify(orderedObject(summary.extensions))}`);
+    console.log(`  suspicious: ${JSON.stringify(orderedObject(summary.suspicious))}`);
+
+    if (summary.live) {
+      console.log(`  live sample: ${JSON.stringify(summary.live)}`);
+    }
+
+    console.log('');
+  }
+
+  console.log('PASS image audit completed');
+}
+
+run().catch((error: unknown) => {
+  console.error(error);
+  process.exitCode = 1;
+});

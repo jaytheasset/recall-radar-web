@@ -58,7 +58,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     rawPayloadNotes:
       'CPSC raw payloads can include Products, ProductUPCs, Images, Retailers, Importers, Manufacturers, ManufacturerCountries, Hazards, and Remedies.',
     officialSourceLabel: 'Source: United States · CPSC',
-    placeholderLabel: 'Recall notice',
+    placeholderLabel: 'Product recall notice',
     reasonLabel: 'Hazard',
     actionLabel: 'Action',
     quantityLabel: 'Units',
@@ -95,7 +95,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     rawPayloadNotes:
       'FDA/openFDA food enforcement raw payloads can include product_description, code_info, product_quantity, distribution_pattern, classification, status, and recall_number.',
     officialSourceLabel: 'Source: United States · FDA / openFDA',
-    placeholderLabel: 'FDA food notice',
+    placeholderLabel: 'Food enforcement notice',
     reasonLabel: 'Reason',
     actionLabel: 'Action',
     quantityLabel: 'Quantity',
@@ -317,7 +317,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     supportsDistributionDetails: false,
     rawPayloadNotes: 'Fallback sample records are not an official source ingestion path.',
     officialSourceLabel: 'Source: Sample notice',
-    placeholderLabel: 'Recall notice',
+    placeholderLabel: 'Product recall notice',
     reasonLabel: 'Reason',
     actionLabel: 'Action',
     quantityLabel: 'Units',

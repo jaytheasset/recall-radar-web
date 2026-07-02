@@ -177,7 +177,17 @@ const productTypes = [
             <article class="home-recall-card product-card">
               <a class="home-card-image image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
                 {recall.primaryImageUrl ? (
-                  <img src={recall.primaryImageUrl} alt={recall.primaryImageAlt || recall.title} loading="lazy" />
+                  <>
+                    <img
+                      src={recall.primaryImageUrl}
+                      alt={recall.primaryImageAlt || recall.title}
+                      loading="lazy"
+                      data-fallback-label={getRecallSourcePlaceholder(recall.source)}
+                    />
+                    <span class="image-placeholder image-placeholder-fallback" hidden>
+                      {getRecallSourcePlaceholder(recall.source)}
+                    </span>
+                  </>
                 ) : (
                   <span class="image-placeholder">{getRecallSourcePlaceholder(recall.source)}</span>
                 )}
@@ -213,5 +223,10 @@ const productTypes = [
     <footer class="page-footer">
       Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
     </footer>
+    <script>
+      import { initImageFallbacks } from '../lib/image-fallback';
+
+      initImageFallbacks();
+    </script>
   </body>
 </html>

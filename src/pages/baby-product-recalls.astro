@@ -1,5 +1,6 @@
 ---
 import { getRecallsByCategory } from '../lib/recall-data';
+import { categorySearchTextFor } from '../lib/category-search';
 import { getRecallSourcePlaceholder } from '../lib/recall-sources';
 import '../styles/global.css';
 
@@ -7,6 +8,9 @@ const title = 'Baby & Kids Product Recalls | Recall Radar';
 const description =
   'Browse baby and kids product recall notices in Recall Radar, including cribs, nursery products, toys, and child-focused notices.';
 const recalls = getRecallsByCategory('baby-kids');
+const searchPlaceholder = 'Search baby products, brand, model, or keyword';
+const noResultCopy =
+  'No indexed notices match this search in this product type. This does not mean the product is safe or recall-free. Try another brand, model, barcode, ingredient, allergen, or keyword.';
 ---
 
 <html lang="en">
@@ -40,7 +44,26 @@ const recalls = getRecallsByCategory('baby-kids');
         <p class="lead">Baby, infant, nursery, toy, and kids product recall notices.</p>
       </section>
 
-      <section class="section">
+      <section class="section category-search-panel" data-category-search-root data-category-total={recalls.length}>
+        <form class="category-search-form" data-category-search-form>
+          <label>
+            Search within Baby & Kids
+            <input data-category-search-input type="search" placeholder={searchPlaceholder} autocomplete="off" />
+          </label>
+          <button class="btn btn-primary" type="submit">Search this type</button>
+          <button class="btn btn-secondary" type="button" data-category-search-clear hidden>Clear</button>
+        </form>
+        <div class="category-search-status">
+          <span class="status-pill" data-category-result-count>
+            {recalls.length} of {recalls.length} indexed notice{recalls.length === 1 ? '' : 's'} shown
+          </span>
+        </div>
+        <div class="notice-panel category-no-results" data-category-no-results hidden>
+          <p>{noResultCopy}</p>
+        </div>
+      </section>
+
+      <section class="section" data-category-group>
         <div class="section-header">
           <div>
             <h2>Indexed notices</h2>
@@ -50,10 +73,20 @@ const recalls = getRecallsByCategory('baby-kids');
         {recalls.length ? (
           <div class="product-grid">
             {recalls.map((recall) => (
-              <article class="product-card">
+              <article class="product-card" data-category-card data-search-text={categorySearchTextFor(recall)}>
                 <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
                   {recall.primaryImageUrl ? (
-                    <img src={recall.primaryImageUrl} alt={recall.primaryImageAlt || recall.title} loading="lazy" />
+                    <>
+                      <img
+                        src={recall.primaryImageUrl}
+                        alt={recall.primaryImageAlt || recall.title}
+                        loading="lazy"
+                        data-fallback-label={getRecallSourcePlaceholder(recall.source)}
+                      />
+                      <span class="image-placeholder image-placeholder-fallback" hidden>
+                        {getRecallSourcePlaceholder(recall.source)}
+                      </span>
+                    </>
                   ) : (
                     <span class="image-placeholder">{getRecallSourcePlaceholder(recall.source)}</span>
                   )}
@@ -86,5 +119,12 @@ const recalls = getRecallsByCategory('baby-kids');
     <footer class="page-footer">
       Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
     </footer>
+    <script>
+      import { initCategoryPageSearch } from '../lib/category-page-search';
+      import { initImageFallbacks } from '../lib/image-fallback';
+
+      initImageFallbacks();
+      initCategoryPageSearch();
+    </script>
   </body>
 </html>

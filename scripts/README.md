@@ -370,6 +370,22 @@ Expected current counts:
 - UK FSA Food Alerts: 100
 - Total: 801
 
+## Image Audit
+
+```powershell
+npm run audit:images
+```
+
+This command is local-only by default. It reads the processed recall files, reports image URL availability by source, host/domain distribution, detectable file extensions or API-style image URLs, duplicate URL references, and suspicious URL shapes.
+
+For a bounded live image check, run:
+
+```powershell
+npm run audit:images:live
+```
+
+The live mode checks at most 20 image URLs per source with short timeouts. Do not add live image checks to `npm run check` or `npm run build`.
+
 ## Launch Validation
 
 ```powershell
