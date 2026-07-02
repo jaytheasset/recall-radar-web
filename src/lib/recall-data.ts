@@ -196,7 +196,17 @@ function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
 
     if (
       rawCategory.includes('household') ||
-      textHasAny(text, ['appliance', 'household', 'kitchenware', 'tableware', 'air conditioner', 'heat pump'])
+      rawCategory.includes('furniture') ||
+      textHasAny(text, [
+        'appliance',
+        'household',
+        'kitchenware',
+        'tableware',
+        'air conditioner',
+        'heat pump',
+        'furniture',
+        'furnishings'
+      ])
     ) {
       return 'household-appliance';
     }

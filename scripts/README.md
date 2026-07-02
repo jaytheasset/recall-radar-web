@@ -183,6 +183,8 @@ To audit the current local Canada processed data without making network calls:
 npm run audit:canada
 ```
 
+The Canada audit reports source counts, duplicate ids, slug collisions, missing required fields, category distribution, official URL shape, image availability, UPC/barcode-like text, model/item-number-like text, lot/batch/code/date-like text, distribution detail availability, and suspicious category mappings.
+
 To run the explicit Canada refresh workflow, including network fetch and local audit:
 
 ```powershell

@@ -198,7 +198,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
       'Instructions in the official notice'
     ],
     sparseIdentificationCopy:
-      'This indexed Canada open-data record may not list every identifier in a structured field. Review the official notice, product label, and lot or date code carefully.',
+      'This indexed notice may not list every identifier in a structured field. Review the official notice and product label carefully.',
     officialVerificationCopy:
       'Use the official notice to confirm affected products, identifiers, dates, distribution, classification, and instructions.'
   },

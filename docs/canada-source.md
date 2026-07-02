@@ -133,6 +133,7 @@ The normalizer only extracts identifier-like text when it is explicit in the sum
 - category distribution
 - image availability
 - UPC/barcode-like text
+- model/item-number-like text
 - lot/batch/code/date-like text
 - distribution details
 - official Canada URL shape
@@ -146,15 +147,65 @@ Current expected counts:
 - Canada Recalls and Safety Alerts: 100
 - Total: 601
 
+## Phase 8.1 QA
+
+Phase 8.1 re-audited the committed 100-record Canada spike from local files only:
+
+- Raw file: `data/raw/canada-recalls.json`
+- Processed source file: `data/processed/canada-recalls.json`
+- Canonical merged file: `data/processed/recalls.json`
+- Source id: `CA_RECALLS`
+- Canada records: 100
+- Canonical total: 601
+
+Audit method:
+
+- Ran `npm run audit:canada` without a network fetch.
+- Compared Canada processed records against the canonical merged file.
+- Verified source counts, duplicate ids, slug collisions, required field presence, official URL shape, category mapping, and identifier availability.
+
+Phase 8.1 audit summary:
+
+- CPSC: 301
+- FDA/openFDA: 100
+- France RappelConso: 100
+- Canada Recalls and Safety Alerts: 100
+- Total: 601
+- Duplicate ids: 0
+- Slug collisions: 0
+- Official Canada URL shape: 100 of 100
+- Records with images: 0
+- Records with UPC/barcode-like values: 0
+- Records with model/item-number-like values: 0
+- Records with lot/batch/code/date-like values: 0
+- Records with structured distribution details: 0
+
+Canada site category distribution after QA:
+
+- `food-allergy`: 14
+- `baby-kids`: 10
+- `battery-electronics`: 2
+- `household-appliance`: 3
+- `general-consumer-product`: 71
+
+What changed in Phase 8.1:
+
+- Added a separate Canada audit metric for model/item-number-like values.
+- Tightened Canada audit identifier checks to avoid false positives from words such as "experience", "explanation", or "expanded".
+- Tightened recall detail identifier extraction so generic text such as "model label" or "item" is not displayed as a model/item number.
+- Kept Canada sparse-identification copy generic and source-neutral.
+- Kept Canada category mapping conservative, with clear furniture/furnishings terms allowed in the existing household bucket while vehicle and health-product notices remain general for now.
+
 ## Known Limitations
 
-- Canada records may include English/French text depending on source.
+- Canada records may include English and/or French text depending on source data.
 - The selected English JSON feed does not expose full affected-product tables.
 - Not all records have UPC/barcode.
-- Not all records have lot/date/model fields.
-- Some records may be safety alerts rather than strict product recalls.
+- Not all records have model, lot, or date fields.
+- Some records are safety alerts or notifications rather than strict recall notices.
+- Some records may lack structured brand/company or action text.
 - The selected feed does not include stable image links, so `supportsImages` is false.
-- The selected feed does not include structured distribution details, so `supportsDistributionDetails` is false.
+- Structured distribution details may be limited; the selected feed does not expose a dedicated distribution field.
 - Brand/company is inferred only when obvious from the title.
 - No cross-source dedupe exists yet.
 - Static processed data only; no runtime freshness.

@@ -248,7 +248,10 @@ function identifierDetails(text: string): string[] {
     /\bKHK[0-9A-Z./_-]+\b/gi,
     /\bRN\s*[0-9]{4,}\b/gi,
     /\bFCC ID\s*["']?[A-Z0-9-]+["']?/gi,
-    /\b(?:model|model number|model no\.?)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/gi,
+    /\b(?:model|item|product)\s*(?:number|no\.?|#)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/gi,
+    /\b(?:model|item|product)\s+#[A-Z0-9][A-Z0-9./_-]{2,}\b/gi,
+    /\b(?:model|item|product)\s+(?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,}\b/gi,
+    /\b(?:DIN|NPN)\s*[:#-]?\s*[0-9]{5,}\b/gi,
     /\b(?:date of manufacture|date code|best by|use by|sell by|expiration date|expiry date)\s*["']?[A-Z0-9][A-Z0-9 ,./_-]{2,30}["']?/gi,
     /"[^"]{2,80}"/g
   ];

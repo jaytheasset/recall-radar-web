@@ -18,6 +18,7 @@ type AuditSummary = {
   siteCategoryDistribution: Record<string, number>;
   recordsWithImages: number;
   recordsWithUpcOrBarcodeLikeValues: number;
+  recordsWithModelOrItemNumberLikeValues: number;
   recordsWithLotBatchCodeOrDateLikeValues: number;
   recordsWithDistributionDetails: number;
   recordsWithOfficialNoticeUrlShape: number;
@@ -89,7 +90,11 @@ function classifyCanadaRecall(record: NormalizedRecall): string {
     return 'battery-electronics';
   }
 
-  if (hasAny(text, ['appliance', 'household', 'kitchenware', 'tableware', 'air conditioner', 'heat pump']) || rawCategory.includes('household')) {
+  if (
+    hasAny(text, ['appliance', 'household', 'kitchenware', 'tableware', 'air conditioner', 'heat pump', 'furniture', 'furnishings']) ||
+    rawCategory.includes('household') ||
+    rawCategory.includes('furniture')
+  ) {
     return 'household-appliance';
   }
 
@@ -102,10 +107,23 @@ function hasUpcOrBarcodeLikeValue(record: NormalizedRecall): boolean {
   );
 }
 
+function hasModelOrItemNumberLikeValue(record: NormalizedRecall): boolean {
+  const text = [record.title, record.description, record.affectedUnits, ...record.productNames].join(' ');
+  return [
+    /\b(?:model|item|product)\s*(?:number|no\.?|#)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/i,
+    /\b(?:model|item|product)\s+#[A-Z0-9][A-Z0-9./_-]{2,}\b/i,
+    /\b(?:model|item|product)\s+(?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,}\b/i,
+    /\b(?:DIN|NPN)\s*[:#-]?\s*[0-9]{5,}\b/i
+  ].some((pattern) => pattern.test(text));
+}
+
 function hasLotBatchCodeOrDateLikeValue(record: NormalizedRecall): boolean {
-  return /\b(lot|batch|code|best before|best-by|use by|expiry|expiration|exp|model|item|din|npn)\b/i.test(
-    [record.title, record.description, record.affectedUnits, ...record.productNames].join(' ')
-  );
+  const text = [record.title, record.description, record.affectedUnits, ...record.productNames].join(' ');
+  return [
+    /\b(?:lot|batch)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/i,
+    /\b(?:date code|code)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/i,
+    /\b(?:best before|best-by|use by|expiry date|expiration date|expiry|expiration)\s*[:#-]?\s*[A-Z0-9][A-Z0-9 ,./_-]{2,30}\b/i
+  ].some((pattern) => pattern.test(text));
 }
 
 function looksLikeOfficialNoticeUrl(value: string): boolean {
@@ -214,6 +232,7 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     siteCategoryDistribution,
     recordsWithImages: records.filter((record) => (record.images?.length ?? 0) > 0).length,
     recordsWithUpcOrBarcodeLikeValues: records.filter(hasUpcOrBarcodeLikeValue).length,
+    recordsWithModelOrItemNumberLikeValues: records.filter(hasModelOrItemNumberLikeValue).length,
     recordsWithLotBatchCodeOrDateLikeValues: records.filter(hasLotBatchCodeOrDateLikeValue).length,
     recordsWithDistributionDetails: records.filter((record) => Boolean(record.distributionPattern)).length,
     recordsWithOfficialNoticeUrlShape: records.filter((record) => looksLikeOfficialNoticeUrl(record.sourceUrl)).length,
@@ -298,6 +317,7 @@ async function runAudit(): Promise<void> {
           suspiciousCategoryMappings: summary.suspiciousCategoryMappings.length,
           recordsWithImages: summary.recordsWithImages,
           recordsWithUpcOrBarcodeLikeValues: summary.recordsWithUpcOrBarcodeLikeValues,
+          recordsWithModelOrItemNumberLikeValues: summary.recordsWithModelOrItemNumberLikeValues,
           recordsWithLotBatchCodeOrDateLikeValues: summary.recordsWithLotBatchCodeOrDateLikeValues,
           recordsWithDistributionDetails: summary.recordsWithDistributionDetails,
           recordsWithOfficialNoticeUrlShape: summary.recordsWithOfficialNoticeUrlShape,
