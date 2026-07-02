@@ -1,0 +1,54 @@
+---
+import '../styles/global.css';
+
+const title = 'Page not found | Recall Radar';
+const description = 'The requested Recall Radar page could not be found.';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">Recall Radar</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/checker">Product Recall Checker</a>
+        <a href="/watchlist">Watchlist</a>
+        <a href="/baby-product-recalls">Baby & Kids</a>
+        <a href="/battery-recalls">Batteries & Electronics</a>
+        <a href="/food-allergy-recalls">Food & Allergy</a>
+      </nav>
+    </header>
+
+    <main class="page-shell">
+      <section class="section">
+        <p class="eyebrow">Page not found</p>
+        <h1>Page not found</h1>
+        <p class="lead">
+          We could not find that page. Search indexed recall notices or return to the homepage.
+        </p>
+        <div class="link-row">
+          <a class="btn btn-primary" href="/checker">Search recalls</a>
+          <a class="btn btn-secondary" href="/">Go home</a>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="notice-panel">
+          <p>
+            Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
+    </footer>
+  </body>
+</html>

@@ -62,6 +62,7 @@ Commands:
 - `npm run normalize:uk-fsa` rebuilds UK FSA processed data from `data/raw/uk-fsa-alerts.json`.
 - `npm run audit:sources` audits integrated source counts, active source ids, duplicate ids, sparse fields, and category distribution without making network calls.
 - `npm run audit:uk-fsa` audits the bounded UK FSA source spike.
+- `npm run validate:launch` runs the local-only launch validation sequence: integrated/source audits, `npm run check`, and `npm run build`.
 - `npm run build:data` currently runs the CPSC, FDA/openFDA, France RappelConso, Canada, EU Safety Gate, and UK FSA fetch pipelines.
 
 Local output files:
@@ -141,6 +142,14 @@ Phase 11 integrated source QA:
 - Current static build output is around 1382 pages, and `data/processed/recalls.json` is around 5.8 MB.
 - Full backfills should measure canonical data size, detail page count, brand page count, build time, and static output size before merge.
 - Cross-source dedupe is not implemented yet; source-prefixed ids are preserved.
+
+Phase 13 launch readiness:
+
+- `docs/LAUNCH_CHECKLIST.md` is the launch/staging handoff checklist.
+- `npm run validate:launch` is the preferred local-only pre-launch validation command.
+- `public/robots.txt` allows crawling.
+- `src/pages/404.astro` provides a simple static not-found page.
+- No sitemap is configured yet; defer sitemap generation until a deployment domain/canonical site URL is chosen.
 
 ## Site Data Loader
 

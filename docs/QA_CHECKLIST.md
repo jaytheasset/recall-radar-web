@@ -26,10 +26,13 @@
 - `npm run fetch:uk-fsa`
 - `npm run normalize:uk-fsa`
 - `npm run audit:uk-fsa`
+- `npm run validate:launch`
 - `npm run dev`
 - `npm run preview`
 
 Do not run fetch scripts during local UI-only phases unless the task explicitly asks for fresh local data.
+
+For launch or staging readiness, use `docs/LAUNCH_CHECKLIST.md`. `npm run validate:launch` is local-only and must not include network fetch/update scripts.
 
 USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt returned HTTP `403 Forbidden` / `Access Denied`, likely from FSIS-side access control, CDN/WAF filtering, User-Agent/header filtering, IP/range filtering, or temporary endpoint restrictions. No USDA data was written, no bypass should be attempted, and no USDA fetch script is active. See `docs/USDA_FSIS_DEFERRED.md`.
 
@@ -104,6 +107,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - `/checker?q=toy&source=EU_SAFETY_GATE`
 - `/checker?source=UK_FSA`
 - `/watchlist`
+- `/404`
 - `/baby-product-recalls`
 - `/battery-recalls`
 - `/food-allergy-recalls`
@@ -115,6 +119,8 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm source labels render through `src/lib/recall-sources.ts`.
 - Confirm page labels identify EU records as European Union Safety Gate records.
 - Confirm page labels identify UK FSA records as United Kingdom FSA Food Alerts records.
+- Confirm `/robots.txt` allows crawling.
+- Confirm sitemap generation remains deferred until a canonical deployment URL is chosen.
 - Confirm category pages show a matching local record count.
 - Confirm `/food-allergy-recalls` shows FDA/openFDA food records before CPSC food/allergy records when FDA records exist.
 - Confirm core pages remain readable at narrow mobile widths and long titles/labels wrap instead of overflowing.

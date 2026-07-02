@@ -369,3 +369,21 @@ Expected current counts:
 - EU Safety Gate: 100
 - UK FSA Food Alerts: 100
 - Total: 801
+
+## Launch Validation
+
+```powershell
+npm run validate:launch
+```
+
+This command is local-only. It runs:
+
+1. `npm run audit:sources`
+2. `npm run audit:uk-fsa`
+3. `npm run audit:eu-safety-gate`
+4. `npm run audit:canada`
+5. `npm run audit:rappelconso`
+6. `npm run check`
+7. `npm run build`
+
+It does not run fetch, update, or data-refresh scripts. Use it before launch, staging deployment, or final merge to `main`.

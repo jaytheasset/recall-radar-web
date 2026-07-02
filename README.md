@@ -1,18 +1,17 @@
 # Recall Radar
 
-Recall Radar is a local-only Astro and TypeScript MVP for a US product recall search and SEO website. It uses mock TypeScript data and local JSON-ready folders only.
+Recall Radar is a static Astro product recall search site. It helps consumers search indexed official recall notices across markets by product, brand, model, UPC/barcode, lot code, ingredient, or keyword.
 
-## Local-Only Warning
+## Current Scope
 
-This project must stay isolated from all other projects.
+- 801 indexed recall notices.
+- 6 official source feeds.
+- Active sources: CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, and UK FSA Food Alerts.
+- Static build output with no backend, database, account system, email service, runtime API, or live alerting.
+- Browser-only watchlist UI using `localStorage`.
+- Data source at build time: `data/processed/recalls.json`.
 
-- Exact project folder: `C:\Users\pc\codex-projects\recall-radar-web`
-- Required local dev port: `5179`
-- Do not connect Cloudflare, GitHub remotes, Render, Vercel, Netlify, Supabase, or any other remote service yet.
-- Do not share `.env` files between projects.
-- Do not create real `.env`, `.env.local`, `.env.production`, or secret files.
-- Do not use Docker.
-- Keep all data local until a later step explicitly changes that scope.
+Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
 
 ## Setup
 
@@ -29,11 +28,23 @@ npm install
 npm run dev
 ```
 
-The dev server must use port `5179`.
+The local dev server is configured for `127.0.0.1:5179`.
 
-## Build
+## Validation
 
 ```powershell
+npm run validate:launch
+```
+
+Equivalent explicit sequence:
+
+```powershell
+npm run audit:sources
+npm run audit:uk-fsa
+npm run audit:eu-safety-gate
+npm run audit:canada
+npm run audit:rappelconso
+npm run check
 npm run build
 ```
 
@@ -43,29 +54,10 @@ npm run build
 npm run preview
 ```
 
-The preview server is configured for port `5179`.
+Preview also uses `127.0.0.1:5179`.
 
-## Check
+## Data Refresh Guardrail
 
-```powershell
-npm run check
-```
+Normal validation and build commands do not fetch fresh source data. Network fetch/update scripts should be run only during an intentional data-refresh phase.
 
-## Current Scope
-
-- Astro + TypeScript
-- Local mock recall data
-- Local search helper returning `exact`, `possible`, `related`, or `none`
-- Static email alert signup UI only
-- No database
-- No external API calls
-- No remote services
-
-## Next-Step Checklist
-
-- Review local mock recall fields and labels.
-- Confirm search matching rules for exact, possible, related, and none.
-- Add more local mock data before connecting official sources.
-- Decide the first official source integration in a future isolated step.
-- Add automated tests after the MVP shape is approved.
-- Keep this repo isolated from all other projects.
+See `docs/LAUNCH_CHECKLIST.md`, `docs/DEV_HANDOFF.md`, and `scripts/README.md` before changing source data.
