@@ -196,6 +196,8 @@ code {
 
 .home-hero-copy {
   justify-items: center;
+  width: 100%;
+  min-width: 0;
   max-width: 920px;
 }
 
@@ -484,7 +486,8 @@ button:disabled {
 .meta-row,
 .link-row,
 .tag-row,
-.source-strip {
+.source-strip,
+.data-source-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -1137,6 +1140,8 @@ button:disabled {
 }
 
 .detail-report-hero {
+  width: 100%;
+  min-width: 0;
   max-width: 980px;
   padding-top: clamp(1.5rem, 4vw, 3rem);
   padding-bottom: clamp(0.75rem, 2vw, 1.15rem);
@@ -1612,11 +1617,37 @@ button:disabled {
   }
 
   .home-hero h1 {
-    font-size: clamp(2.65rem, 13vw, 4rem);
+    max-width: min(100%, 19rem);
+    font-size: clamp(1.95rem, 8.6vw, 2.55rem);
+    line-height: 1.04;
   }
 
   .detail-title {
-    font-size: clamp(1.75rem, 9vw, 2.45rem);
+    max-width: min(100%, 20rem);
+    font-size: clamp(1.35rem, 6.2vw, 1.8rem);
+    line-height: 1.12;
+  }
+
+  .data-count-line {
+    max-width: min(100%, 20rem);
+    margin-inline: auto;
+    font-size: 0.88rem;
+  }
+
+  .lead,
+  .home-page .lead,
+  .detail-intro {
+    max-width: min(100%, 18rem);
+  }
+
+  .home-example-links,
+  .data-source-row,
+  .source-strip {
+    max-width: min(100%, 20rem);
+  }
+
+  .home-example-links {
+    margin-inline: auto;
   }
 
   .detail-main-grid {

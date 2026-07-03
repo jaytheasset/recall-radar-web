@@ -13,6 +13,7 @@ import {
   siteRecalls,
   usingProcessedLocalData
 } from '../lib/recall-data';
+import { getRecallImageForContext } from '../lib/recall-images';
 import { getSourceOptionsForCurrentCoverage } from '../lib/recall-sources';
 import '../styles/global.css';
 
@@ -20,7 +21,10 @@ const title = 'Product Recall Checker | Recall Radar';
 const description =
   'Search product recalls by keyword, product, brand, model number, UPC/barcode, lot code, ingredient, allergen, or official source.';
 const featuredBrands = brandGroups.slice(0, 18);
-const checkerRecalls = siteRecalls.map((recall) => ({
+const checkerRecalls = siteRecalls.map((recall) => {
+  const cardImage = getRecallImageForContext(recall, 'list');
+
+  return {
   id: recall.id,
   source: recall.source,
   sourceLabel: recall.sourceLabel,
@@ -50,8 +54,12 @@ const checkerRecalls = siteRecalls.map((recall) => ({
   recallNumber: recall.recallNumber,
   status: recall.status,
   primaryImageUrl: recall.primaryImageUrl,
-  primaryImageAlt: recall.primaryImageAlt
-}));
+  primaryImageThumbnailUrl: recall.primaryImageThumbnailUrl,
+  primaryImageAlt: recall.primaryImageAlt,
+  cardImageUrl: cardImage.url,
+  cardImageAlt: cardImage.alt
+  };
+});
 const checkerRecallsJson = JSON.stringify(checkerRecalls);
 const sourceOptions = [
   { value: 'all', label: 'All markets' },
@@ -259,6 +267,10 @@ const dateOptions = [
       const list = document.querySelector<HTMLElement>('#result-list');
 
       type SearchItem = ReturnType<typeof searchRecalls>['items'][number];
+      type RecallCardImageFields = {
+        cardImageUrl?: string;
+        cardImageAlt?: string;
+      };
       type SourceFilter =
         | 'all'
         | 'CPSC'
@@ -409,18 +421,22 @@ const dateOptions = [
         return tag;
       }
 
-      function createImageShell(recall: SearchItem['recall']): HTMLElement {
+      function createImageShell(recall: SearchItem['recall'] & RecallCardImageFields): HTMLElement {
         const link = document.createElement('a');
         link.className = 'image-shell';
         link.href = recall.detailPath;
         link.setAttribute('aria-label', `View recall for ${recall.title}`);
         const fallbackLabel = getRecallSourcePlaceholder(recall.source);
 
-        if (recall.primaryImageUrl) {
+        const imageUrl = recall.cardImageUrl || recall.primaryImageUrl;
+        const imageAlt = recall.cardImageAlt || recall.primaryImageAlt || recall.title;
+
+        if (imageUrl) {
           const image = document.createElement('img');
-          image.src = recall.primaryImageUrl;
-          image.alt = recall.primaryImageAlt || recall.title;
+          image.src = imageUrl;
+          image.alt = imageAlt;
           image.loading = 'lazy';
+          image.setAttribute('decoding', 'async');
           image.dataset.fallbackLabel = fallbackLabel;
 
           const placeholder = document.createElement('span');

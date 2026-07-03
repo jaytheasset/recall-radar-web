@@ -6,13 +6,17 @@ type SourceSummary = {
   recordsWithImageUrls: number;
   recordsWithoutImageUrls: number;
   recordsWithPrimaryImageUrl: number;
+  recordsWithPrimaryImageThumbnailUrl: number;
   totalImageUrls: number;
   uniqueImageUrls: number;
   duplicateImageUrls: number;
+  totalThumbnailImageUrls: number;
+  uniqueThumbnailImageUrls: number;
   hosts: Map<string, number>;
   extensions: Map<string, number>;
   suspicious: Map<string, number>;
   live?: LiveSummary;
+  liveThumbnails?: LiveSummary;
 };
 
 type LiveSummary = {
@@ -40,7 +44,7 @@ const processedFiles = [
 const runtimeEnv = (process as typeof process & { env?: Record<string, string | undefined> }).env ?? {};
 const liveCheck = runtimeEnv.IMAGE_LIVE_CHECK === '1';
 const liveLimitPerSource = 20;
-const liveTimeoutMs = 5000;
+const liveTimeoutMs = 10000;
 
 function isObject(value: unknown): value is RawObject {
   return typeof value === 'object' && value !== null;
@@ -109,6 +113,28 @@ function imageUrlsFor(record: RawObject): string[] {
   return urls.map((url) => url.trim()).filter((url, index, list) => url || list.indexOf(url) === index);
 }
 
+function thumbnailImageUrlsFor(record: RawObject): string[] {
+  const urls: string[] = [];
+
+  addUrl(urls, record.primaryImageThumbnailUrl);
+
+  if (Array.isArray(record.images)) {
+    for (const image of record.images) {
+      if (isObject(image)) {
+        addUrl(urls, image.thumbnailUrl);
+        addUrl(urls, image.thumbnailURL);
+        addUrl(urls, image.ThumbnailURL);
+      }
+    }
+  }
+
+  if (isObject(record.raw)) {
+    addUrl(urls, record.raw.primaryImageThumbnailUrl);
+  }
+
+  return urls.map((url) => url.trim()).filter((url, index, list) => url && list.indexOf(url) === index);
+}
+
 function extensionFor(url: URL): string {
   const extension = url.pathname.match(/\.([a-z0-9]{2,6})$/i)?.[1]?.toLowerCase() ?? '';
   return extension || 'api-or-no-extension';
@@ -164,9 +190,12 @@ function getSummary(summaries: Map<string, SourceSummary>, source: string): Sour
     recordsWithImageUrls: 0,
     recordsWithoutImageUrls: 0,
     recordsWithPrimaryImageUrl: 0,
+    recordsWithPrimaryImageThumbnailUrl: 0,
     totalImageUrls: 0,
     uniqueImageUrls: 0,
     duplicateImageUrls: 0,
+    totalThumbnailImageUrls: 0,
+    uniqueThumbnailImageUrls: 0,
     hosts: new Map(),
     extensions: new Map(),
     suspicious: new Map()
@@ -178,48 +207,57 @@ function getSummary(summaries: Map<string, SourceSummary>, source: string): Sour
 async function fetchStatus(
   url: string
 ): Promise<'image' | 'empty-2xx' | 'non-image-2xx' | '3xx' | '403' | '404' | 'timeout' | 'other'> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), liveTimeoutMs);
+  let lastStatus: 'image' | 'empty-2xx' | 'non-image-2xx' | '3xx' | '403' | '404' | 'timeout' | 'other' = 'other';
 
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      redirect: 'manual',
-      signal: controller.signal,
-      headers: {
-        accept: 'image/*,*/*',
-        range: 'bytes=0-1024'
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), liveTimeoutMs);
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        redirect: 'manual',
+        signal: controller.signal,
+        headers: {
+          accept: 'image/*,*/*',
+          language: 'en',
+          lang: 'en',
+          origin: 'https://ec.europa.eu',
+          referer: 'https://ec.europa.eu/safety-gate-alerts/screen/webReport',
+          'user-agent': 'Recall Radar image audit',
+          range: 'bytes=0-1024'
+        }
+      });
+      const body = new Uint8Array(await response.arrayBuffer());
+      const contentType = response.headers.get('content-type') ?? '';
+
+      if (response.status >= 200 && response.status < 300) {
+        if (body.length === 0) {
+          lastStatus = 'empty-2xx';
+        } else {
+          lastStatus = /^image\//i.test(contentType) ? 'image' : 'non-image-2xx';
+        }
+      } else if (response.status >= 300 && response.status < 400) {
+        lastStatus = '3xx';
+      } else if (response.status === 403) {
+        lastStatus = '403';
+      } else if (response.status === 404) {
+        lastStatus = '404';
+      } else {
+        lastStatus = 'other';
       }
-    });
-    const body = new Uint8Array(await response.arrayBuffer());
-    const contentType = response.headers.get('content-type') ?? '';
-
-    if (response.status >= 200 && response.status < 300) {
-      if (body.length === 0) {
-        return 'empty-2xx';
-      }
-
-      return /^image\//i.test(contentType) ? 'image' : 'non-image-2xx';
+    } catch (error) {
+      lastStatus = error instanceof Error && error.name === 'AbortError' ? 'timeout' : 'other';
+    } finally {
+      clearTimeout(timeout);
     }
 
-    if (response.status >= 300 && response.status < 400) {
-      return '3xx';
+    if (lastStatus === 'image') {
+      return lastStatus;
     }
-
-    if (response.status === 403) {
-      return '403';
-    }
-
-    if (response.status === 404) {
-      return '404';
-    }
-
-    return 'other';
-  } catch (error) {
-    return error instanceof Error && error.name === 'AbortError' ? 'timeout' : 'other';
-  } finally {
-    clearTimeout(timeout);
   }
+
+  return lastStatus;
 }
 
 function incrementLive(summary: LiveSummary, status: Awaited<ReturnType<typeof fetchStatus>>): void {
@@ -245,7 +283,8 @@ function incrementLive(summary: LiveSummary, status: Awaited<ReturnType<typeof f
 
 async function run(): Promise<void> {
   const summaries = new Map<string, SourceSummary>();
-  const sourceUrls = new Map<string, string[]>();
+  const sourceFullUrls = new Map<string, string[]>();
+  const sourceThumbnailUrls = new Map<string, string[]>();
 
   for (const file of processedFiles) {
     const records = await recordsFromFile(file);
@@ -267,12 +306,17 @@ async function run(): Promise<void> {
       }
 
       const summary = getSummary(summaries, source);
-      const urls = imageUrlsFor(record);
+      const fullUrls = imageUrlsFor(record);
+      const thumbnailUrls = thumbnailImageUrlsFor(record);
+      const urls = [...fullUrls, ...thumbnailUrls];
       const uniqueUrls = [...new Set(urls.filter(Boolean))];
+      const uniqueThumbnailUrls = [...new Set(thumbnailUrls.filter(Boolean))];
       summary.totalRecords += 1;
       summary.totalImageUrls += urls.length;
       summary.uniqueImageUrls += uniqueUrls.length;
       summary.duplicateImageUrls += urls.length - uniqueUrls.length;
+      summary.totalThumbnailImageUrls += thumbnailUrls.length;
+      summary.uniqueThumbnailImageUrls += uniqueThumbnailUrls.length;
 
       if (uniqueUrls.length) {
         summary.recordsWithImageUrls += 1;
@@ -282,6 +326,10 @@ async function run(): Promise<void> {
 
       if (stringValue(record.primaryImageUrl)) {
         summary.recordsWithPrimaryImageUrl += 1;
+      }
+
+      if (stringValue(record.primaryImageThumbnailUrl)) {
+        summary.recordsWithPrimaryImageThumbnailUrl += 1;
       }
 
       for (const url of urls) {
@@ -298,12 +346,13 @@ async function run(): Promise<void> {
         }
       }
 
-      sourceUrls.set(source, [...(sourceUrls.get(source) ?? []), ...uniqueUrls]);
+      sourceFullUrls.set(source, [...(sourceFullUrls.get(source) ?? []), ...new Set(fullUrls.filter(Boolean))]);
+      sourceThumbnailUrls.set(source, [...(sourceThumbnailUrls.get(source) ?? []), ...uniqueThumbnailUrls]);
     }
   }
 
   if (liveCheck) {
-    for (const [source, urls] of sourceUrls.entries()) {
+    for (const [source, urls] of sourceFullUrls.entries()) {
       const summary = getSummary(summaries, source);
       summary.live = {
         checked: 0,
@@ -321,6 +370,25 @@ async function run(): Promise<void> {
         incrementLive(summary.live, await fetchStatus(url));
       }
     }
+
+    for (const [source, urls] of sourceThumbnailUrls.entries()) {
+      const summary = getSummary(summaries, source);
+      summary.liveThumbnails = {
+        checked: 0,
+        okImage: 0,
+        empty2xx: 0,
+        nonImage2xx: 0,
+        redirect3xx: 0,
+        forbidden403: 0,
+        notFound404: 0,
+        timeout: 0,
+        other: 0
+      };
+
+      for (const url of [...new Set(urls)].slice(0, liveLimitPerSource)) {
+        incrementLive(summary.liveThumbnails, await fetchStatus(url));
+      }
+    }
   }
 
   console.log(`Image audit mode: ${liveCheck ? 'live bounded check enabled' : 'local metadata only'}`);
@@ -333,18 +401,44 @@ async function run(): Promise<void> {
     console.log(`  records with image URLs: ${summary.recordsWithImageUrls}`);
     console.log(`  records with no image URLs: ${summary.recordsWithoutImageUrls}`);
     console.log(`  records with primaryImageUrl: ${summary.recordsWithPrimaryImageUrl}`);
+    console.log(`  records with primaryImageThumbnailUrl: ${summary.recordsWithPrimaryImageThumbnailUrl}`);
     console.log(`  total image URL references: ${summary.totalImageUrls}`);
     console.log(`  unique image URL references: ${summary.uniqueImageUrls}`);
     console.log(`  duplicate image URL references: ${summary.duplicateImageUrls}`);
+    console.log(`  total thumbnail URL references: ${summary.totalThumbnailImageUrls}`);
+    console.log(`  unique thumbnail URL references: ${summary.uniqueThumbnailImageUrls}`);
     console.log(`  hosts: ${JSON.stringify(orderedObject(summary.hosts))}`);
     console.log(`  extensions/types: ${JSON.stringify(orderedObject(summary.extensions))}`);
     console.log(`  suspicious: ${JSON.stringify(orderedObject(summary.suspicious))}`);
 
     if (summary.live) {
-      console.log(`  live sample: ${JSON.stringify(summary.live)}`);
+      console.log(`  live full image sample: ${JSON.stringify(summary.live)}`);
+    }
+
+    if (summary.liveThumbnails) {
+      console.log(`  live thumbnail image sample: ${JSON.stringify(summary.liveThumbnails)}`);
     }
 
     console.log('');
+  }
+
+  const blockers = [...summaries.values()].flatMap((summary) => {
+    const failures: string[] = [];
+    if (summary.live && summary.live.checked !== summary.live.okImage) {
+      failures.push(`${summary.source} full image live sample has ${summary.live.checked - summary.live.okImage} non-image responses.`);
+    }
+    if (summary.liveThumbnails && summary.liveThumbnails.checked !== summary.liveThumbnails.okImage) {
+      failures.push(
+        `${summary.source} thumbnail image live sample has ${summary.liveThumbnails.checked - summary.liveThumbnails.okImage} non-image responses.`
+      );
+    }
+    return failures;
+  });
+
+  if (blockers.length) {
+    console.error(blockers.join('\n'));
+    process.exitCode = 1;
+    return;
   }
 
   console.log('PASS image audit completed');

@@ -14,6 +14,19 @@ type SourceCounts = Record<RecallSource, number> & {
   total: number;
 };
 
+type ImageEndpointValidation = {
+  checked: number;
+  okImage: number;
+  empty2xx: number;
+  nonImage2xx: number;
+  redirect3xx: number;
+  forbidden403: number;
+  notFound404: number;
+  timeout: number;
+  other: number;
+  failures: AuditIssue[];
+};
+
 type AuditSummary = {
   source: 'EU_SAFETY_GATE';
   total: number;
@@ -27,21 +40,14 @@ type AuditSummary = {
     recordsWithRawPhotos: number;
     recordsWithOfficialMainPicture: number;
     recordsWithPrimaryImageUrl: number;
+    recordsWithPrimaryImageThumbnailUrl: number;
     primaryImageMatchesOfficialMain: number;
     primaryImageMismatches: AuditIssue[];
+    primaryThumbnailMatchesOfficialMain: number;
+    primaryThumbnailMismatches: AuditIssue[];
   };
-  imageEndpointValidation: {
-    checked: number;
-    okImage: number;
-    empty2xx: number;
-    nonImage2xx: number;
-    redirect3xx: number;
-    forbidden403: number;
-    notFound404: number;
-    timeout: number;
-    other: number;
-    failures: AuditIssue[];
-  };
+  imageEndpointValidation: ImageEndpointValidation;
+  thumbnailEndpointValidation: ImageEndpointValidation;
   recordsWithOfficialNoticeUrlShape: number;
   suspiciousCategoryMappings: AuditIssue[];
   slugCollisions: AuditIssue[];
@@ -199,6 +205,10 @@ function officialImageUrl(id: string): string {
   return `https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/${encodeURIComponent(id)}`;
 }
 
+function officialThumbnailImageUrl(id: string): string {
+  return `https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/${encodeURIComponent(id)}`;
+}
+
 function officialMainPicture(record: NormalizedRecall): Record<string, unknown> | null {
   const photos = rawPhotos(record);
   return photos.find((photo) => photo.mainPicture === true) ?? photos[0] ?? null;
@@ -286,9 +296,12 @@ async function fetchImageEndpointStatus(
   return { status: lastStatus, detail: lastDetail };
 }
 
-async function validatePrimaryImageEndpoints(records: NormalizedRecall[]): Promise<AuditSummary['imageEndpointValidation']> {
-  const recordsWithPrimaryImages = records.filter((record) => Boolean(record.primaryImageUrl));
-  const validation: AuditSummary['imageEndpointValidation'] = {
+async function validateImageEndpoints(
+  records: NormalizedRecall[],
+  getUrl: (record: NormalizedRecall) => string | undefined
+): Promise<ImageEndpointValidation> {
+  const recordsWithPrimaryImages = records.filter((record) => Boolean(getUrl(record)));
+  const validation: ImageEndpointValidation = {
     checked: 0,
     okImage: 0,
     empty2xx: 0,
@@ -302,7 +315,8 @@ async function validatePrimaryImageEndpoints(records: NormalizedRecall[]): Promi
   };
 
   await mapWithConcurrency(recordsWithPrimaryImages, imageEndpointConcurrency, async (record) => {
-    const result = await fetchImageEndpointStatus(record.primaryImageUrl ?? '');
+    const url = getUrl(record) ?? '';
+    const result = await fetchImageEndpointStatus(url);
     const { status } = result;
     validation.checked += 1;
 
@@ -325,7 +339,7 @@ async function validatePrimaryImageEndpoints(records: NormalizedRecall[]): Promi
     }
 
     if (status !== 'image') {
-      validation.failures.push(compactIssue(record, `${status}: ${record.primaryImageUrl} (${result.detail})`));
+      validation.failures.push(compactIssue(record, `${status}: ${url} (${result.detail})`));
     }
   });
 
@@ -495,6 +509,9 @@ async function audit(records: NormalizedRecall[]): Promise<AuditSummary> {
     rawPhotos(record).some((photo) => photo.mainPicture === true)
   ).length;
   const recordsWithPrimaryImageUrl = records.filter((record) => Boolean(record.primaryImageUrl)).length;
+  const recordsWithPrimaryImageThumbnailUrl = records.filter((record) =>
+    Boolean(record.primaryImageThumbnailUrl)
+  ).length;
   const primaryImageMismatches = records
     .map((record) => {
       const mainPicture = officialMainPicture(record);
@@ -507,6 +524,23 @@ async function audit(records: NormalizedRecall[]): Promise<AuditSummary> {
       return record.primaryImageUrl === expectedUrl
         ? null
         : compactIssue(record, `primaryImageUrl=${record.primaryImageUrl || '(missing)'} expected=${expectedUrl}`);
+    })
+    .filter((issue): issue is AuditIssue => Boolean(issue));
+  const primaryThumbnailMismatches = records
+    .map((record) => {
+      const mainPicture = officialMainPicture(record);
+      const mainPictureId = mainPicture ? asString(mainPicture.id) : '';
+      if (!mainPictureId) {
+        return null;
+      }
+
+      const expectedUrl = officialThumbnailImageUrl(mainPictureId);
+      return record.primaryImageThumbnailUrl === expectedUrl
+        ? null
+        : compactIssue(
+            record,
+            `primaryImageThumbnailUrl=${record.primaryImageThumbnailUrl || '(missing)'} expected=${expectedUrl}`
+          );
     })
     .filter((issue): issue is AuditIssue => Boolean(issue));
   const recordsWithBarcodes = records.filter((record) => rawIdentifierGroups(record).barcodes.length > 0 || hasBarcodeLikeValue(record)).length;
@@ -533,7 +567,8 @@ async function audit(records: NormalizedRecall[]): Promise<AuditSummary> {
     records.filter((record) => record.brandNames.length > 0).length === 0
       ? 'EU Safety Gate records may omit brand/company when the alert marks brand as unknown.'
       : '',
-    recordsWithImages === 0 ? 'No EU Safety Gate official image URLs were normalized.' : ''
+    recordsWithImages === 0 ? 'No EU Safety Gate official image URLs were normalized.' : '',
+    recordsWithPrimaryImageThumbnailUrl === 0 ? 'No EU Safety Gate official thumbnail image URLs were normalized.' : ''
   ].filter(Boolean);
 
   return {
@@ -572,10 +607,14 @@ async function audit(records: NormalizedRecall[]): Promise<AuditSummary> {
       recordsWithRawPhotos,
       recordsWithOfficialMainPicture,
       recordsWithPrimaryImageUrl,
+      recordsWithPrimaryImageThumbnailUrl,
       primaryImageMatchesOfficialMain: recordsWithOfficialMainPicture - primaryImageMismatches.length,
-      primaryImageMismatches
+      primaryImageMismatches,
+      primaryThumbnailMatchesOfficialMain: recordsWithOfficialMainPicture - primaryThumbnailMismatches.length,
+      primaryThumbnailMismatches
     },
-    imageEndpointValidation: await validatePrimaryImageEndpoints(records),
+    imageEndpointValidation: await validateImageEndpoints(records, (record) => record.primaryImageUrl),
+    thumbnailEndpointValidation: await validateImageEndpoints(records, (record) => record.primaryImageThumbnailUrl),
     recordsWithOfficialNoticeUrlShape: records.filter((record) => looksLikeOfficialNoticeUrl(record.sourceUrl)).length,
     suspiciousCategoryMappings,
     slugCollisions,
@@ -647,8 +686,15 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
     summary.imageSelection.primaryImageMatchesOfficialMain !== summary.imageSelection.recordsWithOfficialMainPicture
       ? `EU primary image does not match official mainPicture for ${summary.imageSelection.primaryImageMismatches.length} records.`
       : '',
+    summary.imageSelection.recordsWithOfficialMainPicture > 0 &&
+    summary.imageSelection.primaryThumbnailMatchesOfficialMain !== summary.imageSelection.recordsWithOfficialMainPicture
+      ? `EU primary thumbnail does not match official mainPicture for ${summary.imageSelection.primaryThumbnailMismatches.length} records.`
+      : '',
     summary.imageEndpointValidation.failures.length > 0
       ? `EU primary image endpoint failures found: ${summary.imageEndpointValidation.failures.length}.`
+      : '',
+    summary.thumbnailEndpointValidation.failures.length > 0
+      ? `EU primary thumbnail endpoint failures found: ${summary.thumbnailEndpointValidation.failures.length}.`
       : '',
     sourceFilters.join('|') !== expectedSourceFilterValues.join('|')
       ? `Source filter values changed unexpectedly: ${sourceFilters.join(', ')}.`
@@ -704,8 +750,25 @@ async function runAudit(): Promise<void> {
             recordsWithRawPhotos: summary.imageSelection.recordsWithRawPhotos,
             recordsWithOfficialMainPicture: summary.imageSelection.recordsWithOfficialMainPicture,
             recordsWithPrimaryImageUrl: summary.imageSelection.recordsWithPrimaryImageUrl,
+            recordsWithPrimaryImageThumbnailUrl: summary.imageSelection.recordsWithPrimaryImageThumbnailUrl,
             primaryImageMatchesOfficialMain: summary.imageSelection.primaryImageMatchesOfficialMain,
-            primaryImageMismatches: summary.imageSelection.primaryImageMismatches.length
+            primaryImageMismatches: summary.imageSelection.primaryImageMismatches.length,
+            primaryThumbnailMatchesOfficialMain: summary.imageSelection.primaryThumbnailMatchesOfficialMain,
+            primaryThumbnailMismatches: summary.imageSelection.primaryThumbnailMismatches.length
+          },
+          imageEndpointValidation: {
+            checked: summary.imageEndpointValidation.checked,
+            okImage: summary.imageEndpointValidation.okImage,
+            empty2xx: summary.imageEndpointValidation.empty2xx,
+            nonImage2xx: summary.imageEndpointValidation.nonImage2xx,
+            failures: summary.imageEndpointValidation.failures.length
+          },
+          thumbnailEndpointValidation: {
+            checked: summary.thumbnailEndpointValidation.checked,
+            okImage: summary.thumbnailEndpointValidation.okImage,
+            empty2xx: summary.thumbnailEndpointValidation.empty2xx,
+            nonImage2xx: summary.thumbnailEndpointValidation.nonImage2xx,
+            failures: summary.thumbnailEndpointValidation.failures.length
           },
           recordsWithOfficialNoticeUrlShape: summary.recordsWithOfficialNoticeUrlShape,
           identifierCoverage: summary.siteIdentifierCoverage,

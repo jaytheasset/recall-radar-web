@@ -1,5 +1,6 @@
 ---
 import { brandGroups } from '../../lib/recall-data';
+import { getRecallImageForContext } from '../../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../../lib/recall-sources';
 import '../../styles/global.css';
 
@@ -79,15 +80,19 @@ const description = `Indexed recall notices linked to ${brand}, with related pro
           </div>
         </div>
         <div class="product-grid">
-          {recalls.map((recall) => (
+          {recalls.map((recall) => {
+            const image = getRecallImageForContext(recall, 'list');
+
+            return (
             <article class="product-card">
               <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
-                {recall.primaryImageUrl ? (
+                {image.url ? (
                   <>
                     <img
-                      src={recall.primaryImageUrl}
-                      alt={recall.primaryImageAlt || recall.title}
+                      src={image.url}
+                      alt={image.alt}
                       loading="lazy"
+                      decoding="async"
                       data-fallback-label={getRecallSourcePlaceholder(recall.source)}
                     />
                     <span class="image-placeholder image-placeholder-fallback" hidden>
@@ -108,7 +113,8 @@ const description = `Indexed recall notices linked to ${brand}, with related pro
                 <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
       </section>
 

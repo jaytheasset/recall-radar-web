@@ -9,6 +9,7 @@ export type ProcessedRecallSource = RecallSource | 'MULTI';
 
 export type RecallImage = {
   url: string;
+  thumbnailUrl?: string;
   caption?: string;
   alt?: string;
 };
@@ -35,6 +36,7 @@ export type NormalizedRecall = {
   status?: string;
   images?: RecallImage[];
   primaryImageUrl?: string;
+  primaryImageThumbnailUrl?: string;
   primaryImageAlt?: string;
   raw: unknown;
 };

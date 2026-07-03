@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-03T00:52:28.239Z",
+  "generatedAt": "2026-07-03T02:03:31.855Z",
   "source": "EU_SAFETY_GATE",
   "count": 100,
   "records": [
@@ -73,31 +73,37 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012963",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012963",
           "caption": "stretch squad sig2026019.png",
           "alt": "HTI Group - Sand-filled figurine toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012960",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012960",
           "caption": "p09062223.png",
           "alt": "HTI Group - Sand-filled figurine toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012961",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012961",
           "caption": "p090622.png",
           "alt": "HTI Group - Sand-filled figurine toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012962",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012962",
           "caption": "p0906.png",
           "alt": "HTI Group - Sand-filled figurine toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012964",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012964",
           "caption": "p0609665.png",
           "alt": "HTI Group - Sand-filled figurine toy - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012963",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012963",
       "primaryImageAlt": "HTI Group - Sand-filled figurine toy - Safety Gate alert product image",
       "raw": {
         "id": 10099300,
@@ -987,21 +993,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012374",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012374",
           "caption": "jouet projecteur etoiles fid2026278.png",
           "alt": "Toy projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012375",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012375",
           "caption": "p1906262.png",
           "alt": "Toy projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012376",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012376",
           "caption": "p1906261.png",
           "alt": "Toy projector - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012374",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012374",
       "primaryImageAlt": "Toy projector - Safety Gate alert product image",
       "raw": {
         "id": 10099440,
@@ -1475,26 +1485,31 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012883",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012883",
           "caption": "Afbeelding Little Elephant pullbox.PNG",
           "alt": "Moni - Pull cord toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012885",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012885",
           "caption": "Small part.JPG",
           "alt": "Moni - Pull cord toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012886",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012886",
           "caption": "Template A.JPG",
           "alt": "Moni - Pull cord toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012884",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012884",
           "caption": "Small part 1.JPG",
           "alt": "Moni - Pull cord toy - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012883",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012883",
       "primaryImageAlt": "Moni - Pull cord toy - Safety Gate alert product image",
       "raw": {
         "id": 10099489,
@@ -1946,56 +1961,67 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012513",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012513",
           "caption": "26100L_FOTO (2).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012514",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012514",
           "caption": "26100L_FOTO (3).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012515",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012515",
           "caption": "26100L_FOTO (5).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012516",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012516",
           "caption": "26100L_FOTO (6).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012517",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012517",
           "caption": "26100L_FOTO (8).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012518",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012518",
           "caption": "26100L_FOTO (10).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012519",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012519",
           "caption": "26100L_FOTO (12).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012520",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012520",
           "caption": "26100L_FOTO (13).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012521",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012521",
           "caption": "26100L_FOTO (14).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012522",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012522",
           "caption": "26100L_FOTO (15).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012513",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012513",
       "primaryImageAlt": "Sandowi - Laser projector - Safety Gate alert product image",
       "raw": {
         "id": 10099455,
@@ -2503,31 +2529,37 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013505",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013505",
           "caption": "1000004330.jpg",
           "alt": "Children's car seat - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013506",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013506",
           "caption": "1000004331.jpg",
           "alt": "Children's car seat - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013507",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013507",
           "caption": "1000004332.jpg",
           "alt": "Children's car seat - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013508",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013508",
           "caption": "1000004333.jpg",
           "alt": "Children's car seat - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012776",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012776",
           "caption": "Test TASS.png",
           "alt": "Children's car seat - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013505",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013505",
       "primaryImageAlt": "Children's car seat - Safety Gate alert product image",
       "raw": {
         "id": 10099475,
@@ -2968,26 +3000,31 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013683",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013683",
           "caption": "Foto1 retocada centrada encuadre.jpg",
           "alt": "Mango (MNG) - Soother holder - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013684",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013684",
           "caption": "Foto4.jpg",
           "alt": "Mango (MNG) - Soother holder - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013685",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013685",
           "caption": "Foto3.jpg",
           "alt": "Mango (MNG) - Soother holder - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013686",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013686",
           "caption": "Foto2.jpg",
           "alt": "Mango (MNG) - Soother holder - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013683",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013683",
       "primaryImageAlt": "Mango (MNG) - Soother holder - Safety Gate alert product image",
       "raw": {
         "id": 10099422,
@@ -3508,41 +3545,49 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013667",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013667",
           "caption": "IMG_1596.JPG",
           "alt": "ASENME - Puzzle play mat - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013661",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013661",
           "caption": "IMG_1598.JPG",
           "alt": "ASENME - Puzzle play mat - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013662",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013662",
           "caption": "IMG_1597.JPG",
           "alt": "ASENME - Puzzle play mat - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013663",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013663",
           "caption": "IMG_1610.JPG",
           "alt": "ASENME - Puzzle play mat - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013664",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013664",
           "caption": "IMG_1611.JPG",
           "alt": "ASENME - Puzzle play mat - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013665",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013665",
           "caption": "IMG_1607.JPG",
           "alt": "ASENME - Puzzle play mat - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013666",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013666",
           "caption": "IMG_1605.JPG",
           "alt": "ASENME - Puzzle play mat - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013667",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013667",
       "primaryImageAlt": "ASENME - Puzzle play mat - Safety Gate alert product image",
       "raw": {
         "id": 10099438,
@@ -4021,16 +4066,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013702",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013702",
           "caption": "Typenschild.PNG",
           "alt": "ZWILLING - Contact grill - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013701",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013701",
           "caption": "07_Bild1.jpg",
           "alt": "ZWILLING - Contact grill - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013702",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013702",
       "primaryImageAlt": "ZWILLING - Contact grill - Safety Gate alert product image",
       "raw": {
         "id": 10099396,
@@ -4488,11 +4536,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013660",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013660",
           "caption": "Version_6.jpg",
           "alt": "Lighter - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013660",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013660",
       "primaryImageAlt": "Lighter - Safety Gate alert product image",
       "raw": {
         "id": 10099439,
@@ -4925,16 +4975,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013615",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013615",
           "caption": "958072b8-9d1a-47b0-9be5-d23a3c453467.jpg",
           "alt": "Table - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013614",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013614",
           "caption": "132cd7e9-22b1-4596-828d-823ee009ae42.jpg",
           "alt": "Table - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013615",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013615",
       "primaryImageAlt": "Table - Safety Gate alert product image",
       "raw": {
         "id": 10099463,
@@ -5371,21 +5424,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013655",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013655",
           "caption": "ensemble de lumiere led fid2026279.png",
           "alt": "Plastic toy set - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013654",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013654",
           "caption": "p19065.png",
           "alt": "Plastic toy set - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013656",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013656",
           "caption": "p19066.png",
           "alt": "Plastic toy set - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013655",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013655",
       "primaryImageAlt": "Plastic toy set - Safety Gate alert product image",
       "raw": {
         "id": 10099446,
@@ -5836,21 +5893,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013716",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013716",
           "caption": "PXL_20260311_064017881.jpg",
           "alt": "Storage holder - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013714",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013714",
           "caption": "PXL_20260311_063956168.jpg",
           "alt": "Storage holder - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013715",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013715",
           "caption": "PXL_20260311_064038441.jpg",
           "alt": "Storage holder - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013716",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013716",
       "primaryImageAlt": "Storage holder - Safety Gate alert product image",
       "raw": {
         "id": 10099327,
@@ -6293,21 +6354,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013609",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013609",
           "caption": "S1 vara.jpeg",
           "alt": "Flying Tiger - Earrings - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013607",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013607",
           "caption": "s1-2 vara.jpeg",
           "alt": "Flying Tiger - Earrings - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013608",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013608",
           "caption": "S1 vara bak.jpeg",
           "alt": "Flying Tiger - Earrings - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013609",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013609",
       "primaryImageAlt": "Flying Tiger - Earrings - Safety Gate alert product image",
       "raw": {
         "id": 10099479,
@@ -6757,36 +6822,43 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013711",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013711",
           "caption": "ICSMS Bild.jpg",
           "alt": "Retoo - Angle grinder conversion kit - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013706",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013706",
           "caption": "Hersteller.jpg",
           "alt": "Retoo - Angle grinder conversion kit - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013707",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013707",
           "caption": "Produktbild.jpg",
           "alt": "Retoo - Angle grinder conversion kit - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013708",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013708",
           "caption": "hersteller1.jpg",
           "alt": "Retoo - Angle grinder conversion kit - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013709",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013709",
           "caption": "Verpackung.jpg",
           "alt": "Retoo - Angle grinder conversion kit - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013710",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013710",
           "caption": "Maschine.jpg",
           "alt": "Retoo - Angle grinder conversion kit - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013711",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013711",
       "primaryImageAlt": "Retoo - Angle grinder conversion kit - Safety Gate alert product image",
       "raw": {
         "id": 10099371,
@@ -7259,31 +7331,37 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013641",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013641",
           "caption": "26101L_FOTO (2).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013637",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013637",
           "caption": "26101L_FOTO (11).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013638",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013638",
           "caption": "26101L_FOTO (7).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013639",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013639",
           "caption": "26101L_FOTO (5).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013640",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013640",
           "caption": "26101L_FOTO (3).jpg",
           "alt": "Sandowi - Laser projector - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013641",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013641",
       "primaryImageAlt": "Sandowi - Laser projector - Safety Gate alert product image",
       "raw": {
         "id": 10099454,
@@ -7781,46 +7859,55 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013672",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013672",
           "caption": "h.png",
           "alt": "Bmw - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013673",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013673",
           "caption": "g.png",
           "alt": "Bmw - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013674",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013674",
           "caption": "f.png",
           "alt": "Bmw - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013675",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013675",
           "caption": "e.png",
           "alt": "Bmw - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013676",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013676",
           "caption": "d.png",
           "alt": "Bmw - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013677",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013677",
           "caption": "c.png",
           "alt": "Bmw - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013678",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013678",
           "caption": "b.png",
           "alt": "Bmw - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013679",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013679",
           "caption": "a.png",
           "alt": "Bmw - Passenger car - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013672",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013672",
       "primaryImageAlt": "Bmw - Passenger car - Safety Gate alert product image",
       "raw": {
         "id": 10099430,
@@ -8314,16 +8401,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013629",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013629",
           "caption": "a.png",
           "alt": "Dacia - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013628",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013628",
           "caption": "b.png",
           "alt": "Dacia - Passenger car - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013629",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013629",
       "primaryImageAlt": "Dacia - Passenger car - Safety Gate alert product image",
       "raw": {
         "id": 10099459,
@@ -8773,16 +8863,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013617",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013617",
           "caption": "405 Foto geschwaerzt.jpg",
           "alt": "Mercedes-Benz - Lorry - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013616",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013616",
           "caption": "437 Foto geschwaerzt.jpg",
           "alt": "Mercedes-Benz - Lorry - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013617",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013617",
       "primaryImageAlt": "Mercedes-Benz - Lorry - Safety Gate alert product image",
       "raw": {
         "id": 10099462,
@@ -9243,11 +9336,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013613",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013613",
           "caption": "Qashqai.jpg",
           "alt": "Nissan - Passenger car - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013613",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013613",
       "primaryImageAlt": "Nissan - Passenger car - Safety Gate alert product image",
       "raw": {
         "id": 10099464,
@@ -9690,21 +9785,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013659",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013659",
           "caption": "Beispiel ISOFIX Buegel.jpg",
           "alt": "Aguti - Vehicle part / ISOFIX attachment system - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013657",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013657",
           "caption": "Varianten ISOFIX Buegel.jpg",
           "alt": "Aguti - Vehicle part / ISOFIX attachment system - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013658",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013658",
           "caption": "Einbausituation ISOFIX Buegel.jpg",
           "alt": "Aguti - Vehicle part / ISOFIX attachment system - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013659",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013659",
       "primaryImageAlt": "Aguti - Vehicle part / ISOFIX attachment system - Safety Gate alert product image",
       "raw": {
         "id": 10099443,
@@ -10166,11 +10265,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013671",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013671",
           "caption": "tkmaxx_misco.png",
           "alt": "Misco - Racket set - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013671",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013671",
       "primaryImageAlt": "Misco - Racket set - Safety Gate alert product image",
       "raw": {
         "id": 10099431,
@@ -10649,21 +10750,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013645",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013645",
           "caption": "39 prod.jpeg",
           "alt": "Velamp - Mini torch - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013643",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013643",
           "caption": "IMG_0660.jpeg",
           "alt": "Velamp - Mini torch - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013644",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013644",
           "caption": "39 förp.jpeg",
           "alt": "Velamp - Mini torch - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013645",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013645",
       "primaryImageAlt": "Velamp - Mini torch - Safety Gate alert product image",
       "raw": {
         "id": 10099452,
@@ -11118,21 +11223,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013651",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013651",
           "caption": "40 prod.jpeg",
           "alt": "Velamp - LED headlamp - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013649",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013649",
           "caption": "IMG_1857.jpeg",
           "alt": "Velamp - LED headlamp - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013650",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013650",
           "caption": "40 package.jpeg",
           "alt": "Velamp - LED headlamp - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013651",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013651",
       "primaryImageAlt": "Velamp - LED headlamp - Safety Gate alert product image",
       "raw": {
         "id": 10099449,
@@ -11586,31 +11695,37 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013622",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013622",
           "caption": "20250417_112137.jpg",
           "alt": "VANTAGE TRAIN - Toy train - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013618",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013618",
           "caption": "Train_EAN01.jpg",
           "alt": "VANTAGE TRAIN - Toy train - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013619",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013619",
           "caption": "Train_EAN02.jpg",
           "alt": "VANTAGE TRAIN - Toy train - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013620",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013620",
           "caption": "20250417_112241.jpg",
           "alt": "VANTAGE TRAIN - Toy train - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013621",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013621",
           "caption": "20250417_111830.jpg",
           "alt": "VANTAGE TRAIN - Toy train - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013622",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013622",
       "primaryImageAlt": "VANTAGE TRAIN - Toy train - Safety Gate alert product image",
       "raw": {
         "id": 10099461,
@@ -12072,16 +12187,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013653",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013653",
           "caption": "IMG_2754.jpeg",
           "alt": "CHISA - Vibrator - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013652",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013652",
           "caption": "IMG_2752.jpeg",
           "alt": "CHISA - Vibrator - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013653",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013653",
       "primaryImageAlt": "CHISA - Vibrator - Safety Gate alert product image",
       "raw": {
         "id": 10099448,
@@ -12524,16 +12642,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013732",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013732",
           "caption": "3a275bec3a9649ffb2a2b8ee3b4e8282.jpeg",
           "alt": "Disaar - Sunscreen - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013731",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013731",
           "caption": "3a275bec3a9649ffb2a2b8ee3b4e8282.jpeg",
           "alt": "Disaar - Sunscreen - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013732",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013732",
       "primaryImageAlt": "Disaar - Sunscreen - Safety Gate alert product image",
       "raw": {
         "id": 10098486,
@@ -13005,21 +13126,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013632",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013632",
           "caption": "20251014_125432.jpg",
           "alt": "VIXSON - Soldering iron - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013630",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013630",
           "caption": "20251014_131755.jpg",
           "alt": "VIXSON - Soldering iron - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013631",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013631",
           "caption": "20251014_125403.jpg",
           "alt": "VIXSON - Soldering iron - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013632",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013632",
       "primaryImageAlt": "VIXSON - Soldering iron - Safety Gate alert product image",
       "raw": {
         "id": 10099458,
@@ -13468,21 +13593,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013705",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013705",
           "caption": "BC 25 44287 (9).jpg",
           "alt": "PANCERKA - Sandwich maker - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013703",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013703",
           "caption": "emballage.png",
           "alt": "PANCERKA - Sandwich maker - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013704",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013704",
           "caption": "produitfid2026296.png",
           "alt": "PANCERKA - Sandwich maker - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013705",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013705",
       "primaryImageAlt": "PANCERKA - Sandwich maker - Safety Gate alert product image",
       "raw": {
         "id": 10099380,
@@ -13981,11 +14110,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013723",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013723",
           "caption": "produitvei202665.png",
           "alt": "Attachment for brush cutter - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013723",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013723",
       "primaryImageAlt": "Attachment for brush cutter - Safety Gate alert product image",
       "raw": {
         "id": 10099253,
@@ -14416,16 +14547,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013725",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013725",
           "caption": "sandwich maker digi 01.PNG",
           "alt": "Jumbo - Sandwich maker - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013724",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013724",
           "caption": "sandwich maker digi01 - 2.PNG",
           "alt": "Jumbo - Sandwich maker - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013725",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013725",
       "primaryImageAlt": "Jumbo - Sandwich maker - Safety Gate alert product image",
       "raw": {
         "id": 10099236,
@@ -14940,11 +15074,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10990451",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10990451",
           "caption": "VIC Zerogrid.jpg",
           "alt": "VIC - Battery storage - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10990451",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10990451",
       "primaryImageAlt": "VIC - Battery storage - Safety Gate alert product image",
       "raw": {
         "id": 10097111,
@@ -15477,36 +15613,43 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10975413",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10975413",
           "caption": "CAPTUR.JPG",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10975412",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10975412",
           "caption": "AUSTRAL.JPG",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10975414",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10975414",
           "caption": "ESPACE VI (2).JPG",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10975415",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10975415",
           "caption": "MEGANE.JPG",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10975416",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10975416",
           "caption": "RAFALE.JPG",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10975417",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10975417",
           "caption": "SCENIC.JPG",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10975413",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10975413",
       "primaryImageAlt": "Renault - Passenger car - Safety Gate alert product image",
       "raw": {
         "id": 10095668,
@@ -16020,11 +16163,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10974683",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10974683",
           "caption": "DUSTER.jpg",
           "alt": "Dacia - Passenger car - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10974683",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10974683",
       "primaryImageAlt": "Dacia - Passenger car - Safety Gate alert product image",
       "raw": {
         "id": 10095773,
@@ -16492,16 +16637,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013730",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013730",
           "caption": "Unbenannt.JPG",
           "alt": "ggm gastro - Food mixer - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013729",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013729",
           "caption": "20260413_112824.jpg",
           "alt": "ggm gastro - Food mixer - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013730",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013730",
       "primaryImageAlt": "ggm gastro - Food mixer - Safety Gate alert product image",
       "raw": {
         "id": 10098683,
@@ -16982,16 +17130,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013697",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013697",
           "caption": "a.png",
           "alt": "Ligier - Quadricycle - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013696",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013696",
           "caption": "b.png",
           "alt": "Ligier - Quadricycle - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013697",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013697",
       "primaryImageAlt": "Ligier - Quadricycle - Safety Gate alert product image",
       "raw": {
         "id": 10099408,
@@ -17438,21 +17589,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013648",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013648",
           "caption": "IMG_0145.jpeg",
           "alt": "Grechi - Bath toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013646",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013646",
           "caption": "product picture.jpg",
           "alt": "Grechi - Bath toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013647",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013647",
           "caption": "Image.jpg",
           "alt": "Grechi - Bath toy - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013648",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013648",
       "primaryImageAlt": "Grechi - Bath toy - Safety Gate alert product image",
       "raw": {
         "id": 10099451,
@@ -17902,21 +18057,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013612",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013612",
           "caption": "Rattle.png",
           "alt": "ABirdon - Teething toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013610",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013610",
           "caption": "Rattle2.png",
           "alt": "ABirdon - Teething toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013611",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013611",
           "caption": "Rattle- back.png",
           "alt": "ABirdon - Teething toy - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013612",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013612",
       "primaryImageAlt": "ABirdon - Teething toy - Safety Gate alert product image",
       "raw": {
         "id": 10099469,
@@ -18378,16 +18537,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013680",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013680",
           "caption": "monoi clementine scp fid2026344.png",
           "alt": "L'instant bougies - Perfumed base for candles - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013681",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013681",
           "caption": "p18065.png",
           "alt": "L'instant bougies - Perfumed base for candles - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013680",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013680",
       "primaryImageAlt": "L'instant bougies - Perfumed base for candles - Safety Gate alert product image",
       "raw": {
         "id": 10099428,
@@ -18870,26 +19032,31 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013636",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013636",
           "caption": "koala.png",
           "alt": "Toy rattle - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013633",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013633",
           "caption": "koala4.png",
           "alt": "Toy rattle - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013634",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013634",
           "caption": "koala3.png",
           "alt": "Toy rattle - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013635",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013635",
           "caption": "koala2.png",
           "alt": "Toy rattle - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013636",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013636",
       "primaryImageAlt": "Toy rattle - Safety Gate alert product image",
       "raw": {
         "id": 10099457,
@@ -19398,21 +19565,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013728",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013728",
           "caption": "20251028_122246.jpg",
           "alt": "Expandable beads - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013726",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013726",
           "caption": "20251106_100751.jpg",
           "alt": "Expandable beads - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013727",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013727",
           "caption": "20251028_122239.jpg",
           "alt": "Expandable beads - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013728",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013728",
       "primaryImageAlt": "Expandable beads - Safety Gate alert product image",
       "raw": {
         "id": 10099207,
@@ -19933,31 +20104,37 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013627",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013627",
           "caption": "20251208_104450.jpg",
           "alt": "Lighting chain - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013623",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013623",
           "caption": "Retez_ean.jpg",
           "alt": "Lighting chain - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013624",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013624",
           "caption": "20251208_104541.jpg",
           "alt": "Lighting chain - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013625",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013625",
           "caption": "20251208_104525.jpg",
           "alt": "Lighting chain - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013626",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013626",
           "caption": "20251208_104505.jpg",
           "alt": "Lighting chain - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013627",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013627",
       "primaryImageAlt": "Lighting chain - Safety Gate alert product image",
       "raw": {
         "id": 10099460,
@@ -20413,16 +20590,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013670",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013670",
           "caption": "a.png",
           "alt": "Bmw - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013669",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013669",
           "caption": "c.png",
           "alt": "Bmw - Passenger car - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013670",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013670",
       "primaryImageAlt": "Bmw - Passenger car - Safety Gate alert product image",
       "raw": {
         "id": 10099432,
@@ -20874,26 +21054,31 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013691",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013691",
           "caption": "IMG_3992.jpg",
           "alt": "Jessie Milano - Gel nail polish - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013688",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013688",
           "caption": "IMG_3994.jpg",
           "alt": "Jessie Milano - Gel nail polish - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013689",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013689",
           "caption": "IMG_3988.jpg",
           "alt": "Jessie Milano - Gel nail polish - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013690",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013690",
           "caption": "IMG_3995.jpg",
           "alt": "Jessie Milano - Gel nail polish - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013691",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013691",
       "primaryImageAlt": "Jessie Milano - Gel nail polish - Safety Gate alert product image",
       "raw": {
         "id": 10099420,
@@ -21354,26 +21539,31 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013695",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013695",
           "caption": "20250925_112840.jpg",
           "alt": "Jessie Milano - Gel nail polish - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013692",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013692",
           "caption": "IMG_3919.jpg",
           "alt": "Jessie Milano - Gel nail polish - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013693",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013693",
           "caption": "IMG_3918.jpg",
           "alt": "Jessie Milano - Gel nail polish - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013694",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013694",
           "caption": "20250925_112850.jpg",
           "alt": "Jessie Milano - Gel nail polish - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013695",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013695",
       "primaryImageAlt": "Jessie Milano - Gel nail polish - Safety Gate alert product image",
       "raw": {
         "id": 10099419,
@@ -21834,36 +22024,43 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013722",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013722",
           "caption": "Karton.PNG",
           "alt": "Medicina del Lavoro - Particle filter mask - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013717",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013717",
           "caption": "2604-16 (21)_Maske.JPG",
           "alt": "Medicina del Lavoro - Particle filter mask - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013718",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013718",
           "caption": "2604-16 (4)_Verpackung.JPG",
           "alt": "Medicina del Lavoro - Particle filter mask - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013719",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013719",
           "caption": "2604-16 (3)_Verpackung.JPG",
           "alt": "Medicina del Lavoro - Particle filter mask - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013720",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013720",
           "caption": "2604-16 (6)_Verpackung.JPG",
           "alt": "Medicina del Lavoro - Particle filter mask - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013721",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013721",
           "caption": "Maske.PNG",
           "alt": "Medicina del Lavoro - Particle filter mask - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013722",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013722",
       "primaryImageAlt": "Medicina del Lavoro - Particle filter mask - Safety Gate alert product image",
       "raw": {
         "id": 10099319,
@@ -22404,11 +22601,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013682",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013682",
           "caption": "a.png",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013682",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013682",
       "primaryImageAlt": "Renault - Passenger car - Safety Gate alert product image",
       "raw": {
         "id": 10099426,
@@ -22847,11 +23046,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013668",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013668",
           "caption": "produitfid2026307.png",
           "alt": "Adaptor - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013668",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013668",
       "primaryImageAlt": "Adaptor - Safety Gate alert product image",
       "raw": {
         "id": 10099435,
@@ -23329,11 +23530,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013687",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013687",
           "caption": "1.png",
           "alt": "PJT - Bicycle helmet - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013687",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013687",
       "primaryImageAlt": "PJT - Bicycle helmet - Safety Gate alert product image",
       "raw": {
         "id": 10099421,
@@ -23785,11 +23988,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013642",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013642",
           "caption": "Ranger.jpg",
           "alt": "Ford - Pick-up truck - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013642",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013642",
       "primaryImageAlt": "Ford - Pick-up truck - Safety Gate alert product image",
       "raw": {
         "id": 10099453,
@@ -24249,16 +24454,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013189",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013189",
           "caption": "product.jpg",
           "alt": "Lamp - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013190",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013190",
           "caption": "label.jpg",
           "alt": "Lamp - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013189",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013189",
       "primaryImageAlt": "Lamp - Safety Gate alert product image",
       "raw": {
         "id": 10099395,
@@ -24727,26 +24935,31 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012987",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012987",
           "caption": "ZIRS 51165.png",
           "alt": "ORB Toys - Sand-filled figurine toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012988",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012988",
           "caption": "ZIRS 51165 a.jpg",
           "alt": "ORB Toys - Sand-filled figurine toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012989",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012989",
           "caption": "ZIRS 51165 b.jpg",
           "alt": "ORB Toys - Sand-filled figurine toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012990",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012990",
           "caption": "ZIRS 51165 c.jpg",
           "alt": "ORB Toys - Sand-filled figurine toy - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012987",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012987",
       "primaryImageAlt": "ORB Toys - Sand-filled figurine toy - Safety Gate alert product image",
       "raw": {
         "id": 10099311,
@@ -25224,51 +25437,61 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10977004",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10977004",
           "caption": "Annotation 2025-09-03 112800.png",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10977005",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10977005",
           "caption": "Annotation 2025-09-03 112821.png",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10977006",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10977006",
           "caption": "Annotation 2025-09-03 112848.png",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10977007",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10977007",
           "caption": "Annotation 2025-09-03 112916.png",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10977008",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10977008",
           "caption": "Annotation 2025-09-03 112937.png",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10977009",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10977009",
           "caption": "Annotation 2025-09-03 113003.png",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10977010",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10977010",
           "caption": "Annotation 2025-09-03 113036.png",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10977011",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10977011",
           "caption": "Annotation 2025-09-03 113102.png",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10977012",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10977012",
           "caption": "Annotation 2025-09-03 113134.png",
           "alt": "Renault - Passenger car - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10977004",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10977004",
       "primaryImageAlt": "Renault - Passenger car - Safety Gate alert product image",
       "raw": {
         "id": 10095876,
@@ -25812,21 +26035,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013698",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013698",
           "caption": "2606-0026.png",
           "alt": "Fancy-dress costume - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013699",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013699",
           "caption": "2606-0026-pump.png",
           "alt": "Fancy-dress costume - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013700",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013700",
           "caption": "2606-00261.png",
           "alt": "Fancy-dress costume - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013698",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013698",
       "primaryImageAlt": "Fancy-dress costume - Safety Gate alert product image",
       "raw": {
         "id": 10099400,
@@ -26268,16 +26495,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013713",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013713",
           "caption": "ORIG-260221272#1779873047.jpg",
           "alt": "Plangger Naturwaren - Deodorant - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013712",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013712",
           "caption": "ORIG-260221272#1779873049.jpg",
           "alt": "Plangger Naturwaren - Deodorant - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013713",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013713",
       "primaryImageAlt": "Plangger Naturwaren - Deodorant - Safety Gate alert product image",
       "raw": {
         "id": 10099359,
@@ -26761,16 +26991,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013064",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013064",
           "caption": "chapka layette sig2026058.png",
           "alt": "PETIT BEGUIN - Children's hat - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013063",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013063",
           "caption": "cl1.png",
           "alt": "PETIT BEGUIN - Children's hat - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013064",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013064",
       "primaryImageAlt": "PETIT BEGUIN - Children's hat - Safety Gate alert product image",
       "raw": {
         "id": 10099345,
@@ -27280,51 +27513,61 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013223",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013223",
           "caption": "PSA10_DE_35_Photo06.JPG",
           "alt": "WildSide - Bicycle helmet - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013219",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013219",
           "caption": "PSA10_DE_35_Photo02.JPG",
           "alt": "WildSide - Bicycle helmet - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013220",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013220",
           "caption": "PSA10_DE_35_Photo03.JPG",
           "alt": "WildSide - Bicycle helmet - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013221",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013221",
           "caption": "PSA10_DE_35_Photo04.JPG",
           "alt": "WildSide - Bicycle helmet - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013222",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013222",
           "caption": "PSA10_DE_35_Photo05.JPG",
           "alt": "WildSide - Bicycle helmet - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013224",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013224",
           "caption": "PSA10_DE_35_Photo07.JPG",
           "alt": "WildSide - Bicycle helmet - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013225",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013225",
           "caption": "PSA10_DE_35_Photo08.JPG",
           "alt": "WildSide - Bicycle helmet - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013226",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013226",
           "caption": "PSA10_DE_35_Photo09.JPG",
           "alt": "WildSide - Bicycle helmet - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013227",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013227",
           "caption": "PSA10_DE_35_Photo1.jpg",
           "alt": "WildSide - Bicycle helmet - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013223",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013223",
       "primaryImageAlt": "WildSide - Bicycle helmet - Safety Gate alert product image",
       "raw": {
         "id": 10099410,
@@ -27810,16 +28053,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013250",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013250",
           "caption": "pilt.jpg",
           "alt": "Kraft&Dele - Angle grinder adaptor kit - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013251",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013251",
           "caption": "pilt1.jpg",
           "alt": "Kraft&Dele - Angle grinder adaptor kit - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013250",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013250",
       "primaryImageAlt": "Kraft&Dele - Angle grinder adaptor kit - Safety Gate alert product image",
       "raw": {
         "id": 10099447,
@@ -28295,16 +28541,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10996182",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10996182",
           "caption": "NO_10474_25.png",
           "alt": "Jewellery set - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10996181",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10996181",
           "caption": "Skjermbilde 2025-12-16 153642.png",
           "alt": "Jewellery set - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10996182",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10996182",
       "primaryImageAlt": "Jewellery set - Safety Gate alert product image",
       "raw": {
         "id": 10097232,
@@ -28791,16 +29040,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013120",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013120",
           "caption": "20250505_134945.jpg",
           "alt": "VIDVIE - USB charger - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013121",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013121",
           "caption": "20250505_135115.jpg",
           "alt": "VIDVIE - USB charger - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013120",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013120",
       "primaryImageAlt": "VIDVIE - USB charger - Safety Gate alert product image",
       "raw": {
         "id": 10099370,
@@ -29272,26 +29524,31 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013179",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013179",
           "caption": "2025-37388 (10).jpg",
           "alt": "Fancy-dress costume - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013180",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013180",
           "caption": "capture-produit2.jpg",
           "alt": "Fancy-dress costume - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013181",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013181",
           "caption": "contenu.jpg",
           "alt": "Fancy-dress costume - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013182",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013182",
           "caption": "20251029_143857.jpg",
           "alt": "Fancy-dress costume - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013179",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013179",
       "primaryImageAlt": "Fancy-dress costume - Safety Gate alert product image",
       "raw": {
         "id": 10099391,
@@ -29773,21 +30030,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013151",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013151",
           "caption": "1.JPG",
           "alt": "Martes essentials - Balance bicycle - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013150",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013150",
           "caption": "IMG_20250205_111130.jpg",
           "alt": "Martes essentials - Balance bicycle - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013152",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013152",
           "caption": "2.JPG",
           "alt": "Martes essentials - Balance bicycle - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013151",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013151",
       "primaryImageAlt": "Martes essentials - Balance bicycle - Safety Gate alert product image",
       "raw": {
         "id": 10099384,
@@ -30281,26 +30542,31 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013246",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013246",
           "caption": "IMG_20260205_102440.jpg",
           "alt": "ZUZG - USB charger - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013247",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013247",
           "caption": "IMG_20260205_102529.jpg",
           "alt": "ZUZG - USB charger - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013248",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013248",
           "caption": "IMG_20260205_102652.jpg",
           "alt": "ZUZG - USB charger - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013249",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013249",
           "caption": "IMG_20260205_102440.jpg",
           "alt": "ZUZG - USB charger - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013246",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013246",
       "primaryImageAlt": "ZUZG - USB charger - Safety Gate alert product image",
       "raw": {
         "id": 10099429,
@@ -30848,11 +31114,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012953",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012953",
           "caption": "LDO.jpg",
           "alt": "USB charger - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012953",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012953",
       "primaryImageAlt": "USB charger - Safety Gate alert product image",
       "raw": {
         "id": 10099261,
@@ -31376,16 +31644,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013191",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013191",
           "caption": "montre jouet projection citrouille fid20026276.png",
           "alt": "Toy watch - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013192",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013192",
           "caption": "p16061.png",
           "alt": "Toy watch - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013191",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013191",
       "primaryImageAlt": "Toy watch - Safety Gate alert product image",
       "raw": {
         "id": 10099397,
@@ -31865,11 +32136,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013126",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013126",
           "caption": "AE-PS4G3M-00.jpg",
           "alt": "GTV - Extension lead - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013126",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013126",
       "primaryImageAlt": "GTV - Extension lead - Safety Gate alert product image",
       "raw": {
         "id": 10099375,
@@ -32382,11 +32655,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013125",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013125",
           "caption": "AE-PS3G5M-00.jpg",
           "alt": "GTV - Extension lead - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013125",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013125",
       "primaryImageAlt": "GTV - Extension lead - Safety Gate alert product image",
       "raw": {
         "id": 10099374,
@@ -32899,11 +33174,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013133",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013133",
           "caption": "AE-PS5G5M-00.jpg",
           "alt": "GTV - Extension lead - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013133",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013133",
       "primaryImageAlt": "GTV - Extension lead - Safety Gate alert product image",
       "raw": {
         "id": 10099379,
@@ -33416,11 +33693,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013128",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013128",
           "caption": "AE-PS5G3M-00.jpg",
           "alt": "GTV - Extension lead - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013128",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013128",
       "primaryImageAlt": "GTV - Extension lead - Safety Gate alert product image",
       "raw": {
         "id": 10099377,
@@ -33936,16 +34215,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012950",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012950",
           "caption": "build-a-bear_1.png",
           "alt": "Build-A-Bear Workshop - Plush toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012949",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012949",
           "caption": "build-a-bear-2.png",
           "alt": "Build-A-Bear Workshop - Plush toy - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012950",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012950",
       "primaryImageAlt": "Build-A-Bear Workshop - Plush toy - Safety Gate alert product image",
       "raw": {
         "id": 10099225,
@@ -34472,36 +34754,43 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013240",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013240",
           "caption": "20251121_093003.jpg",
           "alt": "Lighting chain - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013241",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013241",
           "caption": "20251121_093039.jpg",
           "alt": "Lighting chain - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013242",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013242",
           "caption": "20251121_093012.jpg",
           "alt": "Lighting chain - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013243",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013243",
           "caption": "20251121_093227.jpg",
           "alt": "Lighting chain - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013244",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013244",
           "caption": "20251121_093159.jpg",
           "alt": "Lighting chain - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013245",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013245",
           "caption": "20251121_093020.jpg",
           "alt": "Lighting chain - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013240",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013240",
       "primaryImageAlt": "Lighting chain - Safety Gate alert product image",
       "raw": {
         "id": 10099424,
@@ -35000,26 +35289,31 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013239",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013239",
           "caption": "Deguisement zombie halloween roldan fid2025685.png",
           "alt": "ROLDAN - Fancy-dress costume - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013236",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013236",
           "caption": "p18063.png",
           "alt": "ROLDAN - Fancy-dress costume - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013237",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013237",
           "caption": "p18062.png",
           "alt": "ROLDAN - Fancy-dress costume - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013238",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013238",
           "caption": "p18061.png",
           "alt": "ROLDAN - Fancy-dress costume - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013239",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013239",
       "primaryImageAlt": "ROLDAN - Fancy-dress costume - Safety Gate alert product image",
       "raw": {
         "id": 10099423,
@@ -35523,16 +35817,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013232",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013232",
           "caption": "produitfid2026261.png",
           "alt": "*ARIDOO* - Electric drill - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013231",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013231",
           "caption": "emballage.png",
           "alt": "*ARIDOO* - Electric drill - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013232",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013232",
       "primaryImageAlt": "*ARIDOO* - Electric drill - Safety Gate alert product image",
       "raw": {
         "id": 10099413,
@@ -36017,41 +36314,49 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013258",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013258",
           "caption": "Tukes_5000_20_01_2026p.jpg",
           "alt": "Vapex tech - Battery charger - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013252",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013252",
           "caption": "1-7.jpg",
           "alt": "Vapex tech - Battery charger - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013253",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013253",
           "caption": "Tukes_5000_20_01_2026y.jpg",
           "alt": "Vapex tech - Battery charger - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013254",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013254",
           "caption": "1-9.jpg",
           "alt": "Vapex tech - Battery charger - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013255",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013255",
           "caption": "1-5.jpg",
           "alt": "Vapex tech - Battery charger - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013256",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013256",
           "caption": "1-4.jpg",
           "alt": "Vapex tech - Battery charger - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013257",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013257",
           "caption": "Tukes_5000_20_01_2026a.jpg",
           "alt": "Vapex tech - Battery charger - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013258",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013258",
       "primaryImageAlt": "Vapex tech - Battery charger - Safety Gate alert product image",
       "raw": {
         "id": 10099450,
@@ -36565,16 +36870,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012218",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012218",
           "caption": "produitfid2026277.png",
           "alt": "Lighting chain - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012217",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012217",
           "caption": "produitfid2026277.png",
           "alt": "Lighting chain - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012218",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012218",
       "primaryImageAlt": "Lighting chain - Safety Gate alert product image",
       "raw": {
         "id": 10099284,
@@ -37094,26 +37402,31 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012178",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012178",
           "caption": "KURO SUMI IMPERIAL CRUSADER RED (1) - FID 2026-140.jpg",
           "alt": "Kuro Sumi - Tattoo ink - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012179",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012179",
           "caption": "KURO SUMI IMPERIAL CRUSADER RED (3).jpg",
           "alt": "Kuro Sumi - Tattoo ink - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012180",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012180",
           "caption": "KURO SUMI IMPERIAL CRUSADER RED (4).jpg",
           "alt": "Kuro Sumi - Tattoo ink - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012181",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012181",
           "caption": "KURO SUMI IMPERIAL CRUSADER RED (2).jpg",
           "alt": "Kuro Sumi - Tattoo ink - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012178",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012178",
       "primaryImageAlt": "Kuro Sumi - Tattoo ink - Safety Gate alert product image",
       "raw": {
         "id": 10099252,
@@ -37658,11 +37971,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11011349",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11011349",
           "caption": "Image1.png",
           "alt": "MAXI COSI - Base for car seat - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11011349",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11011349",
       "primaryImageAlt": "MAXI COSI - Base for car seat - Safety Gate alert product image",
       "raw": {
         "id": 10099211,
@@ -38169,21 +38484,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11010179",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11010179",
           "caption": "screenshot (2).png",
           "alt": "Toy gun - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11010177",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11010177",
           "caption": "produit2-fid2026-91.jpg",
           "alt": "Toy gun - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11010178",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11010178",
           "caption": "etiquette-fid2026-91.jpg",
           "alt": "Toy gun - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11010179",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11010179",
       "primaryImageAlt": "Toy gun - Safety Gate alert product image",
       "raw": {
         "id": 10098964,
@@ -38687,16 +39006,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11007474",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11007474",
           "caption": "produitfid2026249.png",
           "alt": "Electric hot pot - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11007475",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11007475",
           "caption": "failed component.jpg",
           "alt": "Electric hot pot - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11007474",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11007474",
       "primaryImageAlt": "Electric hot pot - Safety Gate alert product image",
       "raw": {
         "id": 10098741,
@@ -39210,11 +39532,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11006195",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11006195",
           "caption": "produitfid2026239.png",
           "alt": "Power adaptor - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11006195",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11006195",
       "primaryImageAlt": "Power adaptor - Safety Gate alert product image",
       "raw": {
         "id": 10098723,
@@ -39719,26 +40043,31 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11006248",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11006248",
           "caption": "Photo principale.jpg",
           "alt": "Shooting game - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11006249",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11006249",
           "caption": "Photo-Fid 2026-177.jpg",
           "alt": "Shooting game - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11006250",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11006250",
           "caption": "Emballage-code barres.jpg",
           "alt": "Shooting game - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11006251",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11006251",
           "caption": "Offre-de-vente_HUAII Tech Store.jpg",
           "alt": "Shooting game - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11006248",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11006248",
       "primaryImageAlt": "Shooting game - Safety Gate alert product image",
       "raw": {
         "id": 10098750,
@@ -40301,11 +40630,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11006244",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11006244",
           "caption": "produitfid2026250.png",
           "alt": "Hairdryer - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11006244",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11006244",
       "primaryImageAlt": "Hairdryer - Safety Gate alert product image",
       "raw": {
         "id": 10098743,
@@ -40817,31 +41148,37 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11003709",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11003709",
           "caption": "Bebe cacahuete torsion voiture infantile fid2026151.jpg",
           "alt": "Ride-on toy car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11003710",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11003710",
           "caption": "p1514.png",
           "alt": "Ride-on toy car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11003711",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11003711",
           "caption": "p1513.png",
           "alt": "Ride-on toy car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11003712",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11003712",
           "caption": "p1512.png",
           "alt": "Ride-on toy car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11003713",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11003713",
           "caption": "p1511.png",
           "alt": "Ride-on toy car - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11003709",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11003709",
       "primaryImageAlt": "Ride-on toy car - Safety Gate alert product image",
       "raw": {
         "id": 10098458,
@@ -41391,21 +41728,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11002164",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11002164",
           "caption": "photo_1.jpg",
           "alt": "Baby sling - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11002162",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11002162",
           "caption": "20250908_133513.jpg",
           "alt": "Baby sling - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11002163",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11002163",
           "caption": "20250908_133307.jpg",
           "alt": "Baby sling - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11002164",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11002164",
       "primaryImageAlt": "Baby sling - Safety Gate alert product image",
       "raw": {
         "id": 10098328,
@@ -41950,21 +42291,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10996447",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10996447",
           "caption": "Jouet de telephone portable fid202663.png",
           "alt": "Mitty - Toy telephone - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10996448",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10996448",
           "caption": "p10302.png",
           "alt": "Mitty - Toy telephone - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10996449",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10996449",
           "caption": "7_Page-achat_2.png",
           "alt": "Mitty - Toy telephone - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10996447",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10996447",
       "primaryImageAlt": "Mitty - Toy telephone - Safety Gate alert product image",
       "raw": {
         "id": 10097823,
@@ -42446,11 +42791,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11004127",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11004127",
           "caption": "not_available (002).png",
           "alt": "Bmw - Passenger car - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11004127",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11004127",
       "primaryImageAlt": "Bmw - Passenger car - Safety Gate alert product image",
       "raw": {
         "id": 359679,
@@ -43033,26 +43380,31 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10052368",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10052368",
           "caption": "fid 2021-0417-2.jpg",
           "alt": "HANSA - Soft toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10052369",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10052369",
           "caption": "fid 2021-0417.jpg",
           "alt": "HANSA - Soft toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10052370",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10052370",
           "caption": "Page-achat1_Capture.jpg",
           "alt": "HANSA - Soft toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10052371",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10052371",
           "caption": "Page-achat2_Capture.jpg",
           "alt": "HANSA - Soft toy - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10052368",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10052368",
       "primaryImageAlt": "HANSA - Soft toy - Safety Gate alert product image",
       "raw": {
         "id": 10004960,
@@ -43587,26 +43939,31 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013130",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013130",
           "caption": "Pakkaus 1.jpg",
           "alt": "JOKADE - Adaptor - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013129",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013129",
           "caption": "Yleiskuva 2.jpg",
           "alt": "JOKADE - Adaptor - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013131",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013131",
           "caption": "Pakkaus 2.jpg",
           "alt": "JOKADE - Adaptor - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013132",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013132",
           "caption": "Yleiskuva.jpg",
           "alt": "JOKADE - Adaptor - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013130",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013130",
       "primaryImageAlt": "JOKADE - Adaptor - Safety Gate alert product image",
       "raw": {
         "id": 10099378,
@@ -44060,16 +44417,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012196",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012196",
           "caption": "26-03-16 09-28-05 0097.jpg",
           "alt": "Cables for Wii U Pro - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012197",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012197",
           "caption": "26-03-16 09-27-40 0096.jpg",
           "alt": "Cables for Wii U Pro - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012196",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012196",
       "primaryImageAlt": "Cables for Wii U Pro - Safety Gate alert product image",
       "raw": {
         "id": 10099265,
@@ -44506,11 +44866,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013119",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013119",
           "caption": "2605-0111.png",
           "alt": "Playbook’d - Board game set - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013119",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013119",
       "primaryImageAlt": "Playbook’d - Board game set - Safety Gate alert product image",
       "raw": {
         "id": 10099369,
@@ -44954,16 +45316,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013115",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013115",
           "caption": "jouet de bain a moulinet fid2026033.png",
           "alt": "Bath toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013116",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013116",
           "caption": "p120612.png",
           "alt": "Bath toy - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013115",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013115",
       "primaryImageAlt": "Bath toy - Safety Gate alert product image",
       "raw": {
         "id": 10099367,
@@ -45449,11 +45814,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013073",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013073",
           "caption": "BA_Attachment to Sect 3_Tyre Picture_final.jpg",
           "alt": "Yokohama - Vehicle part / Tyre - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013073",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013073",
       "primaryImageAlt": "Yokohama - Vehicle part / Tyre - Safety Gate alert product image",
       "raw": {
         "id": 10099355,
@@ -45917,11 +46284,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013003",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013003",
           "caption": "Odyssey.png",
           "alt": "Honda - Passenger car - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013003",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013003",
       "primaryImageAlt": "Honda - Passenger car - Safety Gate alert product image",
       "raw": {
         "id": 10099317,
@@ -46360,16 +46729,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013204",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013204",
           "caption": "2605-00062.png",
           "alt": "Water beads - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013205",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013205",
           "caption": "2605-0006.png",
           "alt": "Water beads - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013204",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013204",
       "primaryImageAlt": "Water beads - Safety Gate alert product image",
       "raw": {
         "id": 10099402,
@@ -46839,11 +47211,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11006932",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11006932",
           "caption": "HAGS.jpg",
           "alt": "Hags - Slide - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11006932",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11006932",
       "primaryImageAlt": "Hags - Slide - Safety Gate alert product image",
       "raw": {
         "id": 10098821,
@@ -47291,26 +47665,31 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10961215",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10961215",
           "caption": "Tourneo Courier.png",
           "alt": "Ford - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10961213",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10961213",
           "caption": "Fiesta-25S10.jpg",
           "alt": "Ford - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10961214",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10961214",
           "caption": "Puma-25S10.jpg",
           "alt": "Ford - Passenger car - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10961216",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10961216",
           "caption": "Transit-Courier-25S10.jpg",
           "alt": "Ford - Passenger car - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/10961215",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/10961215",
       "primaryImageAlt": "Ford - Passenger car - Safety Gate alert product image",
       "raw": {
         "id": 10094475,
@@ -47904,16 +48283,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013195",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013195",
           "caption": "2606-00371.png",
           "alt": "Autojare - Chainsaw - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013196",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013196",
           "caption": "2606-0037.png",
           "alt": "Autojare - Chainsaw - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11013195",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11013195",
       "primaryImageAlt": "Autojare - Chainsaw - Safety Gate alert product image",
       "raw": {
         "id": 10099399,
@@ -48375,16 +48757,19 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012184",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012184",
           "caption": "pistolet blaster fid2026192.png",
           "alt": "Toy gun - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012183",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012183",
           "caption": "pistolet blaster 1.png",
           "alt": "Toy gun - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012184",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012184",
       "primaryImageAlt": "Toy gun - Safety Gate alert product image",
       "raw": {
         "id": 10099256,
@@ -48867,21 +49252,25 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012276",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012276",
           "caption": "2605-00512.png",
           "alt": "Xibeile Toy Factory - Teething toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012275",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012275",
           "caption": "2605-00513.png",
           "alt": "Xibeile Toy Factory - Teething toy - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012277",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012277",
           "caption": "2605-0051.png",
           "alt": "Xibeile Toy Factory - Teething toy - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012276",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012276",
       "primaryImageAlt": "Xibeile Toy Factory - Teething toy - Safety Gate alert product image",
       "raw": {
         "id": 10099344,
@@ -49396,51 +49785,61 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012160",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012160",
           "caption": "26103L_FOTO (2).jpg",
           "alt": "BIG DIPPER - Laser pointer - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012161",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012161",
           "caption": "26103L_FOTO (3).jpg",
           "alt": "BIG DIPPER - Laser pointer - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012162",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012162",
           "caption": "26103L_FOTO (4).jpg",
           "alt": "BIG DIPPER - Laser pointer - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012163",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012163",
           "caption": "26103L_FOTO (7).jpg",
           "alt": "BIG DIPPER - Laser pointer - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012164",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012164",
           "caption": "26103L_FOTO (8).jpg",
           "alt": "BIG DIPPER - Laser pointer - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012165",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012165",
           "caption": "26103L_FOTO (10).jpg",
           "alt": "BIG DIPPER - Laser pointer - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012166",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012166",
           "caption": "26103L_FOTO (12).jpg",
           "alt": "BIG DIPPER - Laser pointer - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012167",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012167",
           "caption": "26103L_FOTO (14).jpg",
           "alt": "BIG DIPPER - Laser pointer - Safety Gate alert product image"
         },
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012168",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012168",
           "caption": "26103L_FOTO (15).jpg",
           "alt": "BIG DIPPER - Laser pointer - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012160",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012160",
       "primaryImageAlt": "BIG DIPPER - Laser pointer - Safety Gate alert product image",
       "raw": {
         "id": 10099240,
@@ -49922,11 +50321,13 @@
       "images": [
         {
           "url": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012211",
+          "thumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012211",
           "caption": "produitfid2026299.png",
           "alt": "Adaptor - Safety Gate alert product image"
         }
       ],
       "primaryImageUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/11012211",
+      "primaryImageThumbnailUrl": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/11012211",
       "primaryImageAlt": "Adaptor - Safety Gate alert product image",
       "raw": {
         "id": 10099278,

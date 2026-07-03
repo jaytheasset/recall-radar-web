@@ -1,6 +1,7 @@
 ---
 import { getRecallsByCategory } from '../lib/recall-data';
 import { categorySearchTextFor } from '../lib/category-search';
+import { getRecallImageForContext } from '../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../lib/recall-sources';
 import '../styles/global.css';
 
@@ -72,15 +73,19 @@ const noResultCopy =
         </div>
         {recalls.length ? (
           <div class="product-grid">
-            {recalls.map((recall) => (
+            {recalls.map((recall) => {
+              const image = getRecallImageForContext(recall, 'list');
+
+              return (
               <article class="product-card" data-category-card data-search-text={categorySearchTextFor(recall)}>
                 <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
-                  {recall.primaryImageUrl ? (
+                  {image.url ? (
                     <>
                       <img
-                        src={recall.primaryImageUrl}
-                        alt={recall.primaryImageAlt || recall.title}
+                        src={image.url}
+                        alt={image.alt}
                         loading="lazy"
+                        decoding="async"
                         data-fallback-label={getRecallSourcePlaceholder(recall.source)}
                       />
                       <span class="image-placeholder image-placeholder-fallback" hidden>
@@ -106,7 +111,8 @@ const noResultCopy =
                   </div>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div class="notice-panel">

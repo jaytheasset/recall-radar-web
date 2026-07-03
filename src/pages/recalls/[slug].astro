@@ -1,6 +1,7 @@
 ---
 import { categoryRoutes, siteRecalls } from '../../lib/recall-data';
 import { buildRecallDetailView, recallSourceBadge } from '../../lib/recall-detail-view';
+import { getImageLoadingAttributes, getRecallImageForContext } from '../../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../../lib/recall-sources';
 import '../../styles/global.css';
 
@@ -24,6 +25,7 @@ const title = `${view.displayTitle} | Recall Radar`;
 const description = `${view.displayTitle} with product photos, affected item details, reason for recall, consumer action, and official source link.`;
 const fallbackImageLabel = getRecallSourcePlaceholder(recall.source);
 const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
+const detailHeroImageAttrs = getImageLoadingAttributes('detailHero');
 ---
 
 <html lang="en">
@@ -68,7 +70,7 @@ const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
                     <img
                       src={view.productImages[0].url}
                       alt={view.productImages[0].alt || view.primaryImageAlt}
-                      loading="lazy"
+                      {...detailHeroImageAttrs}
                       data-fallback-label={fallbackImageLabel}
                     />
                     <span class="image-placeholder image-placeholder-fallback" hidden>{fallbackImageLabel}</span>
@@ -88,6 +90,7 @@ const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
                         src={image.url}
                         alt={image.alt || image.caption || view.primaryImageAlt}
                         loading="lazy"
+                        decoding="async"
                         data-fallback-label={fallbackImageLabel}
                       />
                       <span class="image-placeholder image-placeholder-fallback" hidden>{fallbackImageLabel}</span>
@@ -291,15 +294,19 @@ const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
         </div>
         {view.companyRecallHistory.length ? (
           <div class="product-grid detail-related-grid">
-            {view.companyRecallHistory.map((historyRecall) => (
+            {view.companyRecallHistory.map((historyRecall) => {
+              const image = getRecallImageForContext(historyRecall, 'related');
+
+              return (
               <article class="product-card detail-related-card">
                 <a class="image-shell" href={historyRecall.detailPath} aria-label={`View recall for ${historyRecall.title}`}>
-                  {historyRecall.primaryImageUrl ? (
+                  {image.url ? (
                     <>
                       <img
-                        src={historyRecall.primaryImageUrl}
-                        alt={historyRecall.primaryImageAlt || historyRecall.title}
+                        src={image.url}
+                        alt={image.alt}
                         loading="lazy"
+                        decoding="async"
                         data-fallback-label={getRecallSourcePlaceholder(historyRecall.source)}
                       />
                       <span class="image-placeholder image-placeholder-fallback" hidden>
@@ -320,7 +327,8 @@ const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
                   <a class="btn btn-primary" href={historyRecall.detailPath}>View recall</a>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div class="notice-panel">
@@ -339,15 +347,19 @@ const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
         </div>
         {view.relatedRecalls.length ? (
           <div class="product-grid detail-related-grid">
-            {view.relatedRecalls.map((relatedRecall) => (
+            {view.relatedRecalls.map((relatedRecall) => {
+              const image = getRecallImageForContext(relatedRecall, 'related');
+
+              return (
               <article class="product-card detail-related-card">
                 <a class="image-shell" href={relatedRecall.detailPath} aria-label={`View recall for ${relatedRecall.title}`}>
-                  {relatedRecall.primaryImageUrl ? (
+                  {image.url ? (
                     <>
                       <img
-                        src={relatedRecall.primaryImageUrl}
-                        alt={relatedRecall.primaryImageAlt || relatedRecall.title}
+                        src={image.url}
+                        alt={image.alt}
                         loading="lazy"
+                        decoding="async"
                         data-fallback-label={getRecallSourcePlaceholder(relatedRecall.source)}
                       />
                       <span class="image-placeholder image-placeholder-fallback" hidden>
@@ -368,7 +380,8 @@ const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
                   <a class="btn btn-primary" href={relatedRecall.detailPath}>View recall</a>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div class="notice-panel">

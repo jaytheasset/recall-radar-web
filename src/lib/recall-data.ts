@@ -39,6 +39,7 @@ export type SiteRecall = {
   status?: string;
   images: RecallImage[];
   primaryImageUrl?: string;
+  primaryImageThumbnailUrl?: string;
   primaryImageAlt?: string;
 };
 
@@ -395,7 +396,7 @@ function isOfficialRecallImageUrl(url: string): boolean {
   return (
     /^https:\/\/www\.cpsc\.gov\//i.test(url) ||
     /^https:\/\/rappel\.conso\.gouv\.fr\/image\//i.test(url) ||
-    /^https:\/\/ec\.europa\.eu\/safety-gate-alerts\/public\/api\/notification\/image\//i.test(url)
+    /^https:\/\/ec\.europa\.eu\/safety-gate-alerts\/public\/api\/notification\/(?:image|thumbnail)\//i.test(url)
   );
 }
 
@@ -409,11 +410,13 @@ function normalizeImage(value: unknown, fallbackAlt: string): RecallImage | null
     return null;
   }
 
+  const thumbnailUrl = safeText(value.thumbnailUrl) || safeText(value.thumbnailURL) || safeText(value.ThumbnailURL);
   const caption = safeText(value.caption) || safeText(value.Caption);
   const alt = safeText(value.alt) || safeText(value.AltText) || caption || fallbackAlt;
 
   return {
     url,
+    ...(thumbnailUrl && isOfficialRecallImageUrl(thumbnailUrl) ? { thumbnailUrl } : {}),
     ...(caption ? { caption } : {}),
     ...(alt ? { alt } : {})
   };
@@ -490,6 +493,7 @@ function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
     status: record.status,
     images,
     primaryImageUrl: primaryImage?.url,
+    primaryImageThumbnailUrl: primaryImage?.thumbnailUrl ?? record.primaryImageThumbnailUrl,
     primaryImageAlt: primaryImage?.alt ?? primaryImage?.caption
   };
 }

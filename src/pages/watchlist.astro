@@ -11,12 +11,16 @@ import {
   siteRecalls,
   usingProcessedLocalData
 } from '../lib/recall-data';
+import { getRecallImageForContext } from '../lib/recall-images';
 import '../styles/global.css';
 
 const title = 'Saved Watchlist | Recall Radar';
 const description =
   'Save Recall Radar search terms and brands in this browser, then preview matching recall notices without an account or email alerts.';
-const watchlistRecalls = siteRecalls.map((recall) => ({
+const watchlistRecalls = siteRecalls.map((recall) => {
+  const cardImage = getRecallImageForContext(recall, 'list');
+
+  return {
   id: recall.id,
   source: recall.source,
   sourceLabel: recall.sourceLabel,
@@ -46,8 +50,12 @@ const watchlistRecalls = siteRecalls.map((recall) => ({
   recallNumber: recall.recallNumber,
   status: recall.status,
   primaryImageUrl: recall.primaryImageUrl,
-  primaryImageAlt: recall.primaryImageAlt
-}));
+  primaryImageThumbnailUrl: recall.primaryImageThumbnailUrl,
+  primaryImageAlt: recall.primaryImageAlt,
+  cardImageUrl: cardImage.url,
+  cardImageAlt: cardImage.alt
+  };
+});
 const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 ---
 
@@ -184,6 +192,10 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       const demoAlertStatus = document.querySelector<HTMLElement>('#demo-alert-status');
 
       type WatchlistRecall = (typeof siteRecalls)[number];
+      type RecallCardImageFields = {
+        cardImageUrl?: string;
+        cardImageAlt?: string;
+      };
       type WatchlistPreviewItem = {
         recall: WatchlistRecall;
         matchLabel?: string;
@@ -233,18 +245,22 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         return tag;
       }
 
-      function createImageShell(recall: WatchlistRecall): HTMLElement {
+      function createImageShell(recall: WatchlistRecall & RecallCardImageFields): HTMLElement {
         const link = document.createElement('a');
         link.className = 'image-shell';
         link.href = recall.detailPath;
         link.setAttribute('aria-label', `View recall for ${recall.title}`);
         const fallbackLabel = getRecallSourcePlaceholder(recall.source);
 
-        if (recall.primaryImageUrl) {
+        const imageUrl = recall.cardImageUrl || recall.primaryImageUrl;
+        const imageAlt = recall.cardImageAlt || recall.primaryImageAlt || recall.title;
+
+        if (imageUrl) {
           const image = document.createElement('img');
-          image.src = recall.primaryImageUrl;
-          image.alt = recall.primaryImageAlt || recall.title;
+          image.src = imageUrl;
+          image.alt = imageAlt;
           image.loading = 'lazy';
+          image.setAttribute('decoding', 'async');
           image.dataset.fallbackLabel = fallbackLabel;
 
           const placeholder = document.createElement('span');

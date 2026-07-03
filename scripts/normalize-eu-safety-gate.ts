@@ -119,6 +119,10 @@ function officialImageUrl(id: string): string {
   return `https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/${encodeURIComponent(id)}`;
 }
 
+function officialThumbnailImageUrl(id: string): string {
+  return `https://ec.europa.eu/safety-gate-alerts/public/api/notification/thumbnail/${encodeURIComponent(id)}`;
+}
+
 function officialImages(raw: EuSafetyGateRaw, title: string): RecallImage[] {
   const product = asObject(raw.product);
   const photos = asArray(product.photos);
@@ -141,6 +145,7 @@ function officialImages(raw: EuSafetyGateRaw, title: string): RecallImage[] {
     const caption = firstNonEmpty([photo.fileName], 'Safety Gate product image');
     images.push({
       url: officialImageUrl(id),
+      thumbnailUrl: officialThumbnailImageUrl(id),
       caption,
       alt: `${title} product image`
     });
@@ -344,7 +349,14 @@ export function normalizeEuSafetyGateRecords(records: EuSafetyGateRaw[]): Normal
         productQuantity: '',
         recallNumber: reference,
         status: raw.hasBeenUpdated === true ? 'Updated' : '',
-        ...(images.length ? { images, primaryImageUrl: images[0].url, primaryImageAlt: images[0].alt } : {}),
+        ...(images.length
+          ? {
+              images,
+              primaryImageUrl: images[0].url,
+              primaryImageThumbnailUrl: images[0].thumbnailUrl,
+              primaryImageAlt: images[0].alt
+            }
+          : {}),
         raw
       } satisfies NormalizedRecall;
     })

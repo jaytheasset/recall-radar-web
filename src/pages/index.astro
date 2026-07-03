@@ -10,6 +10,7 @@ import {
   processedUkFsaRecordCount,
   siteRecalls
 } from '../lib/recall-data';
+import { getImageLoadingAttributes, getRecallImageForContext } from '../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../lib/recall-sources';
 import '../styles/global.css';
 
@@ -173,15 +174,19 @@ const productTypes = [
           <a class="btn btn-secondary" href="/checker">Search all notices</a>
         </div>
         <div class="product-grid">
-          {latestRecalls.map((recall) => (
+          {latestRecalls.map((recall, index) => {
+            const image = getRecallImageForContext(recall, 'card');
+            const imageAttrs = getImageLoadingAttributes('card', index);
+
+            return (
             <article class="home-recall-card product-card">
               <a class="home-card-image image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
-                {recall.primaryImageUrl ? (
+                {image.url ? (
                   <>
                     <img
-                      src={recall.primaryImageUrl}
-                      alt={recall.primaryImageAlt || recall.title}
-                      loading="lazy"
+                      src={image.url}
+                      alt={image.alt}
+                      {...imageAttrs}
                       data-fallback-label={getRecallSourcePlaceholder(recall.source)}
                     />
                     <span class="image-placeholder image-placeholder-fallback" hidden>
@@ -202,7 +207,8 @@ const productTypes = [
                 <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
       </section>
 

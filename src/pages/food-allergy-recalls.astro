@@ -1,6 +1,7 @@
 ---
 import { getRecallsByCategory } from '../lib/recall-data';
 import { categorySearchTextFor } from '../lib/category-search';
+import { getRecallImageForContext } from '../lib/recall-images';
 import { getRecallSourceLabel, getRecallSourcePlaceholder } from '../lib/recall-sources';
 import '../styles/global.css';
 
@@ -168,15 +169,19 @@ const noResultCopy =
             <span class="badge-date">{franceRecalls.length} indexed notice{franceRecalls.length === 1 ? '' : 's'}</span>
           </div>
           <div class="product-grid">
-            {franceRecalls.map((recall) => (
+            {franceRecalls.map((recall) => {
+              const image = getRecallImageForContext(recall, 'list');
+
+              return (
               <article class="product-card" data-category-card data-search-text={categorySearchTextFor(recall)}>
                 <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
-                  {recall.primaryImageUrl ? (
+                  {image.url ? (
                     <>
                       <img
-                        src={recall.primaryImageUrl}
-                        alt={recall.primaryImageAlt || recall.title}
+                        src={image.url}
+                        alt={image.alt}
                         loading="lazy"
+                        decoding="async"
                         data-fallback-label={getRecallSourcePlaceholder(recall.source)}
                       />
                       <span class="image-placeholder image-placeholder-fallback" hidden>
@@ -202,7 +207,8 @@ const noResultCopy =
                   </div>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         </section>
       ) : null}
@@ -252,15 +258,19 @@ const noResultCopy =
             <span class="badge-date">{cpscRelevantRecalls.length} indexed notice{cpscRelevantRecalls.length === 1 ? '' : 's'}</span>
           </div>
           <div class="product-grid">
-            {cpscRelevantRecalls.map((recall) => (
+            {cpscRelevantRecalls.map((recall) => {
+              const image = getRecallImageForContext(recall, 'list');
+
+              return (
               <article class="product-card" data-category-card data-search-text={categorySearchTextFor(recall)}>
                 <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
-                  {recall.primaryImageUrl ? (
+                  {image.url ? (
                     <>
                       <img
-                        src={recall.primaryImageUrl}
-                        alt={recall.primaryImageAlt || recall.title}
+                        src={image.url}
+                        alt={image.alt}
                         loading="lazy"
+                        decoding="async"
                         data-fallback-label={getRecallSourcePlaceholder(recall.source)}
                       />
                       <span class="image-placeholder image-placeholder-fallback" hidden>
@@ -286,7 +296,8 @@ const noResultCopy =
                   </div>
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         </section>
       ) : null}
