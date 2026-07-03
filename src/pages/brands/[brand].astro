@@ -1,4 +1,5 @@
 ---
+import EuImageResourceHints from '../../components/EuImageResourceHints.astro';
 import { brandGroups } from '../../lib/recall-data';
 import { getRecallImageForContext } from '../../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../../lib/recall-sources';
@@ -25,6 +26,7 @@ const description = `Indexed recall notices linked to ${brand}, with related pro
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <EuImageResourceHints />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

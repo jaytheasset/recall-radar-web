@@ -1,7 +1,13 @@
 ---
+import EuImageResourceHints from '../../components/EuImageResourceHints.astro';
 import { categoryRoutes, siteRecalls } from '../../lib/recall-data';
 import { buildRecallDetailView, recallSourceBadge } from '../../lib/recall-detail-view';
-import { getImageLoadingAttributes, getRecallImageForContext } from '../../lib/recall-images';
+import {
+  getDetailHeroImagePreloadAttributes,
+  getDetailHeroImageSourceAttributes,
+  getImageLoadingAttributes,
+  getRecallImageForContext
+} from '../../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../../lib/recall-sources';
 import '../../styles/global.css';
 
@@ -25,13 +31,18 @@ const title = `${view.displayTitle} | Recall Radar`;
 const description = `${view.displayTitle} with product photos, affected item details, reason for recall, consumer action, and official source link.`;
 const fallbackImageLabel = getRecallSourcePlaceholder(recall.source);
 const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
+const detailHeroImage = view.productImages[0];
 const detailHeroImageAttrs = getImageLoadingAttributes('detailHero');
+const detailHeroSourceAttrs = getDetailHeroImageSourceAttributes(recall, detailHeroImage);
+const detailHeroPreloadAttrs = getDetailHeroImagePreloadAttributes(recall, detailHeroImage);
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <EuImageResourceHints />
+    {detailHeroPreloadAttrs ? <link rel="preload" as="image" {...detailHeroPreloadAttrs} /> : null}
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -65,11 +76,12 @@ const detailHeroImageAttrs = getImageLoadingAttributes('detailHero');
           <div class="detail-gallery">
             <figure class="detail-image-figure">
               <div class="image-shell image-shell-large">
-                {view.productImages[0] ? (
+                {detailHeroImage ? (
                   <>
                     <img
-                      src={view.productImages[0].url}
-                      alt={view.productImages[0].alt || view.primaryImageAlt}
+                      src={detailHeroImage.url}
+                      alt={detailHeroImage.alt || view.primaryImageAlt}
+                      {...detailHeroSourceAttrs}
                       {...detailHeroImageAttrs}
                       data-fallback-label={fallbackImageLabel}
                     />
@@ -79,7 +91,7 @@ const detailHeroImageAttrs = getImageLoadingAttributes('detailHero');
                   <span class="image-placeholder">{fallbackImageLabel}</span>
                 )}
               </div>
-              {view.productImages[0]?.caption ? <figcaption>{view.productImages[0].caption}</figcaption> : null}
+              {detailHeroImage?.caption ? <figcaption>{detailHeroImage.caption}</figcaption> : null}
             </figure>
             {view.productImages.length > 1 ? (
               <div class="thumbnail-grid detail-thumbnail-grid" aria-label="Additional product images">
