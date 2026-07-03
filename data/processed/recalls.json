@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-03T02:03:31.900Z",
+  "generatedAt": "2026-07-03T05:05:07.738Z",
   "source": "MULTI",
   "count": 801,
   "countsBySource": {
@@ -8267,6 +8267,31 @@
       "productQuantity": "",
       "recallNumber": "77161",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/77161/Wu%20Xian%20Zhai-Five%20spices%20flavor%20soybean%20snack-108g-front%2Bback.JPG?itok=3p9bJUqh",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/77161/Wu%20Xian%20Zhai-Five%20spices%20flavor%20soybean%20snack-108g-front%2Bback.JPG?itok=yNUD41HJ",
+          "alt": "Wu Xian Zhai brand Five Spices Flavor Soybean Snack -108g - front and back"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/77161/Wu%20Xian%20Zhai-Spicy%20flavor%20soybean%20snack-108g-front%2Bback.JPG?itok=mwlEX5gI",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/77161/Wu%20Xian%20Zhai-Spicy%20flavor%20soybean%20snack-108g-front%2Bback.JPG?itok=MLfKgewR",
+          "alt": "Wu Xian Zhai brand Spicy Flavor Soybean Snack -100g - front and back"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/77161/Wu%20Xian%20Zhai-Sauce%20flavor%20soybean%20snack-100g-front%2Bback.JPG?itok=tNWh3La_",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/77161/Wu%20Xian%20Zhai-Sauce%20flavor%20soybean%20snack-100g-front%2Bback.JPG?itok=e959k2Po",
+          "alt": "Wu Xian Zhai brand Sauce Flavor Soybean Snack -100g - front and back"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/77161/Wu%20Xian%20Zhai-Spicy%20flavor%20soybean%20snack-100g-front%2Bback.JPG?itok=hxDJtFA6",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/77161/Wu%20Xian%20Zhai-Spicy%20flavor%20soybean%20snack-100g-front%2Bback.JPG?itok=uNfkrQbP",
+          "alt": "Wu Xian Zhai brand Spicy Flavor Soybean Snack -108g - front and back"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/77161/Wu%20Xian%20Zhai-Five%20spices%20flavor%20soybean%20snack-108g-front%2Bback.JPG?itok=3p9bJUqh",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/77161/Wu%20Xian%20Zhai-Five%20spices%20flavor%20soybean%20snack-108g-front%2Bback.JPG?itok=yNUD41HJ",
+      "primaryImageAlt": "Wu Xian Zhai brand Five Spices Flavor Soybean Snack -108g - front and back",
       "raw": {
         "NID": "77161",
         "Title": "Wu Xian Zhai brand Soybean Snacks recalled due to undeclared wheat and egg",
@@ -8278,7 +8303,37 @@
         "Category": "Candy, confectionary, snacks and sweeteners",
         "Recall class": "Class 1",
         "Last updated": "2026-06-30",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/77161/Wu%20Xian%20Zhai-Five%20spices%20flavor%20soybean%20snack-108g-front%2Bback.JPG?itok=3p9bJUqh",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/77161/Wu%20Xian%20Zhai-Five%20spices%20flavor%20soybean%20snack-108g-front%2Bback.JPG?itok=yNUD41HJ",
+            "alt": "Wu Xian Zhai brand Five Spices Flavor Soybean Snack -108g - front and back",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/wu-xian-zhai-brand-soybean-snacks-recalled-due-undeclared-wheat-and-egg"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/77161/Wu%20Xian%20Zhai-Spicy%20flavor%20soybean%20snack-108g-front%2Bback.JPG?itok=mwlEX5gI",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/77161/Wu%20Xian%20Zhai-Spicy%20flavor%20soybean%20snack-108g-front%2Bback.JPG?itok=MLfKgewR",
+            "alt": "Wu Xian Zhai brand Spicy Flavor Soybean Snack -100g - front and back",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/wu-xian-zhai-brand-soybean-snacks-recalled-due-undeclared-wheat-and-egg"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/77161/Wu%20Xian%20Zhai-Sauce%20flavor%20soybean%20snack-100g-front%2Bback.JPG?itok=tNWh3La_",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/77161/Wu%20Xian%20Zhai-Sauce%20flavor%20soybean%20snack-100g-front%2Bback.JPG?itok=e959k2Po",
+            "alt": "Wu Xian Zhai brand Sauce Flavor Soybean Snack -100g - front and back",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/wu-xian-zhai-brand-soybean-snacks-recalled-due-undeclared-wheat-and-egg"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/77161/Wu%20Xian%20Zhai-Spicy%20flavor%20soybean%20snack-100g-front%2Bback.JPG?itok=hxDJtFA6",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/77161/Wu%20Xian%20Zhai-Spicy%20flavor%20soybean%20snack-100g-front%2Bback.JPG?itok=uNfkrQbP",
+            "alt": "Wu Xian Zhai brand Spicy Flavor Soybean Snack -108g - front and back",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/wu-xian-zhai-brand-soybean-snacks-recalled-due-undeclared-wheat-and-egg"
+          }
+        ]
       }
     },
     {
@@ -8303,6 +8358,71 @@
       "productQuantity": "",
       "recallNumber": "82258",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture1.png?itok=tboDtoJ7",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture1.png?itok=uilKg1Hd",
+          "alt": "Front of product packaging"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture2.png?itok=slnMzo0j",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture2.png?itok=zCFDf4_4",
+          "alt": "Front of product packaging"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture3.png?itok=uFtACc-v",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture3.png?itok=WSgy8YY1",
+          "alt": "Front of product packaging"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture4.png?itok=HC1slK9t",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture4.png?itok=IFkKFMhj",
+          "alt": "Front of product packaging"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture5.png?itok=N_9V0fcA",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture5.png?itok=VBOlBCpA",
+          "alt": "Front of product packaging"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture6.png?itok=QPB63G-a",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture6.png?itok=8fWAoMHm",
+          "alt": "Front of product packaging"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture7.png?itok=rieol8im",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture7.png?itok=jDj0cH3K",
+          "alt": "Front of product packaging"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture8.png?itok=vLN12ELn",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture8.png?itok=JVqL8IPv",
+          "alt": "Front of product packaging"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture9.png?itok=pN2epSJU",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture9.png?itok=xhLqws2G",
+          "alt": "Front of product packaging"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture10.png?itok=A4Rq5vRN",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture10.png?itok=_bqaxiNW",
+          "alt": "Front of product packaging"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture11.png?itok=9KG7duxw",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture11.png?itok=f03o7E5R",
+          "alt": "Front of product packaging"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture12.png?itok=625K2AeO",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture12.png?itok=t84E1i8-",
+          "alt": "Front of product packaging"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture1.png?itok=tboDtoJ7",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture1.png?itok=uilKg1Hd",
+      "primaryImageAlt": "Front of product packaging",
       "raw": {
         "NID": "82258",
         "Title": "IPEX cement and primer products​ recalled due to improper labelling and lack of child-resistant packaging  ",
@@ -8314,7 +8434,93 @@
         "Category": "Chemicals",
         "Recall class": "",
         "Last updated": "2026-06-30",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture1.png?itok=tboDtoJ7",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture1.png?itok=uilKg1Hd",
+            "alt": "Front of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ipex-cement-and-primer-products-recalled-due-improper-labelling-and-lack-child"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture2.png?itok=slnMzo0j",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture2.png?itok=zCFDf4_4",
+            "alt": "Front of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ipex-cement-and-primer-products-recalled-due-improper-labelling-and-lack-child"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture3.png?itok=uFtACc-v",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture3.png?itok=WSgy8YY1",
+            "alt": "Front of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ipex-cement-and-primer-products-recalled-due-improper-labelling-and-lack-child"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture4.png?itok=HC1slK9t",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture4.png?itok=IFkKFMhj",
+            "alt": "Front of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ipex-cement-and-primer-products-recalled-due-improper-labelling-and-lack-child"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture5.png?itok=N_9V0fcA",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture5.png?itok=VBOlBCpA",
+            "alt": "Front of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ipex-cement-and-primer-products-recalled-due-improper-labelling-and-lack-child"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture6.png?itok=QPB63G-a",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture6.png?itok=8fWAoMHm",
+            "alt": "Front of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ipex-cement-and-primer-products-recalled-due-improper-labelling-and-lack-child"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture7.png?itok=rieol8im",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture7.png?itok=jDj0cH3K",
+            "alt": "Front of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ipex-cement-and-primer-products-recalled-due-improper-labelling-and-lack-child"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture8.png?itok=vLN12ELn",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture8.png?itok=JVqL8IPv",
+            "alt": "Front of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ipex-cement-and-primer-products-recalled-due-improper-labelling-and-lack-child"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture9.png?itok=pN2epSJU",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture9.png?itok=xhLqws2G",
+            "alt": "Front of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ipex-cement-and-primer-products-recalled-due-improper-labelling-and-lack-child"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture10.png?itok=A4Rq5vRN",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture10.png?itok=_bqaxiNW",
+            "alt": "Front of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ipex-cement-and-primer-products-recalled-due-improper-labelling-and-lack-child"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture11.png?itok=9KG7duxw",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture11.png?itok=f03o7E5R",
+            "alt": "Front of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ipex-cement-and-primer-products-recalled-due-improper-labelling-and-lack-child"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82258/Picture12.png?itok=625K2AeO",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82258/Picture12.png?itok=t84E1i8-",
+            "alt": "Front of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ipex-cement-and-primer-products-recalled-due-improper-labelling-and-lack-child"
+          }
+        ]
       }
     },
     {
@@ -8380,6 +8586,21 @@
       "productQuantity": "",
       "recallNumber": "82262",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82262/Wu%20Xian%20Zhai%20-%20Vegetable%20beef%20%28sauce%29%20-%20108%20g%20-%20Front.jpg?itok=SYqSiKpW",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82262/Wu%20Xian%20Zhai%20-%20Vegetable%20beef%20%28sauce%29%20-%20108%20g%20-%20Front.jpg?itok=WLbCCON-",
+          "alt": "Wu Xian Zhai - Vegetable beef (sauce) - 108 g - Front"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82262/Wu%20Xian%20Zhai%20-%20Vegetable%20beef%20%28sauce%29%20-%20108%20g%20-%20Back.jpg?itok=5svNovFJ",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82262/Wu%20Xian%20Zhai%20-%20Vegetable%20beef%20%28sauce%29%20-%20108%20g%20-%20Back.jpg?itok=r6mw4eih",
+          "alt": "Wu Xian Zhai - Vegetable beef (sauce) - 108 g - Back"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82262/Wu%20Xian%20Zhai%20-%20Vegetable%20beef%20%28sauce%29%20-%20108%20g%20-%20Front.jpg?itok=SYqSiKpW",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82262/Wu%20Xian%20Zhai%20-%20Vegetable%20beef%20%28sauce%29%20-%20108%20g%20-%20Front.jpg?itok=WLbCCON-",
+      "primaryImageAlt": "Wu Xian Zhai - Vegetable beef (sauce) - 108 g - Front",
       "raw": {
         "NID": "82262",
         "Title": "Wu Xian Zhai brand Vegetable Beef (Sauce) recalled due to undeclared wheat and egg",
@@ -8391,7 +8612,23 @@
         "Category": "Candy, confectionary, snacks and sweeteners",
         "Recall class": "Class 1",
         "Last updated": "2026-06-30",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82262/Wu%20Xian%20Zhai%20-%20Vegetable%20beef%20%28sauce%29%20-%20108%20g%20-%20Front.jpg?itok=SYqSiKpW",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82262/Wu%20Xian%20Zhai%20-%20Vegetable%20beef%20%28sauce%29%20-%20108%20g%20-%20Front.jpg?itok=WLbCCON-",
+            "alt": "Wu Xian Zhai - Vegetable beef (sauce) - 108 g - Front",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/wu-xian-zhai-brand-vegetable-beef-sauce-recalled-due-undeclared-wheat-and-egg"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82262/Wu%20Xian%20Zhai%20-%20Vegetable%20beef%20%28sauce%29%20-%20108%20g%20-%20Back.jpg?itok=5svNovFJ",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82262/Wu%20Xian%20Zhai%20-%20Vegetable%20beef%20%28sauce%29%20-%20108%20g%20-%20Back.jpg?itok=r6mw4eih",
+            "alt": "Wu Xian Zhai - Vegetable beef (sauce) - 108 g - Back",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/wu-xian-zhai-brand-vegetable-beef-sauce-recalled-due-undeclared-wheat-and-egg"
+          }
+        ]
       }
     },
     {
@@ -8418,6 +8655,41 @@
       "productQuantity": "",
       "recallNumber": "82264",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Malpeque%20oysters%20-%20100%20count%20-%20Label.png?itok=ZCFxt4mQ",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Malpeque%20oysters%20-%20100%20count%20-%20Label.png?itok=y3WwT_5q",
+          "alt": "Five Star Shellfish Inc - Malpeque oysters - 100 count - Label"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Malpeque%20oysters%20-%2025%20count%20-%20Label.png?itok=5GwmI9fO",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Malpeque%20oysters%20-%2025%20count%20-%20Label.png?itok=UvPcE8XP",
+          "alt": "Five Star Shellfish Inc - Malpeque oysters - 25 count - Label"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Malpeque%20oysters%20-%202.5%20lbs%20-%20Label.png?itok=LU1Q56NT",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Malpeque%20oysters%20-%202.5%20lbs%20-%20Label.png?itok=9bxR_8mO",
+          "alt": "Five Star Shellfish Inc - Malpeque oysters - 2.5 lb - Label"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Conway%20Pearls%20oysters%20-%20100%20count%20-%20Label.png?itok=9WVsK9V0",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Conway%20Pearls%20oysters%20-%20100%20count%20-%20Label.png?itok=NI89aqPX",
+          "alt": "Five Star Shellfish Inc - Conway Pearls oysters - 100 count - Label"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Blackberry%20oysters%20-%20100%20count%20-%20Label.png?itok=Q7K8QEhf",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Blackberry%20oysters%20-%20100%20count%20-%20Label.png?itok=DIeHgZHs",
+          "alt": "Five Star Shellfish Inc - Blackberry oysters - 100 count - Label"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Gooseberry%20oysters%20-%20100%20count%20-%20Label.png?itok=3tQTT6r_",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Gooseberry%20oysters%20-%20100%20count%20-%20Label.png?itok=sMNZdXCO",
+          "alt": "Five Star Shellfish Inc - Gooseberry oysters - 100 count - Label"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Malpeque%20oysters%20-%20100%20count%20-%20Label.png?itok=ZCFxt4mQ",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Malpeque%20oysters%20-%20100%20count%20-%20Label.png?itok=y3WwT_5q",
+      "primaryImageAlt": "Five Star Shellfish Inc - Malpeque oysters - 100 count - Label",
       "raw": {
         "NID": "82264",
         "Title": "Certain Five Star Shellfish Inc. brand oysters recalled due to Salmonella",
@@ -8429,7 +8701,51 @@
         "Category": "Fresh",
         "Recall class": "Class 2",
         "Last updated": "2026-06-30",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Malpeque%20oysters%20-%20100%20count%20-%20Label.png?itok=ZCFxt4mQ",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Malpeque%20oysters%20-%20100%20count%20-%20Label.png?itok=y3WwT_5q",
+            "alt": "Five Star Shellfish Inc - Malpeque oysters - 100 count - Label",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/certain-five-star-shellfish-inc-brand-oysters-recalled-due-salmonella"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Malpeque%20oysters%20-%2025%20count%20-%20Label.png?itok=5GwmI9fO",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Malpeque%20oysters%20-%2025%20count%20-%20Label.png?itok=UvPcE8XP",
+            "alt": "Five Star Shellfish Inc - Malpeque oysters - 25 count - Label",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/certain-five-star-shellfish-inc-brand-oysters-recalled-due-salmonella"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Malpeque%20oysters%20-%202.5%20lbs%20-%20Label.png?itok=LU1Q56NT",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Malpeque%20oysters%20-%202.5%20lbs%20-%20Label.png?itok=9bxR_8mO",
+            "alt": "Five Star Shellfish Inc - Malpeque oysters - 2.5 lb - Label",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/certain-five-star-shellfish-inc-brand-oysters-recalled-due-salmonella"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Conway%20Pearls%20oysters%20-%20100%20count%20-%20Label.png?itok=9WVsK9V0",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Conway%20Pearls%20oysters%20-%20100%20count%20-%20Label.png?itok=NI89aqPX",
+            "alt": "Five Star Shellfish Inc - Conway Pearls oysters - 100 count - Label",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/certain-five-star-shellfish-inc-brand-oysters-recalled-due-salmonella"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Blackberry%20oysters%20-%20100%20count%20-%20Label.png?itok=Q7K8QEhf",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Blackberry%20oysters%20-%20100%20count%20-%20Label.png?itok=DIeHgZHs",
+            "alt": "Five Star Shellfish Inc - Blackberry oysters - 100 count - Label",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/certain-five-star-shellfish-inc-brand-oysters-recalled-due-salmonella"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Gooseberry%20oysters%20-%20100%20count%20-%20Label.png?itok=3tQTT6r_",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82264/Five%20Star%20Shellfish%20Inc%20-%20Gooseberry%20oysters%20-%20100%20count%20-%20Label.png?itok=sMNZdXCO",
+            "alt": "Five Star Shellfish Inc - Gooseberry oysters - 100 count - Label",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/certain-five-star-shellfish-inc-brand-oysters-recalled-due-salmonella"
+          }
+        ]
       }
     },
     {
@@ -16403,6 +16719,21 @@
       "productQuantity": "",
       "recallNumber": "82252",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82252/2026-050796%20%20Image%201.jpg?itok=XBfLPC_b",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82252/2026-050796%20%20Image%201.jpg?itok=zffy04tP",
+          "alt": "Thermos Stainless King 3000 and 3020 Food Jars and Thermos Sportsman 3010 Food & Beverage Bottle"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82252/2026-050796%20%20Image%202%20%28EN%29.jpg?itok=iaEGrgxu",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82252/2026-050796%20%20Image%202%20%28EN%29.jpg?itok=U-5cKZwz",
+          "alt": "Recalled and Non-Recalled Lids"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82252/2026-050796%20%20Image%201.jpg?itok=XBfLPC_b",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82252/2026-050796%20%20Image%201.jpg?itok=zffy04tP",
+      "primaryImageAlt": "Thermos Stainless King 3000 and 3020 Food Jars and Thermos Sportsman 3010 Food & Beverage Bottle",
       "raw": {
         "NID": "82252",
         "Title": "Certain Thermos Stainless King Food Jars and Sportsman Food & Beverage Bottles recalled due to Impact Injury and Laceration Hazards",
@@ -16414,7 +16745,23 @@
         "Category": "Kitchenware and tableware",
         "Recall class": "",
         "Last updated": "2026-06-29",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82252/2026-050796%20%20Image%201.jpg?itok=XBfLPC_b",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82252/2026-050796%20%20Image%201.jpg?itok=zffy04tP",
+            "alt": "Thermos Stainless King 3000 and 3020 Food Jars and Thermos Sportsman 3010 Food & Beverage Bottle",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/certain-thermos-stainless-king-food-jars-and-sportsman-food-beverage-bottles-recalled"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82252/2026-050796%20%20Image%202%20%28EN%29.jpg?itok=iaEGrgxu",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82252/2026-050796%20%20Image%202%20%28EN%29.jpg?itok=U-5cKZwz",
+            "alt": "Recalled and Non-Recalled Lids",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/certain-thermos-stainless-king-food-jars-and-sportsman-food-beverage-bottles-recalled"
+          }
+        ]
       }
     },
     {
@@ -19068,6 +19415,26 @@
       "productQuantity": "",
       "recallNumber": "81988",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81988/OLA%20OLA%20-%20Authentic%20Pounded%20Yam%20-%201.8%20kg%20-%20Front.jpg?itok=OcOSFQo-",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81988/OLA%20OLA%20-%20Authentic%20Pounded%20Yam%20-%201.8%20kg%20-%20Front.jpg?itok=jsFDhB7v",
+          "alt": "OLA-OLA - Authentic Pounded Yam - 1.8 kg - Front"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81988/OLA%20OLA%20-%20Authentic%20Pounded%20Yam%20-%201.8%20kg%20-%20Back.jpg?itok=P2PKtiy0",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81988/OLA%20OLA%20-%20Authentic%20Pounded%20Yam%20-%201.8%20kg%20-%20Back.jpg?itok=vWgF5tmA",
+          "alt": "OLA-OLA - Authentic Pounded Yam - 1.8 kg - Back"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81988/OLA%20OLA%20-%20Authentic%20Pounded%20Yam%20-%201.8%20kg%20-%20Lot.jpg?itok=mG444RsS",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81988/OLA%20OLA%20-%20Authentic%20Pounded%20Yam%20-%201.8%20kg%20-%20Lot.jpg?itok=Zj2OFtND",
+          "alt": "OLA-OLA - Authentic Pounded Yam - 1.8 kg - Lot"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81988/OLA%20OLA%20-%20Authentic%20Pounded%20Yam%20-%201.8%20kg%20-%20Front.jpg?itok=OcOSFQo-",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81988/OLA%20OLA%20-%20Authentic%20Pounded%20Yam%20-%201.8%20kg%20-%20Front.jpg?itok=jsFDhB7v",
+      "primaryImageAlt": "OLA-OLA - Authentic Pounded Yam - 1.8 kg - Front",
       "raw": {
         "NID": "81988",
         "Title": "Ola-Ola brand Authentic Pounded Yam (Iyan) IYANINSTANT recalled due to undeclared milk",
@@ -19079,7 +19446,30 @@
         "Category": "Other",
         "Recall class": "Class 1",
         "Last updated": "2026-06-26",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81988/OLA%20OLA%20-%20Authentic%20Pounded%20Yam%20-%201.8%20kg%20-%20Front.jpg?itok=OcOSFQo-",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81988/OLA%20OLA%20-%20Authentic%20Pounded%20Yam%20-%201.8%20kg%20-%20Front.jpg?itok=jsFDhB7v",
+            "alt": "OLA-OLA - Authentic Pounded Yam - 1.8 kg - Front",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ola-ola-brand-authentic-pounded-yam-iyan-iyaninstant-recalled-due-undeclared-milk"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81988/OLA%20OLA%20-%20Authentic%20Pounded%20Yam%20-%201.8%20kg%20-%20Back.jpg?itok=P2PKtiy0",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81988/OLA%20OLA%20-%20Authentic%20Pounded%20Yam%20-%201.8%20kg%20-%20Back.jpg?itok=vWgF5tmA",
+            "alt": "OLA-OLA - Authentic Pounded Yam - 1.8 kg - Back",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ola-ola-brand-authentic-pounded-yam-iyan-iyaninstant-recalled-due-undeclared-milk"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81988/OLA%20OLA%20-%20Authentic%20Pounded%20Yam%20-%201.8%20kg%20-%20Lot.jpg?itok=mG444RsS",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81988/OLA%20OLA%20-%20Authentic%20Pounded%20Yam%20-%201.8%20kg%20-%20Lot.jpg?itok=Zj2OFtND",
+            "alt": "OLA-OLA - Authentic Pounded Yam - 1.8 kg - Lot",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/ola-ola-brand-authentic-pounded-yam-iyan-iyaninstant-recalled-due-undeclared-milk"
+          }
+        ]
       }
     },
     {
@@ -19106,6 +19496,41 @@
       "productQuantity": "",
       "recallNumber": "82253",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82253/Salem%20Foods%20-%20Cookies%20Spices%20-%20Biscuits%20aux%20%C3%A9pices%20-%20200%20g%20-%20Back%20-Derri%C3%A8re.jpg?itok=kfBt4GWE",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82253/Salem%20Foods%20-%20Cookies%20Spices%20-%20Biscuits%20aux%20%C3%A9pices%20-%20200%20g%20-%20Back%20-Derri%C3%A8re.jpg?itok=14mnw6nq",
+          "alt": "Salem Foods - Cookies Spices - 200 g - Back"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82253/Salem%20Foods%20-%20Cookies%20Spices%20-%20Biscuits%20aux%20%C3%A9pices%20-%20200%20g%20-%20front%20-%20avant.jpg?itok=6Wh3Onre",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82253/Salem%20Foods%20-%20Cookies%20Spices%20-%20Biscuits%20aux%20%C3%A9pices%20-%20200%20g%20-%20front%20-%20avant.jpg?itok=tOQ7Mfiv",
+          "alt": "Salem Foods - Cookies Spices - 200 g - front"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82253/Salem%20Foods%20Ground%20Cardamom%20-Cardamome%20en%20poudre%20-%20180%20g%20-%20Back%20-%20Derri%C3%A8re.jpg?itok=cMiU6JZ6",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82253/Salem%20Foods%20Ground%20Cardamom%20-Cardamome%20en%20poudre%20-%20180%20g%20-%20Back%20-%20Derri%C3%A8re.jpg?itok=2Segrake",
+          "alt": "Salem Foods - Ground Cardamom - 180 g - Back"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82253/Salem%20Foods%20Ground%20Cardamom%20-Cardamome%20en%20poudre%20-%20180%20g%20-%20front%20-%20avant.jpg?itok=hykDkkST",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82253/Salem%20Foods%20Ground%20Cardamom%20-Cardamome%20en%20poudre%20-%20180%20g%20-%20front%20-%20avant.jpg?itok=_XcWtlUj",
+          "alt": "Salem Foods - Ground Cardamom - 180 g - front"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82253/Salem%20Foods%20Spearmint%20%20-%20menthe%20verte%20-%20120%20g%20-%20Back%20-Derri%C3%A8re.jpg?itok=lwXQDFV6",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82253/Salem%20Foods%20Spearmint%20%20-%20menthe%20verte%20-%20120%20g%20-%20Back%20-Derri%C3%A8re.jpg?itok=YLm8ECvM",
+          "alt": "Salem Foods - Spearmint - 120 g - Back"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82253/Salem%20Foods%20Spearmint%20%20-%20menthe%20verte%20-%20120%20g%20-front%20-%20avant.jpg?itok=6XSt6Kw4",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82253/Salem%20Foods%20Spearmint%20%20-%20menthe%20verte%20-%20120%20g%20-front%20-%20avant.jpg?itok=8FfYLbQf",
+          "alt": "Salem Foods - Spearmint - 120 g -front"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82253/Salem%20Foods%20-%20Cookies%20Spices%20-%20Biscuits%20aux%20%C3%A9pices%20-%20200%20g%20-%20Back%20-Derri%C3%A8re.jpg?itok=kfBt4GWE",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82253/Salem%20Foods%20-%20Cookies%20Spices%20-%20Biscuits%20aux%20%C3%A9pices%20-%20200%20g%20-%20Back%20-Derri%C3%A8re.jpg?itok=14mnw6nq",
+      "primaryImageAlt": "Salem Foods - Cookies Spices - 200 g - Back",
       "raw": {
         "NID": "82253",
         "Title": "Various Salem Foods brand Ground Spices and Spice Blends recalled due to undeclared wheat, sesame and mustard",
@@ -19117,7 +19542,51 @@
         "Category": "Herbs and spices",
         "Recall class": "Class 1",
         "Last updated": "2026-06-26",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82253/Salem%20Foods%20-%20Cookies%20Spices%20-%20Biscuits%20aux%20%C3%A9pices%20-%20200%20g%20-%20Back%20-Derri%C3%A8re.jpg?itok=kfBt4GWE",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82253/Salem%20Foods%20-%20Cookies%20Spices%20-%20Biscuits%20aux%20%C3%A9pices%20-%20200%20g%20-%20Back%20-Derri%C3%A8re.jpg?itok=14mnw6nq",
+            "alt": "Salem Foods - Cookies Spices - 200 g - Back",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/various-salem-foods-brand-ground-spices-and-spice-blends-recalled-due-undeclared-0"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82253/Salem%20Foods%20-%20Cookies%20Spices%20-%20Biscuits%20aux%20%C3%A9pices%20-%20200%20g%20-%20front%20-%20avant.jpg?itok=6Wh3Onre",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82253/Salem%20Foods%20-%20Cookies%20Spices%20-%20Biscuits%20aux%20%C3%A9pices%20-%20200%20g%20-%20front%20-%20avant.jpg?itok=tOQ7Mfiv",
+            "alt": "Salem Foods - Cookies Spices - 200 g - front",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/various-salem-foods-brand-ground-spices-and-spice-blends-recalled-due-undeclared-0"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82253/Salem%20Foods%20Ground%20Cardamom%20-Cardamome%20en%20poudre%20-%20180%20g%20-%20Back%20-%20Derri%C3%A8re.jpg?itok=cMiU6JZ6",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82253/Salem%20Foods%20Ground%20Cardamom%20-Cardamome%20en%20poudre%20-%20180%20g%20-%20Back%20-%20Derri%C3%A8re.jpg?itok=2Segrake",
+            "alt": "Salem Foods - Ground Cardamom - 180 g - Back",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/various-salem-foods-brand-ground-spices-and-spice-blends-recalled-due-undeclared-0"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82253/Salem%20Foods%20Ground%20Cardamom%20-Cardamome%20en%20poudre%20-%20180%20g%20-%20front%20-%20avant.jpg?itok=hykDkkST",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82253/Salem%20Foods%20Ground%20Cardamom%20-Cardamome%20en%20poudre%20-%20180%20g%20-%20front%20-%20avant.jpg?itok=_XcWtlUj",
+            "alt": "Salem Foods - Ground Cardamom - 180 g - front",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/various-salem-foods-brand-ground-spices-and-spice-blends-recalled-due-undeclared-0"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82253/Salem%20Foods%20Spearmint%20%20-%20menthe%20verte%20-%20120%20g%20-%20Back%20-Derri%C3%A8re.jpg?itok=lwXQDFV6",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82253/Salem%20Foods%20Spearmint%20%20-%20menthe%20verte%20-%20120%20g%20-%20Back%20-Derri%C3%A8re.jpg?itok=YLm8ECvM",
+            "alt": "Salem Foods - Spearmint - 120 g - Back",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/various-salem-foods-brand-ground-spices-and-spice-blends-recalled-due-undeclared-0"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82253/Salem%20Foods%20Spearmint%20%20-%20menthe%20verte%20-%20120%20g%20-front%20-%20avant.jpg?itok=6XSt6Kw4",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82253/Salem%20Foods%20Spearmint%20%20-%20menthe%20verte%20-%20120%20g%20-front%20-%20avant.jpg?itok=8FfYLbQf",
+            "alt": "Salem Foods - Spearmint - 120 g -front",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/various-salem-foods-brand-ground-spices-and-spice-blends-recalled-due-undeclared-0"
+          }
+        ]
       }
     },
     {
@@ -23390,6 +23859,26 @@
       "productQuantity": "",
       "recallNumber": "81861",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81861/Kith%20-%20Front_0.jpg?itok=QKpMKfio",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81861/Kith%20-%20Front_0.jpg?itok=11Becdrt",
+          "alt": "Front"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81861/Kith%20-%20Back_0.jpg?itok=9i5Vg6tk",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81861/Kith%20-%20Back_0.jpg?itok=Ksb4WGlO",
+          "alt": "Back"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81861/Kith%20-%20Tag_0.jpg?itok=iyLB8xQe",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81861/Kith%20-%20Tag_0.jpg?itok=tYVFLD40",
+          "alt": "Tag"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81861/Kith%20-%20Front_0.jpg?itok=QKpMKfio",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81861/Kith%20-%20Front_0.jpg?itok=11Becdrt",
+      "primaryImageAlt": "Front",
       "raw": {
         "NID": "81861",
         "Title": "Baby Kithmas and Kids Kithmas Plaid Lounge Sets recalled due to flammability hazard ",
@@ -23401,7 +23890,30 @@
         "Category": "Clothing",
         "Recall class": "",
         "Last updated": "2026-06-25",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81861/Kith%20-%20Front_0.jpg?itok=QKpMKfio",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81861/Kith%20-%20Front_0.jpg?itok=11Becdrt",
+            "alt": "Front",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/baby-kithmas-and-kids-kithmas-plaid-lounge-sets-recalled-due-flammability-hazard"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81861/Kith%20-%20Back_0.jpg?itok=9i5Vg6tk",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81861/Kith%20-%20Back_0.jpg?itok=Ksb4WGlO",
+            "alt": "Back",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/baby-kithmas-and-kids-kithmas-plaid-lounge-sets-recalled-due-flammability-hazard"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81861/Kith%20-%20Tag_0.jpg?itok=iyLB8xQe",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81861/Kith%20-%20Tag_0.jpg?itok=tYVFLD40",
+            "alt": "Tag",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/baby-kithmas-and-kids-kithmas-plaid-lounge-sets-recalled-due-flammability-hazard"
+          }
+        ]
       }
     },
     {
@@ -23426,6 +23938,21 @@
       "productQuantity": "",
       "recallNumber": "81901",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81901/Amana%20recall%20image%201.jpg?itok=3Y7Egxe6",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81901/Amana%20recall%20image%201.jpg?itok=rkuOY4XV",
+          "alt": "Amana Air Conditioner"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81901/Amana%20recall%20image%202.jpg?itok=3ofG40t1",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81901/Amana%20recall%20image%202.jpg?itok=FJqXgBcR",
+          "alt": "Amana Model and Serial Number Location"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81901/Amana%20recall%20image%201.jpg?itok=3Y7Egxe6",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81901/Amana%20recall%20image%201.jpg?itok=rkuOY4XV",
+      "primaryImageAlt": "Amana Air Conditioner",
       "raw": {
         "NID": "81901",
         "Title": "Amana Through-the-Wall Air Conditioners or Heat Pumps recalled due to burn and fire hazard",
@@ -23437,7 +23964,23 @@
         "Category": "Specialized products",
         "Recall class": "",
         "Last updated": "2026-06-25",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81901/Amana%20recall%20image%201.jpg?itok=3Y7Egxe6",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81901/Amana%20recall%20image%201.jpg?itok=rkuOY4XV",
+            "alt": "Amana Air Conditioner",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/amana-through-wall-air-conditioners-or-heat-pumps-recalled-due-burn-and-fire-hazard"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81901/Amana%20recall%20image%202.jpg?itok=3ofG40t1",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81901/Amana%20recall%20image%202.jpg?itok=FJqXgBcR",
+            "alt": "Amana Model and Serial Number Location",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/amana-through-wall-air-conditioners-or-heat-pumps-recalled-due-burn-and-fire-hazard"
+          }
+        ]
       }
     },
     {
@@ -23462,6 +24005,16 @@
       "productQuantity": "",
       "recallNumber": "82213",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82213/super%20Off-road%20power%20bank%20image%201.png?itok=ureEpTI1",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82213/super%20Off-road%20power%20bank%20image%201.png?itok=_Ep804H-",
+          "alt": "Super Off-Road 12,000 mAh Solar Wireless Power Bank"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82213/super%20Off-road%20power%20bank%20image%201.png?itok=ureEpTI1",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82213/super%20Off-road%20power%20bank%20image%201.png?itok=_Ep804H-",
+      "primaryImageAlt": "Super Off-Road 12,000 mAh Solar Wireless Power Bank",
       "raw": {
         "NID": "82213",
         "Title": "Super Off-Road 12,000 mAh Solar Wireless Power Bank recalled due to fire hazard  ",
@@ -23473,7 +24026,16 @@
         "Category": "Electronics",
         "Recall class": "",
         "Last updated": "2026-06-25",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82213/super%20Off-road%20power%20bank%20image%201.png?itok=ureEpTI1",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82213/super%20Off-road%20power%20bank%20image%201.png?itok=_Ep804H-",
+            "alt": "Super Off-Road 12,000 mAh Solar Wireless Power Bank",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/super-road-12000-mah-solar-wireless-power-bank-recalled-due-fire-hazard"
+          }
+        ]
       }
     },
     {
@@ -54845,6 +55407,16 @@
       "productQuantity": "",
       "recallNumber": "82229",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82229/pandaear-1_0.png?itok=ogdUx4p6",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82229/pandaear-1_0.png?itok=T4sV6kxv",
+          "alt": "PandaEar Portable Hook-On Chair, Model BTC-51"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82229/pandaear-1_0.png?itok=ogdUx4p6",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82229/pandaear-1_0.png?itok=T4sV6kxv",
+      "primaryImageAlt": "PandaEar Portable Hook-On Chair, Model BTC-51",
       "raw": {
         "NID": "82229",
         "Title": "Portable Hook-On Chair recalled due to fall hazard",
@@ -54856,7 +55428,16 @@
         "Category": "Household items",
         "Recall class": "",
         "Last updated": "2026-06-22",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82229/pandaear-1_0.png?itok=ogdUx4p6",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82229/pandaear-1_0.png?itok=T4sV6kxv",
+            "alt": "PandaEar Portable Hook-On Chair, Model BTC-51",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/portable-hook-chair-recalled-due-fall-hazard"
+          }
+        ]
       }
     },
     {
@@ -56291,6 +56872,31 @@
       "productQuantity": "",
       "recallNumber": "82236",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Spicy%20Chicken%20Flavour%20-%20Front_1.jpg?itok=cfKvq6BZ",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Spicy%20Chicken%20Flavour%20-%20Front_1.jpg?itok=vdLf22Sk",
+          "alt": "Wu Xian Zhai - Soybean Snacks Spicy Chicken Flavour - 108 g - Front"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Spicy%20Chicken%20Flavour%20-%20Back_1.jpg?itok=-VJFBL5n",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Spicy%20Chicken%20Flavour%20-%20Back_1.jpg?itok=bEPSd2J3",
+          "alt": "Wu Xian Zhai - Soybean Snacks Spicy Chicken Flavour - 108 g - Back"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Barbeque%20Flavour%20-%20Front%2C%20Back%2C%20UPC_1.jpg?itok=CeI09uKl",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Barbeque%20Flavour%20-%20Front%2C%20Back%2C%20UPC_1.jpg?itok=fn5GX14c",
+          "alt": "Wu Xian Zhai - Soybean Snacks Barbeque Flavour - 108 g - Label"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Soy%20Sauce%20Flavour%20-%20Front%2C%20Back%2C%20UPC_1.jpg?itok=ywGQmmqD",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Soy%20Sauce%20Flavour%20-%20Front%2C%20Back%2C%20UPC_1.jpg?itok=K6RhCUp0",
+          "alt": "Wu Xian Zhai - Soybean Snacks Soy Sauce Flavour - 108 g - Label"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Spicy%20Chicken%20Flavour%20-%20Front_1.jpg?itok=cfKvq6BZ",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Spicy%20Chicken%20Flavour%20-%20Front_1.jpg?itok=vdLf22Sk",
+      "primaryImageAlt": "Wu Xian Zhai - Soybean Snacks Spicy Chicken Flavour - 108 g - Front",
       "raw": {
         "NID": "82236",
         "Title": "Wu Xian Zhai brand Soybean Snacks recalled due to undeclared wheat and / or egg",
@@ -56302,7 +56908,37 @@
         "Category": "Candy, confectionary, snacks and sweeteners",
         "Recall class": "Class 1",
         "Last updated": "2026-06-19",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Spicy%20Chicken%20Flavour%20-%20Front_1.jpg?itok=cfKvq6BZ",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Spicy%20Chicken%20Flavour%20-%20Front_1.jpg?itok=vdLf22Sk",
+            "alt": "Wu Xian Zhai - Soybean Snacks Spicy Chicken Flavour - 108 g - Front",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/wu-xian-zhai-brand-soybean-snacks-recalled-due-undeclared-wheat-and-or-egg"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Spicy%20Chicken%20Flavour%20-%20Back_1.jpg?itok=-VJFBL5n",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Spicy%20Chicken%20Flavour%20-%20Back_1.jpg?itok=bEPSd2J3",
+            "alt": "Wu Xian Zhai - Soybean Snacks Spicy Chicken Flavour - 108 g - Back",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/wu-xian-zhai-brand-soybean-snacks-recalled-due-undeclared-wheat-and-or-egg"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Barbeque%20Flavour%20-%20Front%2C%20Back%2C%20UPC_1.jpg?itok=CeI09uKl",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Barbeque%20Flavour%20-%20Front%2C%20Back%2C%20UPC_1.jpg?itok=fn5GX14c",
+            "alt": "Wu Xian Zhai - Soybean Snacks Barbeque Flavour - 108 g - Label",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/wu-xian-zhai-brand-soybean-snacks-recalled-due-undeclared-wheat-and-or-egg"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Soy%20Sauce%20Flavour%20-%20Front%2C%20Back%2C%20UPC_1.jpg?itok=ywGQmmqD",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82236/Wu%20Xian%20Zhai%20brand%20Soybean%20Snacks%20Soy%20Sauce%20Flavour%20-%20Front%2C%20Back%2C%20UPC_1.jpg?itok=K6RhCUp0",
+            "alt": "Wu Xian Zhai - Soybean Snacks Soy Sauce Flavour - 108 g - Label",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/wu-xian-zhai-brand-soybean-snacks-recalled-due-undeclared-wheat-and-or-egg"
+          }
+        ]
       }
     },
     {
@@ -59422,6 +60058,31 @@
       "productQuantity": "",
       "recallNumber": "82207",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82207/Image%201%20Joolz.png?itok=qlpMFkCQ",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82207/Image%201%20Joolz.png?itok=QprmP9pp",
+          "alt": "Car Seat Adapter for Joolz Aer2 stroller"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82207/Image%202.png?itok=SVxiXD7e",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82207/Image%202.png?itok=XGKol7oV",
+          "alt": "Car Seat Adapter (Set of 2)"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82207/Image%203.png?itok=dPtxh6Tf",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82207/Image%203.png?itok=yOhqZOw-",
+          "alt": "Product identifier placement on product"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82207/Image%204.png?itok=LhAuL08t",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82207/Image%204.png?itok=lNKGLXuN",
+          "alt": "Back of product packaging"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82207/Image%201%20Joolz.png?itok=qlpMFkCQ",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82207/Image%201%20Joolz.png?itok=QprmP9pp",
+      "primaryImageAlt": "Car Seat Adapter for Joolz Aer2 stroller",
       "raw": {
         "NID": "82207",
         "Title": "Joolz Aer2 Car Seat Adapter Set recalled due to fall hazard",
@@ -59433,7 +60094,37 @@
         "Category": "Household items",
         "Recall class": "",
         "Last updated": "2026-06-18",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82207/Image%201%20Joolz.png?itok=qlpMFkCQ",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82207/Image%201%20Joolz.png?itok=QprmP9pp",
+            "alt": "Car Seat Adapter for Joolz Aer2 stroller",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/joolz-aer2-car-seat-adapter-set-recalled-due-fall-hazard"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82207/Image%202.png?itok=SVxiXD7e",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82207/Image%202.png?itok=XGKol7oV",
+            "alt": "Car Seat Adapter (Set of 2)",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/joolz-aer2-car-seat-adapter-set-recalled-due-fall-hazard"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82207/Image%203.png?itok=dPtxh6Tf",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82207/Image%203.png?itok=yOhqZOw-",
+            "alt": "Product identifier placement on product",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/joolz-aer2-car-seat-adapter-set-recalled-due-fall-hazard"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82207/Image%204.png?itok=LhAuL08t",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82207/Image%204.png?itok=lNKGLXuN",
+            "alt": "Back of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/joolz-aer2-car-seat-adapter-set-recalled-due-fall-hazard"
+          }
+        ]
       }
     },
     {
@@ -59458,6 +60149,16 @@
       "productQuantity": "",
       "recallNumber": "82210",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82210/Arizer%20Solo%20Vaporizer%20Image%201.png?itok=WL-wROOs",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82210/Arizer%20Solo%20Vaporizer%20Image%201.png?itok=rIwnCnCQ",
+          "alt": "Arizer Solo III Intergalactic (Black) Portable Vaporizer"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82210/Arizer%20Solo%20Vaporizer%20Image%201.png?itok=WL-wROOs",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82210/Arizer%20Solo%20Vaporizer%20Image%201.png?itok=rIwnCnCQ",
+      "primaryImageAlt": "Arizer Solo III Intergalactic (Black) Portable Vaporizer",
       "raw": {
         "NID": "82210",
         "Title": "Arizer Solo III Intergalactic (Black) Portable Vaporizers recalled due to fire and burn hazards ",
@@ -59469,7 +60170,16 @@
         "Category": "Electronics",
         "Recall class": "",
         "Last updated": "2026-06-18",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82210/Arizer%20Solo%20Vaporizer%20Image%201.png?itok=WL-wROOs",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82210/Arizer%20Solo%20Vaporizer%20Image%201.png?itok=rIwnCnCQ",
+            "alt": "Arizer Solo III Intergalactic (Black) Portable Vaporizer",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/arizer-solo-iii-intergalactic-black-portable-vaporizers-recalled-due-fire-and-burn"
+          }
+        ]
       }
     },
     {
@@ -62028,6 +62738,31 @@
       "productQuantity": "",
       "recallNumber": "82094",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82094/U%20Kids%20-%20Various.png?itok=tL_vUK0p",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82094/U%20Kids%20-%20Various.png?itok=BoxlXU9n",
+          "alt": "Image 1 – We Love Cozy Pajamas"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82094/U%20Kids%202%20piece%20set%20-%20Expanded%20style%20-%203528-4828-2608.jpg?itok=5nYSxroZ",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82094/U%20Kids%202%20piece%20set%20-%20Expanded%20style%20-%203528-4828-2608.jpg?itok=QqhrbFqc",
+          "alt": "Image 2 – We Love Cozy 2-piece Pajama sets in additional prints"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82094/U%20Kids%202%20piece%20set%20-%20Expanded%20style%20-%203528-4828-2621.jpg?itok=iZm4ODv5",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82094/U%20Kids%202%20piece%20set%20-%20Expanded%20style%20-%203528-4828-2621.jpg?itok=4RI-wsIr",
+          "alt": "Image 3 – We Love Cozy 2-piece Pajama sets in additional prints"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82094/U%20Kids%20Lounge%20Pants.jpg?itok=-NER9cMc",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82094/U%20Kids%20Lounge%20Pants.jpg?itok=8x26xX5g",
+          "alt": "Image 4 – We Love Cozy lounge pants sold individually"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82094/U%20Kids%20-%20Various.png?itok=tL_vUK0p",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82094/U%20Kids%20-%20Various.png?itok=BoxlXU9n",
+      "primaryImageAlt": "Image 1 – We Love Cozy Pajamas",
       "raw": {
         "NID": "82094",
         "Title": "Expanded recall: U Kids We Love Cozy 2-piece Pajamas Sets and Lounge Pants recalled due to flammability Hazard ",
@@ -62039,7 +62774,37 @@
         "Category": "Clothing",
         "Recall class": "",
         "Last updated": "2026-06-17",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82094/U%20Kids%20-%20Various.png?itok=tL_vUK0p",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82094/U%20Kids%20-%20Various.png?itok=BoxlXU9n",
+            "alt": "Image 1 – We Love Cozy Pajamas",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/expanded-recall-u-kids-we-love-cozy-2-piece-pajamas-sets-and-lounge-pants-recalled-due"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82094/U%20Kids%202%20piece%20set%20-%20Expanded%20style%20-%203528-4828-2608.jpg?itok=5nYSxroZ",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82094/U%20Kids%202%20piece%20set%20-%20Expanded%20style%20-%203528-4828-2608.jpg?itok=QqhrbFqc",
+            "alt": "Image 2 – We Love Cozy 2-piece Pajama sets in additional prints",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/expanded-recall-u-kids-we-love-cozy-2-piece-pajamas-sets-and-lounge-pants-recalled-due"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82094/U%20Kids%202%20piece%20set%20-%20Expanded%20style%20-%203528-4828-2621.jpg?itok=iZm4ODv5",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82094/U%20Kids%202%20piece%20set%20-%20Expanded%20style%20-%203528-4828-2621.jpg?itok=4RI-wsIr",
+            "alt": "Image 3 – We Love Cozy 2-piece Pajama sets in additional prints",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/expanded-recall-u-kids-we-love-cozy-2-piece-pajamas-sets-and-lounge-pants-recalled-due"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82094/U%20Kids%20Lounge%20Pants.jpg?itok=-NER9cMc",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82094/U%20Kids%20Lounge%20Pants.jpg?itok=8x26xX5g",
+            "alt": "Image 4 – We Love Cozy lounge pants sold individually",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/expanded-recall-u-kids-we-love-cozy-2-piece-pajamas-sets-and-lounge-pants-recalled-due"
+          }
+        ]
       }
     },
     {
@@ -64332,6 +65097,31 @@
       "productQuantity": "",
       "recallNumber": "82198",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20Front.jpg?itok=IOxhhs8p",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20Front.jpg?itok=Tb7ppH-5",
+          "alt": "Lactantia - UltraPur 2% M.F. Lactose Free Dairy Product - 2 L - Front"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20Side_0.jpg?itok=uSuj1hOE",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20Side_0.jpg?itok=u7se1XoD",
+          "alt": "Lactantia - UltraPur 2% M.F. Lactose Free Dairy Product - 2 L - Side"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20Lot_0.jpg?itok=ngnm0j8Q",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20Lot_0.jpg?itok=5DiLghqA",
+          "alt": "Lactantia - UltraPur 2% M.F. Lactose Free Dairy Product - 2 L - Lot"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20UPC_0.jpg?itok=xXvI-OLs",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20UPC_0.jpg?itok=s5h6PWlv",
+          "alt": "Lactantia - UltraPur 2% M.F. Lactose Free Dairy Product - 2 L - UPC"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20Front.jpg?itok=IOxhhs8p",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20Front.jpg?itok=Tb7ppH-5",
+      "primaryImageAlt": "Lactantia - UltraPur 2% M.F. Lactose Free Dairy Product - 2 L - Front",
       "raw": {
         "NID": "82198",
         "Title": "Lactantia brand UltraPūr 2% M.F. Lactose Free Dairy Product recalled due to over-fortification of Vitamins A and D",
@@ -64343,7 +65133,37 @@
         "Category": "Dairy",
         "Recall class": "Class 2",
         "Last updated": "2026-06-12",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20Front.jpg?itok=IOxhhs8p",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20Front.jpg?itok=Tb7ppH-5",
+            "alt": "Lactantia - UltraPur 2% M.F. Lactose Free Dairy Product - 2 L - Front",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/lactantia-brand-ultrapur-2-mf-lactose-free-dairy-product-recalled-due-over"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20Side_0.jpg?itok=uSuj1hOE",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20Side_0.jpg?itok=u7se1XoD",
+            "alt": "Lactantia - UltraPur 2% M.F. Lactose Free Dairy Product - 2 L - Side",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/lactantia-brand-ultrapur-2-mf-lactose-free-dairy-product-recalled-due-over"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20Lot_0.jpg?itok=ngnm0j8Q",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20Lot_0.jpg?itok=5DiLghqA",
+            "alt": "Lactantia - UltraPur 2% M.F. Lactose Free Dairy Product - 2 L - Lot",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/lactantia-brand-ultrapur-2-mf-lactose-free-dairy-product-recalled-due-over"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20UPC_0.jpg?itok=xXvI-OLs",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82198/Lactantia%20-%20UltraPur%202%25%20M.F.%20Lactose%20Free%20Dairy%20Product%20-%202%20L%20-%20UPC_0.jpg?itok=s5h6PWlv",
+            "alt": "Lactantia - UltraPur 2% M.F. Lactose Free Dairy Product - 2 L - UPC",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/lactantia-brand-ultrapur-2-mf-lactose-free-dairy-product-recalled-due-over"
+          }
+        ]
       }
     },
     {
@@ -64482,6 +65302,31 @@
       "productQuantity": "",
       "recallNumber": "82184",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82184/Picture1.png?itok=8RUFUSqO",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82184/Picture1.png?itok=j-nr-Lr6",
+          "alt": "Bottom of the furniture with the item number"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82184/Picture2.png?itok=A4cLu1X7",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82184/Picture2.png?itok=WJChmvHq",
+          "alt": "Recalled Plastic Tip Restraint"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82184/Picture3.png?itok=-BSRQKOg",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82184/Picture3.png?itok=1XgHx2HK",
+          "alt": "School Specialty Furniture that included the recalled Tip Restraint Kits"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82184/Picture4.png?itok=kCrdEAi6",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82184/Picture4.png?itok=jh3CDRqL",
+          "alt": "School Specialty Furniture that included the recalled Tip Restraint Kits"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82184/Picture1.png?itok=8RUFUSqO",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82184/Picture1.png?itok=j-nr-Lr6",
+      "primaryImageAlt": "Bottom of the furniture with the item number",
       "raw": {
         "NID": "82184",
         "Title": "​​Tip Restraint Kits included in Childcraft Furniture recalled ​due to tip-over and entrapment hazards to children ",
@@ -64493,7 +65338,37 @@
         "Category": "Household items",
         "Recall class": "",
         "Last updated": "2026-06-11",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82184/Picture1.png?itok=8RUFUSqO",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82184/Picture1.png?itok=j-nr-Lr6",
+            "alt": "Bottom of the furniture with the item number",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/tip-restraint-kits-included-childcraft-furniture-recalled-due-tip-over-and-entrapment"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82184/Picture2.png?itok=A4cLu1X7",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82184/Picture2.png?itok=WJChmvHq",
+            "alt": "Recalled Plastic Tip Restraint",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/tip-restraint-kits-included-childcraft-furniture-recalled-due-tip-over-and-entrapment"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82184/Picture3.png?itok=-BSRQKOg",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82184/Picture3.png?itok=1XgHx2HK",
+            "alt": "School Specialty Furniture that included the recalled Tip Restraint Kits",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/tip-restraint-kits-included-childcraft-furniture-recalled-due-tip-over-and-entrapment"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82184/Picture4.png?itok=kCrdEAi6",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82184/Picture4.png?itok=jh3CDRqL",
+            "alt": "School Specialty Furniture that included the recalled Tip Restraint Kits",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/tip-restraint-kits-included-childcraft-furniture-recalled-due-tip-over-and-entrapment"
+          }
+        ]
       }
     },
     {
@@ -66388,6 +67263,21 @@
       "productQuantity": "",
       "recallNumber": "82186",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82186/pacifier%20clip%201.png?itok=J24ZUPbe",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82186/pacifier%20clip%201.png?itok=4934H-mL",
+          "alt": "Image 1"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82186/pacifier%20clip%202.jpg?itok=xYRoVlRj",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82186/pacifier%20clip%202.jpg?itok=AF3aGiay",
+          "alt": "Image 2"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82186/pacifier%20clip%201.png?itok=J24ZUPbe",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82186/pacifier%20clip%201.png?itok=4934H-mL",
+      "primaryImageAlt": "Image 1",
       "raw": {
         "NID": "82186",
         "Title": "Health Canada warns that COHEALI Wooden Pacifier Clip for baby previously available on Amazon.ca may pose a risk of choking",
@@ -66399,7 +67289,23 @@
         "Category": "Other",
         "Recall class": "",
         "Last updated": "2026-06-10",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82186/pacifier%20clip%201.png?itok=J24ZUPbe",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82186/pacifier%20clip%201.png?itok=4934H-mL",
+            "alt": "Image 1",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/health-canada-warns-coheali-wooden-pacifier-clip-baby-previously-available-amazonca"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82186/pacifier%20clip%202.jpg?itok=xYRoVlRj",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82186/pacifier%20clip%202.jpg?itok=AF3aGiay",
+            "alt": "Image 2",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/health-canada-warns-coheali-wooden-pacifier-clip-baby-previously-available-amazonca"
+          }
+        ]
       }
     },
     {
@@ -66424,6 +67330,21 @@
       "productQuantity": "",
       "recallNumber": "82187",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82187/Lot%201006543%20Strawberry%20Stampede%20front.jpg?itok=T1SuxW0p",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82187/Lot%201006543%20Strawberry%20Stampede%20front.jpg?itok=p3Q8i78j",
+          "alt": "Front of packaging of two identical cannabis products, each in a white tube with a wraparound burgundy label. A logo is near the top of each tube. The middle of the labels has product information like the product name and cannabinoid content."
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82187/Lot%201006543%20Strawberry%20Stampede%20back.jpg?itok=mQE_N04e",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82187/Lot%201006543%20Strawberry%20Stampede%20back.jpg?itok=8p48GkKO",
+          "alt": "Back of packaging of two identical cannabis products, each in a white tube with a wraparound burgundy label with a red octagon-shaped standardized cannabis symbol on the top left corner and yellow Health Warning Box on the bottom. The middle of each label has additional product information and a QR code."
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82187/Lot%201006543%20Strawberry%20Stampede%20front.jpg?itok=T1SuxW0p",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82187/Lot%201006543%20Strawberry%20Stampede%20front.jpg?itok=p3Q8i78j",
+      "primaryImageAlt": "Front of packaging of two identical cannabis products, each in a white tube with a wraparound burgundy label. A logo is near the top of each tube. The middle of the labels has product information like the product name and cannabinoid content.",
       "raw": {
         "NID": "82187",
         "Title": "CannaPiece Corp. recalls Wild West 96+ Strawberry Stampede Liquid Diamonds 510 Vape due to a labelling issue",
@@ -66435,7 +67356,23 @@
         "Category": "Cannabis",
         "Recall class": "",
         "Last updated": "2026-06-10",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82187/Lot%201006543%20Strawberry%20Stampede%20front.jpg?itok=T1SuxW0p",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82187/Lot%201006543%20Strawberry%20Stampede%20front.jpg?itok=p3Q8i78j",
+            "alt": "Front of packaging of two identical cannabis products, each in a white tube with a wraparound burgundy label. A logo is near the top of each tube. The middle of the labels has product information like the product name and cannabinoid content.",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/cannapiece-corp-recalls-wild-west-96-strawberry-stampede-liquid-diamonds-510-vape-due"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82187/Lot%201006543%20Strawberry%20Stampede%20back.jpg?itok=mQE_N04e",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82187/Lot%201006543%20Strawberry%20Stampede%20back.jpg?itok=8p48GkKO",
+            "alt": "Back of packaging of two identical cannabis products, each in a white tube with a wraparound burgundy label with a red octagon-shaped standardized cannabis symbol on the top left corner and yellow Health Warning Box on the bottom. The middle of each label has additional product information and a QR code.",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/cannapiece-corp-recalls-wild-west-96-strawberry-stampede-liquid-diamonds-510-vape-due"
+          }
+        ]
       }
     },
     {
@@ -66836,6 +67773,21 @@
       "productQuantity": "",
       "recallNumber": "81983",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81983/2026-010138%20Red%20Robe%20-%20Picture1.jpg?itok=OojKZaCk",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81983/2026-010138%20Red%20Robe%20-%20Picture1.jpg?itok=Tmne6qkB",
+          "alt": "Image: red plush robe"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81983/Beige%20Plush%20Robe.jpg?itok=pDFemU8w",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81983/Beige%20Plush%20Robe.jpg?itok=gqeSxQXM",
+          "alt": "Image: beige plush robe"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81983/2026-010138%20Red%20Robe%20-%20Picture1.jpg?itok=OojKZaCk",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81983/2026-010138%20Red%20Robe%20-%20Picture1.jpg?itok=Tmne6qkB",
+      "primaryImageAlt": "Image: red plush robe",
       "raw": {
         "NID": "81983",
         "Title": "Expanded recall: Plush robes with various prints recalled due to flammability hazard",
@@ -66847,7 +67799,23 @@
         "Category": "Clothing",
         "Recall class": "",
         "Last updated": "2026-06-09",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81983/2026-010138%20Red%20Robe%20-%20Picture1.jpg?itok=OojKZaCk",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81983/2026-010138%20Red%20Robe%20-%20Picture1.jpg?itok=Tmne6qkB",
+            "alt": "Image: red plush robe",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/expanded-recall-plush-robes-various-prints-recalled-due-flammability-hazard"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81983/Beige%20Plush%20Robe.jpg?itok=pDFemU8w",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81983/Beige%20Plush%20Robe.jpg?itok=gqeSxQXM",
+            "alt": "Image: beige plush robe",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/expanded-recall-plush-robes-various-prints-recalled-due-flammability-hazard"
+          }
+        ]
       }
     },
     {
@@ -66872,6 +67840,21 @@
       "productQuantity": "",
       "recallNumber": "81985",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81985/2026-010145%20Pink%20Nightgown%20-%20Picture1.jpg?itok=73x1052P",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81985/2026-010145%20Pink%20Nightgown%20-%20Picture1.jpg?itok=yZu0EY9J",
+          "alt": "Image: Pink nightgown with holiday ball over print"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81985/Mauve%20Nightgown.jpg?itok=QNEYDIVm",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81985/Mauve%20Nightgown.jpg?itok=j4vkKaZM",
+          "alt": "Image : Mauve nightgown with small dogs print"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81985/2026-010145%20Pink%20Nightgown%20-%20Picture1.jpg?itok=73x1052P",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81985/2026-010145%20Pink%20Nightgown%20-%20Picture1.jpg?itok=yZu0EY9J",
+      "primaryImageAlt": "Image: Pink nightgown with holiday ball over print",
       "raw": {
         "NID": "81985",
         "Title": "Expanded recall: Nightgowns with various prints recalled due to flammability hazard",
@@ -66883,7 +67866,23 @@
         "Category": "Clothing",
         "Recall class": "",
         "Last updated": "2026-06-09",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81985/2026-010145%20Pink%20Nightgown%20-%20Picture1.jpg?itok=73x1052P",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81985/2026-010145%20Pink%20Nightgown%20-%20Picture1.jpg?itok=yZu0EY9J",
+            "alt": "Image: Pink nightgown with holiday ball over print",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/expanded-recall-nightgowns-various-prints-recalled-due-flammability-hazard"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/81985/Mauve%20Nightgown.jpg?itok=QNEYDIVm",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/81985/Mauve%20Nightgown.jpg?itok=j4vkKaZM",
+            "alt": "Image : Mauve nightgown with small dogs print",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/expanded-recall-nightgowns-various-prints-recalled-due-flammability-hazard"
+          }
+        ]
       }
     },
     {
@@ -66908,6 +67907,16 @@
       "productQuantity": "",
       "recallNumber": "82174",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82174/Image%201.jpg?itok=DdaZD7bg",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82174/Image%201.jpg?itok=fc6U64c4",
+          "alt": "Wiifo Children’s Tower Stool – white finish"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82174/Image%201.jpg?itok=DdaZD7bg",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82174/Image%201.jpg?itok=fc6U64c4",
+      "primaryImageAlt": "Wiifo Children’s Tower Stool – white finish",
       "raw": {
         "NID": "82174",
         "Title": "Wiifo Children’s Tower Stools recalled due to fall and entrapment hazards",
@@ -66919,7 +67928,16 @@
         "Category": "Toys and games",
         "Recall class": "",
         "Last updated": "2026-06-09",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82174/Image%201.jpg?itok=DdaZD7bg",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82174/Image%201.jpg?itok=fc6U64c4",
+            "alt": "Wiifo Children’s Tower Stool – white finish",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/wiifo-children-s-tower-stools-recalled-due-fall-and-entrapment-hazards"
+          }
+        ]
       }
     },
     {
@@ -66944,6 +67962,26 @@
       "productQuantity": "",
       "recallNumber": "82180",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82180/Picture1.jpg?itok=kGMDdi0R",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82180/Picture1.jpg?itok=jwbwo3lP",
+          "alt": "Front of product"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82180/Picture2.jpg?itok=Pw8AqYhB",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82180/Picture2.jpg?itok=ycxizOLg",
+          "alt": "Front of product, Roller shade with alternating fabric colours (“Zebra Shade”), chain link on the side"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82180/Picture3.jpg?itok=Gu4S6_el",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82180/Picture3.jpg?itok=e25LUZ8o",
+          "alt": "Front of product, Roller shade with alternating fabric colours (“Zebra Shade”), chain link on the side. Image shows product shading light once the chain is pulled."
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82180/Picture1.jpg?itok=kGMDdi0R",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82180/Picture1.jpg?itok=jwbwo3lP",
+      "primaryImageAlt": "Front of product",
       "raw": {
         "NID": "82180",
         "Title": "​​Urban Shades Roller Shades​ recalled due to strangulation hazard  ",
@@ -66955,7 +67993,30 @@
         "Category": "Household items",
         "Recall class": "",
         "Last updated": "2026-06-09",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82180/Picture1.jpg?itok=kGMDdi0R",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82180/Picture1.jpg?itok=jwbwo3lP",
+            "alt": "Front of product",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/urban-shades-roller-shades-recalled-due-strangulation-hazard"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82180/Picture2.jpg?itok=Pw8AqYhB",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82180/Picture2.jpg?itok=ycxizOLg",
+            "alt": "Front of product, Roller shade with alternating fabric colours (“Zebra Shade”), chain link on the side",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/urban-shades-roller-shades-recalled-due-strangulation-hazard"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82180/Picture3.jpg?itok=Gu4S6_el",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82180/Picture3.jpg?itok=e25LUZ8o",
+            "alt": "Front of product, Roller shade with alternating fabric colours (“Zebra Shade”), chain link on the side. Image shows product shading light once the chain is pulled.",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/urban-shades-roller-shades-recalled-due-strangulation-hazard"
+          }
+        ]
       }
     },
     {
@@ -67406,6 +68467,21 @@
       "productQuantity": "",
       "recallNumber": "82163",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82163/Image%201.png?itok=rGMhrd0D",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82163/Image%201.png?itok=tQVMFxCy",
+          "alt": "Image 1 Front of product packaging"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82163/Image%202.png?itok=BaoiWqGU",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82163/Image%202.png?itok=0aG37l9m",
+          "alt": "Image 2 Back of product packaging"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82163/Image%201.png?itok=rGMhrd0D",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82163/Image%201.png?itok=tQVMFxCy",
+      "primaryImageAlt": "Image 1 Front of product packaging",
       "raw": {
         "NID": "82163",
         "Title": "Renpure Tea Tree & Rosemary Scalp Rebalancing Shampoo & Conditioner recalled due to microbial contamination ",
@@ -67417,7 +68493,23 @@
         "Category": "Beauty and personal care",
         "Recall class": "",
         "Last updated": "2026-06-05",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82163/Image%201.png?itok=rGMhrd0D",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82163/Image%201.png?itok=tQVMFxCy",
+            "alt": "Image 1 Front of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/renpure-tea-tree-rosemary-scalp-rebalancing-shampoo-conditioner-recalled-due-microbial"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82163/Image%202.png?itok=BaoiWqGU",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82163/Image%202.png?itok=0aG37l9m",
+            "alt": "Image 2 Back of product packaging",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/renpure-tea-tree-rosemary-scalp-rebalancing-shampoo-conditioner-recalled-due-microbial"
+          }
+        ]
       }
     },
     {
@@ -67442,6 +68534,21 @@
       "productQuantity": "",
       "recallNumber": "82165",
       "status": "Active",
+      "images": [
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82165/Image1.jpg?itok=ELWGAyCx",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82165/Image1.jpg?itok=9gCrpiFZ",
+          "alt": "Front of product"
+        },
+        {
+          "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82165/Image2.png?itok=Hlbtzf4i",
+          "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82165/Image2.png?itok=CSYjrT3d",
+          "alt": "Side of product"
+        }
+      ],
+      "primaryImageUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82165/Image1.jpg?itok=ELWGAyCx",
+      "primaryImageThumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82165/Image1.jpg?itok=9gCrpiFZ",
+      "primaryImageAlt": "Front of product",
       "raw": {
         "NID": "82165",
         "Title": "Cosyland Kids Kitchen Step Stools recalled due to fall and entrapment hazards",
@@ -67453,7 +68560,23 @@
         "Category": "Furniture and furnishings",
         "Recall class": "",
         "Last updated": "2026-06-05",
-        "Archived": "0"
+        "Archived": "0",
+        "Images": [
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82165/Image1.jpg?itok=ELWGAyCx",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82165/Image1.jpg?itok=9gCrpiFZ",
+            "alt": "Front of product",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/cosyland-kids-kitchen-step-stools-recalled-due-fall-and-entrapment-hazards"
+          },
+          {
+            "url": "https://recalls-rappels.canada.ca/sites/default/files/styles/x_large/public/alert/recall/82165/Image2.png?itok=Hlbtzf4i",
+            "thumbnailUrl": "https://recalls-rappels.canada.ca/sites/default/files/styles/medium/public/alert/recall/82165/Image2.png?itok=CSYjrT3d",
+            "alt": "Side of product",
+            "source": "official-canada-detail",
+            "extractedFrom": "https://recalls-rappels.canada.ca/en/alert-recall/cosyland-kids-kitchen-step-stools-recalled-due-fall-and-entrapment-hazards"
+          }
+        ]
       }
     },
     {

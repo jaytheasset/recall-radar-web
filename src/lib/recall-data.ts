@@ -396,6 +396,9 @@ function isOfficialRecallImageUrl(url: string): boolean {
   return (
     /^https:\/\/www\.cpsc\.gov\//i.test(url) ||
     /^https:\/\/rappel\.conso\.gouv\.fr\/image\//i.test(url) ||
+    /^https:\/\/(?:recalls-rappels\.canada\.ca|www\.canada\.ca)\/sites\/default\/files\/(?:styles\/[^/]+\/)?public\/alert\/recall\//i.test(
+      url
+    ) ||
     /^https:\/\/ec\.europa\.eu\/safety-gate-alerts\/public\/api\/notification\/(?:image|thumbnail)\//i.test(url)
   );
 }
@@ -441,7 +444,10 @@ function extractRecallImages(record: NormalizedRecall): RecallImage[] {
     .map((image) => normalizeImage(image, fallbackAlt))
     .filter((image): image is RecallImage => Boolean(image));
 
-  return record.source === 'CPSC' || record.source === 'FR_RAPPELCONSO' || record.source === 'EU_SAFETY_GATE'
+  return record.source === 'CPSC' ||
+    record.source === 'FR_RAPPELCONSO' ||
+    record.source === 'CA_RECALLS' ||
+    record.source === 'EU_SAFETY_GATE'
     ? uniqueImages(images)
     : [];
 }

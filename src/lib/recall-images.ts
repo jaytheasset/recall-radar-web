@@ -31,7 +31,8 @@ export function getRecallImageForContext(
   context: RecallImageContext
 ): RecallImageSelection {
   const shouldUseThumbnail =
-    recall.source === 'EU_SAFETY_GATE' && (context === 'card' || context === 'list' || context === 'related');
+    (recall.source === 'EU_SAFETY_GATE' || recall.source === 'CA_RECALLS') &&
+    (context === 'card' || context === 'list' || context === 'related');
   const fullUrl = recall.primaryImageUrl;
   const thumbnailUrl = recall.primaryImageThumbnailUrl;
   const url = shouldUseThumbnail ? thumbnailUrl || fullUrl : fullUrl;

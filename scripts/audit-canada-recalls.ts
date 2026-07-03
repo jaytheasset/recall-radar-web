@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { NormalizedRecall, ProcessedRecallFile, RecallSource } from '../src/data/recall-types.ts';
 import { getSourceOptionsForCurrentCoverage } from '../src/lib/recall-sources.ts';
+import { isOfficialCanadaImageUrl, isSuspectedCanadaChromeImage } from './canada-detail-images.ts';
 
 type AuditIssue = {
   id: string;
@@ -18,6 +19,22 @@ type AuditSummary = {
   rawCategoryDistribution: Record<string, number>;
   siteCategoryDistribution: Record<string, number>;
   recordsWithImages: number;
+  recordsWithPrimaryImageUrl: number;
+  recordsWithPrimaryImageThumbnailUrl: number;
+  recordsWithOfficialDetailUrl: number;
+  invalidImageUrls: AuditIssue[];
+  nonOfficialImageHosts: AuditIssue[];
+  suspectedChromeImageFalsePositives: AuditIssue[];
+  duplicateImageUrls: AuditIssue[];
+  sampleRecoveredRecords: Array<{
+    id: string;
+    title: string;
+    sourceUrl: string;
+    primaryImageUrl: string;
+    primaryImageThumbnailUrl?: string;
+    images: number;
+    slug: string;
+  }>;
   recordsWithUpcOrBarcodeLikeValues: number;
   recordsWithModelOrItemNumberLikeValues: number;
   recordsWithLotBatchCodeOrDateLikeValues: number;
@@ -132,6 +149,72 @@ function looksLikeOfficialNoticeUrl(value: string): boolean {
   return /^https:\/\/recalls-rappels\.canada\.ca\/en\/alert-recall\/[a-z0-9-]+$/i.test(value);
 }
 
+function imageUrlsFor(record: NormalizedRecall): string[] {
+  const urls = [record.primaryImageUrl, record.primaryImageThumbnailUrl].filter((url): url is string => Boolean(url));
+
+  for (const image of record.images ?? []) {
+    urls.push(image.url);
+    if (image.thumbnailUrl) {
+      urls.push(image.thumbnailUrl);
+    }
+  }
+
+  return [...new Set(urls.map((url) => url.trim()).filter(Boolean))];
+}
+
+function invalidImageIssues(records: NormalizedRecall[]): AuditIssue[] {
+  return records.flatMap((record) =>
+    imageUrlsFor(record)
+      .filter((url) => {
+        try {
+          new URL(url);
+          return false;
+        } catch {
+          return true;
+        }
+      })
+      .map((url) => compactIssue(record, url))
+  );
+}
+
+function nonOfficialImageHostIssues(records: NormalizedRecall[]): AuditIssue[] {
+  return records.flatMap((record) =>
+    imageUrlsFor(record)
+      .filter((url) => {
+        try {
+          new URL(url);
+          return !isOfficialCanadaImageUrl(url);
+        } catch {
+          return false;
+        }
+      })
+      .map((url) => compactIssue(record, url))
+  );
+}
+
+function suspectedChromeImageIssues(records: NormalizedRecall[]): AuditIssue[] {
+  return records.flatMap((record) =>
+    imageUrlsFor(record)
+      .filter(isSuspectedCanadaChromeImage)
+      .map((url) => compactIssue(record, url))
+  );
+}
+
+function duplicateImageUrlIssues(records: NormalizedRecall[]): AuditIssue[] {
+  const imageUrlCounts = new Map<string, number>();
+  for (const record of records) {
+    for (const url of imageUrlsFor(record)) {
+      imageUrlCounts.set(url, (imageUrlCounts.get(url) ?? 0) + 1);
+    }
+  }
+
+  return records.flatMap((record) =>
+    imageUrlsFor(record)
+      .filter((url) => (imageUrlCounts.get(url) ?? 0) > 1)
+      .map((url) => compactIssue(record, url))
+  );
+}
+
 function countMissing(records: NormalizedRecall[], test: (record: NormalizedRecall) => boolean): number {
   return records.filter(test).length;
 }
@@ -206,6 +289,11 @@ function audit(records: NormalizedRecall[]): AuditSummary {
       return false;
     })
     .map(({ record, siteCategory }) => compactIssue(record, `${record.category} -> ${siteCategory}`));
+  const recordsWithImages = records.filter((record) => (record.images?.length ?? 0) > 0);
+  const invalidImageUrls = invalidImageIssues(records);
+  const nonOfficialImageHosts = nonOfficialImageHostIssues(records);
+  const suspectedChromeImageFalsePositives = suspectedChromeImageIssues(records);
+  const duplicateImageUrls = duplicateImageUrlIssues(records);
 
   const warnings = [
     countMissing(records, (record) => record.brandNames.length === 0) > 0
@@ -217,8 +305,8 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     records.filter((record) => Boolean(record.distributionPattern)).length === 0
       ? 'The selected Canada open-data JSON feed does not include structured distribution details.'
       : '',
-    records.filter((record) => (record.images?.length ?? 0) > 0).length === 0
-      ? 'The selected Canada open-data JSON feed does not include stable image links.'
+    recordsWithImages.length === 0
+      ? 'No official Canada detail-page product images were normalized.'
       : ''
   ].filter(Boolean);
 
@@ -238,7 +326,23 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     },
     rawCategoryDistribution,
     siteCategoryDistribution,
-    recordsWithImages: records.filter((record) => (record.images?.length ?? 0) > 0).length,
+    recordsWithImages: recordsWithImages.length,
+    recordsWithPrimaryImageUrl: records.filter((record) => Boolean(record.primaryImageUrl)).length,
+    recordsWithPrimaryImageThumbnailUrl: records.filter((record) => Boolean(record.primaryImageThumbnailUrl)).length,
+    recordsWithOfficialDetailUrl: records.filter((record) => looksLikeOfficialNoticeUrl(record.sourceUrl)).length,
+    invalidImageUrls,
+    nonOfficialImageHosts,
+    suspectedChromeImageFalsePositives,
+    duplicateImageUrls,
+    sampleRecoveredRecords: recordsWithImages.slice(0, 5).map((record) => ({
+      id: record.id,
+      title: record.title,
+      sourceUrl: record.sourceUrl,
+      primaryImageUrl: record.primaryImageUrl ?? '',
+      ...(record.primaryImageThumbnailUrl ? { primaryImageThumbnailUrl: record.primaryImageThumbnailUrl } : {}),
+      images: record.images?.length ?? 0,
+      slug: record.slug
+    })),
     recordsWithUpcOrBarcodeLikeValues: records.filter(hasUpcOrBarcodeLikeValue).length,
     recordsWithModelOrItemNumberLikeValues: records.filter(hasModelOrItemNumberLikeValue).length,
     recordsWithLotBatchCodeOrDateLikeValues: records.filter(hasLotBatchCodeOrDateLikeValue).length,
@@ -298,6 +402,14 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
     summary.recordsWithOfficialNoticeUrlShape !== summary.total
       ? `Official Canada URL shape mismatch count: ${summary.total - summary.recordsWithOfficialNoticeUrlShape}.`
       : '',
+    summary.recordsWithPrimaryImageUrl === 0 ? 'No Canada official detail-page image URLs were normalized.' : '',
+    summary.invalidImageUrls.length > 0 ? `Invalid Canada image URLs found: ${summary.invalidImageUrls.length}.` : '',
+    summary.nonOfficialImageHosts.length > 0
+      ? `Non-official Canada image URLs found: ${summary.nonOfficialImageHosts.length}.`
+      : '',
+    summary.suspectedChromeImageFalsePositives.length > 0
+      ? `Suspected Canada chrome/logo image false positives found: ${summary.suspectedChromeImageFalsePositives.length}.`
+      : '',
     sourceFilters.join('|') !== expectedSourceFilterValues.join('|')
       ? `Source filter values changed unexpectedly: ${sourceFilters.join(', ')}.`
       : ''
@@ -348,6 +460,14 @@ async function runAudit(): Promise<void> {
           slugCollisions: summary.slugCollisions.length,
           suspiciousCategoryMappings: summary.suspiciousCategoryMappings.length,
           recordsWithImages: summary.recordsWithImages,
+          recordsWithPrimaryImageUrl: summary.recordsWithPrimaryImageUrl,
+          recordsWithPrimaryImageThumbnailUrl: summary.recordsWithPrimaryImageThumbnailUrl,
+          recordsWithOfficialDetailUrl: summary.recordsWithOfficialDetailUrl,
+          invalidImageUrls: summary.invalidImageUrls.length,
+          nonOfficialImageHosts: summary.nonOfficialImageHosts.length,
+          suspectedChromeImageFalsePositives: summary.suspectedChromeImageFalsePositives.length,
+          duplicateImageUrls: summary.duplicateImageUrls.length,
+          sampleRecoveredRecords: summary.sampleRecoveredRecords,
           recordsWithUpcOrBarcodeLikeValues: summary.recordsWithUpcOrBarcodeLikeValues,
           recordsWithModelOrItemNumberLikeValues: summary.recordsWithModelOrItemNumberLikeValues,
           recordsWithLotBatchCodeOrDateLikeValues: summary.recordsWithLotBatchCodeOrDateLikeValues,

@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { isOfficialCanadaImageUrl, isSuspectedCanadaChromeImage } from './canada-detail-images.ts';
 
 type SourceSummary = {
   source: string;
@@ -15,6 +16,7 @@ type SourceSummary = {
   hosts: Map<string, number>;
   extensions: Map<string, number>;
   suspicious: Map<string, number>;
+  officialImageUrlIssues: number;
   live?: LiveSummary;
   liveThumbnails?: LiveSummary;
 };
@@ -198,10 +200,23 @@ function getSummary(summaries: Map<string, SourceSummary>, source: string): Sour
     uniqueThumbnailImageUrls: 0,
     hosts: new Map(),
     extensions: new Map(),
-    suspicious: new Map()
+    suspicious: new Map(),
+    officialImageUrlIssues: 0
   };
   summaries.set(source, summary);
   return summary;
+}
+
+function sourceSpecificImageIssue(source: string, rawUrl: string): string {
+  if (source !== 'CA_RECALLS') {
+    return '';
+  }
+
+  if (isSuspectedCanadaChromeImage(rawUrl)) {
+    return 'suspected-canada-chrome-image';
+  }
+
+  return isOfficialCanadaImageUrl(rawUrl) ? '' : 'non-official-canada-image-url';
 }
 
 async function fetchStatus(
@@ -337,6 +352,12 @@ async function run(): Promise<void> {
           count(summary.suspicious, reason);
         }
 
+        const sourceIssue = sourceSpecificImageIssue(source, url);
+        if (sourceIssue) {
+          summary.officialImageUrlIssues += 1;
+          count(summary.suspicious, sourceIssue);
+        }
+
         try {
           const parsed = new URL(url);
           count(summary.hosts, parsed.hostname);
@@ -410,6 +431,7 @@ async function run(): Promise<void> {
     console.log(`  hosts: ${JSON.stringify(orderedObject(summary.hosts))}`);
     console.log(`  extensions/types: ${JSON.stringify(orderedObject(summary.extensions))}`);
     console.log(`  suspicious: ${JSON.stringify(orderedObject(summary.suspicious))}`);
+    console.log(`  official image URL issues: ${summary.officialImageUrlIssues}`);
 
     if (summary.live) {
       console.log(`  live full image sample: ${JSON.stringify(summary.live)}`);
@@ -431,6 +453,9 @@ async function run(): Promise<void> {
       failures.push(
         `${summary.source} thumbnail image live sample has ${summary.liveThumbnails.checked - summary.liveThumbnails.okImage} non-image responses.`
       );
+    }
+    if (summary.source === 'CA_RECALLS' && summary.officialImageUrlIssues > 0) {
+      failures.push(`CA_RECALLS image audit found ${summary.officialImageUrlIssues} non-official or chrome image URL issue(s).`);
     }
     return failures;
   });

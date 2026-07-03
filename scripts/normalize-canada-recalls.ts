@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { NormalizedRecall, ProcessedRecallFile } from '../src/data/recall-types.ts';
 import { slugify } from '../src/lib/slug.ts';
+import { canadaImagesFromRawRecord } from './canada-detail-images.ts';
 import { canadaProcessedPath, canonicalProcessedPath, mergeProcessedRecalls } from './merge-recalls.ts';
 import { writeJsonAtomic } from './normalize-cpsc.ts';
 
@@ -18,6 +19,7 @@ export type CanadaRecallRaw = {
   'Recall class'?: unknown;
   'Last updated'?: unknown;
   Archived?: unknown;
+  Images?: unknown;
 };
 
 type RawCanadaFile = {
@@ -174,6 +176,8 @@ export function normalizeCanadaRecallRecords(records: CanadaRecallRaw[]): Normal
       const category = firstNonEmpty([raw.Category, raw.Organization], 'Recall and safety alert');
       const recallDate = normalizeDate(raw['Last updated']);
       const sourceUrl = asString(raw.URL);
+      const images = canadaImagesFromRawRecord(raw, `${title} recall product image`);
+      const primaryImage = images[0];
 
       return {
         id,
@@ -195,6 +199,14 @@ export function normalizeCanadaRecallRecords(records: CanadaRecallRaw[]): Normal
         productQuantity: '',
         recallNumber: sourceId,
         status: statusFor(raw),
+        ...(images.length
+          ? {
+              images,
+              primaryImageUrl: primaryImage.url,
+              primaryImageThumbnailUrl: primaryImage.thumbnailUrl,
+              primaryImageAlt: primaryImage.alt ?? primaryImage.caption
+            }
+          : {}),
         raw
       } satisfies NormalizedRecall;
     })
@@ -260,7 +272,11 @@ async function runNormalize(): Promise<void> {
               slug: sample.slug,
               classification: sample.classification,
               recallNumber: sample.recallNumber,
-              status: sample.status
+              status: sample.status,
+              primaryImageUrl: sample.primaryImageUrl,
+              primaryImageThumbnailUrl: sample.primaryImageThumbnailUrl,
+              primaryImageAlt: sample.primaryImageAlt,
+              images: sample.images?.length ?? 0
             }
           : null
       },

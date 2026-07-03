@@ -1,4 +1,5 @@
 import { canonicalProcessedPath, mergeProcessedRecalls } from './merge-recalls.ts';
+import { enrichCanadaRecordsWithDetailImages } from './canada-detail-images.ts';
 import { writeJsonAtomic } from './normalize-cpsc.ts';
 import {
   compareCanadaRecallDateDescending,
@@ -137,18 +138,21 @@ async function runFetch(): Promise<void> {
     throw new Error('Canada Recalls open data returned zero records; existing data was not overwritten.');
   }
 
+  const { records: enrichedRecords, results } = await enrichCanadaRecordsWithDetailImages(records);
   const fetchedAt = new Date().toISOString();
   await writeJsonAtomic(defaultRawCanadaRecallsPath, {
     fetchedAt,
+    detailImagesFetchedAt: fetchedAt,
+    detailImageSource: 'official Canada recall detail pages',
     source: 'CA_RECALLS',
     endpoint: options.endpoint,
     limit: options.limit,
     totalAvailable: allRecords.length,
-    count: records.length,
-    records
+    count: enrichedRecords.length,
+    records: enrichedRecords
   });
 
-  const processed = await writeNormalizedCanadaRecalls(records, defaultCanadaProcessedPath);
+  const processed = await writeNormalizedCanadaRecalls(enrichedRecords, defaultCanadaProcessedPath);
   const merged = await mergeProcessedRecalls();
   const sample = processed.records[0];
 
@@ -161,7 +165,12 @@ async function runFetch(): Promise<void> {
         processedPath: defaultCanadaProcessedPath,
         canonicalPath: canonicalProcessedPath,
         totalAvailable: allRecords.length,
-        rawRecordsSaved: records.length,
+        rawRecordsSaved: enrichedRecords.length,
+        rawRecordsWithImages: enrichedRecords.filter((record) => Array.isArray(record.Images) && record.Images.length > 0)
+          .length,
+        detailPagesChecked: results.length,
+        detailPagesFetched: results.filter((result) => result.ok).length,
+        detailPageFetchFailures: results.filter((result) => !result.ok).length,
         normalizedRecordsSaved: processed.count,
         mergedRecordsSaved: merged.count,
         countsBySource: merged.countsBySource,
