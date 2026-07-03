@@ -6,3 +6,9 @@ dist/
 .env.production
 npm-debug.log*
 *.log
+data/backfill/fda-food/**/*.json
+data/backfill/fda-food/**/*.jsonl
+data/backfill/fda-food/**/*.tmp
+data/backfill/fda-food/**/*.log
+!data/backfill/fda-food/.gitkeep
+!data/backfill/fda-food/README.md

@@ -16,6 +16,8 @@ Use `npm run plan:fda-food-backfill` to query small openFDA metadata and sample 
 
 The script is intentionally read-only. It does not write raw backfill files, processed files, canonical data, routes, slugs, or UI copy.
 
+Phase 23 adds a bounded dry-run pipeline script, `npm run backfill:fda-food`, and an ignored-output audit, `npm run audit:fda-food-backfill`. The operational steps and safety rules live in `docs/fda-food-backfill-runbook.md`. Canonical merge remains disabled by default.
+
 ## Backfill risks
 
 - openFDA paging with `limit` and `skip` is practical for small or medium bounded samples, but large historical scans can run into API result-window limits and rate pressure.
