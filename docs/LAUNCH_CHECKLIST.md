@@ -126,6 +126,7 @@ Verify these routes return 200:
 - `/baby-product-recalls`
 - `/battery-recalls`
 - `/food-allergy-recalls`
+- `/household-product-recalls`
 - `/brands/aldi`
 - `/404`
 - `/robots.txt`

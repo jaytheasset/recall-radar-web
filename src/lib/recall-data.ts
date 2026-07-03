@@ -69,6 +69,12 @@ export const categoryRoutes = [
     label: 'Food & Allergy',
     category: 'food-allergy',
     description: 'Food notices, undeclared allergens, packaged goods, UPCs, and lot codes.'
+  },
+  {
+    href: '/household-product-recalls',
+    label: 'Household Products',
+    category: 'household-appliance',
+    description: 'Appliances, furniture, home goods, and household product notices.'
   }
 ] as const;
 
@@ -76,7 +82,7 @@ export const categoryLabels: Record<SiteRecallCategory, string> = {
   'baby-kids': 'Baby and Kids',
   'battery-electronics': 'Battery and Electronics',
   'food-allergy': 'Food and Allergy',
-  'household-appliance': 'Household Appliance',
+  'household-appliance': 'Household Products',
   'general-consumer-product': 'General Consumer Product'
 };
 

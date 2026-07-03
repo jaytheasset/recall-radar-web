@@ -71,7 +71,7 @@ const categoryOptions = [
   { value: 'baby-kids', label: 'Baby and kids' },
   { value: 'battery-electronics', label: 'Battery and electronics' },
   { value: 'food-allergy', label: 'Food and allergy' },
-  { value: 'household-appliance', label: 'Household appliance' },
+  { value: 'household-appliance', label: 'Household Products' },
   { value: 'food', label: 'Food' },
   { value: 'general', label: 'General' }
 ];
@@ -275,6 +275,7 @@ const dateOptions = [
         cardImageUrl?: string;
         cardImageAlt?: string;
       };
+      type BrowseRecall = (typeof siteRecalls)[number] & RecallCardImageFields;
       type SourceFilter =
         | 'all'
         | 'CPSC'
@@ -325,6 +326,15 @@ const dateOptions = [
         exact: 'Strong matches',
         possible: 'Possible matches',
         related: 'Related notices'
+      };
+      const categoryFilterLabels: Record<CategoryFilter, string> = {
+        all: 'all product types',
+        'baby-kids': 'baby and kids',
+        'battery-electronics': 'battery and electronics',
+        'food-allergy': 'food and allergy',
+        'household-appliance': 'household products',
+        food: 'food',
+        general: 'general'
       };
 
       function isOneOf<T extends string>(value: string | null, values: readonly T[], fallback: T): T {
@@ -425,7 +435,7 @@ const dateOptions = [
         return tag;
       }
 
-      function createImageShell(recall: SearchItem['recall'] & RecallCardImageFields): HTMLElement {
+      function createImageShell(recall: BrowseRecall): HTMLElement {
         const link = document.createElement('a');
         link.className = 'image-shell';
         link.href = recall.detailPath;
@@ -545,6 +555,47 @@ const dateOptions = [
         return article;
       }
 
+      function createBrowseCard(recall: BrowseRecall): HTMLElement {
+        const article = document.createElement('article');
+        article.className = 'product-card result-card';
+
+        const body = document.createElement('div');
+        body.className = 'card-body';
+
+        const meta = document.createElement('div');
+        meta.className = 'meta-row result-card-badges';
+        meta.append(
+          createTag(recall.sourceLabel, 'badge-source'),
+          createTag(recall.categoryLabel),
+          createTag(recall.recallDate, 'badge-date')
+        );
+
+        const heading = document.createElement('h3');
+        const detailLink = document.createElement('a');
+        detailLink.href = recall.detailPath;
+        detailLink.textContent = recall.title;
+        heading.append(detailLink);
+
+        const reason = createCardLine(reasonLabelFor(recall), reasonTextFor(recall), 'result-card-line result-card-reason');
+        const action = createCardLine(getRecallActionLabel(recall.source), actionTextFor(recall), 'result-card-line result-card-action');
+        const product = createCardLine('Product', productTextFor(recall));
+        const brand = createCardLine('Brand/company', brandTextFor(recall));
+
+        const links = document.createElement('div');
+        links.className = 'link-row';
+
+        const details = document.createElement('a');
+        details.className = 'btn btn-primary';
+        details.href = recall.detailPath;
+        details.textContent = 'View recall';
+
+        links.append(details);
+        body.append(heading, reason, action, product, brand, meta, links);
+        article.append(createImageShell(recall), body);
+
+        return article;
+      }
+
       function createNoResultState(): HTMLElement {
         const emptyState = document.createElement('div');
         emptyState.className = 'no-result-state';
@@ -591,6 +642,17 @@ const dateOptions = [
         });
       }
 
+      function sortBrowseRecalls(recalls: typeof siteRecalls, sort: SortFilter): BrowseRecall[] {
+        if (sort === 'best') {
+          return recalls as BrowseRecall[];
+        }
+
+        return [...recalls].sort((a, b) => {
+          const comparison = a.recallDate.localeCompare(b.recallDate);
+          return sort === 'newest' ? -comparison : comparison;
+        }) as BrowseRecall[];
+      }
+
       function createResultGroup(title: string, items: SearchItem[]): HTMLElement {
         const group = document.createElement('section');
         group.className = 'result-group';
@@ -606,14 +668,25 @@ const dateOptions = [
         return group;
       }
 
+      function createBrowseGroup(title: string, recalls: BrowseRecall[]): HTMLElement {
+        const group = document.createElement('section');
+        group.className = 'result-group';
+
+        const heading = document.createElement('h3');
+        heading.textContent = `${title} (${recalls.length})`;
+
+        const cards = document.createElement('div');
+        cards.className = 'product-grid';
+        cards.replaceChildren(...recalls.map(createBrowseCard));
+
+        group.append(heading, cards);
+        return group;
+      }
+
       function describeFilters(state: SearchState): string {
         const parts = [
           state.source === 'all' ? 'All markets' : getRecallSourceLabel(state.source),
-          state.category === 'all'
-            ? 'all product types'
-            : state.category === 'general'
-              ? 'general'
-              : state.category.replace(/-/g, ' '),
+          categoryFilterLabels[state.category],
           state.date === 'all' ? 'all time' : `last ${state.date} days`,
           state.sort === 'best' ? 'best match' : state.sort === 'newest' ? 'newest first' : 'oldest first'
         ];
@@ -632,14 +705,26 @@ const dateOptions = [
         disclaimer.textContent = SEARCH_RESULTS_DISCLAIMER;
 
         if (!state.query) {
+          const browseRecalls = sortBrowseRecalls(filteredRecalls, state.sort);
+          const shouldShowBrowseResults =
+            state.source !== 'all' || state.category !== 'all' || state.date !== 'all';
+
           panel.dataset.match = 'none';
-          matchLabel.textContent = 'Indexed notices';
-          countLabel.textContent = `${filteredRecalls.length} indexed notice${
-            filteredRecalls.length === 1 ? '' : 's'
+          matchLabel.textContent = shouldShowBrowseResults ? 'Filtered notices' : 'Indexed notices';
+          countLabel.textContent = `${browseRecalls.length} indexed notice${
+            browseRecalls.length === 1 ? '' : 's'
           }`;
           summary.textContent =
-            'Search official recall notices by product, brand, model, UPC/barcode, lot code, ingredient, or keyword.';
-          list.replaceChildren();
+            shouldShowBrowseResults
+              ? `Showing indexed notices for ${describeFilters(state)}.`
+              : 'Search official recall notices by product, brand, model, UPC/barcode, lot code, ingredient, or keyword.';
+          list.replaceChildren(
+            ...(shouldShowBrowseResults
+              ? browseRecalls.length
+                ? [createBrowseGroup('Filtered indexed notices', browseRecalls)]
+                : [createNoResultState()]
+              : [])
+          );
           initProgressiveCardImages();
           return;
         }
