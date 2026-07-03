@@ -18,6 +18,8 @@ The script is intentionally read-only. It does not write raw backfill files, pro
 
 Phase 23 adds a bounded dry-run pipeline script, `npm run backfill:fda-food`, and an ignored-output audit, `npm run audit:fda-food-backfill`. The operational steps and safety rules live in `docs/fda-food-backfill-runbook.md`. Canonical merge remains disabled by default.
 
+Phase 24 adds source-agnostic planning in `docs/global-backfill-runbook.md`, `npm run plan:source-backfills`, and `npm run audit:source-backfills`. These commands do not replace the FDA-specific dry-run pipeline.
+
 ## Backfill risks
 
 - openFDA paging with `limit` and `skip` is practical for small or medium bounded samples, but large historical scans can run into API result-window limits and rate pressure.

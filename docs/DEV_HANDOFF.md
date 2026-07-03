@@ -112,6 +112,13 @@ Normalized records use `src/data/recall-types.ts` and include `id`, `source`, `s
 
 Do not call fetch scripts during UI-only phases unless a later task explicitly asks for fresh local data.
 
+Phase 24 global backfill planning:
+
+- `docs/global-backfill-runbook.md` documents source-agnostic backfill policy for CPSC, FDA/openFDA, France RappelConso, Canada, EU Safety Gate, and UK FSA.
+- `npm run plan:source-backfills` reports current source readiness without fetching or mutating data.
+- `npm run audit:source-backfills` audits generated files under ignored `data/backfill/` directories if they exist.
+- Canonical data remains unchanged until a separate reviewed launch-time backfill phase.
+
 Phase 10 current source counts:
 
 - CPSC: 301

@@ -13,6 +13,8 @@
     "plan:fda-food-backfill": "node --experimental-strip-types scripts/plan-fda-food-backfill.ts",
     "backfill:fda-food": "node --experimental-strip-types scripts/backfill-fda-food.ts",
     "audit:fda-food-backfill": "node --experimental-strip-types scripts/audit-fda-food-backfill.ts",
+    "plan:source-backfills": "node --experimental-strip-types scripts/plan-source-backfills.ts",
+    "audit:source-backfills": "node --experimental-strip-types scripts/audit-source-backfills.ts",
     "fetch:rappelconso": "node --experimental-strip-types scripts/fetch-rappelconso.ts",
     "fetch:canada": "node --experimental-strip-types scripts/fetch-canada-recalls.ts",
     "fetch:eu-safety-gate": "node --experimental-strip-types scripts/fetch-eu-safety-gate.ts",

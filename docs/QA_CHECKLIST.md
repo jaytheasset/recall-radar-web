@@ -27,12 +27,16 @@
 - `npm run normalize:uk-fsa`
 - `npm run audit:uk-fsa`
 - `npm run validate:launch`
+- `npm run plan:source-backfills`
+- `npm run audit:source-backfills`
 - `npm run dev`
 - `npm run preview`
 
 Do not run fetch scripts during local UI-only phases unless the task explicitly asks for fresh local data.
 
 For launch or staging readiness, use `docs/LAUNCH_CHECKLIST.md`. `npm run validate:launch` is local-only and must not include network fetch/update scripts.
+
+Global backfill planning is documented in `docs/global-backfill-runbook.md`. `npm run plan:source-backfills` must not mutate source data, and `npm run audit:source-backfills` should pass with "No source backfill chunks found; nothing to audit." when no ignored chunks exist.
 
 USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt returned HTTP `403 Forbidden` / `Access Denied`, likely from FSIS-side access control, CDN/WAF filtering, User-Agent/header filtering, IP/range filtering, or temporary endpoint restrictions. No USDA data was written, no bypass should be attempted, and no USDA fetch script is active. See `docs/USDA_FSIS_DEFERRED.md`.
 

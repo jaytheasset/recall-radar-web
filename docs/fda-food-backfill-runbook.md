@@ -119,3 +119,7 @@ git status --short
 ```
 
 Generated files under `data/backfill/fda-food/` must remain untracked and ignored.
+
+## Global source backfill planning
+
+Phase 24 adds `docs/global-backfill-runbook.md`, `npm run plan:source-backfills`, and `npm run audit:source-backfills` for source-agnostic planning and ignored-output auditing. FDA-specific dry-run operations remain in this runbook.
