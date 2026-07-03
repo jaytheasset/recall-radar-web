@@ -1,5 +1,5 @@
 import type { SiteRecall } from './recall-data';
-import { siteRecalls } from './recall-data';
+import { categoryRoutes, siteRecalls } from './recall-data';
 import { getRecallSourceLabel, type CurrentCoverageSourceId } from './recall-sources';
 
 export type SourceLandingPageConfig = {
@@ -20,8 +20,15 @@ export type SourceLandingPageCard = SourceLandingPageConfig & {
   sourceLabels: string[];
 };
 
+export type SourceLandingProductTypeFilter = {
+  category: 'all' | (typeof categoryRoutes)[number]['category'];
+  label: string;
+  count: number;
+  href: string;
+};
+
 const SOURCE_PAGE_NO_RESULT_COPY =
-  'No indexed notices match this search in this source group. This does not mean the product is safe or recall-free. Try another brand, model, barcode, lot, ingredient, hazard, or keyword.';
+  'No indexed notices match this search or product type filter in this source group. This does not mean the product is safe or recall-free. Try another brand, model, barcode, lot, ingredient, hazard, or keyword.';
 
 export const sourceLandingPages: SourceLandingPageConfig[] = [
   {
@@ -104,4 +111,30 @@ export function getSourceLandingPageCards(): SourceLandingPageCard[] {
     count: getSourceLandingPageRecalls(page).length,
     sourceLabels: page.sourceIds.map((source) => getRecallSourceLabel(source))
   }));
+}
+
+export function getSourceLandingProductTypeFilters(page: SourceLandingPageConfig): SourceLandingProductTypeFilter[] {
+  const recalls = getSourceLandingPageRecalls(page);
+  const filters: SourceLandingProductTypeFilter[] = [
+    {
+      category: 'all',
+      label: 'All',
+      count: recalls.length,
+      href: page.route
+    }
+  ];
+
+  for (const route of categoryRoutes) {
+    const count = recalls.filter((recall) => recall.category === route.category).length;
+    if (count > 0) {
+      filters.push({
+        category: route.category,
+        label: route.label,
+        count,
+        href: `${page.route}?category=${route.category}`
+      });
+    }
+  }
+
+  return filters;
 }

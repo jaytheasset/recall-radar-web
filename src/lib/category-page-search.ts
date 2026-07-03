@@ -11,10 +11,11 @@ function termsFor(query: string): string[] {
   return normalize(query).split(/\s+/).filter(Boolean);
 }
 
-function setUrlQuery(query: string): void {
+function setUrlState(query: string, category: string): void {
   const url = new URL(window.location.href);
 
   query ? url.searchParams.set('q', query) : url.searchParams.delete('q');
+  category && category !== 'all' ? url.searchParams.set('category', category) : url.searchParams.delete('category');
   window.history.replaceState({}, '', url);
 }
 
@@ -27,6 +28,7 @@ export function initCategoryPageSearch(): void {
   const emptyState = document.querySelector<HTMLElement>('[data-category-no-results]');
   const cards = [...document.querySelectorAll<HTMLElement>('[data-category-card]')];
   const groups = [...document.querySelectorAll<HTMLElement>('[data-category-group]')];
+  const categoryOptions = [...document.querySelectorAll<HTMLElement>('[data-source-category-option]')];
 
   if (!root || !form || !input || !countLabel) {
     return;
@@ -36,19 +38,46 @@ export function initCategoryPageSearch(): void {
   const total = Number(root.dataset.categoryTotal ?? cards.length);
   const params = new URLSearchParams(window.location.search);
   const initialQuery = params.get('q')?.trim() ?? '';
+  const availableCategories = new Set(categoryOptions.map((option) => option.dataset.sourceCategoryOption ?? 'all'));
+  let activeCategory =
+    availableCategories.size > 0 && availableCategories.has(params.get('category') ?? '')
+      ? params.get('category') ?? 'all'
+      : 'all';
 
   if (initialQuery) {
     input.value = initialQuery;
   }
 
+  function activeCategoryLabel(): string {
+    return (
+      categoryOptions.find((option) => option.dataset.sourceCategoryOption === activeCategory)?.dataset
+        .sourceCategoryLabel ?? ''
+    );
+  }
+
+  function updateActiveCategoryOptions(): void {
+    for (const option of categoryOptions) {
+      const isActive = option.dataset.sourceCategoryOption === activeCategory;
+      option.classList.toggle('is-active', isActive);
+      if (isActive) {
+        option.setAttribute('aria-current', 'page');
+      } else {
+        option.removeAttribute('aria-current');
+      }
+    }
+  }
+
   function updateResults(syncUrl = true): void {
     const query = input?.value.trim() ?? '';
     const terms = termsFor(query);
+    const categoryLabel = activeCategoryLabel();
     let visibleCount = 0;
 
     for (const card of cards) {
       const text = normalize(card.dataset.searchText ?? '');
-      const visible = terms.length === 0 || terms.every((term) => text.includes(term));
+      const categoryMatches = activeCategory === 'all' || card.dataset.cardCategory === activeCategory;
+      const queryMatches = terms.length === 0 || terms.every((term) => text.includes(term));
+      const visible = categoryMatches && queryMatches;
       card.hidden = !visible;
       if (visible) {
         visibleCount += 1;
@@ -58,10 +87,12 @@ export function initCategoryPageSearch(): void {
     for (const group of groups) {
       const groupCards = [...group.querySelectorAll<HTMLElement>('[data-category-card]')];
       const hasVisibleCard = groupCards.some((card) => !card.hidden);
-      group.hidden = terms.length > 0 && !hasVisibleCard;
+      group.hidden = (terms.length > 0 || activeCategory !== 'all') && !hasVisibleCard;
     }
 
-    resultCountLabel.textContent = `${visibleCount} of ${total} indexed notice${total === 1 ? '' : 's'} shown`;
+    resultCountLabel.textContent = `${visibleCount} of ${total} indexed notice${
+      total === 1 ? '' : 's'
+    } shown${activeCategory !== 'all' && categoryLabel ? ` for ${categoryLabel}` : ''}`;
 
     if (emptyState) {
       emptyState.hidden = visibleCount > 0;
@@ -72,7 +103,7 @@ export function initCategoryPageSearch(): void {
     }
 
     if (syncUrl) {
-      setUrlQuery(query);
+      setUrlState(query, activeCategory);
     }
   }
 
@@ -87,6 +118,15 @@ export function initCategoryPageSearch(): void {
     updateResults();
     input.focus();
   });
+  for (const option of categoryOptions) {
+    option.addEventListener('click', (event) => {
+      event.preventDefault();
+      activeCategory = option.dataset.sourceCategoryOption ?? 'all';
+      updateActiveCategoryOptions();
+      updateResults();
+    });
+  }
 
+  updateActiveCategoryOptions();
   updateResults(false);
 }

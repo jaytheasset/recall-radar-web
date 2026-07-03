@@ -1,6 +1,6 @@
 ---
 import EuImageResourceHints from './EuImageResourceHints.astro';
-import type { SourceLandingPageConfig } from '../lib/source-landing-pages';
+import { getSourceLandingProductTypeFilters, type SourceLandingPageConfig } from '../lib/source-landing-pages';
 import type { SiteRecall } from '../lib/recall-data';
 import { sourcePageSearchTextFor } from '../lib/source-page-search';
 import { getRecallImageForContext } from '../lib/recall-images';
@@ -14,6 +14,7 @@ type Props = {
 
 const { page, recalls } = Astro.props;
 const sourceLabels = page.sourceIds.map((source) => getRecallSourceLabel(source));
+const productTypeFilters = getSourceLandingProductTypeFilters(page);
 ---
 
 <html lang="en">
@@ -47,6 +48,28 @@ const sourceLabels = page.sourceIds.map((source) => getRecallSourceLabel(source)
         </div>
         <h1>{page.heading}</h1>
         <p class="lead">{page.description}</p>
+      </section>
+
+      <section class="section source-filter-panel" aria-labelledby="source-product-type-filter">
+        <div class="section-header">
+          <div>
+            <h2 id="source-product-type-filter">Filter by product type</h2>
+            <p class="section-note">Narrow this source group without leaving the page.</p>
+          </div>
+        </div>
+        <div class="source-filter-row" data-source-category-filters>
+          {productTypeFilters.map((filter) => (
+            <a
+              class="source-filter-chip"
+              href={filter.href}
+              data-source-category-option={filter.category}
+              data-source-category-label={filter.label}
+            >
+              <span>{filter.label}</span>
+              <span class="filter-count">{filter.count} indexed notice{filter.count === 1 ? '' : 's'}</span>
+            </a>
+          ))}
+        </div>
       </section>
 
       <section class="section category-search-panel" data-category-search-root data-category-total={recalls.length}>
@@ -84,7 +107,13 @@ const sourceLabels = page.sourceIds.map((source) => getRecallSourceLabel(source)
               const image = getRecallImageForContext(recall, 'list');
 
               return (
-                <article class="product-card" data-category-card data-source-card data-search-text={sourcePageSearchTextFor(recall)}>
+                <article
+                  class="product-card"
+                  data-category-card
+                  data-source-card
+                  data-card-category={recall.category}
+                  data-search-text={sourcePageSearchTextFor(recall)}
+                >
                   <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
                     {image.url ? (
                       <>

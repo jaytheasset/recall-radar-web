@@ -930,6 +930,52 @@ button:disabled {
   white-space: nowrap;
 }
 
+.source-filter-panel {
+  padding-top: 1.25rem;
+}
+
+.source-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.source-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.58rem 0.78rem;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 820;
+  box-shadow: 0 8px 22px rgba(17, 24, 39, 0.05);
+}
+
+.source-filter-chip:hover {
+  border-color: rgba(11, 18, 32, 0.22);
+  text-decoration: none;
+}
+
+.source-filter-chip.is-active {
+  border-color: var(--black);
+  background: var(--black);
+  color: #fff;
+}
+
+.source-filter-chip .filter-count {
+  overflow: hidden;
+  color: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  opacity: 0.72;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .step-card {
   display: grid;
   gap: 0.7rem;
