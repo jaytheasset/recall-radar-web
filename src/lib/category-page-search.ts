@@ -1,15 +1,4 @@
-function normalize(value: string): string {
-  return value
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim();
-}
-
-function termsFor(query: string): string[] {
-  return normalize(query).split(/\s+/).filter(Boolean);
-}
+import { normalizeSearchText, searchTextMatchesQuery } from './multilingual-search';
 
 function setUrlState(query: string, category: string): void {
   const url = new URL(window.location.href);
@@ -69,14 +58,13 @@ export function initCategoryPageSearch(): void {
 
   function updateResults(syncUrl = true): void {
     const query = input?.value.trim() ?? '';
-    const terms = termsFor(query);
+    const hasQuery = normalizeSearchText(query).length > 0;
     const categoryLabel = activeCategoryLabel();
     let visibleCount = 0;
 
     for (const card of cards) {
-      const text = normalize(card.dataset.searchText ?? '');
       const categoryMatches = activeCategory === 'all' || card.dataset.cardCategory === activeCategory;
-      const queryMatches = terms.length === 0 || terms.every((term) => text.includes(term));
+      const queryMatches = !hasQuery || searchTextMatchesQuery(card.dataset.searchText ?? '', query);
       const visible = categoryMatches && queryMatches;
       card.hidden = !visible;
       if (visible) {
@@ -87,7 +75,7 @@ export function initCategoryPageSearch(): void {
     for (const group of groups) {
       const groupCards = [...group.querySelectorAll<HTMLElement>('[data-category-card]')];
       const hasVisibleCard = groupCards.some((card) => !card.hidden);
-      group.hidden = (terms.length > 0 || activeCategory !== 'all') && !hasVisibleCard;
+      group.hidden = (hasQuery || activeCategory !== 'all') && !hasVisibleCard;
     }
 
     resultCountLabel.textContent = `${visibleCount} of ${total} indexed notice${

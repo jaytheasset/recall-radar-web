@@ -8,7 +8,5 @@ export function sourcePageSearchTextFor(recall: SiteRecall): string {
     recall.sourceUrl,
     recall.classification ?? '',
     recall.status ?? ''
-  ]
-    .join(' ')
-    .toLowerCase();
+  ].join(' ');
 }

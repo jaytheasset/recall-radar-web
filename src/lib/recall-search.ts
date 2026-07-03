@@ -1,4 +1,10 @@
 import type { SiteRecall } from './recall-data';
+import {
+  expandSearchQuery,
+  normalizeSearchText,
+  tokenizeExpandedSearchTerms,
+  tokenizeSearchQuery
+} from './multilingual-search';
 
 export type RecallMatchType = 'exact' | 'possible' | 'related' | 'none';
 export type RecallMatchReason =
@@ -98,32 +104,47 @@ const ALLERGEN_TERMS = [
 ];
 
 function normalize(value: string): string {
-  return value
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim();
+  return normalizeSearchText(value);
 }
 
 function tokensFor(query: string): string[] {
-  return normalize(query)
-    .split(' ')
-    .map((token) => token.trim())
-    .filter((token) => token.length > 1);
+  return tokenizeSearchQuery(query).filter((token) => token.length > 1);
+}
+
+function expandedTermsFor(query: string): string[] {
+  return expandSearchQuery(query);
+}
+
+function expandedTokensFor(query: string): string[] {
+  return tokenizeExpandedSearchTerms(expandedTermsFor(query)).filter((token) => token.length > 1);
 }
 
 function searchableText(values: string[]): string {
   return normalize(values.join(' '));
 }
 
-function hasTextMatch(normalizedQuery: string, queryTokens: string[], values: string[]): boolean {
+function isUsefulExpandedTerm(term: string): boolean {
+  return term.length > 2 || term.includes(' ');
+}
+
+function hasTextMatch(
+  normalizedQuery: string,
+  queryTokens: string[],
+  values: string[],
+  expandedTerms: string[] = []
+): boolean {
   const text = searchableText(values);
   if (!text) {
     return false;
   }
 
-  return text.includes(normalizedQuery) || tokenMatchCount(queryTokens, text) > 0;
+  return (
+    text.includes(normalizedQuery) ||
+    tokenMatchCount(queryTokens, text) > 0 ||
+    expandedTerms.some(
+      (term) => isUsefulExpandedTerm(term) && (text.includes(term) || tokenMatchCount(tokensFor(term), text) > 0)
+    )
+  );
 }
 
 function hasStrongMatch(normalizedQuery: string, queryTokens: string[], values: string[]): boolean {
@@ -328,8 +349,10 @@ export function getRecallIdentifierHint(recall: Pick<SiteRecall, 'source'>): str
 function getMatchReason(query: string, recall: SiteRecall): RecallMatchReason {
   const normalizedQuery = normalize(query);
   const queryTokens = tokensFor(query);
+  const expandedTerms = expandedTermsFor(query);
+  const expandedTokens = expandedTokensFor(query);
 
-  if (!normalizedQuery || queryTokens.length === 0) {
+  if (!normalizedQuery || (queryTokens.length === 0 && expandedTokens.length === 0)) {
     return 'keyword';
   }
 
@@ -348,35 +371,38 @@ function getMatchReason(query: string, recall: SiteRecall): RecallMatchReason {
     return 'identifier';
   }
 
-  if (hasTextMatch(normalizedQuery, queryTokens, brandFields(recall))) {
+  if (hasTextMatch(normalizedQuery, queryTokens, brandFields(recall), expandedTerms)) {
     return 'brand';
   }
 
   if (
-    hasAllergenQuery(normalizedQuery, queryTokens) &&
+    hasAllergenQuery(normalizedQuery, expandedTokens) &&
     (recall.source === 'FDA' || recall.category === 'food-allergy') &&
-    hasTextMatch(normalizedQuery, queryTokens, ingredientFields(recall))
+    hasTextMatch(normalizedQuery, queryTokens, ingredientFields(recall), expandedTerms)
   ) {
     return 'ingredient';
   }
 
-  if (hasTextMatch(normalizedQuery, queryTokens, productFields(recall))) {
+  if (hasTextMatch(normalizedQuery, queryTokens, productFields(recall), expandedTerms)) {
     return 'product';
   }
 
-  if (hasAllergenQuery(normalizedQuery, queryTokens) && hasTextMatch(normalizedQuery, queryTokens, ingredientFields(recall))) {
+  if (
+    hasAllergenQuery(normalizedQuery, expandedTokens) &&
+    hasTextMatch(normalizedQuery, queryTokens, ingredientFields(recall), expandedTerms)
+  ) {
     return 'ingredient';
   }
 
-  if (hasTextMatch(normalizedQuery, queryTokens, productTypeFields(recall))) {
+  if (hasTextMatch(normalizedQuery, queryTokens, productTypeFields(recall), expandedTerms)) {
     return 'product-type';
   }
 
-  if (hasTextMatch(normalizedQuery, queryTokens, hazardFields(recall))) {
+  if (hasTextMatch(normalizedQuery, queryTokens, hazardFields(recall), expandedTerms)) {
     return 'hazard';
   }
 
-  if (hasTextMatch(normalizedQuery, queryTokens, sourceFields(recall))) {
+  if (hasTextMatch(normalizedQuery, queryTokens, sourceFields(recall), expandedTerms)) {
     return 'source';
   }
 
@@ -386,8 +412,10 @@ function getMatchReason(query: string, recall: SiteRecall): RecallMatchReason {
 export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchType {
   const normalizedQuery = normalize(query);
   const queryTokens = tokensFor(query);
+  const expandedTerms = expandedTermsFor(query);
+  const expandedTokens = expandedTokensFor(query);
 
-  if (!normalizedQuery || queryTokens.length === 0) {
+  if (!normalizedQuery || (queryTokens.length === 0 && expandedTokens.length === 0)) {
     return 'none';
   }
 
@@ -396,12 +424,20 @@ export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchTy
   }
 
   const possibleText = possibleFields(recall);
-  if (hasMeaningfulTokenMatch(queryTokens, possibleText)) {
+  if (
+    hasMeaningfulTokenMatch(queryTokens, possibleText) ||
+    hasMeaningfulTokenMatch(expandedTokens, possibleText) ||
+    expandedTerms.some((term) => isUsefulExpandedTerm(term) && possibleText.includes(term))
+  ) {
     return 'possible';
   }
 
   const relatedText = relatedFields(recall);
-  if (hasMeaningfulTokenMatch(queryTokens, relatedText)) {
+  if (
+    hasMeaningfulTokenMatch(queryTokens, relatedText) ||
+    hasMeaningfulTokenMatch(expandedTokens, relatedText) ||
+    expandedTerms.some((term) => isUsefulExpandedTerm(term) && relatedText.includes(term))
+  ) {
     return 'related';
   }
 
