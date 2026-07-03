@@ -23,6 +23,25 @@ type AuditSummary = {
   siteCategoryDistribution: Record<string, number>;
   siteIdentifierCoverage: Record<string, number>;
   recordsWithImages: number;
+  imageSelection: {
+    recordsWithRawPhotos: number;
+    recordsWithOfficialMainPicture: number;
+    recordsWithPrimaryImageUrl: number;
+    primaryImageMatchesOfficialMain: number;
+    primaryImageMismatches: AuditIssue[];
+  };
+  imageEndpointValidation: {
+    checked: number;
+    okImage: number;
+    empty2xx: number;
+    nonImage2xx: number;
+    redirect3xx: number;
+    forbidden403: number;
+    notFound404: number;
+    timeout: number;
+    other: number;
+    failures: AuditIssue[];
+  };
   recordsWithOfficialNoticeUrlShape: number;
   suspiciousCategoryMappings: AuditIssue[];
   slugCollisions: AuditIssue[];
@@ -34,6 +53,8 @@ const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const processedPath = resolve(projectRoot, 'data/processed/eu-safety-gate-recalls.json');
 const canonicalProcessedPath = resolve(projectRoot, 'data/processed/recalls.json');
 const runtimeEnv = (process as typeof process & { env?: Record<string, string | undefined> }).env ?? {};
+const imageEndpointConcurrency = 8;
+const imageEndpointTimeoutMs = 15000;
 
 function increment(map: Record<string, number>, key: string): void {
   map[key] = (map[key] ?? 0) + 1;
@@ -168,6 +189,147 @@ function rawCountriesConcerned(record: NormalizedRecall): string[] {
       return valuesFromObjects([item, country], ['name', 'key'])[0] ?? '';
     })
   );
+}
+
+function rawPhotos(record: NormalizedRecall): Record<string, unknown>[] {
+  return asArray(rawProduct(record).photos);
+}
+
+function officialImageUrl(id: string): string {
+  return `https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/${encodeURIComponent(id)}`;
+}
+
+function officialMainPicture(record: NormalizedRecall): Record<string, unknown> | null {
+  const photos = rawPhotos(record);
+  return photos.find((photo) => photo.mainPicture === true) ?? photos[0] ?? null;
+}
+
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  concurrency: number,
+  mapper: (item: T, index: number) => Promise<R>
+): Promise<R[]> {
+  const results: R[] = [];
+  let nextIndex = 0;
+
+  async function worker(): Promise<void> {
+    while (nextIndex < items.length) {
+      const index = nextIndex;
+      nextIndex += 1;
+      results[index] = await mapper(items[index], index);
+    }
+  }
+
+  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, () => worker()));
+  return results;
+}
+
+async function fetchImageEndpointStatus(
+  url: string
+): Promise<{
+  status: 'image' | 'empty-2xx' | 'non-image-2xx' | '3xx' | '403' | '404' | 'timeout' | 'other';
+  detail: string;
+}> {
+  let lastStatus: 'image' | 'empty-2xx' | 'non-image-2xx' | '3xx' | '403' | '404' | 'timeout' | 'other' = 'other';
+  let lastDetail = '';
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), imageEndpointTimeoutMs);
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        redirect: 'manual',
+        signal: controller.signal,
+        headers: {
+          accept: 'image/*,*/*',
+          language: 'en',
+          lang: 'en',
+          origin: 'https://ec.europa.eu',
+          referer: 'https://ec.europa.eu/safety-gate-alerts/screen/webReport',
+          'user-agent': 'Recall Radar EU Safety Gate image audit',
+          range: 'bytes=0-1024'
+        }
+      });
+      const body = new Uint8Array(await response.arrayBuffer());
+      const contentType = response.headers.get('content-type') ?? '';
+      lastDetail = `HTTP ${response.status} content-type=${contentType || '(missing)'} bytes=${body.length}`;
+
+      if (response.status >= 200 && response.status < 300) {
+        if (body.length === 0) {
+          lastStatus = 'empty-2xx';
+        } else {
+          lastStatus = /^image\//i.test(contentType) ? 'image' : 'non-image-2xx';
+        }
+      } else if (response.status >= 300 && response.status < 400) {
+        lastStatus = '3xx';
+      } else if (response.status === 403) {
+        lastStatus = '403';
+      } else if (response.status === 404) {
+        lastStatus = '404';
+      } else {
+        lastStatus = 'other';
+      }
+    } catch (error) {
+      lastStatus = error instanceof Error && error.name === 'AbortError' ? 'timeout' : 'other';
+      lastDetail = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    if (lastStatus === 'image') {
+      return { status: lastStatus, detail: lastDetail };
+    }
+  }
+
+  return { status: lastStatus, detail: lastDetail };
+}
+
+async function validatePrimaryImageEndpoints(records: NormalizedRecall[]): Promise<AuditSummary['imageEndpointValidation']> {
+  const recordsWithPrimaryImages = records.filter((record) => Boolean(record.primaryImageUrl));
+  const validation: AuditSummary['imageEndpointValidation'] = {
+    checked: 0,
+    okImage: 0,
+    empty2xx: 0,
+    nonImage2xx: 0,
+    redirect3xx: 0,
+    forbidden403: 0,
+    notFound404: 0,
+    timeout: 0,
+    other: 0,
+    failures: []
+  };
+
+  await mapWithConcurrency(recordsWithPrimaryImages, imageEndpointConcurrency, async (record) => {
+    const result = await fetchImageEndpointStatus(record.primaryImageUrl ?? '');
+    const { status } = result;
+    validation.checked += 1;
+
+    if (status === 'image') {
+      validation.okImage += 1;
+    } else if (status === 'empty-2xx') {
+      validation.empty2xx += 1;
+    } else if (status === 'non-image-2xx') {
+      validation.nonImage2xx += 1;
+    } else if (status === '3xx') {
+      validation.redirect3xx += 1;
+    } else if (status === '403') {
+      validation.forbidden403 += 1;
+    } else if (status === '404') {
+      validation.notFound404 += 1;
+    } else if (status === 'timeout') {
+      validation.timeout += 1;
+    } else {
+      validation.other += 1;
+    }
+
+    if (status !== 'image') {
+      validation.failures.push(compactIssue(record, `${status}: ${record.primaryImageUrl} (${result.detail})`));
+    }
+  });
+
+  return validation;
 }
 
 function classifyEuSafetyGateCategory(record: NormalizedRecall): string {
@@ -308,7 +470,7 @@ async function readCanonicalCounts(): Promise<SourceCounts> {
   };
 }
 
-function audit(records: NormalizedRecall[]): AuditSummary {
+async function audit(records: NormalizedRecall[]): Promise<AuditSummary> {
   const idCounts = new Map<string, number>();
   const slugCounts = new Map<string, number>();
   const rawCategoryDistribution: Record<string, number> = {};
@@ -328,6 +490,25 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     .filter((record) => (slugCounts.get(record.slug) ?? 0) > 1)
     .map((record) => compactIssue(record, record.slug));
   const recordsWithImages = records.filter((record) => (record.images?.length ?? 0) > 0).length;
+  const recordsWithRawPhotos = records.filter((record) => rawPhotos(record).length > 0).length;
+  const recordsWithOfficialMainPicture = records.filter((record) =>
+    rawPhotos(record).some((photo) => photo.mainPicture === true)
+  ).length;
+  const recordsWithPrimaryImageUrl = records.filter((record) => Boolean(record.primaryImageUrl)).length;
+  const primaryImageMismatches = records
+    .map((record) => {
+      const mainPicture = officialMainPicture(record);
+      const mainPictureId = mainPicture ? asString(mainPicture.id) : '';
+      if (!mainPictureId) {
+        return null;
+      }
+
+      const expectedUrl = officialImageUrl(mainPictureId);
+      return record.primaryImageUrl === expectedUrl
+        ? null
+        : compactIssue(record, `primaryImageUrl=${record.primaryImageUrl || '(missing)'} expected=${expectedUrl}`);
+    })
+    .filter((issue): issue is AuditIssue => Boolean(issue));
   const recordsWithBarcodes = records.filter((record) => rawIdentifierGroups(record).barcodes.length > 0 || hasBarcodeLikeValue(record)).length;
   const recordsWithModels = records.filter((record) => rawIdentifierGroups(record).models.length > 0).length;
   const recordsWithBatches = records.filter((record) => rawIdentifierGroups(record).batches.length > 0).length;
@@ -387,6 +568,14 @@ function audit(records: NormalizedRecall[]): AuditSummary {
       ).length
     },
     recordsWithImages,
+    imageSelection: {
+      recordsWithRawPhotos,
+      recordsWithOfficialMainPicture,
+      recordsWithPrimaryImageUrl,
+      primaryImageMatchesOfficialMain: recordsWithOfficialMainPicture - primaryImageMismatches.length,
+      primaryImageMismatches
+    },
+    imageEndpointValidation: await validatePrimaryImageEndpoints(records),
     recordsWithOfficialNoticeUrlShape: records.filter((record) => looksLikeOfficialNoticeUrl(record.sourceUrl)).length,
     suspiciousCategoryMappings,
     slugCollisions,
@@ -454,6 +643,13 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
     summary.recordsWithOfficialNoticeUrlShape !== summary.total
       ? `Official EU Safety Gate URL shape mismatch count: ${summary.total - summary.recordsWithOfficialNoticeUrlShape}.`
       : '',
+    summary.imageSelection.recordsWithOfficialMainPicture > 0 &&
+    summary.imageSelection.primaryImageMatchesOfficialMain !== summary.imageSelection.recordsWithOfficialMainPicture
+      ? `EU primary image does not match official mainPicture for ${summary.imageSelection.primaryImageMismatches.length} records.`
+      : '',
+    summary.imageEndpointValidation.failures.length > 0
+      ? `EU primary image endpoint failures found: ${summary.imageEndpointValidation.failures.length}.`
+      : '',
     sourceFilters.join('|') !== expectedSourceFilterValues.join('|')
       ? `Source filter values changed unexpectedly: ${sourceFilters.join(', ')}.`
       : ''
@@ -466,7 +662,7 @@ async function runAudit(): Promise<void> {
     throw new Error(`No EU_SAFETY_GATE records found in ${processedPath}`);
   }
 
-  const summary = audit(records);
+  const summary = await audit(records);
   const canonicalCounts = await readCanonicalCounts();
   const sourceFilters = sourceFilterValues();
   const blockers = buildBlockers(summary, canonicalCounts, sourceFilters);
@@ -504,6 +700,13 @@ async function runAudit(): Promise<void> {
           suspiciousCategoryMappings: summary.suspiciousCategoryMappings.length,
           foodAllergyCategoryMappings: summary.siteCategoryDistribution['food-allergy'] ?? 0,
           recordsWithImages: summary.recordsWithImages,
+          imageSelection: {
+            recordsWithRawPhotos: summary.imageSelection.recordsWithRawPhotos,
+            recordsWithOfficialMainPicture: summary.imageSelection.recordsWithOfficialMainPicture,
+            recordsWithPrimaryImageUrl: summary.imageSelection.recordsWithPrimaryImageUrl,
+            primaryImageMatchesOfficialMain: summary.imageSelection.primaryImageMatchesOfficialMain,
+            primaryImageMismatches: summary.imageSelection.primaryImageMismatches.length
+          },
           recordsWithOfficialNoticeUrlShape: summary.recordsWithOfficialNoticeUrlShape,
           identifierCoverage: summary.siteIdentifierCoverage,
           sourceFilterValues: sourceFilters,

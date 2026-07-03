@@ -123,8 +123,16 @@ function officialImages(raw: EuSafetyGateRaw, title: string): RecallImage[] {
   const product = asObject(raw.product);
   const photos = asArray(product.photos);
   const images: RecallImage[] = [];
+  const orderedPhotos = photos
+    .map((photo, index) => ({ photo, index }))
+    .sort((a, b) => {
+      const aMain = a.photo.mainPicture === true ? 0 : 1;
+      const bMain = b.photo.mainPicture === true ? 0 : 1;
+      return aMain - bMain || a.index - b.index;
+    })
+    .map((item) => item.photo);
 
-  for (const photo of photos) {
+  for (const photo of orderedPhotos) {
     const id = asString(photo.id);
     if (!id) {
       continue;

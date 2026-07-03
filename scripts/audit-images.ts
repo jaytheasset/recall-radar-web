@@ -17,7 +17,9 @@ type SourceSummary = {
 
 type LiveSummary = {
   checked: number;
-  ok200: number;
+  okImage: number;
+  empty2xx: number;
+  nonImage2xx: number;
   redirect3xx: number;
   forbidden403: number;
   notFound404: number;
@@ -173,28 +175,31 @@ function getSummary(summaries: Map<string, SourceSummary>, source: string): Sour
   return summary;
 }
 
-async function fetchStatus(url: string): Promise<'200' | '3xx' | '403' | '404' | 'timeout' | 'other'> {
+async function fetchStatus(
+  url: string
+): Promise<'image' | 'empty-2xx' | 'non-image-2xx' | '3xx' | '403' | '404' | 'timeout' | 'other'> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), liveTimeoutMs);
 
-  async function request(method: 'HEAD' | 'GET'): Promise<Response> {
-    return fetch(url, {
-      method,
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
       redirect: 'manual',
       signal: controller.signal,
-      headers: method === 'GET' ? { range: 'bytes=0-1024' } : undefined
+      headers: {
+        accept: 'image/*,*/*',
+        range: 'bytes=0-1024'
+      }
     });
-  }
+    const body = new Uint8Array(await response.arrayBuffer());
+    const contentType = response.headers.get('content-type') ?? '';
 
-  try {
-    let response = await request('HEAD');
+    if (response.status >= 200 && response.status < 300) {
+      if (body.length === 0) {
+        return 'empty-2xx';
+      }
 
-    if (response.status === 405 || response.status === 501) {
-      response = await request('GET');
-    }
-
-    if (response.status === 200) {
-      return '200';
+      return /^image\//i.test(contentType) ? 'image' : 'non-image-2xx';
     }
 
     if (response.status >= 300 && response.status < 400) {
@@ -219,8 +224,12 @@ async function fetchStatus(url: string): Promise<'200' | '3xx' | '403' | '404' |
 
 function incrementLive(summary: LiveSummary, status: Awaited<ReturnType<typeof fetchStatus>>): void {
   summary.checked += 1;
-  if (status === '200') {
-    summary.ok200 += 1;
+  if (status === 'image') {
+    summary.okImage += 1;
+  } else if (status === 'empty-2xx') {
+    summary.empty2xx += 1;
+  } else if (status === 'non-image-2xx') {
+    summary.nonImage2xx += 1;
   } else if (status === '3xx') {
     summary.redirect3xx += 1;
   } else if (status === '403') {
@@ -298,7 +307,9 @@ async function run(): Promise<void> {
       const summary = getSummary(summaries, source);
       summary.live = {
         checked: 0,
-        ok200: 0,
+        okImage: 0,
+        empty2xx: 0,
+        nonImage2xx: 0,
         redirect3xx: 0,
         forbidden403: 0,
         notFound404: 0,

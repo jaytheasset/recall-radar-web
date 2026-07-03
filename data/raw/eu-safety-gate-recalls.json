@@ -1,10 +1,11 @@
 {
-  "fetchedAt": "2026-07-02T03:31:37.286Z",
+  "fetchedAt": "2026-07-03T00:52:28.214Z",
   "source": "EU_SAFETY_GATE",
   "endpoint": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/mostRecent/?",
   "detailEndpointBase": "https://ec.europa.eu/safety-gate-alerts/public/api/notification/",
+  "mode": "existing-record-detail-refresh",
   "limit": 100,
-  "totalAvailable": 363,
+  "totalAvailable": 0,
   "count": 100,
   "records": [
     {
@@ -613,38 +614,6 @@
         },
         "measures": [
           {
-            "id": 10620983,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-05-20T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.withdrawal.of.product.from.market",
-              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
-            },
-            "measureType": {
-              "key": "measure.type.compulsory",
-              "name": "COMPULSORY"
-            },
-            "measureVoluntaryEconomicOperator": null,
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": {
-              "key": "measure.operator.importer",
-              "name": "IMPORTER"
-            },
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10620983,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10620982,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-05-20T00:00:00.000Z",
@@ -668,6 +637,38 @@
             "versions": [
               {
                 "id": 10620982,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10620983,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-05-20T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.withdrawal.of.product.from.market",
+              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
+            },
+            "measureType": {
+              "key": "measure.type.compulsory",
+              "name": "COMPULSORY"
+            },
+            "measureVoluntaryEconomicOperator": null,
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": {
+              "key": "measure.operator.importer",
+              "name": "IMPORTER"
+            },
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10620983,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -1424,15 +1425,15 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11011831,
-            "mainPicture": true,
-            "fileName": "Typenschild.PNG",
+            "id": 11013701,
+            "mainPicture": false,
+            "fileName": "07_Bild1.jpg",
             "path": null
           },
           {
-            "id": 11011833,
-            "mainPicture": false,
-            "fileName": "07_Bild1.jpg",
+            "id": 11013702,
+            "mainPicture": true,
+            "fileName": "Typenschild.PNG",
             "path": null
           }
         ]
@@ -1536,8 +1537,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -1849,45 +1850,45 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012356,
-            "mainPicture": true,
-            "fileName": "IMG_1596.JPG",
-            "path": null
-          },
-          {
-            "id": 11012357,
+            "id": 11013661,
             "mainPicture": false,
-            "fileName": "IMG_1605.JPG",
+            "fileName": "IMG_1598.JPG",
             "path": null
           },
           {
-            "id": 11012358,
-            "mainPicture": false,
-            "fileName": "IMG_1607.JPG",
-            "path": null
-          },
-          {
-            "id": 11012359,
-            "mainPicture": false,
-            "fileName": "IMG_1611.JPG",
-            "path": null
-          },
-          {
-            "id": 11012360,
-            "mainPicture": false,
-            "fileName": "IMG_1610.JPG",
-            "path": null
-          },
-          {
-            "id": 11012361,
+            "id": 11013662,
             "mainPicture": false,
             "fileName": "IMG_1597.JPG",
             "path": null
           },
           {
-            "id": 11012362,
+            "id": 11013663,
             "mainPicture": false,
-            "fileName": "IMG_1598.JPG",
+            "fileName": "IMG_1610.JPG",
+            "path": null
+          },
+          {
+            "id": 11013664,
+            "mainPicture": false,
+            "fileName": "IMG_1611.JPG",
+            "path": null
+          },
+          {
+            "id": 11013665,
+            "mainPicture": false,
+            "fileName": "IMG_1607.JPG",
+            "path": null
+          },
+          {
+            "id": 11013666,
+            "mainPicture": false,
+            "fileName": "IMG_1605.JPG",
+            "path": null
+          },
+          {
+            "id": 11013667,
+            "mainPicture": true,
+            "fileName": "IMG_1596.JPG",
             "path": null
           }
         ]
@@ -1982,8 +1983,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -2287,21 +2288,21 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012413,
+            "id": 11013654,
             "mainPicture": false,
-            "fileName": "p19066.png",
+            "fileName": "p19065.png",
             "path": null
           },
           {
-            "id": 11012414,
+            "id": 11013655,
             "mainPicture": true,
             "fileName": "ensemble de lumiere led fid2026279.png",
             "path": null
           },
           {
-            "id": 11012415,
+            "id": 11013656,
             "mainPicture": false,
-            "fileName": "p19065.png",
+            "fileName": "p19066.png",
             "path": null
           }
         ]
@@ -2404,8 +2405,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -3068,7 +3069,7 @@
       },
       "creationDate": "2026-06-24T07:49:04.889Z",
       "publicationDate": "2026-07-01T08:42:48.747Z",
-      "modificationDate": "2026-07-01T08:42:48.749Z",
+      "modificationDate": "2026-07-02T10:00:04.669Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -3121,15 +3122,15 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012582,
-            "mainPicture": true,
-            "fileName": "958072b8-9d1a-47b0-9be5-d23a3c453467.jpg",
+            "id": 11013614,
+            "mainPicture": false,
+            "fileName": "132cd7e9-22b1-4596-828d-823ee009ae42.jpg",
             "path": null
           },
           {
-            "id": 11012583,
-            "mainPicture": false,
-            "fileName": "132cd7e9-22b1-4596-828d-823ee009ae42.jpg",
+            "id": 11013615,
+            "mainPicture": true,
+            "fileName": "958072b8-9d1a-47b0-9be5-d23a3c453467.jpg",
             "path": null
           }
         ]
@@ -3224,8 +3225,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -3520,19 +3521,19 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11011802,
-            "mainPicture": false,
-            "fileName": "PXL_20260311_064038441.jpg",
-            "path": null
-          },
-          {
-            "id": 11011803,
+            "id": 11013714,
             "mainPicture": false,
             "fileName": "PXL_20260311_063956168.jpg",
             "path": null
           },
           {
-            "id": 11010851,
+            "id": 11013715,
+            "mainPicture": false,
+            "fileName": "PXL_20260311_064038441.jpg",
+            "path": null
+          },
+          {
+            "id": 11013716,
             "mainPicture": true,
             "fileName": "PXL_20260311_064017881.jpg",
             "path": null
@@ -3629,8 +3630,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -3885,7 +3886,7 @@
       },
       "creationDate": "2026-06-24T10:59:43.373Z",
       "publicationDate": "2026-07-01T08:42:30.312Z",
-      "modificationDate": "2026-07-01T15:25:52.967Z",
+      "modificationDate": "2026-07-02T09:58:45.765Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -3930,7 +3931,7 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012369,
+            "id": 11013660,
             "mainPicture": true,
             "fileName": "Version_6.jpg",
             "path": null
@@ -4031,8 +4032,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -4344,25 +4345,25 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012086,
-            "mainPicture": false,
-            "fileName": "Foto2.jpg",
-            "path": null
-          },
-          {
-            "id": 11012087,
-            "mainPicture": false,
-            "fileName": "Foto3.jpg",
-            "path": null
-          },
-          {
-            "id": 11012088,
+            "id": 11013684,
             "mainPicture": false,
             "fileName": "Foto4.jpg",
             "path": null
           },
           {
-            "id": 11012092,
+            "id": 11013685,
+            "mainPicture": false,
+            "fileName": "Foto3.jpg",
+            "path": null
+          },
+          {
+            "id": 11013686,
+            "mainPicture": false,
+            "fileName": "Foto2.jpg",
+            "path": null
+          },
+          {
+            "id": 11013683,
             "mainPicture": true,
             "fileName": "Foto1 retocada centrada encuadre.jpg",
             "path": null
@@ -4516,8 +4517,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -4833,21 +4834,21 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012816,
-            "mainPicture": true,
-            "fileName": "S1 vara.jpeg",
+            "id": 11013607,
+            "mainPicture": false,
+            "fileName": "s1-2 vara.jpeg",
             "path": null
           },
           {
-            "id": 11012817,
+            "id": 11013608,
             "mainPicture": false,
             "fileName": "S1 vara bak.jpeg",
             "path": null
           },
           {
-            "id": 11012818,
-            "mainPicture": false,
-            "fileName": "s1-2 vara.jpeg",
+            "id": 11013609,
+            "mainPicture": true,
+            "fileName": "S1 vara.jpeg",
             "path": null
           }
         ]
@@ -4942,8 +4943,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -5250,39 +5251,39 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11011553,
-            "mainPicture": true,
-            "fileName": "ICSMS Bild.jpg",
-            "path": null
-          },
-          {
-            "id": 11011554,
+            "id": 11013706,
             "mainPicture": false,
-            "fileName": "Maschine.jpg",
+            "fileName": "Hersteller.jpg",
             "path": null
           },
           {
-            "id": 11011555,
-            "mainPicture": false,
-            "fileName": "Verpackung.jpg",
-            "path": null
-          },
-          {
-            "id": 11011556,
-            "mainPicture": false,
-            "fileName": "hersteller1.jpg",
-            "path": null
-          },
-          {
-            "id": 11011558,
+            "id": 11013707,
             "mainPicture": false,
             "fileName": "Produktbild.jpg",
             "path": null
           },
           {
-            "id": 11011559,
+            "id": 11013708,
             "mainPicture": false,
-            "fileName": "Hersteller.jpg",
+            "fileName": "hersteller1.jpg",
+            "path": null
+          },
+          {
+            "id": 11013709,
+            "mainPicture": false,
+            "fileName": "Verpackung.jpg",
+            "path": null
+          },
+          {
+            "id": 11013710,
+            "mainPicture": false,
+            "fileName": "Maschine.jpg",
+            "path": null
+          },
+          {
+            "id": 11013711,
+            "mainPicture": true,
+            "fileName": "ICSMS Bild.jpg",
             "path": null
           }
         ]
@@ -5377,8 +5378,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -5690,31 +5691,31 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012478,
-            "mainPicture": false,
-            "fileName": "26101L_FOTO (7).jpg",
-            "path": null
-          },
-          {
-            "id": 11012482,
+            "id": 11013637,
             "mainPicture": false,
             "fileName": "26101L_FOTO (11).jpg",
             "path": null
           },
           {
-            "id": 11012475,
+            "id": 11013638,
             "mainPicture": false,
-            "fileName": "26101L_FOTO (3).jpg",
+            "fileName": "26101L_FOTO (7).jpg",
             "path": null
           },
           {
-            "id": 11012476,
+            "id": 11013639,
             "mainPicture": false,
             "fileName": "26101L_FOTO (5).jpg",
             "path": null
           },
           {
-            "id": 11012474,
+            "id": 11013640,
+            "mainPicture": false,
+            "fileName": "26101L_FOTO (3).jpg",
+            "path": null
+          },
+          {
+            "id": 11013641,
             "mainPicture": true,
             "fileName": "26101L_FOTO (2).jpg",
             "path": null
@@ -5750,38 +5751,6 @@
         },
         "measures": [
           {
-            "id": 10621986,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-05-20T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.withdrawal.of.product.from.market",
-              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
-            },
-            "measureType": {
-              "key": "measure.type.compulsory",
-              "name": "COMPULSORY"
-            },
-            "measureVoluntaryEconomicOperator": null,
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": {
-              "key": "measure.operator.importer",
-              "name": "IMPORTER"
-            },
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10621986,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10621985,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-05-20T00:00:00.000Z",
@@ -5805,6 +5774,38 @@
             "versions": [
               {
                 "id": 10621985,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10621986,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-05-20T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.withdrawal.of.product.from.market",
+              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
+            },
+            "measureType": {
+              "key": "measure.type.compulsory",
+              "name": "COMPULSORY"
+            },
+            "measureVoluntaryEconomicOperator": null,
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": {
+              "key": "measure.operator.importer",
+              "name": "IMPORTER"
+            },
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10621986,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -5843,8 +5844,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -6155,15 +6156,15 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012560,
-            "mainPicture": true,
-            "fileName": "a.png",
+            "id": 11013628,
+            "mainPicture": false,
+            "fileName": "b.png",
             "path": null
           },
           {
-            "id": 11012561,
-            "mainPicture": false,
-            "fileName": "b.png",
+            "id": 11013629,
+            "mainPicture": true,
+            "fileName": "a.png",
             "path": null
           }
         ]
@@ -6258,8 +6259,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -6579,51 +6580,51 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012318,
-            "mainPicture": false,
-            "fileName": "a.png",
+            "id": 11013672,
+            "mainPicture": true,
+            "fileName": "h.png",
             "path": null
           },
           {
-            "id": 11012319,
-            "mainPicture": false,
-            "fileName": "b.png",
-            "path": null
-          },
-          {
-            "id": 11012320,
-            "mainPicture": false,
-            "fileName": "c.png",
-            "path": null
-          },
-          {
-            "id": 11012321,
-            "mainPicture": false,
-            "fileName": "d.png",
-            "path": null
-          },
-          {
-            "id": 11012322,
-            "mainPicture": false,
-            "fileName": "e.png",
-            "path": null
-          },
-          {
-            "id": 11012323,
-            "mainPicture": false,
-            "fileName": "f.png",
-            "path": null
-          },
-          {
-            "id": 11012324,
+            "id": 11013673,
             "mainPicture": false,
             "fileName": "g.png",
             "path": null
           },
           {
-            "id": 11012325,
-            "mainPicture": true,
-            "fileName": "h.png",
+            "id": 11013674,
+            "mainPicture": false,
+            "fileName": "f.png",
+            "path": null
+          },
+          {
+            "id": 11013675,
+            "mainPicture": false,
+            "fileName": "e.png",
+            "path": null
+          },
+          {
+            "id": 11013676,
+            "mainPicture": false,
+            "fileName": "d.png",
+            "path": null
+          },
+          {
+            "id": 11013677,
+            "mainPicture": false,
+            "fileName": "c.png",
+            "path": null
+          },
+          {
+            "id": 11013678,
+            "mainPicture": false,
+            "fileName": "b.png",
+            "path": null
+          },
+          {
+            "id": 11013679,
+            "mainPicture": false,
+            "fileName": "a.png",
             "path": null
           }
         ]
@@ -6718,8 +6719,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -7033,15 +7034,15 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012597,
-            "mainPicture": true,
-            "fileName": "405 Foto geschwaerzt.jpg",
+            "id": 11013616,
+            "mainPicture": false,
+            "fileName": "437 Foto geschwaerzt.jpg",
             "path": null
           },
           {
-            "id": 11012598,
-            "mainPicture": false,
-            "fileName": "437 Foto geschwaerzt.jpg",
+            "id": 11013617,
+            "mainPicture": true,
+            "fileName": "405 Foto geschwaerzt.jpg",
             "path": null
           }
         ]
@@ -7145,8 +7146,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -7457,21 +7458,21 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012390,
-            "mainPicture": true,
-            "fileName": "Beispiel ISOFIX Buegel.jpg",
+            "id": 11013657,
+            "mainPicture": false,
+            "fileName": "Varianten ISOFIX Buegel.jpg",
             "path": null
           },
           {
-            "id": 11012391,
+            "id": 11013658,
             "mainPicture": false,
             "fileName": "Einbausituation ISOFIX Buegel.jpg",
             "path": null
           },
           {
-            "id": 11012392,
-            "mainPicture": false,
-            "fileName": "Varianten ISOFIX Buegel.jpg",
+            "id": 11013659,
+            "mainPicture": true,
+            "fileName": "Beispiel ISOFIX Buegel.jpg",
             "path": null
           }
         ]
@@ -7575,8 +7576,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -7887,7 +7888,7 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012584,
+            "id": 11013613,
             "mainPicture": true,
             "fileName": "Qashqai.jpg",
             "path": null
@@ -7984,8 +7985,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -8288,7 +8289,7 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012333,
+            "id": 11013671,
             "mainPicture": true,
             "fileName": "tkmaxx_misco.png",
             "path": null
@@ -8430,8 +8431,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -8738,21 +8739,21 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012461,
-            "mainPicture": true,
-            "fileName": "39 prod.jpeg",
+            "id": 11013643,
+            "mainPicture": false,
+            "fileName": "IMG_0660.jpeg",
             "path": null
           },
           {
-            "id": 11012462,
+            "id": 11013644,
             "mainPicture": false,
             "fileName": "39 förp.jpeg",
             "path": null
           },
           {
-            "id": 11012465,
-            "mainPicture": false,
-            "fileName": "IMG_0660.jpeg",
+            "id": 11013645,
+            "mainPicture": true,
+            "fileName": "39 prod.jpeg",
             "path": null
           }
         ]
@@ -8847,8 +8848,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -9164,21 +9165,21 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012440,
-            "mainPicture": true,
-            "fileName": "40 prod.jpeg",
+            "id": 11013649,
+            "mainPicture": false,
+            "fileName": "IMG_1857.jpeg",
             "path": null
           },
           {
-            "id": 11012441,
+            "id": 11013650,
             "mainPicture": false,
             "fileName": "40 package.jpeg",
             "path": null
           },
           {
-            "id": 11012820,
-            "mainPicture": false,
-            "fileName": "IMG_1857.jpeg",
+            "id": 11013651,
+            "mainPicture": true,
+            "fileName": "40 prod.jpeg",
             "path": null
           }
         ]
@@ -9273,8 +9274,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -9581,33 +9582,33 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012653,
-            "mainPicture": false,
-            "fileName": "Train_EAN02.jpg",
-            "path": null
-          },
-          {
-            "id": 11012654,
+            "id": 11013618,
             "mainPicture": false,
             "fileName": "Train_EAN01.jpg",
             "path": null
           },
           {
-            "id": 11012576,
-            "mainPicture": true,
-            "fileName": "20250417_112137.jpg",
+            "id": 11013619,
+            "mainPicture": false,
+            "fileName": "Train_EAN02.jpg",
             "path": null
           },
           {
-            "id": 11012577,
+            "id": 11013620,
+            "mainPicture": false,
+            "fileName": "20250417_112241.jpg",
+            "path": null
+          },
+          {
+            "id": 11013621,
             "mainPicture": false,
             "fileName": "20250417_111830.jpg",
             "path": null
           },
           {
-            "id": 11012578,
-            "mainPicture": false,
-            "fileName": "20250417_112241.jpg",
+            "id": 11013622,
+            "mainPicture": true,
+            "fileName": "20250417_112137.jpg",
             "path": null
           }
         ]
@@ -9702,8 +9703,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -10010,15 +10011,15 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012433,
-            "mainPicture": true,
-            "fileName": "IMG_2754.jpeg",
+            "id": 11013652,
+            "mainPicture": false,
+            "fileName": "IMG_2752.jpeg",
             "path": null
           },
           {
-            "id": 11012434,
-            "mainPicture": false,
-            "fileName": "IMG_2752.jpeg",
+            "id": 11013653,
+            "mainPicture": true,
+            "fileName": "IMG_2754.jpeg",
             "path": null
           }
         ]
@@ -10113,8 +10114,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -10417,14 +10418,14 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11002419,
-            "mainPicture": true,
+            "id": 11013731,
+            "mainPicture": false,
             "fileName": "3a275bec3a9649ffb2a2b8ee3b4e8282.jpeg",
             "path": null
           },
           {
-            "id": 11002420,
-            "mainPicture": false,
+            "id": 11013732,
+            "mainPicture": true,
             "fileName": "3a275bec3a9649ffb2a2b8ee3b4e8282.jpeg",
             "path": null
           }
@@ -10552,8 +10553,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -10803,7 +10804,7 @@
       },
       "creationDate": "2026-06-24T08:08:08.576Z",
       "publicationDate": "2026-06-26T12:45:48.689Z",
-      "modificationDate": "2026-06-26T12:45:48.691Z",
+      "modificationDate": "2026-07-02T14:19:22.349Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -10860,21 +10861,21 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012547,
-            "mainPicture": true,
-            "fileName": "20251014_125432.jpg",
+            "id": 11013630,
+            "mainPicture": false,
+            "fileName": "20251014_131755.jpg",
             "path": null
           },
           {
-            "id": 11012548,
+            "id": 11013631,
             "mainPicture": false,
             "fileName": "20251014_125403.jpg",
             "path": null
           },
           {
-            "id": 11012549,
-            "mainPicture": false,
-            "fileName": "20251014_131755.jpg",
+            "id": 11013632,
+            "mainPicture": true,
+            "fileName": "20251014_125432.jpg",
             "path": null
           }
         ]
@@ -10969,8 +10970,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -11220,7 +11221,7 @@
       },
       "creationDate": "2026-06-24T08:20:26.813Z",
       "publicationDate": "2026-06-26T12:44:48.718Z",
-      "modificationDate": "2026-07-01T15:30:31.785Z",
+      "modificationDate": "2026-07-02T14:19:14.719Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -11277,21 +11278,21 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11011676,
-            "mainPicture": true,
-            "fileName": "BC 25 44287 (9).jpg",
+            "id": 11013703,
+            "mainPicture": false,
+            "fileName": "emballage.png",
             "path": null
           },
           {
-            "id": 11011677,
+            "id": 11013704,
             "mainPicture": false,
             "fileName": "produitfid2026296.png",
             "path": null
           },
           {
-            "id": 11011678,
-            "mainPicture": false,
-            "fileName": "emballage.png",
+            "id": 11013705,
+            "mainPicture": true,
+            "fileName": "BC 25 44287 (9).jpg",
             "path": null
           }
         ]
@@ -11434,8 +11435,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -11690,7 +11691,7 @@
       },
       "creationDate": "2026-06-09T15:08:31.618Z",
       "publicationDate": "2026-06-26T12:03:33.153Z",
-      "modificationDate": "2026-06-26T12:03:33.533Z",
+      "modificationDate": "2026-07-02T10:00:25.873Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -11735,7 +11736,7 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11010083,
+            "id": 11013723,
             "mainPicture": true,
             "fileName": "produitvei202665.png",
             "path": null
@@ -11832,8 +11833,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -12088,7 +12089,7 @@
       },
       "creationDate": "2026-06-08T07:07:35.876Z",
       "publicationDate": "2026-06-26T11:54:28.682Z",
-      "modificationDate": "2026-06-26T11:54:28.685Z",
+      "modificationDate": "2026-07-02T14:19:42.243Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -12145,15 +12146,15 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11010122,
-            "mainPicture": true,
-            "fileName": "sandwich maker digi 01.PNG",
+            "id": 11013724,
+            "mainPicture": false,
+            "fileName": "sandwich maker digi01 - 2.PNG",
             "path": null
           },
           {
-            "id": 11010123,
-            "mainPicture": false,
-            "fileName": "sandwich maker digi01 - 2.PNG",
+            "id": 11013725,
+            "mainPicture": true,
+            "fileName": "sandwich maker digi 01.PNG",
             "path": null
           }
         ]
@@ -12194,6 +12195,38 @@
           "name": "UNKNOWN"
         },
         "measures": [
+          {
+            "id": 10615292,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-06-02T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.ban.on.marketing.of.product",
+              "name": "BAN_MARKETING_OF_PRODUCT"
+            },
+            "measureType": {
+              "key": "measure.type.compulsory",
+              "name": "COMPULSORY"
+            },
+            "measureVoluntaryEconomicOperator": null,
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": {
+              "key": "measure.operator.importer",
+              "name": "IMPORTER"
+            },
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10615292,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
           {
             "id": 10615293,
             "entryIntoForceDateKnown": true,
@@ -12257,38 +12290,6 @@
                 "measureCategoryOther": null
               }
             ]
-          },
-          {
-            "id": 10615292,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-06-02T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.ban.on.marketing.of.product",
-              "name": "BAN_MARKETING_OF_PRODUCT"
-            },
-            "measureType": {
-              "key": "measure.type.compulsory",
-              "name": "COMPULSORY"
-            },
-            "measureVoluntaryEconomicOperator": null,
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": {
-              "key": "measure.operator.importer",
-              "name": "IMPORTER"
-            },
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10615292,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
           }
         ],
         "companyRecalls": []
@@ -12320,8 +12321,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -12660,38 +12661,6 @@
         },
         "measures": [
           {
-            "id": 10567470,
-            "entryIntoForceDateKnown": false,
-            "entryIntoForceDate": null,
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.withdrawal.of.product.from.market",
-              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
-            },
-            "measureType": {
-              "key": "measure.type.compulsory",
-              "name": "COMPULSORY"
-            },
-            "measureVoluntaryEconomicOperator": null,
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": {
-              "key": "measure.operator.manufacturer",
-              "name": "MANUFACTURER"
-            },
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10567470,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10567471,
             "entryIntoForceDateKnown": false,
             "entryIntoForceDate": null,
@@ -12724,14 +12693,14 @@
             ]
           },
           {
-            "id": 10567472,
+            "id": 10567470,
             "entryIntoForceDateKnown": false,
             "entryIntoForceDate": null,
             "measureDuration": null,
             "measureScope": null,
             "measureCategory": {
-              "key": "measure.category.ban.on.marketing.of.product",
-              "name": "BAN_MARKETING_OF_PRODUCT"
+              "key": "measure.category.withdrawal.of.product.from.market",
+              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
             },
             "measureType": {
               "key": "measure.type.compulsory",
@@ -12746,7 +12715,7 @@
             "measureCompulsoryAuthority": null,
             "versions": [
               {
-                "id": 10567472,
+                "id": 10567470,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -12779,6 +12748,38 @@
             "versions": [
               {
                 "id": 10567469,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10567472,
+            "entryIntoForceDateKnown": false,
+            "entryIntoForceDate": null,
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.ban.on.marketing.of.product",
+              "name": "BAN_MARKETING_OF_PRODUCT"
+            },
+            "measureType": {
+              "key": "measure.type.compulsory",
+              "name": "COMPULSORY"
+            },
+            "measureVoluntaryEconomicOperator": null,
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": {
+              "key": "measure.operator.manufacturer",
+              "name": "MANUFACTURER"
+            },
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10567472,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -13124,15 +13125,15 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11004250,
-            "mainPicture": true,
-            "fileName": "Unbenannt.JPG",
+            "id": 11013729,
+            "mainPicture": false,
+            "fileName": "20260413_112824.jpg",
             "path": null
           },
           {
-            "id": 11004624,
-            "mainPicture": false,
-            "fileName": "20260413_112824.jpg",
+            "id": 11013730,
+            "mainPicture": true,
+            "fileName": "Unbenannt.JPG",
             "path": null
           }
         ]
@@ -13166,38 +13167,6 @@
         },
         "measures": [
           {
-            "id": 10618525,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-04-29T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.withdrawal.of.product.from.market",
-              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
-            },
-            "measureType": {
-              "key": "measure.type.compulsory",
-              "name": "COMPULSORY"
-            },
-            "measureVoluntaryEconomicOperator": null,
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": {
-              "key": "measure.operator.manufacturer",
-              "name": "MANUFACTURER"
-            },
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10618525,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10618524,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-04-29T00:00:00.000Z",
@@ -13221,6 +13190,38 @@
             "versions": [
               {
                 "id": 10618524,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10618525,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-04-29T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.withdrawal.of.product.from.market",
+              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
+            },
+            "measureType": {
+              "key": "measure.type.compulsory",
+              "name": "COMPULSORY"
+            },
+            "measureVoluntaryEconomicOperator": null,
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": {
+              "key": "measure.operator.manufacturer",
+              "name": "MANUFACTURER"
+            },
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10618525,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -13259,8 +13260,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -13576,15 +13577,15 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11011925,
-            "mainPicture": true,
-            "fileName": "a.png",
+            "id": 11013696,
+            "mainPicture": false,
+            "fileName": "b.png",
             "path": null
           },
           {
-            "id": 11011926,
-            "mainPicture": false,
-            "fileName": "b.png",
+            "id": 11013697,
+            "mainPicture": true,
+            "fileName": "a.png",
             "path": null
           }
         ]
@@ -13679,8 +13680,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -13930,7 +13931,7 @@
       },
       "creationDate": "2026-06-24T08:06:25.893Z",
       "publicationDate": "2026-06-25T12:46:08.841Z",
-      "modificationDate": "2026-07-01T06:33:53.642Z",
+      "modificationDate": "2026-07-02T09:59:07.892Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -13983,21 +13984,21 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012443,
-            "mainPicture": true,
-            "fileName": "IMG_0145.jpeg",
+            "id": 11013646,
+            "mainPicture": false,
+            "fileName": "product picture.jpg",
             "path": null
           },
           {
-            "id": 11012444,
+            "id": 11013647,
             "mainPicture": false,
             "fileName": "Image.jpg",
             "path": null
           },
           {
-            "id": 11012445,
-            "mainPicture": false,
-            "fileName": "product picture.jpg",
+            "id": 11013648,
+            "mainPicture": true,
+            "fileName": "IMG_0145.jpeg",
             "path": null
           }
         ]
@@ -14092,8 +14093,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -14348,7 +14349,7 @@
       },
       "creationDate": "2026-06-24T10:45:02.356Z",
       "publicationDate": "2026-06-25T12:42:13.241Z",
-      "modificationDate": "2026-06-29T15:17:06.058Z",
+      "modificationDate": "2026-07-02T07:10:39.648Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -14401,21 +14402,21 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012663,
-            "mainPicture": true,
-            "fileName": "Rattle.png",
+            "id": 11013610,
+            "mainPicture": false,
+            "fileName": "Rattle2.png",
             "path": null
           },
           {
-            "id": 11012664,
+            "id": 11013611,
             "mainPicture": false,
             "fileName": "Rattle- back.png",
             "path": null
           },
           {
-            "id": 11012665,
-            "mainPicture": false,
-            "fileName": "Rattle2.png",
+            "id": 11013612,
+            "mainPicture": true,
+            "fileName": "Rattle.png",
             "path": null
           }
         ]
@@ -14499,7 +14500,19 @@
         },
         "onlineTrader": null
       },
-      "reactingCountries": [],
+      "reactingCountries": [
+        {
+          "id": 10099469,
+          "country": {
+            "key": "IE",
+            "propertyKey": "country.IE",
+            "name": "Ireland",
+            "orderIndex": 109,
+            "euCountry": true,
+            "eeaCountry": true
+          }
+        }
+      ],
       "webReport": {
         "id": 10000312,
         "code": "Report-2026-26",
@@ -14510,8 +14523,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -14819,15 +14832,15 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012315,
-            "mainPicture": false,
-            "fileName": "p18065.png",
+            "id": 11013680,
+            "mainPicture": true,
+            "fileName": "monoi clementine scp fid2026344.png",
             "path": null
           },
           {
-            "id": 11012316,
-            "mainPicture": true,
-            "fileName": "monoi clementine scp fid2026344.png",
+            "id": 11013681,
+            "mainPicture": false,
+            "fileName": "p18065.png",
             "path": null
           }
         ]
@@ -14963,8 +14976,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -15219,7 +15232,7 @@
       },
       "creationDate": "2026-06-24T11:54:08.369Z",
       "publicationDate": "2026-06-25T11:40:28.762Z",
-      "modificationDate": "2026-07-01T06:32:59.575Z",
+      "modificationDate": "2026-07-02T09:58:37.991Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -15268,27 +15281,27 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012531,
-            "mainPicture": false,
-            "fileName": "koala3.png",
-            "path": null
-          },
-          {
-            "id": 11012532,
+            "id": 11013633,
             "mainPicture": false,
             "fileName": "koala4.png",
             "path": null
           },
           {
-            "id": 11012529,
-            "mainPicture": true,
-            "fileName": "koala.png",
+            "id": 11013634,
+            "mainPicture": false,
+            "fileName": "koala3.png",
             "path": null
           },
           {
-            "id": 11012530,
+            "id": 11013635,
             "mainPicture": false,
             "fileName": "koala2.png",
+            "path": null
+          },
+          {
+            "id": 11013636,
+            "mainPicture": true,
+            "fileName": "koala.png",
             "path": null
           }
         ]
@@ -15438,8 +15451,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -17188,7 +17201,7 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012078,
+            "id": 11013682,
             "mainPicture": true,
             "fileName": "a.png",
             "path": null
@@ -17285,8 +17298,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -17585,19 +17598,19 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11009731,
-            "mainPicture": false,
-            "fileName": "20251028_122239.jpg",
-            "path": null
-          },
-          {
-            "id": 11009732,
+            "id": 11013726,
             "mainPicture": false,
             "fileName": "20251106_100751.jpg",
             "path": null
           },
           {
-            "id": 11009730,
+            "id": 11013727,
+            "mainPicture": false,
+            "fileName": "20251028_122239.jpg",
+            "path": null
+          },
+          {
+            "id": 11013728,
             "mainPicture": true,
             "fileName": "20251028_122246.jpg",
             "path": null
@@ -17636,38 +17649,6 @@
           "name": "YES"
         },
         "measures": [
-          {
-            "id": 10615468,
-            "entryIntoForceDateKnown": false,
-            "entryIntoForceDate": null,
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.recall.of.product.from.consumers",
-              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.distributor",
-              "name": "DISTRIBUTOR"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10615468,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
           {
             "id": 10615469,
             "entryIntoForceDateKnown": false,
@@ -17731,6 +17712,38 @@
                 "measureCategoryOther": null
               }
             ]
+          },
+          {
+            "id": 10615468,
+            "entryIntoForceDateKnown": false,
+            "entryIntoForceDate": null,
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.recall.of.product.from.consumers",
+              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.distributor",
+              "name": "DISTRIBUTOR"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10615468,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
           }
         ],
         "companyRecalls": [
@@ -17771,8 +17784,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -18076,33 +18089,33 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012562,
-            "mainPicture": true,
-            "fileName": "20251208_104450.jpg",
-            "path": null
-          },
-          {
-            "id": 11012563,
+            "id": 11013623,
             "mainPicture": false,
-            "fileName": "20251208_104505.jpg",
+            "fileName": "Retez_ean.jpg",
             "path": null
           },
           {
-            "id": 11012564,
-            "mainPicture": false,
-            "fileName": "20251208_104525.jpg",
-            "path": null
-          },
-          {
-            "id": 11012565,
+            "id": 11013624,
             "mainPicture": false,
             "fileName": "20251208_104541.jpg",
             "path": null
           },
           {
-            "id": 11012658,
+            "id": 11013625,
             "mainPicture": false,
-            "fileName": "Retez_ean.jpg",
+            "fileName": "20251208_104525.jpg",
+            "path": null
+          },
+          {
+            "id": 11013626,
+            "mainPicture": false,
+            "fileName": "20251208_104505.jpg",
+            "path": null
+          },
+          {
+            "id": 11013627,
+            "mainPicture": true,
+            "fileName": "20251208_104450.jpg",
             "path": null
           }
         ]
@@ -18197,8 +18210,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -18512,15 +18525,15 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012327,
-            "mainPicture": true,
-            "fileName": "a.png",
+            "id": 11013669,
+            "mainPicture": false,
+            "fileName": "c.png",
             "path": null
           },
           {
-            "id": 11012329,
-            "mainPicture": false,
-            "fileName": "c.png",
+            "id": 11013670,
+            "mainPicture": true,
+            "fileName": "a.png",
             "path": null
           }
         ]
@@ -18615,8 +18628,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -18927,27 +18940,27 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012003,
+            "id": 11013692,
+            "mainPicture": false,
+            "fileName": "IMG_3919.jpg",
+            "path": null
+          },
+          {
+            "id": 11013693,
             "mainPicture": false,
             "fileName": "IMG_3918.jpg",
             "path": null
           },
           {
-            "id": 11011999,
-            "mainPicture": true,
-            "fileName": "20250925_112840.jpg",
-            "path": null
-          },
-          {
-            "id": 11012000,
+            "id": 11013694,
             "mainPicture": false,
             "fileName": "20250925_112850.jpg",
             "path": null
           },
           {
-            "id": 11012004,
-            "mainPicture": false,
-            "fileName": "IMG_3919.jpg",
+            "id": 11013695,
+            "mainPicture": true,
+            "fileName": "20250925_112840.jpg",
             "path": null
           }
         ]
@@ -19042,8 +19055,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -19354,27 +19367,27 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012013,
-            "mainPicture": true,
-            "fileName": "IMG_3992.jpg",
-            "path": null
-          },
-          {
-            "id": 11012016,
+            "id": 11013688,
             "mainPicture": false,
-            "fileName": "IMG_3995.jpg",
+            "fileName": "IMG_3994.jpg",
             "path": null
           },
           {
-            "id": 11012017,
+            "id": 11013689,
             "mainPicture": false,
             "fileName": "IMG_3988.jpg",
             "path": null
           },
           {
-            "id": 11012020,
+            "id": 11013690,
             "mainPicture": false,
-            "fileName": "IMG_3994.jpg",
+            "fileName": "IMG_3995.jpg",
+            "path": null
+          },
+          {
+            "id": 11013691,
+            "mainPicture": true,
+            "fileName": "IMG_3992.jpg",
             "path": null
           }
         ]
@@ -19469,8 +19482,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -19780,39 +19793,39 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11010789,
-            "mainPicture": true,
-            "fileName": "Karton.PNG",
-            "path": null
-          },
-          {
-            "id": 11010790,
+            "id": 11013717,
             "mainPicture": false,
-            "fileName": "Maske.PNG",
+            "fileName": "2604-16 (21)_Maske.JPG",
             "path": null
           },
           {
-            "id": 11010791,
-            "mainPicture": false,
-            "fileName": "2604-16 (6)_Verpackung.JPG",
-            "path": null
-          },
-          {
-            "id": 11010792,
-            "mainPicture": false,
-            "fileName": "2604-16 (3)_Verpackung.JPG",
-            "path": null
-          },
-          {
-            "id": 11010793,
+            "id": 11013718,
             "mainPicture": false,
             "fileName": "2604-16 (4)_Verpackung.JPG",
             "path": null
           },
           {
-            "id": 11010794,
+            "id": 11013719,
             "mainPicture": false,
-            "fileName": "2604-16 (21)_Maske.JPG",
+            "fileName": "2604-16 (3)_Verpackung.JPG",
+            "path": null
+          },
+          {
+            "id": 11013720,
+            "mainPicture": false,
+            "fileName": "2604-16 (6)_Verpackung.JPG",
+            "path": null
+          },
+          {
+            "id": 11013721,
+            "mainPicture": false,
+            "fileName": "Maske.PNG",
+            "path": null
+          },
+          {
+            "id": 11013722,
+            "mainPicture": true,
+            "fileName": "Karton.PNG",
             "path": null
           }
         ]
@@ -19845,6 +19858,38 @@
           "name": "UNKNOWN"
         },
         "measures": [
+          {
+            "id": 10619764,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-06-03T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.removal.from.online.marketplace",
+              "name": "REMOVAL_FROM_ONLINE_MARKETPLACE"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10619764,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
           {
             "id": 10619763,
             "entryIntoForceDateKnown": true,
@@ -19908,38 +19953,6 @@
                 "measureCategoryOther": null
               }
             ]
-          },
-          {
-            "id": 10619764,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-06-03T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.removal.from.online.marketplace",
-              "name": "REMOVAL_FROM_ONLINE_MARKETPLACE"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10619764,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
           }
         ],
         "companyRecalls": []
@@ -19971,8 +19984,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -20227,7 +20240,7 @@
       },
       "creationDate": "2026-06-22T14:33:25.690Z",
       "publicationDate": "2026-06-25T09:07:13.448Z",
-      "modificationDate": "2026-06-25T09:07:13.450Z",
+      "modificationDate": "2026-07-02T09:56:10.118Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -20280,7 +20293,7 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012030,
+            "id": 11013687,
             "mainPicture": true,
             "fileName": "1.png",
             "path": null
@@ -20366,7 +20379,19 @@
         },
         "onlineTrader": null
       },
-      "reactingCountries": [],
+      "reactingCountries": [
+        {
+          "id": 10099421,
+          "country": {
+            "key": "IE",
+            "propertyKey": "country.IE",
+            "name": "Ireland",
+            "orderIndex": 109,
+            "euCountry": true,
+            "eeaCountry": true
+          }
+        }
+      ],
       "webReport": {
         "id": 10000312,
         "code": "Report-2026-26",
@@ -20377,8 +20402,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -20682,7 +20707,7 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012335,
+            "id": 11013668,
             "mainPicture": true,
             "fileName": "produitfid2026307.png",
             "path": null
@@ -20722,38 +20747,6 @@
         },
         "measures": [
           {
-            "id": 10619780,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-05-17T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.recall.of.product.from.consumers",
-              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10619780,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10619779,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-05-12T00:00:00.000Z",
@@ -20777,6 +20770,38 @@
             "versions": [
               {
                 "id": 10619779,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10619780,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-05-17T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.recall.of.product.from.consumers",
+              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10619780,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -20824,8 +20849,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -21080,7 +21105,7 @@
       },
       "creationDate": "2026-06-24T11:59:08.133Z",
       "publicationDate": "2026-06-25T08:51:48.727Z",
-      "modificationDate": "2026-06-25T08:51:48.729Z",
+      "modificationDate": "2026-07-02T07:04:34.225Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -21141,7 +21166,7 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11012488,
+            "id": 11013642,
             "mainPicture": true,
             "fileName": "Ranger.jpg",
             "path": null
@@ -21236,7 +21261,19 @@
         },
         "onlineTrader": null
       },
-      "reactingCountries": [],
+      "reactingCountries": [
+        {
+          "id": 10099453,
+          "country": {
+            "key": "FR",
+            "propertyKey": "country.FR",
+            "name": "France",
+            "orderIndex": 78,
+            "euCountry": true,
+            "eeaCountry": true
+          }
+        }
+      ],
       "webReport": {
         "id": 10000312,
         "code": "Report-2026-26",
@@ -21247,8 +21284,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -21934,7 +21971,7 @@
       },
       "creationDate": "2026-06-18T14:02:24.725Z",
       "publicationDate": "2026-06-25T07:07:08.781Z",
-      "modificationDate": "2026-07-01T06:23:12.221Z",
+      "modificationDate": "2026-07-02T07:05:57.489Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -22025,38 +22062,6 @@
         },
         "measures": [
           {
-            "id": 10619061,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-05-12T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.warning.consumers.of.risks",
-              "name": "WARNING_CONSUMERS_OF_RISKS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.manufacturer",
-              "name": "MANUFACTURER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10619061,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10619062,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-05-12T00:00:00.000Z",
@@ -22080,6 +22085,38 @@
             "versions": [
               {
                 "id": 10619062,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10619061,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-05-12T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.warning.consumers.of.risks",
+              "name": "WARNING_CONSUMERS_OF_RISKS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.manufacturer",
+              "name": "MANUFACTURER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10619061,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -22456,38 +22493,6 @@
         },
         "measures": [
           {
-            "id": 10573624,
-            "entryIntoForceDateKnown": false,
-            "entryIntoForceDate": null,
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.other",
-              "name": "OTHER"
-            },
-            "measureType": {
-              "key": "measure.type.compulsory",
-              "name": "COMPULSORY"
-            },
-            "measureVoluntaryEconomicOperator": null,
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": {
-              "key": "measure.operator.importer",
-              "name": "IMPORTER"
-            },
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10573624,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": "None. Information and request to remove non-compliant products."
-              }
-            ]
-          },
-          {
             "id": 10573625,
             "entryIntoForceDateKnown": false,
             "entryIntoForceDate": null,
@@ -22516,6 +22521,38 @@
                   "name": "english"
                 },
                 "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10573624,
+            "entryIntoForceDateKnown": false,
+            "entryIntoForceDate": null,
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.other",
+              "name": "OTHER"
+            },
+            "measureType": {
+              "key": "measure.type.compulsory",
+              "name": "COMPULSORY"
+            },
+            "measureVoluntaryEconomicOperator": null,
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": {
+              "key": "measure.operator.importer",
+              "name": "IMPORTER"
+            },
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10573624,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": "None. Information and request to remove non-compliant products."
               }
             ]
           }
@@ -22823,7 +22860,7 @@
       },
       "creationDate": "2026-06-17T10:47:09.486Z",
       "publicationDate": "2026-06-24T12:34:48.888Z",
-      "modificationDate": "2026-06-24T12:34:48.890Z",
+      "modificationDate": "2026-07-02T14:19:30.643Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -22868,21 +22905,21 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11011871,
-            "mainPicture": false,
-            "fileName": "2606-00261.png",
+            "id": 11013698,
+            "mainPicture": true,
+            "fileName": "2606-0026.png",
             "path": null
           },
           {
-            "id": 11011872,
+            "id": 11013699,
             "mainPicture": false,
             "fileName": "2606-0026-pump.png",
             "path": null
           },
           {
-            "id": 11011873,
-            "mainPicture": true,
-            "fileName": "2606-0026.png",
+            "id": 11013700,
+            "mainPicture": false,
+            "fileName": "2606-00261.png",
             "path": null
           }
         ]
@@ -22977,8 +23014,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -23734,15 +23771,15 @@
         "productCategoryOther": null,
         "photos": [
           {
-            "id": 11011462,
-            "mainPicture": true,
-            "fileName": "ORIG-260221272#1779873047.jpg",
+            "id": 11013712,
+            "mainPicture": false,
+            "fileName": "ORIG-260221272#1779873049.jpg",
             "path": null
           },
           {
-            "id": 11011463,
-            "mainPicture": false,
-            "fileName": "ORIG-260221272#1779873049.jpg",
+            "id": 11013713,
+            "mainPicture": true,
+            "fileName": "ORIG-260221272#1779873047.jpg",
             "path": null
           }
         ]
@@ -23776,38 +23813,6 @@
         },
         "measures": [
           {
-            "id": 10617802,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-06-09T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.stop.of.sales",
-              "name": "STOP_OF_SALES"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.retailer",
-              "name": "RETAILER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10617802,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10617801,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-06-09T00:00:00.000Z",
@@ -23831,6 +23836,38 @@
             "versions": [
               {
                 "id": 10617801,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10617802,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-06-09T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.stop.of.sales",
+              "name": "STOP_OF_SALES"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.retailer",
+              "name": "RETAILER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10617802,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -23869,8 +23906,8 @@
         "notifications": null,
         "highlighted": false,
         "status": {
-          "key": "pds.status.ready.for.publication",
-          "name": "READY_FOR_PUBLICATION"
+          "key": "pds.status.published",
+          "name": "PUBLISHED"
         }
       },
       "versions": [
@@ -24125,7 +24162,7 @@
       },
       "creationDate": "2026-06-17T10:23:50.056Z",
       "publicationDate": "2026-06-24T08:28:13.260Z",
-      "modificationDate": "2026-07-01T06:31:32.204Z",
+      "modificationDate": "2026-07-02T07:11:48.080Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -24168,6 +24205,12 @@
         ],
         "barcodes": [
           {
+            "barcode": "3364402852115"
+          },
+          {
+            "barcode": "3364402852122"
+          },
+          {
             "barcode": "3364402840242"
           },
           {
@@ -24178,12 +24221,6 @@
           },
           {
             "barcode": "3364402852108"
-          },
-          {
-            "barcode": "3364402852115"
-          },
-          {
-            "barcode": "3364402852122"
           }
         ],
         "batchNumbers": [
@@ -24246,38 +24283,6 @@
         },
         "measures": [
           {
-            "id": 10618328,
-            "entryIntoForceDateKnown": false,
-            "entryIntoForceDate": null,
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.withdrawal.of.product.from.market",
-              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.manufacturer",
-              "name": "MANUFACTURER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10618328,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10618329,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-04-22T00:00:00.000Z",
@@ -24301,6 +24306,38 @@
             "versions": [
               {
                 "id": 10618329,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10618328,
+            "entryIntoForceDateKnown": false,
+            "entryIntoForceDate": null,
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.withdrawal.of.product.from.market",
+              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.manufacturer",
+              "name": "MANUFACTURER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10618328,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -25058,7 +25095,7 @@
       },
       "creationDate": "2026-06-18T12:58:13.984Z",
       "publicationDate": "2026-06-23T15:19:32.283Z",
-      "modificationDate": "2026-07-01T06:23:03.918Z",
+      "modificationDate": "2026-07-02T07:06:37.544Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -26066,38 +26103,6 @@
         },
         "measures": [
           {
-            "id": 10619524,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-05-12T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.warning.consumers.of.risks",
-              "name": "WARNING_CONSUMERS_OF_RISKS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.manufacturer",
-              "name": "MANUFACTURER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10619524,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10619523,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-05-12T00:00:00.000Z",
@@ -26121,6 +26126,38 @@
             "versions": [
               {
                 "id": 10619523,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10619524,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-05-12T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.warning.consumers.of.risks",
+              "name": "WARNING_CONSUMERS_OF_RISKS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.manufacturer",
+              "name": "MANUFACTURER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10619524,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -26521,70 +26558,6 @@
         },
         "measures": [
           {
-            "id": 10619308,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-05-07T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.ban.on.marketing.of.product",
-              "name": "BAN_MARKETING_OF_PRODUCT"
-            },
-            "measureType": {
-              "key": "measure.type.compulsory",
-              "name": "COMPULSORY"
-            },
-            "measureVoluntaryEconomicOperator": null,
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": {
-              "key": "measure.operator.distributor",
-              "name": "DISTRIBUTOR"
-            },
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10619308,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
-            "id": 10619310,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-05-07T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.recall.of.product.from.consumers",
-              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
-            },
-            "measureType": {
-              "key": "measure.type.compulsory",
-              "name": "COMPULSORY"
-            },
-            "measureVoluntaryEconomicOperator": null,
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": {
-              "key": "measure.operator.distributor",
-              "name": "DISTRIBUTOR"
-            },
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10619310,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10619309,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-05-07T00:00:00.000Z",
@@ -26617,6 +26590,38 @@
             ]
           },
           {
+            "id": 10619308,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-05-07T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.ban.on.marketing.of.product",
+              "name": "BAN_MARKETING_OF_PRODUCT"
+            },
+            "measureType": {
+              "key": "measure.type.compulsory",
+              "name": "COMPULSORY"
+            },
+            "measureVoluntaryEconomicOperator": null,
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": {
+              "key": "measure.operator.distributor",
+              "name": "DISTRIBUTOR"
+            },
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10619308,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
             "id": 10619311,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-05-07T00:00:00.000Z",
@@ -26640,6 +26645,38 @@
             "versions": [
               {
                 "id": 10619311,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10619310,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-05-07T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.recall.of.product.from.consumers",
+              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
+            },
+            "measureType": {
+              "key": "measure.type.compulsory",
+              "name": "COMPULSORY"
+            },
+            "measureVoluntaryEconomicOperator": null,
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": {
+              "key": "measure.operator.distributor",
+              "name": "DISTRIBUTOR"
+            },
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10619310,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -27014,6 +27051,38 @@
         },
         "measures": [
           {
+            "id": 10619317,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-04-16T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.ban.on.marketing.of.product",
+              "name": "BAN_MARKETING_OF_PRODUCT"
+            },
+            "measureType": {
+              "key": "measure.type.compulsory",
+              "name": "COMPULSORY"
+            },
+            "measureVoluntaryEconomicOperator": null,
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": {
+              "key": "measure.operator.distributor",
+              "name": "DISTRIBUTOR"
+            },
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10619317,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
             "id": 10619316,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-04-16T00:00:00.000Z",
@@ -27069,38 +27138,6 @@
             "versions": [
               {
                 "id": 10619319,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
-            "id": 10619317,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-04-16T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.ban.on.marketing.of.product",
-              "name": "BAN_MARKETING_OF_PRODUCT"
-            },
-            "measureType": {
-              "key": "measure.type.compulsory",
-              "name": "COMPULSORY"
-            },
-            "measureVoluntaryEconomicOperator": null,
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": {
-              "key": "measure.operator.distributor",
-              "name": "DISTRIBUTOR"
-            },
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10619317,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -27870,7 +27907,7 @@
       },
       "creationDate": "2026-06-18T08:55:38.927Z",
       "publicationDate": "2026-06-23T13:47:08.866Z",
-      "modificationDate": "2026-06-29T15:15:45.059Z",
+      "modificationDate": "2026-07-02T09:58:29.085Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -27963,38 +28000,6 @@
         },
         "measures": [
           {
-            "id": 10618798,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-06-11T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.warning.consumers.of.risks",
-              "name": "WARNING_CONSUMERS_OF_RISKS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.manufacturer",
-              "name": "MANUFACTURER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10618798,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10618797,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-06-11T00:00:00.000Z",
@@ -28018,6 +28023,38 @@
             "versions": [
               {
                 "id": 10618797,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10618798,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-06-11T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.warning.consumers.of.risks",
+              "name": "WARNING_CONSUMERS_OF_RISKS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.manufacturer",
+              "name": "MANUFACTURER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10618798,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -28077,7 +28114,19 @@
         },
         "onlineTrader": null
       },
-      "reactingCountries": [],
+      "reactingCountries": [
+        {
+          "id": 10099375,
+          "country": {
+            "key": "SI",
+            "propertyKey": "country.SI",
+            "name": "Slovenia",
+            "orderIndex": 205,
+            "euCountry": true,
+            "eeaCountry": true
+          }
+        }
+      ],
       "webReport": {
         "id": 10000311,
         "code": "Report-2026-25",
@@ -28339,7 +28388,7 @@
       },
       "creationDate": "2026-06-18T08:54:49.716Z",
       "publicationDate": "2026-06-23T13:46:34.268Z",
-      "modificationDate": "2026-06-29T07:50:26.612Z",
+      "modificationDate": "2026-07-02T09:56:30.503Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -28432,38 +28481,6 @@
         },
         "measures": [
           {
-            "id": 10618792,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-06-11T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.withdrawal.of.product.from.market",
-              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.manufacturer",
-              "name": "MANUFACTURER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10618792,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10618793,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-06-11T00:00:00.000Z",
@@ -28487,6 +28504,38 @@
             "versions": [
               {
                 "id": 10618793,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10618792,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-06-11T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.withdrawal.of.product.from.market",
+              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.manufacturer",
+              "name": "MANUFACTURER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10618792,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -28546,7 +28595,19 @@
         },
         "onlineTrader": null
       },
-      "reactingCountries": [],
+      "reactingCountries": [
+        {
+          "id": 10099374,
+          "country": {
+            "key": "SI",
+            "propertyKey": "country.SI",
+            "name": "Slovenia",
+            "orderIndex": 205,
+            "euCountry": true,
+            "eeaCountry": true
+          }
+        }
+      ],
       "webReport": {
         "id": 10000311,
         "code": "Report-2026-25",
@@ -28808,7 +28869,7 @@
       },
       "creationDate": "2026-06-18T08:56:43.636Z",
       "publicationDate": "2026-06-23T13:45:35.085Z",
-      "modificationDate": "2026-06-29T07:52:52.244Z",
+      "modificationDate": "2026-07-02T09:56:43.882Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -28901,6 +28962,38 @@
         },
         "measures": [
           {
+            "id": 10618811,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-06-11T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.withdrawal.of.product.from.market",
+              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.manufacturer",
+              "name": "MANUFACTURER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10618811,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
             "id": 10618809,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-06-11T00:00:00.000Z",
@@ -28963,38 +29056,6 @@
                 "measureCategoryOther": null
               }
             ]
-          },
-          {
-            "id": 10618811,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-06-11T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.withdrawal.of.product.from.market",
-              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.manufacturer",
-              "name": "MANUFACTURER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10618811,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
           }
         ],
         "companyRecalls": []
@@ -29015,7 +29076,19 @@
         },
         "onlineTrader": null
       },
-      "reactingCountries": [],
+      "reactingCountries": [
+        {
+          "id": 10099379,
+          "country": {
+            "key": "SI",
+            "propertyKey": "country.SI",
+            "name": "Slovenia",
+            "orderIndex": 205,
+            "euCountry": true,
+            "eeaCountry": true
+          }
+        }
+      ],
       "webReport": {
         "id": 10000311,
         "code": "Report-2026-25",
@@ -29277,7 +29350,7 @@
       },
       "creationDate": "2026-06-18T08:56:07.068Z",
       "publicationDate": "2026-06-23T13:44:11.186Z",
-      "modificationDate": "2026-06-29T07:52:45.093Z",
+      "modificationDate": "2026-07-02T09:57:17.485Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -29484,7 +29557,19 @@
         },
         "onlineTrader": null
       },
-      "reactingCountries": [],
+      "reactingCountries": [
+        {
+          "id": 10099377,
+          "country": {
+            "key": "SI",
+            "propertyKey": "country.SI",
+            "name": "Slovenia",
+            "orderIndex": 205,
+            "euCountry": true,
+            "eeaCountry": true
+          }
+        }
+      ],
       "webReport": {
         "id": 10000311,
         "code": "Report-2026-25",
@@ -31273,38 +31358,6 @@
         },
         "measures": [
           {
-            "id": 10619688,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-04-22T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.recall.of.product.from.consumers",
-              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10619688,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10619687,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-04-17T00:00:00.000Z",
@@ -31328,6 +31381,38 @@
             "versions": [
               {
                 "id": 10619687,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10619688,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-04-22T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.recall.of.product.from.consumers",
+              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10619688,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -31760,38 +31845,6 @@
         },
         "measures": [
           {
-            "id": 10619661,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-06-17T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.recall.of.product.from.consumers",
-              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.importer",
-              "name": "IMPORTER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10619661,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10619662,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-06-17T00:00:00.000Z",
@@ -31815,6 +31868,38 @@
             "versions": [
               {
                 "id": 10619662,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10619661,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-06-17T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.recall.of.product.from.consumers",
+              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.importer",
+              "name": "IMPORTER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10619661,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -32770,38 +32855,6 @@
         },
         "measures": [
           {
-            "id": 10582555,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-01-26T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.removal.from.online.marketplace",
-              "name": "REMOVAL_FROM_ONLINE_MARKETPLACE"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10582555,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10582554,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-02-05T00:00:00.000Z",
@@ -32825,6 +32878,38 @@
             "versions": [
               {
                 "id": 10582554,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10582555,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-01-26T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.removal.from.online.marketplace",
+              "name": "REMOVAL_FROM_ONLINE_MARKETPLACE"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10582555,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -33207,38 +33292,6 @@
         },
         "measures": [
           {
-            "id": 10599348,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-04-03T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.warning.consumers.of.risks",
-              "name": "WARNING_CONSUMERS_OF_RISKS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10599348,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10599347,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-04-03T00:00:00.000Z",
@@ -33326,6 +33379,38 @@
             "versions": [
               {
                 "id": 10594298,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10599348,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-04-03T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.warning.consumers.of.risks",
+              "name": "WARNING_CONSUMERS_OF_RISKS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10599348,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -33712,14 +33797,14 @@
         },
         "measures": [
           {
-            "id": 10619949,
+            "id": 10605142,
             "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-05-08T00:00:00.000Z",
+            "entryIntoForceDate": "2026-04-10T00:00:00.000Z",
             "measureDuration": null,
             "measureScope": null,
             "measureCategory": {
-              "key": "measure.category.warning.consumers.of.risks",
-              "name": "WARNING_CONSUMERS_OF_RISKS"
+              "key": "measure.category.recall.of.product.from.consumers",
+              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
             },
             "measureType": {
               "key": "measure.type.voluntary",
@@ -33734,7 +33819,7 @@
             "measureCompulsoryAuthority": null,
             "versions": [
               {
-                "id": 10619949,
+                "id": 10605142,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -33776,14 +33861,14 @@
             ]
           },
           {
-            "id": 10605142,
+            "id": 10619949,
             "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-04-10T00:00:00.000Z",
+            "entryIntoForceDate": "2026-05-08T00:00:00.000Z",
             "measureDuration": null,
             "measureScope": null,
             "measureCategory": {
-              "key": "measure.category.recall.of.product.from.consumers",
-              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
+              "key": "measure.category.warning.consumers.of.risks",
+              "name": "WARNING_CONSUMERS_OF_RISKS"
             },
             "measureType": {
               "key": "measure.type.voluntary",
@@ -33798,7 +33883,7 @@
             "measureCompulsoryAuthority": null,
             "versions": [
               {
-                "id": 10605142,
+                "id": 10619949,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -34185,6 +34270,38 @@
         },
         "measures": [
           {
+            "id": 10619945,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-05-18T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.warning.consumers.of.risks",
+              "name": "WARNING_CONSUMERS_OF_RISKS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10619945,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
             "id": 10605103,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-04-20T00:00:00.000Z",
@@ -34240,38 +34357,6 @@
             "versions": [
               {
                 "id": 10605102,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
-            "id": 10619945,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-05-18T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.warning.consumers.of.risks",
-              "name": "WARNING_CONSUMERS_OF_RISKS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10619945,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -34700,6 +34785,38 @@
         },
         "measures": [
           {
+            "id": 10619936,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-06-08T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.warning.consumers.of.risks",
+              "name": "WARNING_CONSUMERS_OF_RISKS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10619936,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
             "id": 10130978,
             "entryIntoForceDateKnown": false,
             "entryIntoForceDate": null,
@@ -34755,38 +34872,6 @@
             "versions": [
               {
                 "id": 10130977,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
-            "id": 10619936,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-06-08T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.warning.consumers.of.risks",
-              "name": "WARNING_CONSUMERS_OF_RISKS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10619936,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -35198,38 +35283,6 @@
         },
         "measures": [
           {
-            "id": 10609557,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-05-13T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.removal.from.online.marketplace",
-              "name": "REMOVAL_FROM_ONLINE_MARKETPLACE"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10609557,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10609558,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-05-13T00:00:00.000Z",
@@ -35262,9 +35315,9 @@
             ]
           },
           {
-            "id": 10597471,
+            "id": 10609557,
             "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-02-12T00:00:00.000Z",
+            "entryIntoForceDate": "2026-05-13T00:00:00.000Z",
             "measureDuration": null,
             "measureScope": null,
             "measureCategory": {
@@ -35284,7 +35337,7 @@
             "measureCompulsoryAuthority": null,
             "versions": [
               {
-                "id": 10597471,
+                "id": 10609557,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -35317,6 +35370,38 @@
             "versions": [
               {
                 "id": 10597472,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10597471,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-02-12T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.removal.from.online.marketplace",
+              "name": "REMOVAL_FROM_ONLINE_MARKETPLACE"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10597471,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -35701,6 +35786,38 @@
         },
         "measures": [
           {
+            "id": 10619923,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-06-19T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.warning.consumers.of.risks",
+              "name": "WARNING_CONSUMERS_OF_RISKS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10619923,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
             "id": 10617001,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-04-27T00:00:00.000Z",
@@ -35756,38 +35873,6 @@
             "versions": [
               {
                 "id": 10617002,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
-            "id": 10619923,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-06-19T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.warning.consumers.of.risks",
-              "name": "WARNING_CONSUMERS_OF_RISKS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10619923,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -36241,38 +36326,6 @@
             ]
           },
           {
-            "id": 10615362,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-06-03T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.warning.consumers.of.risks",
-              "name": "WARNING_CONSUMERS_OF_RISKS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.distributor",
-              "name": "DISTRIBUTOR"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10615362,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10619917,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-06-22T00:00:00.000Z",
@@ -36296,6 +36349,38 @@
             "versions": [
               {
                 "id": 10619917,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10615362,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-06-03T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.warning.consumers.of.risks",
+              "name": "WARNING_CONSUMERS_OF_RISKS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.distributor",
+              "name": "DISTRIBUTOR"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10615362,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -36715,70 +36800,6 @@
         },
         "measures": [
           {
-            "id": 10604676,
-            "entryIntoForceDateKnown": false,
-            "entryIntoForceDate": null,
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.warning.consumers.of.risks",
-              "name": "WARNING_CONSUMERS_OF_RISKS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10604676,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
-            "id": 10604677,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-03-10T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.other",
-              "name": "OTHER"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10604677,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": "Warning the seller about the risks"
-              }
-            ]
-          },
-          {
             "id": 10610049,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-05-08T00:00:00.000Z",
@@ -36834,6 +36855,70 @@
             "versions": [
               {
                 "id": 10604675,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10604677,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-03-10T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.other",
+              "name": "OTHER"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10604677,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": "Warning the seller about the risks"
+              }
+            ]
+          },
+          {
+            "id": 10604676,
+            "entryIntoForceDateKnown": false,
+            "entryIntoForceDate": null,
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.warning.consumers.of.risks",
+              "name": "WARNING_CONSUMERS_OF_RISKS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10604676,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -37240,38 +37325,6 @@
         },
         "measures": [
           {
-            "id": 10611078,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-01-30T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.recall.of.product.from.consumers",
-              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10611078,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10611077,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2025-11-30T00:00:00.000Z",
@@ -37295,6 +37348,38 @@
             "versions": [
               {
                 "id": 10611077,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10611078,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-01-30T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.recall.of.product.from.consumers",
+              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10611078,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -37729,38 +37814,6 @@
             ]
           },
           {
-            "id": 10619652,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-06-08T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.warning.consumers.of.risks",
-              "name": "WARNING_CONSUMERS_OF_RISKS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10619652,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10605111,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-04-20T00:00:00.000Z",
@@ -37784,6 +37837,38 @@
             "versions": [
               {
                 "id": 10605111,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10619652,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-06-08T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.warning.consumers.of.risks",
+              "name": "WARNING_CONSUMERS_OF_RISKS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10619652,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -42484,38 +42569,6 @@
         },
         "measures": [
           {
-            "id": 10616150,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-03-18T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.removal.from.online.marketplace",
-              "name": "REMOVAL_FROM_ONLINE_MARKETPLACE"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10616150,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10616149,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-03-22T00:00:00.000Z",
@@ -42539,6 +42592,38 @@
             "versions": [
               {
                 "id": 10616149,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10616150,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-03-18T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.removal.from.online.marketplace",
+              "name": "REMOVAL_FROM_ONLINE_MARKETPLACE"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10616150,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -42822,7 +42907,7 @@
         "name": "ARTICLE_12"
       },
       "reference": "SR/01813/26",
-      "corrigendum": null,
+      "corrigendum": "At the request of the notifying authority, the type of risk has been updated.",
       "country": {
         "key": "FR",
         "propertyKey": "country.FR",
@@ -42832,8 +42917,8 @@
         "eeaCountry": true
       },
       "creationDate": "2026-06-12T08:49:32.207Z",
-      "publicationDate": "2026-06-18T10:09:18.783Z",
-      "modificationDate": "2026-06-26T13:48:04.523Z",
+      "publicationDate": "2026-07-02T12:58:12.930Z",
+      "modificationDate": "2026-07-02T12:58:12.934Z",
       "isImmediatePublication": true,
       "singlePublication": false,
       "forInfo": false,
@@ -43045,8 +43130,8 @@
         "id": 10021266,
         "riskType": [
           {
-            "key": "riskType.chemical",
-            "name": "CHEMICAL"
+            "key": "riskType.health.risk.or.other",
+            "name": "HEALTH_RISK_OTHER"
           }
         ],
         "versions": [
@@ -43070,9 +43155,41 @@
         },
         "measures": [
           {
-            "id": 10617073,
+            "id": 10617074,
+            "entryIntoForceDateKnown": false,
+            "entryIntoForceDate": null,
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.withdrawal.of.product.from.market",
+              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.distributor",
+              "name": "DISTRIBUTOR"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10617074,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10617071,
             "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-02-23T00:00:00.000Z",
+            "entryIntoForceDate": "2026-02-25T00:00:00.000Z",
             "measureDuration": null,
             "measureScope": null,
             "measureCategory": {
@@ -43092,7 +43209,39 @@
             "measureCompulsoryAuthority": null,
             "versions": [
               {
-                "id": 10617073,
+                "id": 10617071,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10617080,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-02-26T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.recall.of.product.from.consumers",
+              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.distributor",
+              "name": "DISTRIBUTOR"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10617080,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -43134,14 +43283,14 @@
             ]
           },
           {
-            "id": 10617071,
+            "id": 10617078,
             "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-02-25T00:00:00.000Z",
+            "entryIntoForceDate": "2026-02-11T00:00:00.000Z",
             "measureDuration": null,
             "measureScope": null,
             "measureCategory": {
-              "key": "measure.category.recall.of.product.from.consumers",
-              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
+              "key": "measure.category.withdrawal.of.product.from.market",
+              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
             },
             "measureType": {
               "key": "measure.type.voluntary",
@@ -43156,7 +43305,7 @@
             "measureCompulsoryAuthority": null,
             "versions": [
               {
-                "id": 10617071,
+                "id": 10617078,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -43230,70 +43379,6 @@
             ]
           },
           {
-            "id": 10617080,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-02-26T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.recall.of.product.from.consumers",
-              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.distributor",
-              "name": "DISTRIBUTOR"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10617080,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
-            "id": 10617078,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-02-11T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.withdrawal.of.product.from.market",
-              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.distributor",
-              "name": "DISTRIBUTOR"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10617078,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10617072,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-02-25T00:00:00.000Z",
@@ -43326,14 +43411,14 @@
             ]
           },
           {
-            "id": 10617074,
-            "entryIntoForceDateKnown": false,
-            "entryIntoForceDate": null,
+            "id": 10617073,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-02-23T00:00:00.000Z",
             "measureDuration": null,
             "measureScope": null,
             "measureCategory": {
-              "key": "measure.category.withdrawal.of.product.from.market",
-              "name": "PRODUCT_WITHDRAWAL_FROM_MARKET"
+              "key": "measure.category.recall.of.product.from.consumers",
+              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
             },
             "measureType": {
               "key": "measure.type.voluntary",
@@ -43348,7 +43433,7 @@
             "measureCompulsoryAuthority": null,
             "versions": [
               {
-                "id": 10617074,
+                "id": 10617073,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -43451,7 +43536,7 @@
             "key": "BG",
             "name": "български"
           },
-          "corrigendum": null
+          "corrigendum": "По искане на нотифициращия орган видът на риска е актуализиран."
         },
         {
           "id": 10099300,
@@ -43459,7 +43544,7 @@
             "key": "CS",
             "name": "čeština"
           },
-          "corrigendum": null
+          "corrigendum": "Na žádost oznamujícího orgánu byl druh rizika aktualizován."
         },
         {
           "id": 10099300,
@@ -43467,7 +43552,7 @@
             "key": "DA",
             "name": "dansk"
           },
-          "corrigendum": null
+          "corrigendum": "Efter anmodning fra den bemyndigende myndighed er risikotypen blevet ajourført."
         },
         {
           "id": 10099300,
@@ -43475,7 +43560,7 @@
             "key": "DE",
             "name": "deutsch"
           },
-          "corrigendum": null
+          "corrigendum": "Auf Ersuchen der notifizierenden Behörde wurde die Art des Risikos aktualisiert."
         },
         {
           "id": 10099300,
@@ -43483,7 +43568,7 @@
             "key": "EL",
             "name": "ελληνικά"
           },
-          "corrigendum": null
+          "corrigendum": "Κατόπιν αιτήματος της κοινοποιούσας αρχής, επικαιροποιήθηκε το είδος του κινδύνου."
         },
         {
           "id": 10099300,
@@ -43491,7 +43576,7 @@
             "key": "EN",
             "name": "english"
           },
-          "corrigendum": null
+          "corrigendum": "At the request of the notifying authority, the type of risk has been updated."
         },
         {
           "id": 10099300,
@@ -43499,7 +43584,7 @@
             "key": "ES",
             "name": "español"
           },
-          "corrigendum": null
+          "corrigendum": "A petición de la autoridad notificante, se ha actualizado el tipo de riesgo."
         },
         {
           "id": 10099300,
@@ -43507,7 +43592,7 @@
             "key": "ET",
             "name": "eesti keel"
           },
-          "corrigendum": null
+          "corrigendum": "Teavitava asutuse taotlusel on riski liiki ajakohastatud."
         },
         {
           "id": 10099300,
@@ -43515,7 +43600,7 @@
             "key": "FI",
             "name": "suomi"
           },
-          "corrigendum": null
+          "corrigendum": "Riskin tyyppi on päivitetty ilmoittamisesta vastaavan viranomaisen pyynnöstä."
         },
         {
           "id": 10099300,
@@ -43523,7 +43608,7 @@
             "key": "FR",
             "name": "français"
           },
-          "corrigendum": null
+          "corrigendum": "À la demande de l'autorité notifiante, le type de risque a été mis à jour."
         },
         {
           "id": 10099300,
@@ -43531,7 +43616,7 @@
             "key": "HR",
             "name": "hrvatski"
           },
-          "corrigendum": null
+          "corrigendum": "Na zahtjev tijela koje provodi prijavljivanje ažurirana je vrsta rizika."
         },
         {
           "id": 10099300,
@@ -43539,7 +43624,7 @@
             "key": "HU",
             "name": "magyar"
           },
-          "corrigendum": null
+          "corrigendum": "A bejelentő hatóság kérésére a kockázat típusát frissítették."
         },
         {
           "id": 10099300,
@@ -43547,7 +43632,7 @@
             "key": "IT",
             "name": "italiano"
           },
-          "corrigendum": null
+          "corrigendum": "Su richiesta dell'autorità di notifica, il tipo di rischio è stato aggiornato."
         },
         {
           "id": 10099300,
@@ -43555,7 +43640,7 @@
             "key": "LT",
             "name": "lietuvių kalba"
           },
-          "corrigendum": null
+          "corrigendum": "Notifikuojančiosios institucijos prašymu rizikos rūšis buvo atnaujinta."
         },
         {
           "id": 10099300,
@@ -43563,7 +43648,7 @@
             "key": "LV",
             "name": "latviešu valoda"
           },
-          "corrigendum": null
+          "corrigendum": "Pēc paziņojošās iestādes pieprasījuma riska veids ir atjaunināts."
         },
         {
           "id": 10099300,
@@ -43571,7 +43656,7 @@
             "key": "MT",
             "name": "malti"
           },
-          "corrigendum": null
+          "corrigendum": "Fuq talba tal-awtorità notifikanti, it-tip ta’ riskju ġie aġġornat."
         },
         {
           "id": 10099300,
@@ -43579,7 +43664,7 @@
             "key": "NL",
             "name": "nederlands"
           },
-          "corrigendum": null
+          "corrigendum": "Op verzoek van de aanmeldende autoriteit is het soort risico geactualiseerd."
         },
         {
           "id": 10099300,
@@ -43587,7 +43672,7 @@
             "key": "PL",
             "name": "polski"
           },
-          "corrigendum": null
+          "corrigendum": "Na wniosek organu notyfikującego zaktualizowano rodzaj ryzyka."
         },
         {
           "id": 10099300,
@@ -43595,7 +43680,7 @@
             "key": "PT",
             "name": "português"
           },
-          "corrigendum": null
+          "corrigendum": "A pedido da autoridade notificadora, o tipo de risco foi atualizado."
         },
         {
           "id": 10099300,
@@ -43603,7 +43688,7 @@
             "key": "RO",
             "name": "română"
           },
-          "corrigendum": null
+          "corrigendum": "La cererea autorității de notificare, tipul de risc a fost actualizat."
         },
         {
           "id": 10099300,
@@ -43611,7 +43696,7 @@
             "key": "SK",
             "name": "slovenčina (slovenský jazyk)"
           },
-          "corrigendum": null
+          "corrigendum": "Na žiadosť notifikujúceho orgánu bol druh rizika aktualizovaný."
         },
         {
           "id": 10099300,
@@ -43619,7 +43704,7 @@
             "key": "SL",
             "name": "slovenščina (slovenski jezik)"
           },
-          "corrigendum": null
+          "corrigendum": "Na zahtevo priglasitvenega organa je bila vrsta tveganja posodobljena."
         },
         {
           "id": 10099300,
@@ -43627,7 +43712,7 @@
             "key": "SV",
             "name": "svenska"
           },
-          "corrigendum": null
+          "corrigendum": "På begäran av den anmälande myndigheten har typen av risk uppdaterats."
         },
         {
           "id": 10099300,
@@ -43635,7 +43720,7 @@
             "key": "NO",
             "name": "norsk"
           },
-          "corrigendum": null
+          "corrigendum": "På anmodning fra meldermyndigheten er risikotypen ajourført."
         },
         {
           "id": 10099300,
@@ -43643,7 +43728,7 @@
             "key": "IS",
             "name": "Íslenska "
           },
-          "corrigendum": null
+          "corrigendum": "Tegund áhættu hefur verið uppfærð að beiðni tilkynningaryfirvaldsins."
         },
         {
           "id": 10099300,
@@ -43651,7 +43736,7 @@
             "key": "UK",
             "name": "українська"
           },
-          "corrigendum": null
+          "corrigendum": "На вимогу нотифікуючого органу оновлено вид ризику."
         },
         {
           "id": 10099300,
@@ -43659,7 +43744,7 @@
             "key": "AR",
             "name": "العربية"
           },
-          "corrigendum": null
+          "corrigendum": "وبناء على طلب سلطة الإخطار، تم تحديث نوع الخطر."
         },
         {
           "id": 10099300,
@@ -43667,7 +43752,7 @@
             "key": "GA",
             "name": "gaeilge"
           },
-          "corrigendum": null
+          "corrigendum": "Arna iarraidh sin don údarás a thugann fógra, tugadh an cineál riosca cothrom le dáta."
         }
       ],
       "onlineTraderProductIdentifierReference": []
@@ -44788,38 +44873,6 @@
         },
         "measures": [
           {
-            "id": 10617013,
-            "entryIntoForceDateKnown": true,
-            "entryIntoForceDate": "2026-05-12T00:00:00.000Z",
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.recall.of.product.from.consumers",
-              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
-            },
-            "measureType": {
-              "key": "measure.type.voluntary",
-              "name": "VOLUNTARY"
-            },
-            "measureVoluntaryEconomicOperator": {
-              "key": "measure.operator.other",
-              "name": "OTHER"
-            },
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": null,
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10617013,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10617012,
             "entryIntoForceDateKnown": true,
             "entryIntoForceDate": "2026-05-07T00:00:00.000Z",
@@ -44843,6 +44896,38 @@
             "versions": [
               {
                 "id": 10617012,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10617013,
+            "entryIntoForceDateKnown": true,
+            "entryIntoForceDate": "2026-05-12T00:00:00.000Z",
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.recall.of.product.from.consumers",
+              "name": "PRODUCT_RECALL_FROM_CONSUMERS"
+            },
+            "measureType": {
+              "key": "measure.type.voluntary",
+              "name": "VOLUNTARY"
+            },
+            "measureVoluntaryEconomicOperator": {
+              "key": "measure.operator.other",
+              "name": "OTHER"
+            },
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": null,
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10617013,
                 "language": {
                   "key": "EN",
                   "name": "english"
@@ -45259,38 +45344,6 @@
         },
         "measures": [
           {
-            "id": 10616978,
-            "entryIntoForceDateKnown": false,
-            "entryIntoForceDate": null,
-            "measureDuration": null,
-            "measureScope": null,
-            "measureCategory": {
-              "key": "measure.category.import.rejected.at.border",
-              "name": "IMPORT_REJECTED_AT_BORDER"
-            },
-            "measureType": {
-              "key": "measure.type.compulsory",
-              "name": "COMPULSORY"
-            },
-            "measureVoluntaryEconomicOperator": null,
-            "measureVoluntaryAuthority": null,
-            "measureCompulsoryEconomicOperator": {
-              "key": "measure.operator.importer",
-              "name": "IMPORTER"
-            },
-            "measureCompulsoryAuthority": null,
-            "versions": [
-              {
-                "id": 10616978,
-                "language": {
-                  "key": "EN",
-                  "name": "english"
-                },
-                "measureCategoryOther": null
-              }
-            ]
-          },
-          {
             "id": 10616977,
             "entryIntoForceDateKnown": false,
             "entryIntoForceDate": null,
@@ -45346,6 +45399,38 @@
             "versions": [
               {
                 "id": 10616979,
+                "language": {
+                  "key": "EN",
+                  "name": "english"
+                },
+                "measureCategoryOther": null
+              }
+            ]
+          },
+          {
+            "id": 10616978,
+            "entryIntoForceDateKnown": false,
+            "entryIntoForceDate": null,
+            "measureDuration": null,
+            "measureScope": null,
+            "measureCategory": {
+              "key": "measure.category.import.rejected.at.border",
+              "name": "IMPORT_REJECTED_AT_BORDER"
+            },
+            "measureType": {
+              "key": "measure.type.compulsory",
+              "name": "COMPULSORY"
+            },
+            "measureVoluntaryEconomicOperator": null,
+            "measureVoluntaryAuthority": null,
+            "measureCompulsoryEconomicOperator": {
+              "key": "measure.operator.importer",
+              "name": "IMPORTER"
+            },
+            "measureCompulsoryAuthority": null,
+            "versions": [
+              {
+                "id": 10616978,
                 "language": {
                   "key": "EN",
                   "name": "english"

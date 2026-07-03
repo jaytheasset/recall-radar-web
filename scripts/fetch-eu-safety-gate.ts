@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { canonicalProcessedPath, mergeProcessedRecalls } from './merge-recalls.ts';
 import { writeJsonAtomic } from './normalize-cpsc.ts';
 import {
@@ -18,6 +19,7 @@ const runtimeEnv = (process as typeof process & { env?: Record<string, string | 
 
 type FetchOptions = {
   limit: number;
+  refreshExistingRecordIds: boolean;
 };
 
 type PagePayload = {
@@ -41,8 +43,10 @@ function readLimitOption(): string {
 function getFetchOptions(): FetchOptions {
   const parsedLimit = Number.parseInt(readLimitOption(), 10);
   const limit = Number.isFinite(parsedLimit) ? Math.min(Math.max(parsedLimit, 1), maxLimit) : defaultLimit;
+  const refreshExistingRecordIds =
+    process.argv.includes('--refresh-existing-record-ids') || process.argv.includes('--existing-record-ids');
 
-  return { limit };
+  return { limit, refreshExistingRecordIds };
 }
 
 function commonHeaders(): HeadersInit {
@@ -185,6 +189,23 @@ async function collectMostRecentSummaries(limit: number): Promise<{ records: EuS
   };
 }
 
+async function collectExistingRawSummaries(): Promise<EuSafetyGateRaw[]> {
+  const rawText = await readFile(defaultRawEuSafetyGatePath, 'utf8');
+  const rawPayload = JSON.parse(rawText) as unknown;
+  const existingRecords = extractEuSafetyGateRecords(rawPayload);
+
+  if (existingRecords.length === 0) {
+    throw new Error('No existing EU Safety Gate raw records found; existing data was not overwritten.');
+  }
+
+  return existingRecords.map((record) => ({
+    id:
+      typeof record.id === 'string' || typeof record.id === 'number'
+        ? String(record.id)
+        : String(record.sourceId ?? record.reference ?? '')
+  }));
+}
+
 function publicSample(record: {
   id: string;
   source: string;
@@ -233,7 +254,12 @@ function publicSample(record: {
 
 async function runFetch(): Promise<void> {
   const options = getFetchOptions();
-  const { records: summaries, totalAvailable } = await collectMostRecentSummaries(options.limit);
+  const { records: summaries, totalAvailable } = options.refreshExistingRecordIds
+    ? {
+        records: await collectExistingRawSummaries(),
+        totalAvailable: 0
+      }
+    : await collectMostRecentSummaries(options.limit);
 
   if (summaries.length === 0) {
     throw new Error('EU Safety Gate returned zero records; existing data was not overwritten.');
@@ -251,6 +277,7 @@ async function runFetch(): Promise<void> {
     source: 'EU_SAFETY_GATE',
     endpoint: mostRecentEndpoint,
     detailEndpointBase,
+    mode: options.refreshExistingRecordIds ? 'existing-record-detail-refresh' : 'most-recent',
     limit: options.limit,
     totalAvailable,
     count: details.length,
