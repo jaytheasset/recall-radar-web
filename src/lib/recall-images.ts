@@ -8,9 +8,16 @@ export type RecallImageSelection = {
   alt: string;
 };
 
-export type DetailHeroImageSourceAttributes = {
+export type DetailHeroImageSources = {
+  initialSrc?: string;
+  fullSrc?: string;
+  thumbnailSrc?: string;
   srcset?: string;
   sizes?: string;
+  isProgressive: boolean;
+  loading: 'eager' | 'lazy';
+  decoding: 'async';
+  fetchpriority?: 'high';
 };
 
 export type DetailHeroImagePreloadAttributes = {
@@ -18,8 +25,6 @@ export type DetailHeroImagePreloadAttributes = {
   imagesrcset?: string;
   imagesizes?: string;
 };
-
-const DETAIL_HERO_SIZES = '(max-width: 680px) calc(100vw - 2rem), (max-width: 980px) calc(100vw - 4rem), 720px';
 
 export function getRecallImageForContext(
   recall: Pick<SiteRecall, 'source' | 'title' | 'primaryImageUrl' | 'primaryImageThumbnailUrl' | 'primaryImageAlt'>,
@@ -50,23 +55,31 @@ export function getImageLoadingAttributes(
   return { loading: 'lazy', decoding: 'async' };
 }
 
-export function getDetailHeroImageSourceAttributes(
+export function getDetailHeroImageSources(
   recall: Pick<SiteRecall, 'source' | 'primaryImageUrl' | 'primaryImageThumbnailUrl'>,
   image?: RecallImage
-): DetailHeroImageSourceAttributes {
-  if (recall.source !== 'EU_SAFETY_GATE') {
-    return {};
-  }
+): DetailHeroImageSources {
+  const loadingAttributes = getImageLoadingAttributes('detailHero');
+  const fullSrc = image?.url || recall.primaryImageUrl;
+  const thumbnailSrc = image?.thumbnailUrl || recall.primaryImageThumbnailUrl;
+  const isProgressive = recall.source === 'EU_SAFETY_GATE' && Boolean(fullSrc && thumbnailSrc && fullSrc !== thumbnailSrc);
 
-  const thumbnailUrl = image?.thumbnailUrl || recall.primaryImageThumbnailUrl;
-  const fullUrl = image?.url || recall.primaryImageUrl;
-  if (!thumbnailUrl || !fullUrl || thumbnailUrl === fullUrl) {
-    return {};
+  if (isProgressive) {
+    return {
+      initialSrc: thumbnailSrc,
+      fullSrc,
+      thumbnailSrc,
+      isProgressive,
+      ...loadingAttributes
+    };
   }
 
   return {
-    srcset: `${thumbnailUrl} 480w, ${fullUrl} 1200w`,
-    sizes: DETAIL_HERO_SIZES
+    initialSrc: fullSrc,
+    fullSrc,
+    thumbnailSrc,
+    isProgressive: false,
+    ...loadingAttributes
   };
 }
 
@@ -74,15 +87,15 @@ export function getDetailHeroImagePreloadAttributes(
   recall: Pick<SiteRecall, 'source' | 'primaryImageUrl' | 'primaryImageThumbnailUrl'>,
   image?: RecallImage
 ): DetailHeroImagePreloadAttributes | undefined {
-  const href = image?.url || recall.primaryImageUrl;
+  const sources = getDetailHeroImageSources(recall, image);
+  const href = sources.initialSrc;
   if (!href) {
     return undefined;
   }
 
-  const sourceAttributes = getDetailHeroImageSourceAttributes(recall, image);
   return {
     href,
-    ...(sourceAttributes.srcset ? { imagesrcset: sourceAttributes.srcset } : {}),
-    ...(sourceAttributes.sizes ? { imagesizes: sourceAttributes.sizes } : {})
+    ...(sources.srcset ? { imagesrcset: sources.srcset } : {}),
+    ...(sources.sizes ? { imagesizes: sources.sizes } : {})
   };
 }

@@ -4,8 +4,7 @@ import { categoryRoutes, siteRecalls } from '../../lib/recall-data';
 import { buildRecallDetailView, recallSourceBadge } from '../../lib/recall-detail-view';
 import {
   getDetailHeroImagePreloadAttributes,
-  getDetailHeroImageSourceAttributes,
-  getImageLoadingAttributes,
+  getDetailHeroImageSources,
   getRecallImageForContext
 } from '../../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../../lib/recall-sources';
@@ -32,8 +31,12 @@ const description = `${view.displayTitle} with product photos, affected item det
 const fallbackImageLabel = getRecallSourcePlaceholder(recall.source);
 const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
 const detailHeroImage = view.productImages[0];
-const detailHeroImageAttrs = getImageLoadingAttributes('detailHero');
-const detailHeroSourceAttrs = getDetailHeroImageSourceAttributes(recall, detailHeroImage);
+const detailHeroSources = getDetailHeroImageSources(recall, detailHeroImage);
+const detailHeroImageAttrs = {
+  loading: detailHeroSources.loading,
+  decoding: detailHeroSources.decoding,
+  ...(detailHeroSources.fetchpriority ? { fetchpriority: detailHeroSources.fetchpriority } : {})
+};
 const detailHeroPreloadAttrs = getDetailHeroImagePreloadAttributes(recall, detailHeroImage);
 ---
 
@@ -79,9 +82,11 @@ const detailHeroPreloadAttrs = getDetailHeroImagePreloadAttributes(recall, detai
                 {detailHeroImage ? (
                   <>
                     <img
-                      src={detailHeroImage.url}
+                      class:list={[detailHeroSources.isProgressive && 'progressive-detail-hero-image']}
+                      src={detailHeroSources.initialSrc || detailHeroImage.url}
                       alt={detailHeroImage.alt || view.primaryImageAlt}
-                      {...detailHeroSourceAttrs}
+                      data-full-src={detailHeroSources.isProgressive ? detailHeroSources.fullSrc : undefined}
+                      data-thumbnail-src={detailHeroSources.isProgressive ? detailHeroSources.thumbnailSrc : undefined}
                       {...detailHeroImageAttrs}
                       data-fallback-label={fallbackImageLabel}
                     />
@@ -420,7 +425,9 @@ const detailHeroPreloadAttrs = getDetailHeroImagePreloadAttributes(recall, detai
     </footer>
     <script>
       import { initImageFallbacks } from '../../lib/image-fallback';
+      import { initProgressiveDetailImages } from '../../lib/progressive-detail-image';
 
+      initProgressiveDetailImages();
       initImageFallbacks();
     </script>
   </body>

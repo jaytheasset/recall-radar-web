@@ -28,7 +28,8 @@ type AuditSummary = {
     fetchpriorityHighOutsideDetailPages: number;
     homepageFetchpriorityHigh: number;
     detailHeroPreloads: number;
-    euDetailHeroSrcsets: number;
+    euProgressiveHeroImages: number;
+    euInitialFullImageMisuseHits: number;
     euListThumbnailHits: number;
     euListFullImageMisuseHits: number;
   };
@@ -37,7 +38,8 @@ type AuditSummary = {
     euCardsOrListsUseThumbnails: boolean;
     noEuFullImageMisuseInCardsOrLists: boolean;
     detailHeroPreloadExists: boolean;
-    euDetailHeroSrcsetExists: boolean;
+    euDetailHeroProgressiveExists: boolean;
+    noEuFullImageInitialHeroSrc: boolean;
     fetchpriorityHighNotOverusedOutsideDetailPages: boolean;
   };
 };
@@ -98,6 +100,15 @@ function countMatches(value: string, pattern: RegExp): number {
   return [...value.matchAll(pattern)].length;
 }
 
+function getAttribute(tag: string, attribute: string): string {
+  const match = tag.match(new RegExp(`\\s${attribute}="([^"]*)"`));
+  return match?.[1] ?? '';
+}
+
+function priorityImageTag(html: string): string {
+  return html.match(/<img[^>]+fetchpriority="high"[^>]*>/)?.[0] ?? '';
+}
+
 const records = readProcessedRecords();
 const euRecords = records.filter((record) => record.source === 'EU_SAFETY_GATE');
 const euRecordsWithThumbnails = euRecords.filter((record) => firstFullImage(record) && firstThumbnailImage(record));
@@ -146,7 +157,8 @@ if (euListFullImageMisuseHits > 0) {
 
 let detailHeroPreloads = 0;
 let detailHeroPriorityImages = 0;
-let euDetailHeroSrcsets = 0;
+let euProgressiveHeroImages = 0;
+let euInitialFullImageMisuseHits = 0;
 for (const filePath of detailHtmlFiles) {
   const detailHtml = htmlByPath.get(filePath) ?? '';
   if (detailHtml.includes('fetchpriority="high"')) {
@@ -162,18 +174,23 @@ for (const record of euRecordsWithThumbnails) {
   const detailPath = detailHtmlPathFor(record.slug);
   const detailHtml = htmlByPath.get(detailPath);
   const fullUrl = firstFullImage(record);
+  const thumbnailUrl = firstThumbnailImage(record);
   if (!detailHtml) {
     blockers.push(`Missing built EU detail page for ${record.id}: ${detailPath}`);
     continue;
   }
 
-  if (
-    detailHtml.includes(`src="${fullUrl}"`) &&
-    detailHtml.includes(`${firstThumbnailImage(record)} 480w`) &&
-    detailHtml.includes(`${fullUrl} 1200w`) &&
-    detailHtml.includes('sizes=')
-  ) {
-    euDetailHeroSrcsets += 1;
+  const heroTag = priorityImageTag(detailHtml);
+  const heroSrc = getAttribute(heroTag, 'src');
+  const fullDataSrc = getAttribute(heroTag, 'data-full-src');
+  const thumbnailDataSrc = getAttribute(heroTag, 'data-thumbnail-src');
+
+  if (heroSrc === fullUrl) {
+    euInitialFullImageMisuseHits += 1;
+  }
+
+  if (heroSrc === thumbnailUrl && fullDataSrc === fullUrl && thumbnailDataSrc === thumbnailUrl) {
+    euProgressiveHeroImages += 1;
   }
 }
 
@@ -181,8 +198,12 @@ if (detailHeroPriorityImages && detailHeroPreloads !== detailHeroPriorityImages)
   blockers.push(`Expected ${detailHeroPriorityImages} built detail hero preload link(s), found ${detailHeroPreloads}.`);
 }
 
-if (euRecordsWithThumbnails.length && euDetailHeroSrcsets !== euRecordsWithThumbnails.length) {
-  blockers.push(`Expected ${euRecordsWithThumbnails.length} EU detail hero srcset/sizes image(s), found ${euDetailHeroSrcsets}.`);
+if (euRecordsWithThumbnails.length && euProgressiveHeroImages !== euRecordsWithThumbnails.length) {
+  blockers.push(`Expected ${euRecordsWithThumbnails.length} progressive EU detail hero image(s), found ${euProgressiveHeroImages}.`);
+}
+
+if (euInitialFullImageMisuseHits > 0) {
+  blockers.push(`Found ${euInitialFullImageMisuseHits} EU detail hero image(s) using the full image as the initial src.`);
 }
 
 /*
@@ -217,7 +238,8 @@ const summary: AuditSummary = {
     fetchpriorityHighOutsideDetailPages,
     homepageFetchpriorityHigh,
     detailHeroPreloads,
-    euDetailHeroSrcsets,
+    euProgressiveHeroImages,
+    euInitialFullImageMisuseHits,
     euListThumbnailHits,
     euListFullImageMisuseHits
   },
@@ -226,7 +248,8 @@ const summary: AuditSummary = {
     euCardsOrListsUseThumbnails: euListThumbnailHits > 0,
     noEuFullImageMisuseInCardsOrLists: euListFullImageMisuseHits === 0,
     detailHeroPreloadExists: detailHeroPriorityImages > 0 && detailHeroPreloads === detailHeroPriorityImages,
-    euDetailHeroSrcsetExists: euRecordsWithThumbnails.length > 0 && euDetailHeroSrcsets === euRecordsWithThumbnails.length,
+    euDetailHeroProgressiveExists: euRecordsWithThumbnails.length > 0 && euProgressiveHeroImages === euRecordsWithThumbnails.length,
+    noEuFullImageInitialHeroSrc: euInitialFullImageMisuseHits === 0,
     fetchpriorityHighNotOverusedOutsideDetailPages: homepageFetchpriorityHigh <= 1 && fetchpriorityHighOutsideDetailPages <= 1
   }
 };
