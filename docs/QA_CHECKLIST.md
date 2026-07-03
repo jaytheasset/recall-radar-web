@@ -116,6 +116,11 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - `/battery-recalls`
 - `/food-allergy-recalls`
 - `/household-product-recalls`
+- `/us-product-recalls`
+- `/canada-product-recalls`
+- `/eu-safety-gate-recalls`
+- `/france-product-recalls`
+- `/uk-food-recalls`
 - one real CPSC `/recalls/[slug]` page
 - one real FDA `/recalls/[slug]` page, when FDA data has been fetched
 - one real EU Safety Gate `/recalls/[slug]` page, when EU data has been fetched
@@ -128,6 +133,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm sitemap generation remains deferred until a canonical deployment URL is chosen.
 - Confirm category pages show a matching local record count.
 - Confirm `/household-product-recalls` shows Household Products notices and the page count matches the `household-appliance` category filter count.
+- Confirm country/source landing pages show United States 401, Canada 100, EU Safety Gate 100, France 100, and UK Food 100 indexed notices.
 - Confirm `/food-allergy-recalls` shows FDA/openFDA food records before CPSC food/allergy records when FDA records exist.
 - Confirm core pages remain readable at narrow mobile widths and long titles/labels wrap instead of overflowing.
 - Confirm recall detail pages show company recall history and related recall sections.

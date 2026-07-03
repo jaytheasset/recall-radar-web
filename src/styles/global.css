@@ -912,6 +912,24 @@ button:disabled {
   gap: 1rem;
 }
 
+.source-country-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.source-country-card .category-card-body {
+  min-width: 0;
+}
+
+.source-card-labels {
+  display: block;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 760;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .step-card {
   display: grid;
   gap: 0.7rem;

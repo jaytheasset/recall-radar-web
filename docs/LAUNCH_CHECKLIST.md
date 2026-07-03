@@ -127,6 +127,11 @@ Verify these routes return 200:
 - `/battery-recalls`
 - `/food-allergy-recalls`
 - `/household-product-recalls`
+- `/us-product-recalls`
+- `/canada-product-recalls`
+- `/eu-safety-gate-recalls`
+- `/france-product-recalls`
+- `/uk-food-recalls`
 - `/brands/aldi`
 - `/404`
 - `/robots.txt`

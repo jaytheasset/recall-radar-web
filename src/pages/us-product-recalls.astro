@@ -1,0 +1,14 @@
+---
+import SourceLandingPage from '../components/SourceLandingPage.astro';
+import { getSourceLandingPageByRoute, getSourceLandingPageRecalls } from '../lib/source-landing-pages';
+
+const page = getSourceLandingPageByRoute('/us-product-recalls');
+
+if (!page) {
+  throw new Error('Missing United States source landing page config.');
+}
+
+const recalls = getSourceLandingPageRecalls(page);
+---
+
+<SourceLandingPage page={page} recalls={recalls} />
