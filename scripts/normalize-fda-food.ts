@@ -23,6 +23,16 @@ export type FdaFoodRecallRaw = {
   product_type?: unknown;
 };
 
+export type FdaFoodRecordDiagnostic = {
+  wouldNormalize: boolean;
+  droppedReasons: string[];
+  requiredFields: {
+    title: string;
+    id: string;
+    recallDate: string;
+  };
+};
+
 type RawFdaFoodFile = {
   fetchedAt?: unknown;
   endpoint?: unknown;
@@ -98,6 +108,38 @@ function categoryFor(reason: string): string {
   return /allergen|undeclared|milk|egg|peanut|soy|wheat|sesame|tree nut|almond|cashew|walnut/.test(text)
     ? 'food/allergy'
     : 'food';
+}
+
+export function diagnoseFdaFoodRecord(raw: FdaFoodRecallRaw): FdaFoodRecordDiagnostic {
+  const productDescription = firstNonEmpty([raw.product_description], 'FDA food recall');
+  const recallingFirm = firstNonEmpty([raw.recalling_firm], 'FDA food recall');
+  const title = `${truncateText(productDescription, 120)} recalled by ${recallingFirm}`;
+  const id = `fda-${fallbackId(raw, `${recallingFirm}-${productDescription}`)}`;
+  const recallDateInput = firstNonEmpty([raw.recall_initiation_date, raw.report_date]);
+  const recallDate = normalizeFdaDate(recallDateInput);
+  const droppedReasons: string[] = [];
+
+  if (!title) {
+    droppedReasons.push('missing title');
+  }
+
+  if (!id) {
+    droppedReasons.push('missing id');
+  }
+
+  if (!recallDate) {
+    droppedReasons.push('missing recallDate');
+  }
+
+  return {
+    wouldNormalize: Boolean(title && id && recallDate),
+    droppedReasons,
+    requiredFields: {
+      title,
+      id,
+      recallDate
+    }
+  };
 }
 
 export function normalizeFdaFoodRecords(records: FdaFoodRecallRaw[]): NormalizedRecall[] {

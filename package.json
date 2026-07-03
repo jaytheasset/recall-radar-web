@@ -9,6 +9,7 @@
     "build:data": "npm run fetch:cpsc && npm run fetch:fda-food && npm run fetch:rappelconso && npm run fetch:canada && npm run fetch:eu-safety-gate && npm run fetch:uk-fsa",
     "fetch:cpsc": "node --experimental-strip-types scripts/fetch-cpsc.ts",
     "fetch:fda-food": "node --experimental-strip-types scripts/fetch-fda-food.ts",
+    "debug:fda-food-single": "node --experimental-strip-types scripts/debug-fda-food-single.ts",
     "fetch:rappelconso": "node --experimental-strip-types scripts/fetch-rappelconso.ts",
     "fetch:canada": "node --experimental-strip-types scripts/fetch-canada-recalls.ts",
     "fetch:eu-safety-gate": "node --experimental-strip-types scripts/fetch-eu-safety-gate.ts",
