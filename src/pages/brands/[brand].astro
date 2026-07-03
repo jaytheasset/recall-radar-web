@@ -130,8 +130,10 @@ const description = `Indexed recall notices linked to ${brand}, with related pro
     </footer>
     <script>
       import { initImageFallbacks } from '../../lib/image-fallback';
+      import { initProgressiveCardImages } from '../../lib/progressive-detail-image';
       import { upsertWatchlistBrand } from '../../lib/watchlist';
 
+      initProgressiveCardImages();
       initImageFallbacks();
 
       const saveBrandButton = document.querySelector<HTMLButtonElement>('#save-brand-watchlist');

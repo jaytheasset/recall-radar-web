@@ -5,6 +5,7 @@ import { buildRecallDetailView, recallSourceBadge } from '../../lib/recall-detai
 import {
   getDetailHeroImagePreloadAttributes,
   getDetailHeroImageSources,
+  getDisplayImageCaption,
   getRecallImageForContext
 } from '../../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../../lib/recall-sources';
@@ -38,6 +39,7 @@ const detailHeroImageAttrs = {
   ...(detailHeroSources.fetchpriority ? { fetchpriority: detailHeroSources.fetchpriority } : {})
 };
 const detailHeroPreloadAttrs = getDetailHeroImagePreloadAttributes(recall, detailHeroImage);
+const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
 ---
 
 <html lang="en">
@@ -87,6 +89,7 @@ const detailHeroPreloadAttrs = getDetailHeroImagePreloadAttributes(recall, detai
                       alt={detailHeroImage.alt || view.primaryImageAlt}
                       data-full-src={detailHeroSources.isProgressive ? detailHeroSources.fullSrc : undefined}
                       data-thumbnail-src={detailHeroSources.isProgressive ? detailHeroSources.thumbnailSrc : undefined}
+                      data-progressive-mode={detailHeroSources.isProgressive ? 'detail' : undefined}
                       {...detailHeroImageAttrs}
                       data-fallback-label={fallbackImageLabel}
                     />
@@ -96,25 +99,29 @@ const detailHeroPreloadAttrs = getDetailHeroImagePreloadAttributes(recall, detai
                   <span class="image-placeholder">{fallbackImageLabel}</span>
                 )}
               </div>
-              {detailHeroImage?.caption ? <figcaption>{detailHeroImage.caption}</figcaption> : null}
+              {detailHeroCaption ? <figcaption>{detailHeroCaption}</figcaption> : null}
             </figure>
             {view.productImages.length > 1 ? (
               <div class="thumbnail-grid detail-thumbnail-grid" aria-label="Additional product images">
-                {view.productImages.slice(1, 7).map((image) => (
-                  <figure class="detail-thumbnail">
-                    <div class="image-shell">
-                      <img
-                        src={image.url}
-                        alt={image.alt || image.caption || view.primaryImageAlt}
-                        loading="lazy"
-                        decoding="async"
-                        data-fallback-label={fallbackImageLabel}
-                      />
-                      <span class="image-placeholder image-placeholder-fallback" hidden>{fallbackImageLabel}</span>
-                    </div>
-                    {image.caption ? <figcaption>{image.caption}</figcaption> : null}
-                  </figure>
-                ))}
+                {view.productImages.slice(1, 7).map((image) => {
+                  const caption = getDisplayImageCaption(image.caption);
+
+                  return (
+                    <figure class="detail-thumbnail">
+                      <div class="image-shell">
+                        <img
+                          src={image.url}
+                          alt={image.alt || image.caption || view.primaryImageAlt}
+                          loading="lazy"
+                          decoding="async"
+                          data-fallback-label={fallbackImageLabel}
+                        />
+                        <span class="image-placeholder image-placeholder-fallback" hidden>{fallbackImageLabel}</span>
+                      </div>
+                      {caption ? <figcaption>{caption}</figcaption> : null}
+                    </figure>
+                  );
+                })}
               </div>
             ) : null}
           </div>
@@ -425,9 +432,10 @@ const detailHeroPreloadAttrs = getDetailHeroImagePreloadAttributes(recall, detai
     </footer>
     <script>
       import { initImageFallbacks } from '../../lib/image-fallback';
-      import { initProgressiveDetailImages } from '../../lib/progressive-detail-image';
+      import { initProgressiveCardImages, initProgressiveDetailImages } from '../../lib/progressive-detail-image';
 
       initProgressiveDetailImages();
+      initProgressiveCardImages();
       initImageFallbacks();
     </script>
   </body>

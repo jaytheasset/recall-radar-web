@@ -1,6 +1,7 @@
 import processedRecallData from '../../data/processed/recalls.json';
 import type { NormalizedRecall, ProcessedRecallFile, RecallImage } from '../data/recall-types';
 import type { SiteRecall } from './recall-data';
+import { getDisplayImageCaption } from './recall-images';
 import {
   getOfficialSourceLabel,
   getOfficialVerificationCopy,
@@ -282,7 +283,9 @@ function imageCaptions(raw: RawObject, recall: SiteRecall): string[] {
   return uniqueNonEmpty([
     ...rawArray(raw, 'Images').map((item) => safeText(item.Caption) || safeText(item.caption)),
     ...recall.images.map((image) => image.caption ?? '')
-  ]);
+  ]
+    .map(getDisplayImageCaption)
+    .filter((caption): caption is string => Boolean(caption)));
 }
 
 function productUpcs(raw: RawObject): string[] {

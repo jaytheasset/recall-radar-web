@@ -32,12 +32,29 @@ export function getRecallImageForContext(
 ): RecallImageSelection {
   const shouldUseThumbnail =
     recall.source === 'EU_SAFETY_GATE' && (context === 'card' || context === 'list' || context === 'related');
-  const url = shouldUseThumbnail ? recall.primaryImageThumbnailUrl || recall.primaryImageUrl : recall.primaryImageUrl;
+  const fullUrl = recall.primaryImageUrl;
+  const thumbnailUrl = recall.primaryImageThumbnailUrl;
+  const url = shouldUseThumbnail ? thumbnailUrl || fullUrl : fullUrl;
 
   return {
     url,
     alt: recall.primaryImageAlt || recall.title
   };
+}
+
+export function getDisplayImageCaption(caption?: string): string | undefined {
+  const cleanCaption = caption?.trim().replace(/\s+/g, ' ');
+  if (!cleanCaption) {
+    return undefined;
+  }
+
+  const imageFilenamePattern = /(?:^|[\\/])[^\\/]+\.(?:png|jpe?g|gif|webp|bmp|tiff?)(?:\?.*)?$/i;
+  const genericCaptionPattern = /^(?:image|photo|product image|recall image|notification image|safety gate product image)$/i;
+  if (imageFilenamePattern.test(cleanCaption) || genericCaptionPattern.test(cleanCaption)) {
+    return undefined;
+  }
+
+  return cleanCaption;
 }
 
 export function getImageLoadingAttributes(

@@ -244,8 +244,10 @@ const dateOptions = [
         getRecallSourcePlaceholder
       } from '../lib/recall-sources';
       import { initImageFallbacks } from '../lib/image-fallback';
+      import { initProgressiveCardImages } from '../lib/progressive-detail-image';
       import { upsertWatchlistSearch } from '../lib/watchlist';
 
+      initProgressiveCardImages();
       initImageFallbacks();
 
       const dataNode = document.querySelector<HTMLScriptElement>('#recall-search-data');
@@ -638,6 +640,7 @@ const dateOptions = [
           summary.textContent =
             'Search official recall notices by product, brand, model, UPC/barcode, lot code, ingredient, or keyword.';
           list.replaceChildren();
+          initProgressiveCardImages();
           return;
         }
 
@@ -651,6 +654,7 @@ const dateOptions = [
 
         if (result.match === 'none') {
           list.replaceChildren(createNoResultState());
+          initProgressiveCardImages();
           return;
         }
 
@@ -668,6 +672,7 @@ const dateOptions = [
             ...(sortedItems.length ? [createResultGroup('Sorted recall results', sortedItems)] : [])
           );
         }
+        initProgressiveCardImages();
       }
 
       function updateSearch(): void {

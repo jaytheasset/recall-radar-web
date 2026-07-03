@@ -32,11 +32,13 @@ type AuditSummary = {
     euInitialFullImageMisuseHits: number;
     euListThumbnailHits: number;
     euListFullImageMisuseHits: number;
+    euCardViewportProgressiveLoaderHits: number;
   };
   checks: {
     resourceHintsExist: boolean;
     euCardsOrListsUseThumbnails: boolean;
     noEuFullImageMisuseInCardsOrLists: boolean;
+    euCardFullImageLoadsNearViewport: boolean;
     detailHeroPreloadExists: boolean;
     euDetailHeroProgressiveExists: boolean;
     noEuFullImageInitialHeroSrc: boolean;
@@ -47,6 +49,7 @@ type AuditSummary = {
 const root = process.cwd();
 const distDir = path.join(root, 'dist');
 const processedPath = path.join(root, 'data', 'processed', 'recalls.json');
+const progressiveImageLoaderPath = path.join(root, 'src', 'lib', 'progressive-detail-image.ts');
 
 function readText(filePath: string): string {
   return fs.readFileSync(filePath, 'utf8');
@@ -155,6 +158,19 @@ if (euListFullImageMisuseHits > 0) {
   blockers.push(`Found ${euListFullImageMisuseHits} EU full image use(s) in card/list contexts where thumbnails should be used.`);
 }
 
+const progressiveImageLoader = fs.existsSync(progressiveImageLoaderPath) ? readText(progressiveImageLoaderPath) : '';
+const euCardViewportProgressiveLoaderHits =
+  progressiveImageLoader.includes('IntersectionObserver') &&
+  progressiveImageLoader.includes('rootMargin') &&
+  progressiveImageLoader.includes('/notification/thumbnail/') &&
+  progressiveImageLoader.includes('/notification/image/')
+    ? 1
+    : 0;
+
+if (!euCardViewportProgressiveLoaderHits) {
+  blockers.push('EU card/list progressive full-image loading is not gated by a viewport observer.');
+}
+
 let detailHeroPreloads = 0;
 let detailHeroPriorityImages = 0;
 let euProgressiveHeroImages = 0;
@@ -241,12 +257,14 @@ const summary: AuditSummary = {
     euProgressiveHeroImages,
     euInitialFullImageMisuseHits,
     euListThumbnailHits,
-    euListFullImageMisuseHits
+    euListFullImageMisuseHits,
+    euCardViewportProgressiveLoaderHits
   },
   checks: {
     resourceHintsExist,
     euCardsOrListsUseThumbnails: euListThumbnailHits > 0,
     noEuFullImageMisuseInCardsOrLists: euListFullImageMisuseHits === 0,
+    euCardFullImageLoadsNearViewport: euCardViewportProgressiveLoaderHits > 0,
     detailHeroPreloadExists: detailHeroPriorityImages > 0 && detailHeroPreloads === detailHeroPriorityImages,
     euDetailHeroProgressiveExists: euRecordsWithThumbnails.length > 0 && euProgressiveHeroImages === euRecordsWithThumbnails.length,
     noEuFullImageInitialHeroSrc: euInitialFullImageMisuseHits === 0,

@@ -170,6 +170,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         getRecallSourcePlaceholder
       } from '../lib/recall-sources';
       import { initImageFallbacks } from '../lib/image-fallback';
+      import { initProgressiveCardImages } from '../lib/progressive-detail-image';
       import {
         clearWatchlist,
         loadWatchlist,
@@ -180,6 +181,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         type WatchlistSearchItem
       } from '../lib/watchlist';
 
+      initProgressiveCardImages();
       initImageFallbacks();
 
       const dataNode = document.querySelector<HTMLScriptElement>('#watchlist-recall-data');
@@ -452,6 +454,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         clearButton.disabled = state.items.length === 0;
         emptyWatchlist.hidden = state.items.length > 0;
         itemsContainer.replaceChildren(...state.items.map(createSavedItemCard));
+        initProgressiveCardImages();
       }
 
       clearButton?.addEventListener('click', () => {
