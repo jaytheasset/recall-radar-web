@@ -33,6 +33,8 @@ type AuditSummary = {
     euListThumbnailHits: number;
     euListFullImageMisuseHits: number;
     euCardViewportProgressiveLoaderHits: number;
+    detailGalleryPages: number;
+    detailGalleryPagesWithControls: number;
   };
   checks: {
     resourceHintsExist: boolean;
@@ -43,6 +45,8 @@ type AuditSummary = {
     euDetailHeroProgressiveExists: boolean;
     noEuFullImageInitialHeroSrc: boolean;
     fetchpriorityHighNotOverusedOutsideDetailPages: boolean;
+    detailGalleryControlsExist: boolean;
+    detailGalleryKeyboardControlsExist: boolean;
   };
 };
 
@@ -173,6 +177,8 @@ if (!euCardViewportProgressiveLoaderHits) {
 
 let detailHeroPreloads = 0;
 let detailHeroPriorityImages = 0;
+let detailGalleryPages = 0;
+let detailGalleryPagesWithControls = 0;
 let euProgressiveHeroImages = 0;
 let euInitialFullImageMisuseHits = 0;
 for (const filePath of detailHtmlFiles) {
@@ -183,6 +189,21 @@ for (const filePath of detailHtmlFiles) {
 
   if (detailHtml.includes('rel="preload"') && detailHtml.includes('as="image"')) {
     detailHeroPreloads += 1;
+  }
+
+  const galleryCount = Number(detailHtml.match(/data-detail-gallery-image-count="(\d+)"/)?.[1] ?? 0);
+  if (galleryCount > 1) {
+    detailGalleryPages += 1;
+
+    const hasMainImage = detailHtml.includes('data-detail-gallery-main');
+    const hasThumbnailControl = detailHtml.includes('data-gallery-thumbnail');
+    const hasFullSource = detailHtml.includes('data-full-src=');
+    const hasInitialSource = detailHtml.includes('data-initial-src=');
+    const hasSelectedState = detailHtml.includes('is-selected') && detailHtml.includes('aria-pressed="true"');
+
+    if (hasMainImage && hasThumbnailControl && hasFullSource && hasInitialSource && hasSelectedState) {
+      detailGalleryPagesWithControls += 1;
+    }
   }
 }
 
@@ -241,6 +262,29 @@ if (fetchpriorityHighOutsideDetailPages > 1) {
   blockers.push(`Non-detail pages have ${fetchpriorityHighOutsideDetailPages} fetchpriority="high" image(s); expected at most 1.`);
 }
 
+if (detailGalleryPages > 0 && detailGalleryPagesWithControls !== detailGalleryPages) {
+  blockers.push(
+    `Expected ${detailGalleryPages} multi-image detail page(s) to include gallery controls, found ${detailGalleryPagesWithControls}.`
+  );
+}
+
+const detailGallerySwitcherExists =
+  progressiveImageLoader.includes('initDetailImageGallery') &&
+  progressiveImageLoader.includes('data-gallery-thumbnail') &&
+  progressiveImageLoader.includes('aria-pressed');
+const detailGalleryKeyboardControlsExist =
+  progressiveImageLoader.includes("addEventListener('keydown'") &&
+  progressiveImageLoader.includes("event.key !== 'Enter'") &&
+  progressiveImageLoader.includes("event.key !== ' '");
+
+if (detailGalleryPages > 0 && !detailGallerySwitcherExists) {
+  blockers.push('Detail image gallery thumbnail switching script was not found.');
+}
+
+if (detailGalleryPages > 0 && !detailGalleryKeyboardControlsExist) {
+  blockers.push('Detail image gallery keyboard switching handler was not found.');
+}
+
 const summary: AuditSummary = {
   passed: blockers.length === 0,
   blockers,
@@ -258,7 +302,9 @@ const summary: AuditSummary = {
     euInitialFullImageMisuseHits,
     euListThumbnailHits,
     euListFullImageMisuseHits,
-    euCardViewportProgressiveLoaderHits
+    euCardViewportProgressiveLoaderHits,
+    detailGalleryPages,
+    detailGalleryPagesWithControls
   },
   checks: {
     resourceHintsExist,
@@ -268,7 +314,10 @@ const summary: AuditSummary = {
     detailHeroPreloadExists: detailHeroPriorityImages > 0 && detailHeroPreloads === detailHeroPriorityImages,
     euDetailHeroProgressiveExists: euRecordsWithThumbnails.length > 0 && euProgressiveHeroImages === euRecordsWithThumbnails.length,
     noEuFullImageInitialHeroSrc: euInitialFullImageMisuseHits === 0,
-    fetchpriorityHighNotOverusedOutsideDetailPages: homepageFetchpriorityHigh <= 1 && fetchpriorityHighOutsideDetailPages <= 1
+    fetchpriorityHighNotOverusedOutsideDetailPages: homepageFetchpriorityHigh <= 1 && fetchpriorityHighOutsideDetailPages <= 1,
+    detailGalleryControlsExist:
+      detailGalleryPages === 0 || (detailGalleryPagesWithControls === detailGalleryPages && detailGallerySwitcherExists),
+    detailGalleryKeyboardControlsExist: detailGalleryPages === 0 || detailGalleryKeyboardControlsExist
   }
 };
 

@@ -33,6 +33,22 @@ const fallbackImageLabel = getRecallSourcePlaceholder(recall.source);
 const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
 const detailHeroImage = view.productImages[0];
 const detailHeroSources = getDetailHeroImageSources(recall, detailHeroImage);
+const detailGalleryImages = view.productImages.slice(0, 7).map((image, index) => {
+  const sources = getDetailHeroImageSources(recall, image);
+  const caption = getDisplayImageCaption(image.caption);
+  const alt = image.alt || caption || view.primaryImageAlt;
+
+  return {
+    image,
+    index,
+    sources,
+    caption,
+    alt,
+    initialSrc: sources.initialSrc || image.url,
+    fullSrc: sources.fullSrc || image.url,
+    thumbnailSrc: sources.thumbnailSrc || sources.initialSrc || image.url
+  };
+});
 const detailHeroImageAttrs = {
   loading: detailHeroSources.loading,
   decoding: detailHeroSources.decoding,
@@ -77,7 +93,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
       </section>
 
       <section class="section detail-grid detail-main-grid">
-        <article class="detail-gallery-card" aria-label="Product images">
+        <article class="detail-gallery-card" aria-label="Product images" data-detail-gallery-image-count={view.productImages.length}>
           <div class="detail-gallery">
             <figure class="detail-image-figure">
               <div class="image-shell image-shell-large">
@@ -87,9 +103,10 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
                       class:list={[detailHeroSources.isProgressive && 'progressive-detail-hero-image']}
                       src={detailHeroSources.initialSrc || detailHeroImage.url}
                       alt={detailHeroImage.alt || view.primaryImageAlt}
-                      data-full-src={detailHeroSources.isProgressive ? detailHeroSources.fullSrc : undefined}
-                      data-thumbnail-src={detailHeroSources.isProgressive ? detailHeroSources.thumbnailSrc : undefined}
-                      data-progressive-mode={detailHeroSources.isProgressive ? 'detail' : undefined}
+                      data-detail-gallery-main
+                      data-full-src={detailHeroSources.fullSrc}
+                      data-thumbnail-src={detailHeroSources.thumbnailSrc}
+                      data-progressive-mode={detailHeroSources.isProgressive ? 'detail' : 'static'}
                       {...detailHeroImageAttrs}
                       data-fallback-label={fallbackImageLabel}
                     />
@@ -99,29 +116,40 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
                   <span class="image-placeholder">{fallbackImageLabel}</span>
                 )}
               </div>
-              {detailHeroCaption ? <figcaption>{detailHeroCaption}</figcaption> : null}
+              <figcaption data-detail-gallery-caption hidden={!detailHeroCaption}>{detailHeroCaption}</figcaption>
             </figure>
             {view.productImages.length > 1 ? (
               <div class="thumbnail-grid detail-thumbnail-grid" aria-label="Additional product images">
-                {view.productImages.slice(1, 7).map((image) => {
-                  const caption = getDisplayImageCaption(image.caption);
-
-                  return (
+                {detailGalleryImages.map((galleryImage) => (
                     <figure class="detail-thumbnail">
-                      <div class="image-shell">
+                      <button
+                        class:list={['detail-thumbnail-button', galleryImage.index === 0 && 'is-selected']}
+                        type="button"
+                        aria-label={`View image ${galleryImage.index + 1} for ${view.displayTitle}`}
+                        aria-pressed={galleryImage.index === 0 ? 'true' : 'false'}
+                        aria-current={galleryImage.index === 0 ? 'true' : undefined}
+                        data-gallery-thumbnail
+                        data-gallery-index={galleryImage.index}
+                        data-initial-src={galleryImage.initialSrc}
+                        data-full-src={galleryImage.fullSrc}
+                        data-thumbnail-src={galleryImage.thumbnailSrc}
+                        data-alt={galleryImage.alt}
+                        data-caption={galleryImage.caption}
+                      >
+                        <span class="image-shell">
                         <img
-                          src={image.url}
-                          alt={image.alt || image.caption || view.primaryImageAlt}
+                          src={galleryImage.thumbnailSrc}
+                          alt={galleryImage.alt}
                           loading="lazy"
                           decoding="async"
                           data-fallback-label={fallbackImageLabel}
                         />
                         <span class="image-placeholder image-placeholder-fallback" hidden>{fallbackImageLabel}</span>
-                      </div>
-                      {caption ? <figcaption>{caption}</figcaption> : null}
+                        </span>
+                      </button>
+                      {galleryImage.caption ? <figcaption>{galleryImage.caption}</figcaption> : null}
                     </figure>
-                  );
-                })}
+                  ))}
               </div>
             ) : null}
           </div>
@@ -432,9 +460,10 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
     </footer>
     <script>
       import { initImageFallbacks } from '../../lib/image-fallback';
-      import { initProgressiveCardImages, initProgressiveDetailImages } from '../../lib/progressive-detail-image';
+      import { initDetailImageGallery, initProgressiveCardImages, initProgressiveDetailImages } from '../../lib/progressive-detail-image';
 
       initProgressiveDetailImages();
+      initDetailImageGallery();
       initProgressiveCardImages();
       initImageFallbacks();
     </script>

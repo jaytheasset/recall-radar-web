@@ -1289,6 +1289,57 @@ button:disabled {
   box-shadow: inset 0 0 0 1px var(--media-frame-border);
 }
 
+.detail-thumbnail-button {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  border-radius: calc(var(--media-frame-radius) + 4px);
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: inherit;
+}
+
+.detail-thumbnail-button .image-shell {
+  width: 100%;
+  min-width: 0;
+  transition:
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.detail-thumbnail-button:hover .image-shell,
+.detail-thumbnail-button:focus-visible .image-shell {
+  box-shadow:
+    inset 0 0 0 1px rgba(11, 18, 32, 0.22),
+    0 10px 24px rgba(17, 24, 39, 0.1);
+}
+
+.detail-thumbnail-button:focus-visible {
+  outline: 3px solid rgba(11, 18, 32, 0.28);
+  outline-offset: 3px;
+}
+
+.detail-thumbnail-button.is-selected .image-shell {
+  box-shadow:
+    inset 0 0 0 2px var(--black),
+    0 12px 28px rgba(17, 24, 39, 0.14);
+}
+
+.detail-thumbnail-button.is-selected .image-shell::after {
+  position: absolute;
+  right: 0.45rem;
+  bottom: 0.45rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  border: 2px solid var(--surface);
+  border-radius: 999px;
+  background: var(--black);
+  content: '';
+}
+
 .detail-image-figure,
 .detail-thumbnail {
   display: grid;
@@ -1785,6 +1836,10 @@ button:disabled {
   .category-grid,
   .thumbnail-grid {
     grid-template-columns: 1fr;
+  }
+
+  .detail-thumbnail-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .section {
