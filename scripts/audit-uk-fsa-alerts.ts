@@ -43,7 +43,8 @@ const expectedSourceFilterValues = [
   'UK_FSA',
   'AU_PRODUCT_SAFETY',
   'NZ_PRODUCT_SAFETY',
-  'HK_CFS'
+  'HK_CFS',
+  'FSANZ_FOOD_RECALLS'
 ];
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const processedPath = resolve(projectRoot, 'data/processed/uk-fsa-alerts.json');
@@ -163,7 +164,8 @@ async function readCanonicalCounts(): Promise<SourceCounts> {
     UK_FSA: records.filter((record) => record.source === 'UK_FSA').length,
     AU_PRODUCT_SAFETY: records.filter((record) => record.source === 'AU_PRODUCT_SAFETY').length,
     NZ_PRODUCT_SAFETY: records.filter((record) => record.source === 'NZ_PRODUCT_SAFETY').length,
-    HK_CFS: records.filter((record) => record.source === 'HK_CFS').length
+    HK_CFS: records.filter((record) => record.source === 'HK_CFS').length,
+    FSANZ_FOOD_RECALLS: records.filter((record) => record.source === 'FSANZ_FOOD_RECALLS').length
   };
 }
 
@@ -239,7 +241,7 @@ function audit(records: NormalizedRecall[]): AuditSummary {
 
 function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sourceFilters: string[]): string[] {
   const expectedCounts: SourceCounts = {
-    total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 1101),
+    total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 1201),
     CPSC: expectedNumber('EXPECTED_CPSC_COUNT', 301),
     FDA: expectedNumber('EXPECTED_FDA_COUNT', 100),
     FR_RAPPELCONSO: expectedNumber('EXPECTED_RAPPELCONSO_COUNT', 100),
@@ -248,7 +250,8 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
     UK_FSA: expectedNumber('EXPECTED_UK_FSA_COUNT', 100),
     AU_PRODUCT_SAFETY: expectedNumber('EXPECTED_AU_PRODUCT_SAFETY_COUNT', 100),
     NZ_PRODUCT_SAFETY: expectedNumber('EXPECTED_NZ_PRODUCT_SAFETY_COUNT', 100),
-    HK_CFS: expectedNumber('EXPECTED_HK_CFS_COUNT', 100)
+    HK_CFS: expectedNumber('EXPECTED_HK_CFS_COUNT', 100),
+    FSANZ_FOOD_RECALLS: expectedNumber('EXPECTED_FSANZ_FOOD_RECALLS_COUNT', 100)
   };
   const severeMissingThreshold = Math.max(1, Math.floor(summary.total * 0.05));
 

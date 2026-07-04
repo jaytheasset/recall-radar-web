@@ -138,8 +138,8 @@ Risks:
 1. `AU_PRODUCT_SAFETY` - best next overall candidate. Official, English, consumer-product focused, RSS-supported, and close to existing CPSC/Canada consumer recall UX.
 2. `KR_SAFETYKOREA` - best next Asia candidate if API access can be confirmed. Strong official API signal and useful product identifiers.
 3. `KR_MFDS` - strong food recall source with official JSON/XML metadata and product photo URL fields.
-4. `NZ_MPI_FOOD` - official New Zealand food recalls, separate from `NZ_PRODUCT_SAFETY`.
-5. `AU_FSANZ` - official English food recall source, likely HTML/detail work.
+4. `FSANZ_FOOD_RECALLS` - activated in Phase 39 as a bounded Australia/New Zealand food recall source using official listing/detail pages.
+5. `NZ_MPI_FOOD` - official New Zealand food recalls, separate from `NZ_PRODUCT_SAFETY`.
 6. `JP_CAA` - broad coverage but high source-language and HTML-maintenance risk.
 7. `SG_SFA` - useful English food recall pages, but feed/API not confirmed.
 8. `HK_EMSD` - valuable electrical/household recall pages, likely HTML-only.
@@ -154,7 +154,6 @@ Best next source candidate:
 
 Planning-only source id proposals:
 
-- `AU_FSANZ`
 - `AU_VEHICLE_RECALLS`
 - `NZ_MPI_FOOD`
 - `NZTA_VEHICLE_RECALLS`
@@ -171,7 +170,7 @@ Planning-only source id proposals:
 - `TW_TFDA`
 - `TW_BSMI`
 
-These ids are not active source ids and must not be added to `src/data/recall-types.ts`, `src/lib/recall-sources.ts`, source filters, or processed data until a future ingestion phase explicitly implements and validates one source. `AU_PRODUCT_SAFETY`, `NZ_PRODUCT_SAFETY`, and `HK_CFS` are already active bounded source ids and should be managed through their source-specific docs instead.
+These ids are not active source ids and must not be added to `src/data/recall-types.ts`, `src/lib/recall-sources.ts`, source filters, or processed data until a future ingestion phase explicitly implements and validates one source. `AU_PRODUCT_SAFETY`, `NZ_PRODUCT_SAFETY`, `HK_CFS`, and `FSANZ_FOOD_RECALLS` are already active bounded source ids and should be managed through their source-specific docs instead.
 
 ## K. Known Risks
 

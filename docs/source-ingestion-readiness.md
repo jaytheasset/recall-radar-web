@@ -15,10 +15,11 @@ Recall Radar currently uses local JSON files only. The current seed sources are:
 - Australia Product Safety recalls: 100 records
 - New Zealand Product Safety recalls: 100 records
 - Hong Kong CFS Food Alerts / Allergy Alerts: 100 records
+- Australia/New Zealand FSANZ Food Recalls: 100 records
 - Canonical merged file: `data/processed/recalls.json`
-- Total current records: 1101
+- Total current records: 1201
 
-The UI is positioned for a global consumer recall search experience. France RappelConso is included as the first non-U.S. source spike, Canada Recalls and Safety Alerts is included as the second non-U.S. source spike, EU Safety Gate is included as the first regional multi-country source spike, UK FSA Food Alerts is included as the first UK food/allergy-focused source spike, Australia Product Safety is included as the first Oceania source spike, New Zealand Product Safety is included as the second Oceania source spike, and Hong Kong CFS is included as a bounded official food/allergy source spike. The site remains static/local-first and does not use a backend, database, email service, account system, or browser runtime API call.
+The UI is positioned for a global consumer recall search experience. France RappelConso is included as the first non-U.S. source spike, Canada Recalls and Safety Alerts is included as the second non-U.S. source spike, EU Safety Gate is included as the first regional multi-country source spike, UK FSA Food Alerts is included as the first UK food/allergy-focused source spike, Australia Product Safety is included as the first Oceania source spike, New Zealand Product Safety is included as the second Oceania source spike, Hong Kong CFS is included as a bounded official food/allergy source spike, and FSANZ Food Recalls is included as a bounded Australia/New Zealand food recall source spike. The site remains static/local-first and does not use a backend, database, email service, account system, or browser runtime API call.
 
 ## B. Current Source Flow
 
@@ -34,6 +35,7 @@ The existing source flow is:
    - Australia Product Safety raw file: `data/raw/australia-product-safety-recalls.json`
    - New Zealand Product Safety raw file: `data/raw/new-zealand-product-safety-recalls.json`
    - Hong Kong CFS raw file: `data/raw/hong-kong-cfs-food-alerts.json`
+   - FSANZ raw file: `data/raw/fsanz-food-recalls.json`
 2. Source-specific normalization scripts map raw records into `NormalizedRecall`.
    - CPSC normalizer: `scripts/normalize-cpsc.ts`
    - FDA/openFDA normalizer: `scripts/normalize-fda-food.ts`
@@ -44,6 +46,7 @@ The existing source flow is:
    - Australia Product Safety normalizer: `scripts/normalize-australia-product-safety.ts`
    - New Zealand Product Safety normalizer: `scripts/normalize-new-zealand-product-safety.ts`
    - Hong Kong CFS normalizer: `scripts/normalize-hong-kong-cfs-food-alerts.ts`
+   - FSANZ normalizer: `scripts/normalize-fsanz-food-recalls.ts`
 3. Source-specific processed files are written under `data/processed/`.
    - CPSC processed file: `data/processed/cpsc-recalls.json`
    - FDA/openFDA processed file: `data/processed/fda-recalls.json`
@@ -54,6 +57,7 @@ The existing source flow is:
    - Australia Product Safety processed file: `data/processed/australia-product-safety-recalls.json`
    - New Zealand Product Safety processed file: `data/processed/new-zealand-product-safety-recalls.json`
    - Hong Kong CFS processed file: `data/processed/hong-kong-cfs-food-alerts.json`
+   - FSANZ processed file: `data/processed/fsanz-food-recalls.json`
 4. `scripts/merge-recalls.ts` merges source-specific processed files into the canonical file.
    - Canonical processed file: `data/processed/recalls.json`
 5. `src/data/recall-types.ts` defines the shared `NormalizedRecall` and `ProcessedRecallFile` contract.
@@ -82,7 +86,10 @@ Current package scripts:
 - `npm run normalize:new-zealand-product-safety`
 - `npm run fetch:hong-kong-cfs`
 - `npm run normalize:hong-kong-cfs`
+- `npm run fetch:fsanz-food-recalls`
+- `npm run normalize:fsanz-food-recalls`
 - `npm run debug:hong-kong-cfs-access`
+- `npm run debug:fsanz-food-recalls-access`
 - `npm run debug:new-zealand-product-safety-access`
 - `npm run debug:korea-safetykorea-access`
 - `npm run audit:korea-safetykorea-contract`
@@ -100,6 +107,8 @@ Current package scripts:
 - `npm run data:new-zealand-product-safety:normalize`
 - `npm run data:hong-kong-cfs:fetch`
 - `npm run data:hong-kong-cfs:normalize`
+- `npm run data:fsanz-food-recalls:fetch`
+- `npm run data:fsanz-food-recalls:normalize`
 - `npm run data:merge`
 - `npm run audit:sources`
 - `npm run audit:rappelconso`
@@ -109,6 +118,7 @@ Current package scripts:
 - `npm run audit:australia-product-safety`
 - `npm run audit:new-zealand-product-safety`
 - `npm run audit:hong-kong-cfs`
+- `npm run audit:fsanz-food-recalls`
 - `npm run update:rappelconso`
 - `npm run update:canada`
 - `npm run update:eu-safety-gate`
@@ -116,6 +126,7 @@ Current package scripts:
 - `npm run update:australia-product-safety`
 - `npm run update:new-zealand-product-safety`
 - `npm run update:hong-kong-cfs`
+- `npm run update:fsanz-food-recalls`
 - `npm run build:data`
 
 Do not run fetch scripts in UI or planning phases unless a later task explicitly requests a data refresh.
@@ -126,7 +137,9 @@ Do not run fetch scripts in UI or planning phases unless a later task explicitly
 `npm run update:australia-product-safety` is an explicit Australia Product Safety refresh workflow that performs a bounded official Product Safety Australia fetch, normalizes from saved raw, rebuilds the canonical merged file, and runs the Australia audit; it is not part of `npm run check` or `npm run build`.
 `npm run update:new-zealand-product-safety` is an explicit New Zealand Product Safety refresh workflow that performs a bounded official Product Safety New Zealand fetch, normalizes from saved raw, rebuilds the canonical merged file, and runs the New Zealand audit; it is not part of `npm run check` or `npm run build`.
 `npm run update:hong-kong-cfs` is an explicit Hong Kong CFS refresh workflow that performs a bounded official CFS XML/archive/detail fetch, normalizes from saved raw, rebuilds the canonical merged file, and runs the Hong Kong CFS audit; it is not part of `npm run check` or `npm run build`.
+`npm run update:fsanz-food-recalls` is an explicit FSANZ Food Recalls refresh workflow that performs a bounded official listing/detail fetch, normalizes from saved raw, rebuilds the canonical merged file, and runs the FSANZ audit; it is not part of `npm run check` or `npm run build`.
 `npm run debug:hong-kong-cfs-access` is a non-mutating official access diagnostic for Hong Kong CFS listing, XML feed, archive, and detail candidates.
+`npm run debug:fsanz-food-recalls-access` is a non-mutating official access diagnostic for FSANZ recall listing, RSS, overview, and detail candidates.
 `npm run debug:new-zealand-product-safety-access` is a non-mutating official access diagnostic for Product Safety New Zealand listing, detail, JSON, and RSS candidates.
 `npm run debug:korea-safetykorea-access` is a non-mutating official SafetyKorea/data.go.kr access diagnostic. It does not write Korea raw files, processed files, source filters, or canonical data. After Phase 36 it uses the prepared SafetyKorea API contract and only sends a live probe when `SAFETYKOREA_API_KEY` is present.
 `npm run audit:korea-safetykorea-contract` is a non-network fixture audit for the prepared SafetyKorea AuthKey header, domestic recall list/detail URL builders, draft mapping, image extraction, category mapping, and Korean text preservation.
@@ -136,7 +149,7 @@ Canada update expectations for the current spike:
 
 - Default limit: `CANADA_RECALLS_LIMIT=100`
 - Expected `CA_RECALLS` count: 100
-- Expected canonical total: 1101
+- Expected canonical total: 1201
 - Local-only validation sequence: `npm run data:canada:normalize`, `npm run data:merge`, `npm run audit:canada`
 - Full Canada backfill remains a separate phase.
 
@@ -144,7 +157,7 @@ EU Safety Gate update expectations for the current spike:
 
 - Default limit: `EU_SAFETY_GATE_LIMIT=100`
 - Expected `EU_SAFETY_GATE` count: 100
-- Expected canonical total: 1101
+- Expected canonical total: 1201
 - Explicit refresh command: `npm run update:eu-safety-gate`
 - Local-only validation sequence: `npm run data:eu-safety-gate:normalize`, `npm run data:merge`, `npm run audit:eu-safety-gate`
 - Commit together for the current spike: `data/raw/eu-safety-gate-recalls.json`, `data/processed/eu-safety-gate-recalls.json`, and `data/processed/recalls.json`
@@ -156,7 +169,7 @@ UK FSA update expectations for the current spike:
 
 - Default limit: `UK_FSA_LIMIT=100`
 - Expected `UK_FSA` count: 100
-- Expected canonical total: 1101
+- Expected canonical total: 1201
 - Explicit refresh command: `npm run update:uk-fsa`
 - Local-only validation sequence: `npm run data:uk-fsa:normalize`, `npm run data:merge`, `npm run audit:uk-fsa`
 - Commit together for the current spike: `data/raw/uk-fsa-alerts.json`, `data/processed/uk-fsa-alerts.json`, and `data/processed/recalls.json`
@@ -169,7 +182,7 @@ Australia Product Safety update expectations for the current spike:
 - Current fetch mode: official Product Safety Australia recalls page, official Drupal AJAX listing view, and official detail pages
 - The RSS endpoint investigated during source discovery currently self-redirects and is not used for this spike
 - Expected `AU_PRODUCT_SAFETY` count: 100
-- Expected canonical total: 1101
+- Expected canonical total: 1201
 - Explicit refresh command: `npm run update:australia-product-safety`
 - Local-only validation sequence: `npm run data:australia-product-safety:normalize`, `npm run data:merge`, `npm run audit:australia-product-safety`
 - Commit together for the current spike: `data/raw/australia-product-safety-recalls.json`, `data/processed/australia-product-safety-recalls.json`, and `data/processed/recalls.json`
@@ -182,7 +195,7 @@ New Zealand Product Safety update expectations for the current spike:
 - Current fetch mode: official Product Safety New Zealand recalls page with `start` pagination and official detail pages
 - The JSON/RSS candidates investigated during source discovery did not expose a usable machine feed for this spike
 - Expected `NZ_PRODUCT_SAFETY` count: 100
-- Expected canonical total: 1101
+- Expected canonical total: 1201
 - Explicit refresh command: `npm run update:new-zealand-product-safety`
 - Local-only validation sequence: `npm run data:new-zealand-product-safety:normalize`, `npm run data:merge`, `npm run audit:new-zealand-product-safety`
 - Commit together for the current spike: `data/raw/new-zealand-product-safety-recalls.json`, `data/processed/new-zealand-product-safety-recalls.json`, and `data/processed/recalls.json`
@@ -194,12 +207,24 @@ Hong Kong CFS update expectations for the current spike:
 - Default limit: `HK_CFS_LIMIT=100`
 - Current fetch mode: official Hong Kong CFS food alerts XML feed plus official annual archive and detail pages
 - Expected `HK_CFS` count: 100
-- Expected canonical total: 1101
+- Expected canonical total: 1201
 - Explicit refresh command: `npm run update:hong-kong-cfs`
 - Local-only validation sequence: `npm run data:hong-kong-cfs:normalize`, `npm run data:merge`, `npm run audit:hong-kong-cfs`
 - Commit together for the current spike: `data/raw/hong-kong-cfs-food-alerts.json`, `data/processed/hong-kong-cfs-food-alerts.json`, and `data/processed/recalls.json`
 - Block or investigate the merge if Hong Kong CFS count is 0 or not 100, wrong source ids appear, duplicate ids/slugs/source URLs appear, official source URLs are malformed, recall dates are invalid, official CFS image URLs are malformed or off-host, raw HTML leaks into visible fields, or source filter values change.
 - Full Hong Kong CFS historical backfill remains a separate phase.
+
+FSANZ Food Recalls update expectations for the current spike:
+
+- Default limit: `FSANZ_FOOD_RECALLS_LIMIT=100`
+- Current fetch mode: official FSANZ food recall listing pagination, official detail pages, and RSS used as supplemental latest metadata
+- Expected `FSANZ_FOOD_RECALLS` count: 100
+- Expected canonical total: 1201
+- Explicit refresh command: `npm run update:fsanz-food-recalls`
+- Local-only validation sequence: `npm run data:fsanz-food-recalls:normalize`, `npm run data:merge`, `npm run audit:fsanz-food-recalls`
+- Commit together for the current spike: `data/raw/fsanz-food-recalls.json`, `data/processed/fsanz-food-recalls.json`, and `data/processed/recalls.json`
+- Block or investigate the merge if FSANZ count is 0 or not 100, wrong source ids appear, duplicate ids/slugs/source URLs appear, official source URLs are malformed, recall dates are invalid, official FSANZ image URLs are malformed or off-host, raw HTML leaks into visible fields, or source filter values change.
+- Full FSANZ backfill remains a separate phase.
 
 Korea SafetyKorea discovery expectations:
 
@@ -213,13 +238,13 @@ Korea SafetyKorea discovery expectations:
 - Non-mutating diagnostic command: `npm run debug:korea-safetykorea-access`
 - Non-network fixture audit command: `npm run audit:korea-safetykorea-contract`
 - Documentation: `docs/korea-safetykorea-source-discovery.md`
-- Expected canonical total remains 1101 until a future reviewed Korea source phase confirms official API/feed access and adds validated records.
+- Expected canonical total remains 1201 until a future reviewed Korea source phase confirms official API/feed access and adds validated records.
 
 Current build/runtime size note:
 
-- Current canonical data: 1101 records.
-- Current build output: around 1700 pages.
-- Current `data/processed/recalls.json` size: around 7 MB.
+- Current canonical data: 1201 records.
+- Current build output: around 2200 pages.
+- Current `data/processed/recalls.json` size: around 10 MB.
 - Full backfills should measure canonical data size, detail page count, brand page count, build time, and static output size before merge.
 
 ## C. Current Source Registry
@@ -249,6 +274,7 @@ The registry currently exposes only active seed sources through current coverage
 - `AU_PRODUCT_SAFETY`
 - `NZ_PRODUCT_SAFETY`
 - `HK_CFS`
+- `FSANZ_FOOD_RECALLS`
 
 Future source planning notes must not become active filters until a real source connector, normalized data, and validation path exist.
 
@@ -340,7 +366,7 @@ These identifiers should be included in normalized fields when there is an obvio
 
 ## G. Source Priority Notes
 
-France RappelConso is active as the first non-U.S. source spike. Canada Recalls and Safety Alerts is active as the second non-U.S. source spike. EU Safety Gate is active as the first regional multi-country source spike. UK FSA Food Alerts is active as the first UK food/allergy-focused source spike. Australia Product Safety and New Zealand Product Safety are active as bounded Oceania source spikes. Hong Kong CFS is active as a bounded official food/allergy source spike.
+France RappelConso is active as the first non-U.S. source spike. Canada Recalls and Safety Alerts is active as the second non-U.S. source spike. EU Safety Gate is active as the first regional multi-country source spike. UK FSA Food Alerts is active as the first UK food/allergy-focused source spike. Australia Product Safety and New Zealand Product Safety are active as bounded Oceania source spikes. Hong Kong CFS is active as a bounded official food/allergy source spike. FSANZ Food Recalls is active as a bounded Australia/New Zealand food recall source spike.
 
 Future candidates to evaluate as planning notes only:
 
@@ -351,7 +377,7 @@ Future candidates to evaluate as planning notes only:
 - Hong Kong EMSD
 - Taiwan TFDA / BSMI
 
-Phase 31 source discovery is documented in `docs/asia-oceania-source-discovery.md`. Phase 33 activated the bounded `AU_PRODUCT_SAFETY` spike. Phase 37 activated the bounded `NZ_PRODUCT_SAFETY` spike. Phase 38 activated the bounded `HK_CFS` food/allergy spike. Phase 35 checked SafetyKorea access and deferred `KR_SAFETYKOREA` because official recall-record API access was not confirmed without an application/service-key flow; see `docs/korea-safetykorea-source-discovery.md`.
+Phase 31 source discovery is documented in `docs/asia-oceania-source-discovery.md`. Phase 33 activated the bounded `AU_PRODUCT_SAFETY` spike. Phase 37 activated the bounded `NZ_PRODUCT_SAFETY` spike. Phase 38 activated the bounded `HK_CFS` food/allergy spike. Phase 39 activated the bounded `FSANZ_FOOD_RECALLS` food recall spike. Phase 35 checked SafetyKorea access and deferred `KR_SAFETYKOREA` because official recall-record API access was not confirmed without an application/service-key flow; see `docs/korea-safetykorea-source-discovery.md`.
 
 These future candidates are not active filters or active coverage in this phase. They should not appear in consumer-facing source filters until real data ingestion, source labels, validation, and product detail behavior are implemented.
 

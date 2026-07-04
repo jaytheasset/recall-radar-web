@@ -21,6 +21,7 @@ export const newZealandProductSafetyProcessedPath = resolve(
   'data/processed/new-zealand-product-safety-recalls.json'
 );
 export const hongKongCfsProcessedPath = resolve(projectRoot, 'data/processed/hong-kong-cfs-food-alerts.json');
+export const fsanzFoodRecallsProcessedPath = resolve(projectRoot, 'data/processed/fsanz-food-recalls.json');
 
 type MergeResult = ProcessedRecallFile & {
   countsBySource: Record<RecallSource, number>;
@@ -89,7 +90,8 @@ function countBySource(records: NormalizedRecall[]): Record<RecallSource, number
     UK_FSA: records.filter((record) => record.source === 'UK_FSA').length,
     AU_PRODUCT_SAFETY: records.filter((record) => record.source === 'AU_PRODUCT_SAFETY').length,
     NZ_PRODUCT_SAFETY: records.filter((record) => record.source === 'NZ_PRODUCT_SAFETY').length,
-    HK_CFS: records.filter((record) => record.source === 'HK_CFS').length
+    HK_CFS: records.filter((record) => record.source === 'HK_CFS').length,
+    FSANZ_FOOD_RECALLS: records.filter((record) => record.source === 'FSANZ_FOOD_RECALLS').length
   };
 }
 
@@ -104,7 +106,8 @@ export async function mergeProcessedRecalls(): Promise<MergeResult> {
     ukFsaFile,
     australiaProductSafetyFile,
     newZealandProductSafetyFile,
-    hongKongCfsFile
+    hongKongCfsFile,
+    fsanzFoodRecallsFile
   ] = await Promise.all([
     readProcessedFile(canonicalProcessedPath),
     readProcessedFile(cpscProcessedPath),
@@ -115,7 +118,8 @@ export async function mergeProcessedRecalls(): Promise<MergeResult> {
     readProcessedFile(ukFsaProcessedPath),
     readProcessedFile(australiaProductSafetyProcessedPath),
     readProcessedFile(newZealandProductSafetyProcessedPath),
-    readProcessedFile(hongKongCfsProcessedPath)
+    readProcessedFile(hongKongCfsProcessedPath),
+    readProcessedFile(fsanzFoodRecallsProcessedPath)
   ]);
   const cpscRecords = sourceRecords(cpscFile, 'CPSC').length
     ? sourceRecords(cpscFile, 'CPSC')
@@ -128,6 +132,7 @@ export async function mergeProcessedRecalls(): Promise<MergeResult> {
   const australiaProductSafetyRecords = sourceRecords(australiaProductSafetyFile, 'AU_PRODUCT_SAFETY');
   const newZealandProductSafetyRecords = sourceRecords(newZealandProductSafetyFile, 'NZ_PRODUCT_SAFETY');
   const hongKongCfsRecords = sourceRecords(hongKongCfsFile, 'HK_CFS');
+  const fsanzFoodRecallRecords = sourceRecords(fsanzFoodRecallsFile, 'FSANZ_FOOD_RECALLS');
   const records = mergeRecords([
     ...cpscRecords,
     ...fdaRecords,
@@ -137,7 +142,8 @@ export async function mergeProcessedRecalls(): Promise<MergeResult> {
     ...ukFsaRecords,
     ...australiaProductSafetyRecords,
     ...newZealandProductSafetyRecords,
-    ...hongKongCfsRecords
+    ...hongKongCfsRecords,
+    ...fsanzFoodRecallRecords
   ]);
 
   if (records.length === 0) {

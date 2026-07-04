@@ -2,7 +2,7 @@
 
 ## Current state
 
-Recall Radar currently indexes 1101 static records:
+Recall Radar currently indexes 1201 static records:
 
 - CPSC: 301
 - FDA/openFDA: 100
@@ -13,6 +13,7 @@ Recall Radar currently indexes 1101 static records:
 - Australia Product Safety: 100
 - New Zealand Product Safety: 100
 - Hong Kong CFS Food Alerts: 100
+- FSANZ Food Recalls: 100
 
 Phase 24 does not change canonical data. It adds a source registry, a non-mutating source backfill planning command, a generic ignored-output audit, and a global runbook for future launch-time backfill work.
 
@@ -59,6 +60,7 @@ No source backfill chunks found; nothing to audit.
 | Australia Product Safety | Partial | latest-pagination, detail-refresh, source-specific investigation | Full source size, HTML selector drift, and pagination strategy |
 | New Zealand Product Safety | Partial | latest-pagination, detail-refresh, source-specific investigation | HTML selector drift and no confirmed JSON/RSS feed |
 | Hong Kong CFS | Partial | latest-pagination, archive/detail-refresh, source-specific investigation | Narrow food/allergy scope and mixed XML/detail-page field quality |
+| FSANZ Food Recalls | Partial | latest-pagination, detail-refresh, source-specific investigation | Food-specific scope, HTML selector drift, and identifier sparsity |
 | Korea SafetyKorea | Deferred | contract-prep, access-diagnostic-only | Service ID/AuthKey required before live source activation |
 
 ## Recommended launch-time backfill order
@@ -69,9 +71,10 @@ No source backfill chunks found; nothing to audit.
 4. Australia Product Safety: add dry-run pagination and detail refresh controls.
 5. New Zealand Product Safety: add ignored chunk pagination and selector stability checks.
 6. Hong Kong CFS: add ignored archive chunks and selector stability checks.
-7. France RappelConso: add offset/date filters and recall-level dedupe.
-8. Canada Recalls: design official-feed chunking and optional detail refresh.
-9. EU Safety Gate: investigate historical/date strategy before full backfill because payloads and images are verbose.
+7. FSANZ Food Recalls: add dry-run listing pagination chunks before full expansion.
+8. France RappelConso: add offset/date filters and recall-level dedupe.
+9. Canada Recalls: design official-feed chunking and optional detail refresh.
+10. EU Safety Gate: investigate historical/date strategy before full backfill because payloads and images are verbose.
 
 ## Source-specific notes
 
@@ -111,6 +114,10 @@ The current script reads the official Product Safety New Zealand recalls page wi
 
 The current script reads the official Centre for Food Safety English food alerts XML dataset, annual archive pages, and official detail pages for a bounded 100-record food/allergy source spike. Future full backfill should page through annual archives into ignored chunks, audit selector stability, validate official CFS source URLs, official image hosts, duplicate source URLs, invalid dates, raw HTML leakage, source text preservation, and review generated route count before canonical expansion.
 
+### FSANZ Food Recalls
+
+The current script reads the official FSANZ food recall alert listing pages, official detail pages, and the official RSS feed for supplemental latest metadata for a bounded 100-record food recall source spike. Future full backfill should page official listing results into ignored chunks, audit selector stability, validate official FSANZ source URLs, official image hosts, duplicate source URLs, invalid dates, raw HTML leakage, source text preservation, and review generated route count before canonical expansion.
+
 ### Korea SafetyKorea
 
 Phase 35 added a non-mutating access diagnostic only. The data.go.kr SafetyKorea metadata is official and reachable, but it indicates an application/login/service-key flow and does not expose a callable recall-record payload without credentials. Phase 36 reviewed the SafetyKorea Open API interface document and prepared the domestic recall list/detail contract, including `AuthKey` header handling, fixture mapping, image extraction, and a non-network contract audit. Keep `KR_SAFETYKOREA` out of active filters and canonical data until a future phase receives an issued SafetyKorea service ID/AuthKey and validates a bounded live probe.
@@ -129,6 +136,7 @@ data/backfill/uk-fsa/
 data/backfill/australia-product-safety/
 data/backfill/new-zealand-product-safety/
 data/backfill/hong-kong-cfs/
+data/backfill/fsanz-food-recalls/
 ```
 
 Generated `.json`, `.jsonl`, `.tmp`, and `.log` files under those directories are ignored by `.gitignore`. Only tiny `README.md` or `.gitkeep` placeholders should ever be committed.
@@ -211,6 +219,7 @@ For planning-only or dry-run phases, rollback is usually deleting local ignored 
 - Australia Product Safety backfill pipeline
 - New Zealand Product Safety backfill pipeline
 - Hong Kong CFS backfill pipeline
+- FSANZ Food Recalls backfill pipeline
 - Canonical launch subset selection
 - Cross-source dedupe review
 

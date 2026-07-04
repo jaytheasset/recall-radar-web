@@ -13,6 +13,7 @@ Current rules:
 - The official Product Safety Australia recalls page is allowed only when a task asks for Australia Product Safety refreshes.
 - The official Product Safety New Zealand recalls page is allowed only when a task asks for New Zealand Product Safety refreshes.
 - The official Hong Kong Centre for Food Safety food alerts XML/archive/detail pages are allowed only when a task asks for Hong Kong CFS refreshes.
+- The official FSANZ food recall listing, RSS, and detail pages are allowed only when a task asks for FSANZ food recall refreshes.
 - The official Korea SafetyKorea/data.go.kr endpoints are currently diagnostic-only through `npm run debug:korea-safetykorea-access`; do not add Korea records until official recall-record access is confirmed.
 - UI-only phases should use the existing local `data/processed/recalls.json` file and should not fetch unless a later task explicitly asks for fresh data.
 - Do not connect databases.
@@ -141,7 +142,7 @@ npm run data:merge
 npm run audit:rappelconso
 ```
 
-The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, Australia Product Safety, New Zealand Product Safety, and Hong Kong CFS records.
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, Australia Product Safety, New Zealand Product Safety, Hong Kong CFS, and FSANZ Food Recalls records.
 
 ## Canada Recalls and Safety Alerts Fetch
 
@@ -425,9 +426,9 @@ Do not wire Australia fetches into `npm run check`, `npm run build`, or UI tests
 
 For the current 100-record Australia spike, commit the raw Australia file, processed Australia file, and merged canonical processed file together only after the Australia audit passes. Any future full Australia backfill should use ignored chunks and source-specific audit before canonical expansion.
 
-Do not increase `AU_PRODUCT_SAFETY_LIMIT` above the current bounded 100-record spike without a separate source expansion or backfill phase. Keep FSANZ food and vehicle recalls as separate future source candidates instead of mixing them into `AU_PRODUCT_SAFETY`.
+Do not increase `AU_PRODUCT_SAFETY_LIMIT` above the current bounded 100-record spike without a separate source expansion or backfill phase. Keep vehicle recalls separate from `AU_PRODUCT_SAFETY`; FSANZ food recalls are handled by the separate `FSANZ_FOOD_RECALLS` source.
 
-The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, Australia Product Safety, New Zealand Product Safety, and Hong Kong CFS records.
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, Australia Product Safety, New Zealand Product Safety, Hong Kong CFS, and FSANZ Food Recalls records.
 
 ## New Zealand Product Safety Fetch
 
@@ -579,6 +580,81 @@ For the current 100-record Hong Kong CFS spike, commit the raw Hong Kong CFS fil
 
 Do not increase `HK_CFS_LIMIT` above the current bounded 100-record spike without a separate source expansion or backfill phase. Keep Hong Kong EMSD electrical recalls separate from `HK_CFS`.
 
+## Australia/New Zealand FSANZ Food Recalls Fetch
+
+```powershell
+npm run fetch:fsanz-food-recalls
+```
+
+This uses official Food Standards Australia New Zealand sources:
+
+`https://www.foodstandards.gov.au/food-recalls/recall-alert`
+
+`https://www.foodstandards.gov.au/food-recalls-rss.xml`
+
+and official recall detail pages under:
+
+`https://www.foodstandards.gov.au/food-recalls/recall-alert/`
+
+Default behavior:
+
+- Checks the official listing pagination, RSS feed, and detail pages.
+- Requests the bounded 100 most recent FSANZ food recall notices.
+- Saves the bounded raw response wrapper to `data/raw/fsanz-food-recalls.json`.
+- Saves normalized FSANZ records to `data/processed/fsanz-food-recalls.json`.
+- Rebuilds the merged canonical file at `data/processed/recalls.json`.
+- Adds `fetchedAt` to the raw output.
+- Refuses to overwrite processed output when the official source returns zero records.
+- Uses official FSANZ image URLs when official detail images are available.
+
+Optional limit:
+
+```powershell
+npm run fetch:fsanz-food-recalls -- --limit=50
+```
+
+The default FSANZ limit is 100. It can also be set with an environment variable:
+
+```powershell
+$env:FSANZ_FOOD_RECALLS_LIMIT = "100"
+npm run fetch:fsanz-food-recalls
+Remove-Item Env:FSANZ_FOOD_RECALLS_LIMIT
+```
+
+To rebuild FSANZ processed data from the saved raw file:
+
+```powershell
+npm run normalize:fsanz-food-recalls
+```
+
+To audit the current local FSANZ processed data without making network calls:
+
+```powershell
+npm run audit:fsanz-food-recalls
+```
+
+The FSANZ audit checks the 100-record source count, canonical total, source filter values, wrong source ids, duplicate ids/slugs/source URLs, official notice URL shape, invalid dates, official image URL hosts, suspicious image candidates, required field coverage, food category mapping, identifier-like text coverage, and raw HTML leakage in visible normalized fields.
+
+To run the explicit FSANZ refresh workflow, including network fetch and local audit:
+
+```powershell
+npm run update:fsanz-food-recalls
+```
+
+For local-only validation from the existing raw file:
+
+```powershell
+npm run data:fsanz-food-recalls:normalize
+npm run data:merge
+npm run audit:fsanz-food-recalls
+```
+
+Do not wire FSANZ fetches into `npm run check`, `npm run build`, or UI tests.
+
+For the current 100-record FSANZ spike, commit the raw FSANZ file, processed FSANZ file, and merged canonical processed file together only after the FSANZ audit passes. Any future full FSANZ backfill should use ignored chunks and source-specific audit before canonical expansion.
+
+Do not increase `FSANZ_FOOD_RECALLS_LIMIT` above the current bounded 100-record spike without a separate source expansion or backfill phase.
+
 ## Korea SafetyKorea Access Diagnostic
 
 ```powershell
@@ -612,7 +688,7 @@ Do not add Korea fetch, normalize, live audit, merge, landing-page, or source-fi
 npm run audit:sources
 ```
 
-This is a local-only launch-readiness audit for the canonical merged file. It reads `data/processed/recalls.json`, checks the nine active source ids and expected counts, verifies the active source registry matches the canonical data, reports duplicate ids, reports sparse fields by source, and summarizes category distribution by source.
+This is a local-only launch-readiness audit for the canonical merged file. It reads `data/processed/recalls.json`, checks the ten active source ids and expected counts, verifies the active source registry matches the canonical data, reports duplicate ids, reports sparse fields by source, and summarizes category distribution by source.
 
 Expected current counts:
 
@@ -625,7 +701,8 @@ Expected current counts:
 - Australia Product Safety: 100
 - New Zealand Product Safety: 100
 - Hong Kong CFS: 100
-- Total: 1101
+- FSANZ Food Recalls: 100
+- Total: 1201
 
 ## Image Audit
 
@@ -652,14 +729,15 @@ npm run validate:launch
 This command is local-only. It runs:
 
 1. `npm run audit:sources`
-2. `npm run audit:australia-product-safety`
-3. `npm run audit:new-zealand-product-safety`
-4. `npm run audit:hong-kong-cfs`
-5. `npm run audit:uk-fsa`
-6. `npm run audit:eu-safety-gate`
-7. `npm run audit:canada`
-8. `npm run audit:rappelconso`
-9. `npm run check`
-10. `npm run build`
+2. `npm run audit:fsanz-food-recalls`
+3. `npm run audit:hong-kong-cfs`
+4. `npm run audit:new-zealand-product-safety`
+5. `npm run audit:australia-product-safety`
+6. `npm run audit:uk-fsa`
+7. `npm run audit:eu-safety-gate`
+8. `npm run audit:canada`
+9. `npm run audit:rappelconso`
+10. `npm run check`
+11. `npm run build`
 
 It does not run fetch, update, or data-refresh scripts. Use it before launch, staging deployment, or final merge to `main`.

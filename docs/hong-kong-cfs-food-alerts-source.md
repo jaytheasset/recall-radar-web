@@ -5,7 +5,7 @@ Phase 38 adds a bounded Hong Kong Centre for Food Safety food/allergy source spi
 - Source id: `HK_CFS`
 - Visible label: `Hong Kong - Centre for Food Safety`
 - Current bounded count: 100 records
-- Canonical total after Phase 38: 1101 records
+- Canonical total after Phase 39: 1201 records
 
 This is not a full Hong Kong historical backfill and does not imply complete Hong Kong recall coverage.
 
@@ -99,7 +99,7 @@ Before committing a Hong Kong CFS refresh, verify:
 Block or investigate if:
 
 - `HK_CFS` count is not exactly 100 for the current bounded spike.
-- Canonical total is not 1101.
+- Canonical total is not 1201.
 - Source URLs are not official CFS detail URLs.
 - Image URLs are off-host.
 - Raw HTML leaks into visible normalized fields.

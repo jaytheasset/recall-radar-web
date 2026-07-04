@@ -8,6 +8,7 @@ export type RecallSourceId =
   | 'AU_PRODUCT_SAFETY'
   | 'NZ_PRODUCT_SAFETY'
   | 'HK_CFS'
+  | 'FSANZ_FOOD_RECALLS'
   | 'Mock';
 export type CurrentCoverageSourceId = Exclude<RecallSourceId, 'Mock'>;
 export type RecallSourceType = 'official-api' | 'sample';
@@ -441,6 +442,51 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     officialVerificationCopy:
       'Use the official CFS notice to confirm affected products, dates, importer or retailer details, risks, and consumer instructions.'
   },
+  FSANZ_FOOD_RECALLS: {
+    id: 'FSANZ_FOOD_RECALLS',
+    marketCode: 'AU/NZ',
+    marketLabel: 'Australia/New Zealand',
+    agencyLabel: 'FSANZ',
+    sourceType: 'official-api',
+    displayLabel: 'Australia/New Zealand 쨌 FSANZ',
+    noticeTypeLabel: 'Food recall',
+    productScopeLabel: 'Food recalls published by Food Standards Australia New Zealand',
+    identifierTypes: [
+      'best-before / use-by / expiry date',
+      'date marking',
+      'batch or lot code',
+      'barcode',
+      'pack size',
+      'product name',
+      'brand/company',
+      'state or territory distribution'
+    ],
+    supportsImages: true,
+    supportsDistributionDetails: true,
+    rawPayloadNotes:
+      'FSANZ food recall records are collected from the official food recall listing pages, official recall detail pages, and the official RSS feed for supplemental latest metadata. Detail pages can include product images, recall date, date marking, problem, food safety hazard, consumer action, contact, and PDF recall notice links.',
+    officialSourceLabel: 'Source: Australia/New Zealand 쨌 FSANZ',
+    placeholderLabel: 'FSANZ food recall',
+    reasonLabel: 'Reason',
+    actionLabel: 'Consumer action',
+    quantityLabel: 'Date / batch details',
+    distributionLabel: 'Distribution',
+    defaultActionFallback: DEFAULT_ACTION_FALLBACK,
+    verificationIntro:
+      'Compare the details below with your food package, label, batch, barcode, best-before or use-by date, distribution, and official FSANZ notice. A matching search result does not confirm your exact product is included.',
+    verificationChecklist: [
+      'Product name and brand/company',
+      'Date marking, best-before, use-by, expiry, batch, lot, or barcode if listed',
+      'Pack size or quantity if listed',
+      'State, territory, retailer, or distribution details if listed',
+      'Allergen, contamination, or food safety reason',
+      'Consumer action in the official notice'
+    ],
+    sparseIdentificationCopy:
+      'This indexed notice may not list every identifier in a structured field. Review the official FSANZ notice, food label, and batch or date code carefully.',
+    officialVerificationCopy:
+      'Use the official FSANZ notice to confirm affected products, date markings, batch or barcode details, distribution, risks, and consumer instructions.'
+  },
   Mock: {
     id: 'Mock',
     marketCode: '',
@@ -485,7 +531,8 @@ const currentCoverageSources: CurrentCoverageSourceId[] = [
   'UK_FSA',
   'AU_PRODUCT_SAFETY',
   'NZ_PRODUCT_SAFETY',
-  'HK_CFS'
+  'HK_CFS',
+  'FSANZ_FOOD_RECALLS'
 ];
 
 function normalizeSourceId(source: string): RecallSourceId {
@@ -498,6 +545,7 @@ function normalizeSourceId(source: string): RecallSourceId {
     source === 'AU_PRODUCT_SAFETY' ||
     source === 'NZ_PRODUCT_SAFETY' ||
     source === 'HK_CFS' ||
+    source === 'FSANZ_FOOD_RECALLS' ||
     source === 'Mock'
     ? source
     : 'Mock';

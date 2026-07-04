@@ -920,11 +920,19 @@ button:disabled {
   overflow: hidden;
 }
 
+.source-flag-wrap-pair {
+  display: flex;
+}
+
 .source-flag {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.source-flag-pair {
+  width: 50%;
 }
 
 .home-page .source-country-card .category-card-body {

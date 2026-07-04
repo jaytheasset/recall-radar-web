@@ -37,6 +37,10 @@
 - `npm run normalize:hong-kong-cfs`
 - `npm run debug:hong-kong-cfs-access`
 - `npm run audit:hong-kong-cfs`
+- `npm run fetch:fsanz-food-recalls`
+- `npm run normalize:fsanz-food-recalls`
+- `npm run debug:fsanz-food-recalls-access`
+- `npm run audit:fsanz-food-recalls`
 - `npm run debug:korea-safetykorea-access`
 - `npm run audit:korea-safetykorea-contract`
 - `npm run validate:launch`
@@ -51,7 +55,7 @@ For launch or staging readiness, use `docs/LAUNCH_CHECKLIST.md`. `npm run valida
 
 Global backfill planning is documented in `docs/global-backfill-runbook.md`. `npm run plan:source-backfills` must not mutate source data, and `npm run audit:source-backfills` should pass with "No source backfill chunks found; nothing to audit." when no ignored chunks exist.
 
-Asia/Oceania source discovery is documented in `docs/asia-oceania-source-discovery.md`. Australia Product Safety, New Zealand Product Safety, and Hong Kong CFS are now bounded active sources. Korea SafetyKorea access discovery is documented in `docs/korea-safetykorea-source-discovery.md`; contract prep is documented in `docs/korea-safetykorea-api-contract.md`. `npm run debug:korea-safetykorea-access` and `npm run audit:korea-safetykorea-contract` are non-mutating and do not add coverage. Japan, Korea, Singapore, and Taiwan must not appear as active source filters or live coverage until a future ingestion phase adds validated data and source registry entries.
+Asia/Oceania source discovery is documented in `docs/asia-oceania-source-discovery.md`. Australia Product Safety, New Zealand Product Safety, Hong Kong CFS, and FSANZ Food Recalls are now bounded active sources. Korea SafetyKorea access discovery is documented in `docs/korea-safetykorea-source-discovery.md`; contract prep is documented in `docs/korea-safetykorea-api-contract.md`. `npm run debug:korea-safetykorea-access` and `npm run audit:korea-safetykorea-contract` are non-mutating and do not add coverage. Japan, Korea, Singapore, and Taiwan must not appear as active source filters or live coverage until a future ingestion phase adds validated data and source registry entries.
 
 USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt returned HTTP `403 Forbidden` / `Access Denied`, likely from FSIS-side access control, CDN/WAF filtering, User-Agent/header filtering, IP/range filtering, or temporary endpoint restrictions. No USDA data was written, no bypass should be attempted, and no USDA fetch script is active. See `docs/USDA_FSIS_DEFERRED.md`.
 
@@ -166,7 +170,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm Phase 35 did not add `KR_SAFETYKOREA` to active source filters because official recall-record access was not confirmed without an application/service-key flow.
 - Confirm Phase 36 did not add `KR_SAFETYKOREA` to active source filters; it only prepared the official AuthKey/list/detail API contract.
 - Confirm no Korea landing page exists until a future live source phase adds validated records.
-- Confirm canonical total remains 1101 after Korea discovery-only work.
+- Confirm canonical total remains 1201 after FSANZ activation and until a future Korea source phase adds validated Korea records.
 - Confirm `SAFETYKOREA_API_KEY` is not committed or stored in the repo.
 
 ## Hong Kong CFS Food Alerts Pipeline
@@ -189,6 +193,26 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm the default Hong Kong CFS limit remains `HK_CFS_LIMIT=100`.
 - Confirm future full Hong Kong CFS backfills are kept in ignored chunks and do not expand canonical data without a separate reviewed phase.
 
+## Australia/New Zealand FSANZ Food Recalls Pipeline
+
+- Confirm `npm run debug:fsanz-food-recalls-access` reports the official FSANZ listing, RSS, and detail pages as feasible without writing records.
+- Confirm `npm run fetch:fsanz-food-recalls` saves `data/raw/fsanz-food-recalls.json`.
+- Confirm `npm run fetch:fsanz-food-recalls` saves `data/processed/fsanz-food-recalls.json`.
+- Confirm `npm run fetch:fsanz-food-recalls` rebuilds canonical `data/processed/recalls.json`.
+- Confirm raw FSANZ output includes `fetchedAt`.
+- Confirm FSANZ records include `source: FSANZ_FOOD_RECALLS`, official FSANZ `sourceUrl`, `title`, company/brand where available, `productNames`, `category`, `hazard` or `reason`, `recallDate`, `description`, `slug`, official FSANZ image URLs when available, and `raw`.
+- Confirm the FSANZ source label renders as `Australia/New Zealand 쨌 FSANZ`.
+- Confirm official source URLs use `https://www.foodstandards.gov.au/food-recalls/recall-alert/...`.
+- Confirm official image URLs use `https://www.foodstandards.gov.au/sites/default/files/...` only.
+- Confirm canonical records preserve existing sources and append bounded FSANZ records by stable id.
+- Confirm canonical records are sorted by `recallDate` descending where possible.
+- Confirm `npm run audit:fsanz-food-recalls` passes.
+- Confirm FSANZ audit reports source count, canonical count, wrong source ids, duplicate ids/slugs/source URLs, official URL shape, invalid dates, image availability, official image host validity, category distribution, product/company coverage, hazard/reason coverage, remedy/action coverage, identifier coverage, raw HTML leakage, and source filter values.
+- Confirm `npm run update:fsanz-food-recalls` remains an explicit refresh command and is not part of `npm run check` or `npm run build`.
+- For no-network QA phases, confirm `npm run data:fsanz-food-recalls:normalize`, `npm run data:merge`, and `npm run audit:fsanz-food-recalls` validate the committed raw file path without calling FSANZ.
+- Confirm the default FSANZ limit remains `FSANZ_FOOD_RECALLS_LIMIT=100`.
+- Confirm future full FSANZ backfills are kept in ignored chunks and do not expand canonical data without a separate reviewed phase.
+
 ## Pages
 
 - `/`
@@ -200,6 +224,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - `/checker?source=AU_PRODUCT_SAFETY`
 - `/checker?source=NZ_PRODUCT_SAFETY`
 - `/checker?source=HK_CFS`
+- `/checker?source=FSANZ_FOOD_RECALLS`
 - `/watchlist`
 - `/404`
 - `/baby-product-recalls`
@@ -214,6 +239,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - `/australia-product-recalls`
 - `/new-zealand-product-recalls`
 - `/hong-kong-food-recalls`
+- `/australia-new-zealand-food-recalls`
 - one real CPSC `/recalls/[slug]` page
 - one real FDA `/recalls/[slug]` page, when FDA data has been fetched
 - one real EU Safety Gate `/recalls/[slug]` page, when EU data has been fetched
@@ -221,6 +247,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - one real Australia Product Safety `/recalls/[slug]` page, when Australia data has been fetched
 - one real New Zealand Product Safety `/recalls/[slug]` page, when New Zealand data has been fetched
 - one real Hong Kong CFS `/recalls/[slug]` page, when Hong Kong data has been fetched
+- one real FSANZ `/recalls/[slug]` page, when FSANZ data has been fetched
 - one normalized real CPSC `/brands/[brand]` page
 - Confirm source labels render through `src/lib/recall-sources.ts`.
 - Confirm page labels identify EU records as European Union Safety Gate records.
@@ -228,11 +255,12 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm page labels identify Australia records as Australia Product Safety Australia records.
 - Confirm page labels identify New Zealand records as New Zealand Product Safety records.
 - Confirm page labels identify Hong Kong records as Centre for Food Safety food alerts.
+- Confirm page labels identify FSANZ records as Australia/New Zealand FSANZ food recalls.
 - Confirm `/robots.txt` allows crawling.
 - Confirm sitemap generation remains deferred until a canonical deployment URL is chosen.
 - Confirm category pages show a matching local record count.
 - Confirm `/household-product-recalls` shows Household Products notices and the page count matches the `household-appliance` category filter count.
-- Confirm country/source landing pages show United States 401, Canada 100, EU Safety Gate 100, France 100, UK Food 100, Australia 100, New Zealand 100, and Hong Kong 100 indexed notices.
+- Confirm country/source landing pages show United States 401, Canada 100, EU Safety Gate 100, France 100, UK Food 100, Australia 100, New Zealand 100, Hong Kong 100, and Australia/New Zealand FSANZ 100 indexed notices.
 - Confirm `/food-allergy-recalls` shows FDA/openFDA food records before CPSC food/allergy records when FDA records exist.
 - Confirm core pages remain readable at narrow mobile widths and long titles/labels wrap instead of overflowing.
 - Confirm recall detail pages show company recall history and related recall sections.
@@ -264,6 +292,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm `/checker?source=AU_PRODUCT_SAFETY` applies the Australia Product Safety source filter.
 - Confirm `/checker?source=NZ_PRODUCT_SAFETY` applies the New Zealand Product Safety source filter.
 - Confirm `/checker?source=HK_CFS` applies the Hong Kong CFS source filter.
+- Confirm `/checker?source=FSANZ_FOOD_RECALLS` applies the FSANZ Food Recalls source filter.
 - Confirm a real UK FSA food, allergen, batch, or date query returns an exact or possible match when UK FSA records exist.
 - Confirm source, category, sort, and date filter changes update the URL query string.
 - Confirm category filters include all, baby/kids, battery/electronics, food/allergy, household/appliance, food, and general.
@@ -288,8 +317,9 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm Australia Product Safety count is 100.
 - Confirm New Zealand Product Safety count is 100.
 - Confirm Hong Kong CFS count is 100.
-- Confirm total canonical count is 1101.
-- Confirm active source filter values are `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, `AU_PRODUCT_SAFETY`, `NZ_PRODUCT_SAFETY`, and `HK_CFS`.
+- Confirm FSANZ Food Recalls count is 100.
+- Confirm total canonical count is 1201.
+- Confirm active source filter values are `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, `AU_PRODUCT_SAFETY`, `NZ_PRODUCT_SAFETY`, `HK_CFS`, and `FSANZ_FOOD_RECALLS`.
 - Confirm Korea and Japan do not appear as active source filters.
 - Confirm Singapore and Taiwan do not appear as active source filters.
 - Confirm `npm run audit:sources` reports no unknown source ids, no duplicate ids, no active source with zero records, and no source-registry/data mismatch.

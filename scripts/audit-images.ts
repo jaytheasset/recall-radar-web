@@ -43,7 +43,8 @@ const processedFiles = [
   'data/processed/uk-fsa-alerts.json',
   'data/processed/australia-product-safety-recalls.json',
   'data/processed/new-zealand-product-safety-recalls.json',
-  'data/processed/hong-kong-cfs-food-alerts.json'
+  'data/processed/hong-kong-cfs-food-alerts.json',
+  'data/processed/fsanz-food-recalls.json'
 ];
 
 const runtimeEnv = (process as typeof process & { env?: Record<string, string | undefined> }).env ?? {};
@@ -251,6 +252,18 @@ function sourceSpecificImageIssue(source: string, rawUrl: string): string {
     }
   }
 
+  if (source === 'FSANZ_FOOD_RECALLS') {
+    try {
+      const url = new URL(rawUrl);
+      return url.hostname === 'www.foodstandards.gov.au' &&
+        /^\/sites\/default\/files\/(?:styles\/[^/]+\/)?public\//i.test(url.pathname)
+        ? ''
+        : 'non-official-fsanz-image-url';
+    } catch {
+      return 'non-official-fsanz-image-url';
+    }
+  }
+
   return '';
 }
 
@@ -358,7 +371,9 @@ async function run(): Promise<void> {
                 ? 'NZ_PRODUCT_SAFETY'
                 : file.includes('hong-kong-cfs')
                   ? 'HK_CFS'
-                  : 'UNKNOWN';
+                  : file.includes('fsanz-food')
+                    ? 'FSANZ_FOOD_RECALLS'
+                    : 'UNKNOWN';
 
     for (const record of records) {
       const source = sourceFor(record, fallbackSource);
@@ -512,6 +527,9 @@ async function run(): Promise<void> {
     }
     if (summary.source === 'HK_CFS' && summary.officialImageUrlIssues > 0) {
       failures.push(`HK_CFS image audit found ${summary.officialImageUrlIssues} non-official image URL issue(s).`);
+    }
+    if (summary.source === 'FSANZ_FOOD_RECALLS' && summary.officialImageUrlIssues > 0) {
+      failures.push(`FSANZ_FOOD_RECALLS image audit found ${summary.officialImageUrlIssues} non-official image URL issue(s).`);
     }
     return failures;
   });

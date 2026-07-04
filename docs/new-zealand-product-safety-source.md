@@ -6,7 +6,7 @@ Phase 37 adds a bounded New Zealand Product Safety source spike:
 - Visible label: `New Zealand - Product Safety`
 - Official source page: `https://www.productsafety.govt.nz/recalls`
 - Current bounded count: 100 records
-- Current canonical total after Phase 38: 1101 records
+- Current canonical total after Phase 39: 1201 records
 
 This is not a full New Zealand backfill and does not imply complete New Zealand recall coverage.
 
@@ -96,7 +96,7 @@ Cards use the official thumbnail where available. Detail pages can progressively
 `npm run audit:new-zealand-product-safety` verifies:
 
 - source count is exactly 100
-- canonical total is exactly 1101
+- canonical total is exactly 1201
 - existing source counts remain unchanged
 - source id is `NZ_PRODUCT_SAFETY`
 - duplicate ids, slugs, and source URLs are absent

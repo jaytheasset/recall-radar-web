@@ -6,6 +6,7 @@ import {
   processedCanadaRecordCount,
   processedCpscRecordCount,
   processedEuSafetyGateRecordCount,
+  processedFsanzFoodRecallRecordCount,
   processedFdaRecordCount,
   processedFranceRappelConsoRecordCount,
   processedHongKongCfsRecordCount,
@@ -37,7 +38,8 @@ const activeSourceCount = [
   processedUkFsaRecordCount,
   processedAustraliaProductSafetyRecordCount,
   processedNewZealandProductSafetyRecordCount,
-  processedHongKongCfsRecordCount
+  processedHongKongCfsRecordCount,
+  processedFsanzFoodRecallRecordCount
 ].filter((count) => count > 0).length;
 const countLine = `${processedLocalRecordCount} recall notices from ${activeSourceCount} official sources. Coverage is expanding and remains limited to sources currently included.`;
 const productTypes = [
@@ -135,6 +137,16 @@ const sourceCardDetails = {
     description: 'Food alerts and allergy alerts from the Centre for Food Safety.',
     sourceLabel: 'Centre for Food Safety',
     cta: 'Browse Hong Kong food alerts'
+  },
+  '/australia-new-zealand-food-recalls': {
+    flagSrcs: [
+      { src: '/flags/au.svg', alt: 'Australia flag' },
+      { src: '/flags/nz.svg', alt: 'New Zealand flag' }
+    ],
+    title: 'Australia & New Zealand',
+    description: 'Food recall notices from FSANZ.',
+    sourceLabel: 'FSANZ Food Recalls',
+    cta: 'Browse FSANZ food recalls'
   }
 } as const;
 ---
@@ -255,8 +267,14 @@ const sourceCardDetails = {
 
             return (
             <a class="category-card source-country-card" href={page.route}>
-              <span class="source-flag-wrap">
-                <img class="source-flag" src={details.flagSrc} alt={details.flagAlt} loading="lazy" decoding="async" />
+              <span class:list={['source-flag-wrap', 'flagSrcs' in details && 'source-flag-wrap-pair']}>
+                {'flagSrcs' in details ? (
+                  details.flagSrcs.map((flag) => (
+                    <img class="source-flag source-flag-pair" src={flag.src} alt={flag.alt} loading="lazy" decoding="async" />
+                  ))
+                ) : (
+                  <img class="source-flag" src={details.flagSrc} alt={details.flagAlt} loading="lazy" decoding="async" />
+                )}
               </span>
               <span class="category-card-body">
                 <span class="source-card-kicker">{details.sourceLabel}</span>

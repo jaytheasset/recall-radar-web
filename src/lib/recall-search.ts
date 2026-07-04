@@ -364,6 +364,10 @@ export function getRecallIdentifierHint(recall: Pick<SiteRecall, 'source'>): str
     return 'Check product name, brand, batch, best-before/use-by date, importer or retailer details, and official notice.';
   }
 
+  if (recall.source === 'FSANZ_FOOD_RECALLS') {
+    return 'Check product name, brand, date marking, batch, barcode, distribution, and official notice details.';
+  }
+
   if (recall.source === 'CPSC') {
     return 'Check model, UPC/barcode, date, product photos, and official notice details.';
   }

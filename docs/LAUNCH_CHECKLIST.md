@@ -6,9 +6,9 @@ Use this checklist before a controlled public launch, staging deployment, or fin
 
 - Static Astro site.
 - Static processed JSON is bundled at build/runtime from `data/processed/recalls.json`.
-- 1101 indexed recall notices.
-- 9 official source feeds.
-- Active sources: `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, `AU_PRODUCT_SAFETY`, `NZ_PRODUCT_SAFETY`, `HK_CFS`.
+- 1201 indexed recall notices.
+- 10 official source feeds.
+- Active sources: `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, `AU_PRODUCT_SAFETY`, `NZ_PRODUCT_SAFETY`, `HK_CFS`, `FSANZ_FOOD_RECALLS`.
 - No backend, database, email service, runtime API, or account system.
 - No live alerting, product registration, affiliate/referral, or LLM feature.
 - No full source backfills yet.
@@ -20,6 +20,7 @@ Run from the project root:
 
 ```powershell
 npm run audit:sources
+npm run audit:fsanz-food-recalls
 npm run audit:new-zealand-product-safety
 npm run audit:hong-kong-cfs
 npm run audit:australia-product-safety
@@ -53,6 +54,7 @@ These commands perform network fetches or may update local data files. Run them 
 - `npm run fetch:australia-product-safety`
 - `npm run fetch:new-zealand-product-safety`
 - `npm run fetch:hong-kong-cfs`
+- `npm run fetch:fsanz-food-recalls`
 - `npm run data:rappelconso:fetch`
 - `npm run data:canada:fetch`
 - `npm run data:eu-safety-gate:fetch`
@@ -60,6 +62,7 @@ These commands perform network fetches or may update local data files. Run them 
 - `npm run data:australia-product-safety:fetch`
 - `npm run data:new-zealand-product-safety:fetch`
 - `npm run data:hong-kong-cfs:fetch`
+- `npm run data:fsanz-food-recalls:fetch`
 - `npm run update:rappelconso`
 - `npm run update:canada`
 - `npm run update:eu-safety-gate`
@@ -67,12 +70,13 @@ These commands perform network fetches or may update local data files. Run them 
 - `npm run update:australia-product-safety`
 - `npm run update:new-zealand-product-safety`
 - `npm run update:hong-kong-cfs`
+- `npm run update:fsanz-food-recalls`
 
 ## D. Data/Source Checklist
 
 Confirm current counts:
 
-- Total: 1101
+- Total: 1201
 - CPSC: 301
 - FDA/openFDA: 100
 - FR_RAPPELCONSO: 100
@@ -82,9 +86,10 @@ Confirm current counts:
 - AU_PRODUCT_SAFETY: 100
 - NZ_PRODUCT_SAFETY: 100
 - HK_CFS: 100
+- FSANZ_FOOD_RECALLS: 100
 - Duplicate ids: 0
 - Unknown source ids: 0
-- Active source filters: `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, `AU_PRODUCT_SAFETY`, `NZ_PRODUCT_SAFETY`, `HK_CFS`
+- Active source filters: `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, `AU_PRODUCT_SAFETY`, `NZ_PRODUCT_SAFETY`, `HK_CFS`, `FSANZ_FOOD_RECALLS`
 
 `npm run audit:sources` should pass before launch.
 
@@ -111,8 +116,8 @@ Required no-result warning substance:
 
 Allowed wording:
 
-- 1101 indexed recall notices
-- 9 official source feeds
+- 1201 indexed recall notices
+- 10 official source feeds
 - official recall notices across markets
 - possible matches
 - verify with official notice
@@ -139,6 +144,7 @@ Verify these routes return 200:
 - `/checker?source=AU_PRODUCT_SAFETY`
 - `/checker?source=NZ_PRODUCT_SAFETY`
 - `/checker?source=HK_CFS`
+- `/checker?source=FSANZ_FOOD_RECALLS`
 - `/checker?q=zzzz-not-real`
 - `/watchlist`
 - `/baby-product-recalls`
@@ -153,6 +159,7 @@ Verify these routes return 200:
 - `/australia-product-recalls`
 - `/new-zealand-product-recalls`
 - `/hong-kong-food-recalls`
+- `/australia-new-zealand-food-recalls`
 - `/brands/aldi`
 - `/404`
 - `/robots.txt`
@@ -168,6 +175,7 @@ Representative detail pages:
 - Australia Product Safety: `/recalls/12-lcd-writing-tablet-au-product-safety-12-lcd-writing-tablet`
 - New Zealand Product Safety: `/recalls/bath-toy-squishy-dollarama-nz-product-safety-bath-toy-squishy-and-music-instrument-toy`
 - Hong Kong CFS: `/recalls/not-to-consume-a-kind-of-prepackaged-frozen-sardines-detected-with-hk-cfs-2026-619`
+- FSANZ Food Recalls: `/recalls/kaisi-melbourne-pty-ltd-wu-xian-zhai-soybean-snacks-five-spice-flavour-fsanz-food-recalls-fsanz-2026-35`
 
 ## H. Mobile/Responsive Checklist
 

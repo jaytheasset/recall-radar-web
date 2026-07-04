@@ -7,7 +7,8 @@ export type RecallSource =
   | 'UK_FSA'
   | 'AU_PRODUCT_SAFETY'
   | 'NZ_PRODUCT_SAFETY'
-  | 'HK_CFS';
+  | 'HK_CFS'
+  | 'FSANZ_FOOD_RECALLS';
 export type ProcessedRecallSource = RecallSource | 'MULTI';
 
 export type RecallImage = {

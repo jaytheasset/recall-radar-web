@@ -42,6 +42,7 @@ type SourceCounts = {
   AU_PRODUCT_SAFETY: number;
   NZ_PRODUCT_SAFETY: number;
   HK_CFS: number;
+  FSANZ_FOOD_RECALLS: number;
 };
 
 function normalize(value: string): string {
@@ -168,7 +169,8 @@ async function readCanonicalCounts(): Promise<SourceCounts> {
     UK_FSA: records.filter((record) => record.source === 'UK_FSA').length,
     AU_PRODUCT_SAFETY: records.filter((record) => record.source === 'AU_PRODUCT_SAFETY').length,
     NZ_PRODUCT_SAFETY: records.filter((record) => record.source === 'NZ_PRODUCT_SAFETY').length,
-    HK_CFS: records.filter((record) => record.source === 'HK_CFS').length
+    HK_CFS: records.filter((record) => record.source === 'HK_CFS').length,
+    FSANZ_FOOD_RECALLS: records.filter((record) => record.source === 'FSANZ_FOOD_RECALLS').length
   };
 }
 
@@ -250,7 +252,7 @@ function audit(records: NormalizedRecall[]): AuditSummary {
 
 function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts): string[] {
   const expectedCounts: SourceCounts = {
-    total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 1101),
+    total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 1201),
     CPSC: expectedNumber('EXPECTED_CPSC_COUNT', 301),
     FDA: expectedNumber('EXPECTED_FDA_COUNT', 100),
     FR_RAPPELCONSO: expectedNumber('EXPECTED_RAPPELCONSO_COUNT', 100),
@@ -259,7 +261,8 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts): st
     UK_FSA: expectedNumber('EXPECTED_UK_FSA_COUNT', 100),
     AU_PRODUCT_SAFETY: expectedNumber('EXPECTED_AU_PRODUCT_SAFETY_COUNT', 100),
     NZ_PRODUCT_SAFETY: expectedNumber('EXPECTED_NZ_PRODUCT_SAFETY_COUNT', 100),
-    HK_CFS: expectedNumber('EXPECTED_HK_CFS_COUNT', 100)
+    HK_CFS: expectedNumber('EXPECTED_HK_CFS_COUNT', 100),
+    FSANZ_FOOD_RECALLS: expectedNumber('EXPECTED_FSANZ_FOOD_RECALLS_COUNT', 100)
   };
   const blockers = [
     summary.total === 0 ? 'FR_RAPPELCONSO count is 0.' : '',
@@ -295,6 +298,9 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts): st
       : '',
     canonicalCounts.HK_CFS !== expectedCounts.HK_CFS
       ? `HK_CFS count ${canonicalCounts.HK_CFS} does not match expected ${expectedCounts.HK_CFS}.`
+      : '',
+    canonicalCounts.FSANZ_FOOD_RECALLS !== expectedCounts.FSANZ_FOOD_RECALLS
+      ? `FSANZ_FOOD_RECALLS count ${canonicalCounts.FSANZ_FOOD_RECALLS} does not match expected ${expectedCounts.FSANZ_FOOD_RECALLS}.`
       : '',
     summary.duplicateIds.length > 0 ? `Duplicate ids found: ${summary.duplicateIds.length}.` : '',
     summary.slugCollisions.length > 0 ? `Slug collisions found: ${summary.slugCollisions.length}.` : '',

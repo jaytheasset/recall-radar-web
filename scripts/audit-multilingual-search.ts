@@ -23,7 +23,8 @@ type SourceId =
   | 'UK_FSA'
   | 'AU_PRODUCT_SAFETY'
   | 'NZ_PRODUCT_SAFETY'
-  | 'HK_CFS';
+  | 'HK_CFS'
+  | 'FSANZ_FOOD_RECALLS';
 
 type ScenarioResult = {
   id: string;
@@ -87,7 +88,8 @@ const EXPECTED_SOURCE_COUNTS: Record<SourceId, number> = {
   UK_FSA: 100,
   AU_PRODUCT_SAFETY: 100,
   NZ_PRODUCT_SAFETY: 100,
-  HK_CFS: 100
+  HK_CFS: 100,
+  FSANZ_FOOD_RECALLS: 100
 };
 
 const SOURCE_CATEGORY_CHECKS: Array<{
@@ -158,6 +160,14 @@ const SOURCE_CATEGORY_CHECKS: Array<{
     id: 'hong-kong-cfs-food-alert',
     label: 'Hong Kong CFS food alert search',
     sources: ['HK_CFS'],
+    category: 'food-allergy',
+    query: 'allergen',
+    minMatches: 1
+  },
+  {
+    id: 'fsanz-food-recalls-allergen',
+    label: 'FSANZ food recall search',
+    sources: ['FSANZ_FOOD_RECALLS'],
     category: 'food-allergy',
     query: 'allergen',
     minMatches: 1

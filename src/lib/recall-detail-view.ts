@@ -799,6 +799,56 @@ function buildHongKongCfsView(recall: SiteRecall, raw: RawObject): SourceDetailV
   };
 }
 
+function buildFsanzFoodRecallView(recall: SiteRecall, raw: RawObject): SourceDetailView {
+  const detail = rawObject(raw, 'detail');
+  const officialTitle = firstNonEmpty([rawText(detail, 'title'), rawText(raw, 'title'), recall.title], recall.title);
+  const cleanTitle = officialTitle.replace(/^UPDATED\s+\d{1,2}\.\d{1,2}\.\d{2,4}\s*\|\s*/i, '');
+  const titleParts = cleanTitle.split(/\s+-\s+/).map((part) => part.trim()).filter(Boolean);
+  const productName = firstNonEmpty([titleParts.length > 1 ? titleParts.slice(1).join(' - ') : '', ...recall.productNames, recall.primaryProductName], cleanTitle);
+  const brandName = firstNonEmpty([titleParts.length > 1 ? titleParts[0] : '', ...recall.displayBrandNames, recall.primaryBrand], 'Brand or company not listed');
+  const problem = firstNonEmpty([rawText(detail, 'problem'), recall.reason ?? '', recall.hazard], 'Reason not listed.');
+  const foodSafetyHazard = rawText(detail, 'foodSafetyHazard');
+  const action = firstNonEmpty([rawText(detail, 'whatToDo'), recall.remedy], getRecallDefaultActionFallback(recall.source));
+  const dateMarking = rawText(detail, 'dateMarking');
+  const introduction = rawText(detail, 'introduction');
+  const identifiers = uniqueNonEmpty([
+    dateMarking,
+    ...identifierDetails([cleanTitle, dateMarking, introduction, recall.description].join(' '))
+  ]);
+  const details: DetailFact[] = [];
+
+  addFact(details, 'Product', productName);
+  addFact(details, 'Brand or company', brandName);
+  addFact(details, 'Date marking, batch, barcode, or pack details', identifiers);
+  addFact(details, 'Problem', problem);
+  addFact(details, 'Food safety hazard', foodSafetyHazard);
+  addFact(details, 'Distribution or availability', introduction);
+
+  return {
+    displayTitle: displayTitleFor(productName, cleanTitle),
+    officialTitle: cleanTitle,
+    productName,
+    brandName,
+    recallDate: formatDate(rawText(detail, 'publishedDate') || rawText(raw, 'publishedDate') || recall.recallDate),
+    recallNumber: rawText(raw, 'id') || recall.recallNumber || '',
+    imageCaptions: imageCaptions(raw, recall),
+    reason: uniqueNonEmpty([problem, foodSafetyHazard]).join(' '),
+    action,
+    actionDetail: action,
+    actionParagraphs: paragraphs(action),
+    description: firstNonEmpty([introduction, recall.description, productName], productName),
+    identificationDetails: details,
+    consumerContact: rawText(detail, 'contact'),
+    soldAt: uniqueNonEmpty([introduction]),
+    incidents: [],
+    importer: [],
+    manufacturer: uniqueNonEmpty([brandName]),
+    manufacturedIn: [],
+    units: recall.affectedUnits || recall.productQuantity || '',
+    fdaDetails: details
+  };
+}
+
 function ukFsaTypeCodes(raw: RawObject): string[] {
   return uniqueNonEmpty(
     (Array.isArray(raw.type) ? raw.type : [raw.type])
@@ -1078,7 +1128,9 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
                   ? buildNewZealandProductSafetyView(recall, raw)
                   : recall.source === 'HK_CFS'
                     ? buildHongKongCfsView(recall, raw)
-                    : buildCpscView(recall, raw);
+                    : recall.source === 'FSANZ_FOOD_RECALLS'
+                      ? buildFsanzFoodRecallView(recall, raw)
+                      : buildCpscView(recall, raw);
   const productIntro = sourceSpecificView.productName
     ? `This recall involves ${sourceSpecificView.productName}`
     : 'This recall involves a recalled product';
@@ -1086,7 +1138,9 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
   const introSentence =
     recall.source === 'UK_FSA'
       ? `${productIntro}${brandIntro}. Compare the package, batch, date, allergen, and action details with the official FSA notice before eating, serving, selling, or returning it.`
-      : `${productIntro}${brandIntro}. Review the photos and details below before using, keeping, selling, or giving it away.`;
+      : recall.source === 'FSANZ_FOOD_RECALLS'
+        ? `${productIntro}${brandIntro}. Compare the package, date marking, batch, distribution, and action details with the official FSANZ notice before eating, serving, selling, or returning it.`
+        : `${productIntro}${brandIntro}. Review the photos and details below before using, keeping, selling, or giving it away.`;
 
   return {
     ...sourceSpecificView,

@@ -1,0 +1,14 @@
+---
+import SourceLandingPage from '../components/SourceLandingPage.astro';
+import { getSourceLandingPageByRoute, getSourceLandingPageRecalls } from '../lib/source-landing-pages';
+
+const page = getSourceLandingPageByRoute('/australia-new-zealand-food-recalls');
+
+if (!page) {
+  throw new Error('Missing Australia/New Zealand FSANZ source landing page config.');
+}
+
+const recalls = getSourceLandingPageRecalls(page);
+---
+
+<SourceLandingPage page={page} recalls={recalls} />

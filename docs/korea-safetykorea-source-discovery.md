@@ -11,7 +11,7 @@ Phase 36 reviewed the SafetyKorea Open API interface document and prepared the A
 - Proposed route if later activated: `/korea-product-recalls`
 - Records added in Phase 35: no
 - Canonical total after Phase 35: 901
-- Current canonical total after Phase 38: 1101
+- Current canonical total after Phase 39: 1201
 - Active source filters changed: no
 
 ## Official Sources Reviewed

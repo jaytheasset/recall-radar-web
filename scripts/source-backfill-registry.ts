@@ -7,7 +7,8 @@ export type SourceBackfillId =
   | 'UK_FSA'
   | 'AU_PRODUCT_SAFETY'
   | 'NZ_PRODUCT_SAFETY'
-  | 'HK_CFS';
+  | 'HK_CFS'
+  | 'FSANZ_FOOD_RECALLS';
 
 export type BackfillStatus = 'ready' | 'partial' | 'needs-investigation' | 'not-applicable';
 
@@ -394,6 +395,49 @@ export const sourceBackfillRegistry: SourceBackfillRegistryEntry[] = [
       'Full Hong Kong CFS backfill.',
       'Hong Kong EMSD electrical products source.',
       'Hong Kong Customs consumer goods source.',
+      'Cross-source dedupe.'
+    ]
+  },
+  {
+    sourceId: 'FSANZ_FOOD_RECALLS',
+    outputKey: 'fsanz-food-recalls',
+    label: 'Australia/New Zealand - FSANZ food recalls',
+    currentCount: 100,
+    rawPath: 'data/raw/fsanz-food-recalls.json',
+    processedPath: 'data/processed/fsanz-food-recalls.json',
+    existingFetchScript: 'npm run fetch:fsanz-food-recalls',
+    existingNormalizeScript: 'npm run normalize:fsanz-food-recalls',
+    existingAuditScript: 'npm run audit:fsanz-food-recalls',
+    existingUpdateScript: 'npm run update:fsanz-food-recalls',
+    backfillStatus: 'partial',
+    suggestedBackfillMode: ['latest-pagination', 'detail-refresh', 'manual-source-specific'],
+    outputDir: 'data/backfill/fsanz-food-recalls',
+    checkpointPath: 'data/backfill/fsanz-food-recalls/checkpoints/fsanz-food-recalls-backfill-checkpoint.json',
+    endpointOrInput: 'https://www.foodstandards.gov.au/food-recalls/recall-alert',
+    currentFetchMode:
+      'Bounded latest-100 records from the official FSANZ food recall listing pages plus official detail pages; RSS is used as supplemental latest metadata.',
+    paginationStatus:
+      'The official listing supports page pagination in 25-record pages; full historical pagination is not enabled in canonical data.',
+    dateFilterStatus: 'Not implemented in current script; date/filter behavior should be investigated before full backfill.',
+    detailRefreshStatus: 'Implemented for the bounded latest 100 records during fetch.',
+    imageSupport: 'Current records can include official foodstandards.gov.au product image and thumbnail URLs.',
+    updateScriptBehavior: 'Fetches bounded source data, normalizes, merges canonical data, and runs the FSANZ audit.',
+    estimatedRisk: 'medium',
+    riskNotes: [
+      'The RSS feed exposes only a small latest set, so the bounded spike uses official HTML pagination.',
+      'Food recall detail fields vary by notice and may omit barcode, batch, or pack details.',
+      'FSANZ is food recall coverage, not all Australia or New Zealand product recalls.'
+    ],
+    knownLimitations: [
+      'No full FSANZ backfill.',
+      'No Australia FSANZ non-food source because FSANZ is food-specific.',
+      'No cross-source dedupe.'
+    ],
+    recommendedNextStep:
+      'Add a dry-run FSANZ backfill planner that chunks official listing pages before any canonical expansion.',
+    deferredWork: [
+      'Full FSANZ backfill.',
+      'Date-window strategy.',
       'Cross-source dedupe.'
     ]
   }

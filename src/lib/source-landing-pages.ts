@@ -126,6 +126,18 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
     searchLabel: 'Search within Hong Kong food alerts',
     searchPlaceholder: 'Search food, brand, allergen, batch, best-before date, importer, retailer, or keyword',
     noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
+  },
+  {
+    route: '/australia-new-zealand-food-recalls',
+    title: 'Australia & New Zealand Food Recalls | Recall Radar',
+    heading: 'Australia & New Zealand Food Recalls',
+    eyebrow: 'Australia/New Zealand',
+    description: 'Browse indexed FSANZ food recall notices.',
+    metaDescription: 'Browse indexed Food Standards Australia New Zealand food recall notices in Recall Radar.',
+    sourceIds: ['FSANZ_FOOD_RECALLS'],
+    searchLabel: 'Search within FSANZ food recalls',
+    searchPlaceholder: 'Search food, brand, allergen, batch, date marking, state, retailer, or keyword',
+    noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
   }
 ];
 
