@@ -248,9 +248,15 @@ France RappelConso is active as the first non-U.S. source spike. Canada Recalls 
 
 Future candidates to evaluate as planning notes only:
 
+- Australia Product Safety / ACCC
 - Korea SafetyKorea / MFDS
-- Australia Product Safety
+- New Zealand Product Safety / MPI
 - Japan Consumer Affairs Agency
+- Singapore SFA / CPSO
+- Hong Kong CFS / EMSD
+- Taiwan TFDA / BSMI
+
+Phase 31 source discovery is documented in `docs/asia-oceania-source-discovery.md`. It recommends `AU_PRODUCT_SAFETY` as the lowest-risk next overall source candidate and `KR_SAFETYKOREA` as the strongest Asia-specific candidate after official API access is confirmed.
 
 These future candidates are not active filters or active coverage in this phase. They should not appear in consumer-facing source filters until real data ingestion, source labels, validation, and product detail behavior are implemented.
 

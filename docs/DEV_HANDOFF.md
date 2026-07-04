@@ -119,6 +119,12 @@ Phase 24 global backfill planning:
 - `npm run audit:source-backfills` audits generated files under ignored `data/backfill/` directories if they exist.
 - Canonical data remains unchanged until a separate reviewed launch-time backfill phase.
 
+Phase 31 Asia/Oceania source discovery:
+
+- `docs/asia-oceania-source-discovery.md` documents official source candidates for Australia, New Zealand, Japan, Korea, Singapore, Hong Kong, and Taiwan.
+- No Asia/Oceania records, active filters, source registry entries, country pages, backfills, or source refreshes were added.
+- Recommended next overall candidate is `AU_PRODUCT_SAFETY`; recommended Asia-specific candidate is `KR_SAFETYKOREA` after official API access is confirmed.
+
 Phase 10 current source counts:
 
 - CPSC: 301

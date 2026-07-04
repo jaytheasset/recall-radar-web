@@ -173,6 +173,7 @@ For planning-only or dry-run phases, rollback is usually deleting local ignored 
 
 ## Source-specific future phases
 
+- Asia/Oceania source prototype after Phase 31 discovery, likely starting with `AU_PRODUCT_SAFETY` or `KR_SAFETYKOREA` after access verification
 - CPSC backfill pipeline
 - RappelConso backfill pipeline
 - Canada backfill pipeline

@@ -38,6 +38,8 @@ For launch or staging readiness, use `docs/LAUNCH_CHECKLIST.md`. `npm run valida
 
 Global backfill planning is documented in `docs/global-backfill-runbook.md`. `npm run plan:source-backfills` must not mutate source data, and `npm run audit:source-backfills` should pass with "No source backfill chunks found; nothing to audit." when no ignored chunks exist.
 
+Asia/Oceania source discovery is documented in `docs/asia-oceania-source-discovery.md`. It is planning-only: Australia, New Zealand, Japan, Korea, Singapore, Hong Kong, and Taiwan must not appear as active source filters or live coverage until a future ingestion phase adds validated data and source registry entries.
+
 USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt returned HTTP `403 Forbidden` / `Access Denied`, likely from FSIS-side access control, CDN/WAF filtering, User-Agent/header filtering, IP/range filtering, or temporary endpoint restrictions. No USDA data was written, no bypass should be attempted, and no USDA fetch script is active. See `docs/USDA_FSIS_DEFERRED.md`.
 
 ## CPSC Data Pipeline
@@ -186,6 +188,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm total canonical count is 801.
 - Confirm active source filter values are `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, and `UK_FSA`.
 - Confirm Korea, Japan, and Australia do not appear as active source filters.
+- Confirm New Zealand, Singapore, Hong Kong, and Taiwan do not appear as active source filters.
 - Confirm `npm run audit:sources` reports no unknown source ids, no duplicate ids, no active source with zero records, and no source-registry/data mismatch.
 - Confirm consumer-facing coverage copy says indexed notices and official source feeds, not complete global coverage.
 - Confirm long source labels wrap cleanly on checker, watchlist, category, brand, and detail pages at mobile widths.
