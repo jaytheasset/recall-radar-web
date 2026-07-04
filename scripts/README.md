@@ -10,6 +10,7 @@ Current rules:
 - The public Canada Recalls and Safety Alerts open-data feed is allowed only when a task asks for Canada recall refreshes.
 - The official EU Safety Gate public API endpoints are allowed only when a task asks for EU Safety Gate refreshes.
 - The official UK FSA Food Alerts API endpoints are allowed only when a task asks for UK FSA refreshes.
+- The official Product Safety Australia recalls page is allowed only when a task asks for Australia Product Safety refreshes.
 - UI-only phases should use the existing local `data/processed/recalls.json` file and should not fetch unless a later task explicitly asks for fresh data.
 - Do not connect databases.
 - Do not write secrets.
@@ -350,7 +351,76 @@ Do not wire UK FSA fetches into `npm run check`, `npm run build`, or UI tests.
 
 For the current 100-record UK FSA spike, commit the raw UK FSA file, processed UK FSA file, and merged canonical processed file together only after the UK FSA audit passes. UK FSA detail payloads can be verbose, so any future full backfill should reconsider whether to commit full raw detail payloads, a smaller fixture, or only normalized processed records.
 
-The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, and UK FSA Food Alerts records.
+## Australia Product Safety Fetch
+
+```powershell
+npm run fetch:australia-product-safety
+```
+
+This uses the official Product Safety Australia recalls page:
+
+`https://www.productsafety.gov.au/recalls`
+
+The page's RSS link currently redirects to itself, so the fetch script reads the official Drupal AJAX view settings and requests the official `/views/ajax` listing pages. It then fetches official detail pages for the bounded records.
+
+Default behavior:
+
+- Requests the 100 most recent Product Safety Australia recall notices.
+- Fetches official detail HTML for each bounded record.
+- Saves the bounded raw response wrapper to `data/raw/australia-product-safety-recalls.json`.
+- Saves normalized Australia records to `data/processed/australia-product-safety-recalls.json`.
+- Rebuilds the merged canonical file at `data/processed/recalls.json`.
+- Adds `fetchedAt` to the raw output.
+- Refuses to overwrite processed output when the official listing returns zero records.
+- Uses official Product Safety Australia image URLs when official detail images are available.
+
+Optional limit:
+
+```powershell
+npm run fetch:australia-product-safety -- --limit=50
+```
+
+The default Australia limit is 100. It can also be set with an environment variable:
+
+```powershell
+$env:AU_PRODUCT_SAFETY_LIMIT = "100"
+npm run fetch:australia-product-safety
+Remove-Item Env:AU_PRODUCT_SAFETY_LIMIT
+```
+
+To rebuild Australia processed data from the saved raw file:
+
+```powershell
+npm run normalize:australia-product-safety
+```
+
+To audit the current local Australia processed data without making network calls:
+
+```powershell
+npm run audit:australia-product-safety
+```
+
+To run the explicit Australia refresh workflow, including network fetch and local audit:
+
+```powershell
+npm run update:australia-product-safety
+```
+
+`update:australia-product-safety` runs `data:australia-product-safety:fetch`, `data:australia-product-safety:normalize`, `data:merge`, and `audit:australia-product-safety` in that order. The fetch step already writes raw, processed, and canonical files; the explicit normalize and merge steps make the final files reproducible from the saved raw payload before audit.
+
+For local-only validation from the existing raw file:
+
+```powershell
+npm run data:australia-product-safety:normalize
+npm run data:merge
+npm run audit:australia-product-safety
+```
+
+Do not wire Australia fetches into `npm run check`, `npm run build`, or UI tests.
+
+For the current 100-record Australia spike, commit the raw Australia file, processed Australia file, and merged canonical processed file together only after the Australia audit passes. Any future full Australia backfill should use ignored chunks and source-specific audit before canonical expansion.
+
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, and Australia Product Safety records.
 
 ## Integrated Source Audit
 
@@ -358,7 +428,7 @@ The canonical `data/processed/recalls.json` file is the local site source and ca
 npm run audit:sources
 ```
 
-This is a local-only launch-readiness audit for the canonical merged file. It reads `data/processed/recalls.json`, checks the six active source ids and expected counts, verifies the active source registry matches the canonical data, reports duplicate ids, reports sparse fields by source, and summarizes category distribution by source.
+This is a local-only launch-readiness audit for the canonical merged file. It reads `data/processed/recalls.json`, checks the seven active source ids and expected counts, verifies the active source registry matches the canonical data, reports duplicate ids, reports sparse fields by source, and summarizes category distribution by source.
 
 Expected current counts:
 
@@ -368,7 +438,8 @@ Expected current counts:
 - Canada Recalls and Safety Alerts: 100
 - EU Safety Gate: 100
 - UK FSA Food Alerts: 100
-- Total: 801
+- Australia Product Safety: 100
+- Total: 901
 
 ## Image Audit
 
@@ -395,11 +466,12 @@ npm run validate:launch
 This command is local-only. It runs:
 
 1. `npm run audit:sources`
-2. `npm run audit:uk-fsa`
-3. `npm run audit:eu-safety-gate`
-4. `npm run audit:canada`
-5. `npm run audit:rappelconso`
-6. `npm run check`
-7. `npm run build`
+2. `npm run audit:australia-product-safety`
+3. `npm run audit:uk-fsa`
+4. `npm run audit:eu-safety-gate`
+5. `npm run audit:canada`
+6. `npm run audit:rappelconso`
+7. `npm run check`
+8. `npm run build`
 
 It does not run fetch, update, or data-refresh scripts. Use it before launch, staging deployment, or final merge to `main`.

@@ -25,7 +25,8 @@ const expectedCounts: Record<RecallSource, number> = {
   FR_RAPPELCONSO: 100,
   CA_RECALLS: 100,
   EU_SAFETY_GATE: 100,
-  UK_FSA: 100
+  UK_FSA: 100,
+  AU_PRODUCT_SAFETY: 100
 };
 
 const expectedTotal = Object.values(expectedCounts).reduce((total, count) => total + count, 0);

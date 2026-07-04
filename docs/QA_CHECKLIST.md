@@ -26,6 +26,9 @@
 - `npm run fetch:uk-fsa`
 - `npm run normalize:uk-fsa`
 - `npm run audit:uk-fsa`
+- `npm run fetch:australia-product-safety`
+- `npm run normalize:australia-product-safety`
+- `npm run audit:australia-product-safety`
 - `npm run validate:launch`
 - `npm run plan:source-backfills`
 - `npm run audit:source-backfills`
@@ -38,7 +41,7 @@ For launch or staging readiness, use `docs/LAUNCH_CHECKLIST.md`. `npm run valida
 
 Global backfill planning is documented in `docs/global-backfill-runbook.md`. `npm run plan:source-backfills` must not mutate source data, and `npm run audit:source-backfills` should pass with "No source backfill chunks found; nothing to audit." when no ignored chunks exist.
 
-Asia/Oceania source discovery is documented in `docs/asia-oceania-source-discovery.md`. It is planning-only: Australia, New Zealand, Japan, Korea, Singapore, Hong Kong, and Taiwan must not appear as active source filters or live coverage until a future ingestion phase adds validated data and source registry entries.
+Asia/Oceania source discovery is documented in `docs/asia-oceania-source-discovery.md`. Australia Product Safety is now a bounded active source. New Zealand, Japan, Korea, Singapore, Hong Kong, and Taiwan must not appear as active source filters or live coverage until a future ingestion phase adds validated data and source registry entries.
 
 USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt returned HTTP `403 Forbidden` / `Access Denied`, likely from FSIS-side access control, CDN/WAF filtering, User-Agent/header filtering, IP/range filtering, or temporary endpoint restrictions. No USDA data was written, no bypass should be attempted, and no USDA fetch script is active. See `docs/USDA_FSIS_DEFERRED.md`.
 
@@ -75,7 +78,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm official Safety Gate image URLs use `https://ec.europa.eu/safety-gate-alerts/public/api/notification/image/{photoId}` where images are available.
 - Confirm canonical records preserve existing CPSC, FDA/openFDA, France RappelConso, and Canada records and append bounded EU Safety Gate records by stable id.
 - Confirm canonical records are sorted by `recallDate` descending where possible.
-- Confirm `npm run audit:sources` passes with only active six-source coverage.
+- Confirm `npm run audit:sources` passes with active seven-source coverage.
 - Confirm `npm run audit:eu-safety-gate` passes.
 - Confirm EU audit reports barcode, model/type, batch/serial, risk type, notifying country, country of origin, countries concerned or market detail coverage.
 - Confirm EU audit reports no suspicious category mappings and no EU records are mapped to food/allergy.
@@ -104,6 +107,24 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - For no-network QA phases, confirm `npm run data:uk-fsa:normalize`, `npm run data:merge`, and `npm run audit:uk-fsa` validate the committed raw file path without calling the UK FSA endpoint.
 - Confirm the default UK FSA limit remains `UK_FSA_LIMIT=100`.
 
+## Australia Product Safety Pipeline
+
+- Confirm `npm run fetch:australia-product-safety` saves `data/raw/australia-product-safety-recalls.json`.
+- Confirm `npm run fetch:australia-product-safety` saves `data/processed/australia-product-safety-recalls.json`.
+- Confirm `npm run fetch:australia-product-safety` rebuilds canonical `data/processed/recalls.json`.
+- Confirm raw Australia output includes `fetchedAt`.
+- Confirm Australia records include `source: AU_PRODUCT_SAFETY`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard` or `reason`, `recallDate`, `description`, `slug`, official image URLs when available, and `raw`.
+- Confirm the Australia source label renders as `Australia · Product Safety Australia`.
+- Confirm official source URLs use `https://www.productsafety.gov.au/search-consumer-product-recalls/...`.
+- Confirm official image URLs use `https://www.productsafety.gov.au/system/files/...`.
+- Confirm canonical records preserve existing sources and append bounded Australia records by stable id.
+- Confirm canonical records are sorted by `recallDate` descending where possible.
+- Confirm `npm run audit:australia-product-safety` passes.
+- Confirm Australia audit reports official URL shape, image availability, category distribution, distribution detail availability, source filter values, duplicate ids, and slug collisions.
+- Confirm `npm run update:australia-product-safety` remains an explicit refresh command and is not part of `npm run check` or `npm run build`.
+- For no-network QA phases, confirm `npm run data:australia-product-safety:normalize`, `npm run data:merge`, and `npm run audit:australia-product-safety` validate the committed raw file path without calling Product Safety Australia.
+- Confirm the default Australia Product Safety limit remains `AU_PRODUCT_SAFETY_LIMIT=100`.
+
 ## Pages
 
 - `/`
@@ -112,6 +133,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - `/checker?q=smoke&source=CPSC`
 - `/checker?q=toy&source=EU_SAFETY_GATE`
 - `/checker?source=UK_FSA`
+- `/checker?source=AU_PRODUCT_SAFETY`
 - `/watchlist`
 - `/404`
 - `/baby-product-recalls`
@@ -123,19 +145,22 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - `/eu-safety-gate-recalls`
 - `/france-product-recalls`
 - `/uk-food-recalls`
+- `/australia-product-recalls`
 - one real CPSC `/recalls/[slug]` page
 - one real FDA `/recalls/[slug]` page, when FDA data has been fetched
 - one real EU Safety Gate `/recalls/[slug]` page, when EU data has been fetched
 - one real UK FSA `/recalls/[slug]` page, when UK FSA data has been fetched
+- one real Australia Product Safety `/recalls/[slug]` page, when Australia data has been fetched
 - one normalized real CPSC `/brands/[brand]` page
 - Confirm source labels render through `src/lib/recall-sources.ts`.
 - Confirm page labels identify EU records as European Union Safety Gate records.
 - Confirm page labels identify UK FSA records as United Kingdom FSA Food Alerts records.
+- Confirm page labels identify Australia records as Australia Product Safety Australia records.
 - Confirm `/robots.txt` allows crawling.
 - Confirm sitemap generation remains deferred until a canonical deployment URL is chosen.
 - Confirm category pages show a matching local record count.
 - Confirm `/household-product-recalls` shows Household Products notices and the page count matches the `household-appliance` category filter count.
-- Confirm country/source landing pages show United States 401, Canada 100, EU Safety Gate 100, France 100, and UK Food 100 indexed notices.
+- Confirm country/source landing pages show United States 401, Canada 100, EU Safety Gate 100, France 100, UK Food 100, and Australia 100 indexed notices.
 - Confirm `/food-allergy-recalls` shows FDA/openFDA food records before CPSC food/allergy records when FDA records exist.
 - Confirm core pages remain readable at narrow mobile widths and long titles/labels wrap instead of overflowing.
 - Confirm recall detail pages show company recall history and related recall sections.
@@ -164,6 +189,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm `/checker?q=smoke&source=CPSC` applies the CPSC source filter.
 - Confirm `/checker?q=toy&source=EU_SAFETY_GATE` applies the EU Safety Gate source filter.
 - Confirm `/checker?source=UK_FSA` applies the UK FSA source filter.
+- Confirm `/checker?source=AU_PRODUCT_SAFETY` applies the Australia Product Safety source filter.
 - Confirm a real UK FSA food, allergen, batch, or date query returns an exact or possible match when UK FSA records exist.
 - Confirm source, category, sort, and date filter changes update the URL query string.
 - Confirm category filters include all, baby/kids, battery/electronics, food/allergy, household/appliance, food, and general.
@@ -185,9 +211,10 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm Canada Recalls and Safety Alerts count is 100.
 - Confirm EU Safety Gate count is 100.
 - Confirm UK FSA Food Alerts count is 100.
-- Confirm total canonical count is 801.
-- Confirm active source filter values are `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, and `UK_FSA`.
-- Confirm Korea, Japan, and Australia do not appear as active source filters.
+- Confirm Australia Product Safety count is 100.
+- Confirm total canonical count is 901.
+- Confirm active source filter values are `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, and `AU_PRODUCT_SAFETY`.
+- Confirm Korea and Japan do not appear as active source filters.
 - Confirm New Zealand, Singapore, Hong Kong, and Taiwan do not appear as active source filters.
 - Confirm `npm run audit:sources` reports no unknown source ids, no duplicate ids, no active source with zero records, and no source-registry/data mismatch.
 - Confirm consumer-facing coverage copy says indexed notices and official source feeds, not complete global coverage.

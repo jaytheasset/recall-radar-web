@@ -5,6 +5,7 @@ export type RecallSourceId =
   | 'CA_RECALLS'
   | 'EU_SAFETY_GATE'
   | 'UK_FSA'
+  | 'AU_PRODUCT_SAFETY'
   | 'Mock';
 export type CurrentCoverageSourceId = Exclude<RecallSourceId, 'Mock'>;
 export type RecallSourceType = 'official-api' | 'sample';
@@ -303,6 +304,51 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     officialVerificationCopy:
       'Use the official FSA notice to confirm affected products, pack sizes, batches, dates, allergens or risks, and consumer action.'
   },
+  AU_PRODUCT_SAFETY: {
+    id: 'AU_PRODUCT_SAFETY',
+    marketCode: 'AU',
+    marketLabel: 'Australia',
+    agencyLabel: 'Product Safety Australia',
+    sourceType: 'official-api',
+    displayLabel: 'Australia · Product Safety Australia',
+    noticeTypeLabel: 'Product safety recall',
+    productScopeLabel: 'Consumer products and product safety recalls',
+    identifierTypes: [
+      'model number',
+      'item number',
+      'barcode',
+      'batch or lot code',
+      'product name',
+      'brand/company',
+      'sale dates',
+      'trader or supplier details'
+    ],
+    supportsImages: true,
+    supportsDistributionDetails: true,
+    rawPayloadNotes:
+      'Product Safety Australia records are collected from the official recalls listing AJAX view and official recall detail pages. Detail pages can include product description, brand, supplier, defects, hazards, consumer action, traders, sale dates, locations sold, manufacturer country, categories, and official product images.',
+    officialSourceLabel: 'Source: Australia · Product Safety Australia',
+    placeholderLabel: 'Product Safety Australia recall',
+    reasonLabel: 'Reason',
+    actionLabel: 'Action',
+    quantityLabel: 'Quantity',
+    distributionLabel: 'Sold by / where',
+    defaultActionFallback: DEFAULT_ACTION_FALLBACK,
+    verificationIntro:
+      'Compare the details below with your product label, packaging, receipt, model information, sale dates, supplier details, and official Product Safety Australia notice. A matching search result does not confirm your exact product is included.',
+    verificationChecklist: [
+      'Product name and brand/company',
+      'Model, item, barcode, batch, or lot details if listed',
+      'Product photo and label details',
+      'Supplier or trader details',
+      'Sale dates and location sold if listed',
+      'Reason, hazard, and consumer action in the official notice'
+    ],
+    sparseIdentificationCopy:
+      'This indexed notice may not list every identifier in a structured field. Review the official Product Safety Australia notice and product label carefully.',
+    officialVerificationCopy:
+      'Use the official notice to confirm affected products, identifiers, sale dates, traders, locations sold, hazards, and consumer action.'
+  },
   Mock: {
     id: 'Mock',
     marketCode: '',
@@ -344,7 +390,8 @@ const currentCoverageSources: CurrentCoverageSourceId[] = [
   'FR_RAPPELCONSO',
   'CA_RECALLS',
   'EU_SAFETY_GATE',
-  'UK_FSA'
+  'UK_FSA',
+  'AU_PRODUCT_SAFETY'
 ];
 
 function normalizeSourceId(source: string): RecallSourceId {
@@ -354,6 +401,7 @@ function normalizeSourceId(source: string): RecallSourceId {
     source === 'CA_RECALLS' ||
     source === 'EU_SAFETY_GATE' ||
     source === 'UK_FSA' ||
+    source === 'AU_PRODUCT_SAFETY' ||
     source === 'Mock'
     ? source
     : 'Mock';

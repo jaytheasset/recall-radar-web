@@ -12,6 +12,10 @@ export const rappelConsoProcessedPath = resolve(projectRoot, 'data/processed/rap
 export const canadaProcessedPath = resolve(projectRoot, 'data/processed/canada-recalls.json');
 export const euSafetyGateProcessedPath = resolve(projectRoot, 'data/processed/eu-safety-gate-recalls.json');
 export const ukFsaProcessedPath = resolve(projectRoot, 'data/processed/uk-fsa-alerts.json');
+export const australiaProductSafetyProcessedPath = resolve(
+  projectRoot,
+  'data/processed/australia-product-safety-recalls.json'
+);
 
 type MergeResult = ProcessedRecallFile & {
   countsBySource: Record<RecallSource, number>;
@@ -77,19 +81,30 @@ function countBySource(records: NormalizedRecall[]): Record<RecallSource, number
     FR_RAPPELCONSO: records.filter((record) => record.source === 'FR_RAPPELCONSO').length,
     CA_RECALLS: records.filter((record) => record.source === 'CA_RECALLS').length,
     EU_SAFETY_GATE: records.filter((record) => record.source === 'EU_SAFETY_GATE').length,
-    UK_FSA: records.filter((record) => record.source === 'UK_FSA').length
+    UK_FSA: records.filter((record) => record.source === 'UK_FSA').length,
+    AU_PRODUCT_SAFETY: records.filter((record) => record.source === 'AU_PRODUCT_SAFETY').length
   };
 }
 
 export async function mergeProcessedRecalls(): Promise<MergeResult> {
-  const [canonicalFile, cpscFile, fdaFile, rappelConsoFile, canadaFile, euSafetyGateFile, ukFsaFile] = await Promise.all([
+  const [
+    canonicalFile,
+    cpscFile,
+    fdaFile,
+    rappelConsoFile,
+    canadaFile,
+    euSafetyGateFile,
+    ukFsaFile,
+    australiaProductSafetyFile
+  ] = await Promise.all([
     readProcessedFile(canonicalProcessedPath),
     readProcessedFile(cpscProcessedPath),
     readProcessedFile(fdaProcessedPath),
     readProcessedFile(rappelConsoProcessedPath),
     readProcessedFile(canadaProcessedPath),
     readProcessedFile(euSafetyGateProcessedPath),
-    readProcessedFile(ukFsaProcessedPath)
+    readProcessedFile(ukFsaProcessedPath),
+    readProcessedFile(australiaProductSafetyProcessedPath)
   ]);
   const cpscRecords = sourceRecords(cpscFile, 'CPSC').length
     ? sourceRecords(cpscFile, 'CPSC')
@@ -99,13 +114,15 @@ export async function mergeProcessedRecalls(): Promise<MergeResult> {
   const canadaRecords = sourceRecords(canadaFile, 'CA_RECALLS');
   const euSafetyGateRecords = sourceRecords(euSafetyGateFile, 'EU_SAFETY_GATE');
   const ukFsaRecords = sourceRecords(ukFsaFile, 'UK_FSA');
+  const australiaProductSafetyRecords = sourceRecords(australiaProductSafetyFile, 'AU_PRODUCT_SAFETY');
   const records = mergeRecords([
     ...cpscRecords,
     ...fdaRecords,
     ...rappelConsoRecords,
     ...canadaRecords,
     ...euSafetyGateRecords,
-    ...ukFsaRecords
+    ...ukFsaRecords,
+    ...australiaProductSafetyRecords
   ]);
 
   if (records.length === 0) {

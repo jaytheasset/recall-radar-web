@@ -31,7 +31,7 @@ export function getRecallImageForContext(
   context: RecallImageContext
 ): RecallImageSelection {
   const shouldUseThumbnail =
-    (recall.source === 'EU_SAFETY_GATE' || recall.source === 'CA_RECALLS') &&
+    (recall.source === 'EU_SAFETY_GATE' || recall.source === 'CA_RECALLS' || recall.source === 'AU_PRODUCT_SAFETY') &&
     (context === 'card' || context === 'list' || context === 'related');
   const fullUrl = recall.primaryImageUrl;
   const thumbnailUrl = recall.primaryImageThumbnailUrl;
@@ -80,7 +80,9 @@ export function getDetailHeroImageSources(
   const loadingAttributes = getImageLoadingAttributes('detailHero');
   const fullSrc = image?.url || recall.primaryImageUrl;
   const thumbnailSrc = image?.thumbnailUrl || recall.primaryImageThumbnailUrl;
-  const isProgressive = recall.source === 'EU_SAFETY_GATE' && Boolean(fullSrc && thumbnailSrc && fullSrc !== thumbnailSrc);
+  const isProgressive =
+    (recall.source === 'EU_SAFETY_GATE' || recall.source === 'AU_PRODUCT_SAFETY') &&
+    Boolean(fullSrc && thumbnailSrc && fullSrc !== thumbnailSrc);
 
   if (isProgressive) {
     return {

@@ -40,7 +40,8 @@ const processedFiles = [
   'data/processed/eu-safety-gate-recalls.json',
   'data/processed/rappelconso-recalls.json',
   'data/processed/canada-recalls.json',
-  'data/processed/uk-fsa-alerts.json'
+  'data/processed/uk-fsa-alerts.json',
+  'data/processed/australia-product-safety-recalls.json'
 ];
 
 const runtimeEnv = (process as typeof process & { env?: Record<string, string | undefined> }).env ?? {};
@@ -208,15 +209,27 @@ function getSummary(summaries: Map<string, SourceSummary>, source: string): Sour
 }
 
 function sourceSpecificImageIssue(source: string, rawUrl: string): string {
-  if (source !== 'CA_RECALLS') {
-    return '';
+  if (source === 'CA_RECALLS') {
+    if (isSuspectedCanadaChromeImage(rawUrl)) {
+      return 'suspected-canada-chrome-image';
+    }
+
+    return isOfficialCanadaImageUrl(rawUrl) ? '' : 'non-official-canada-image-url';
   }
 
-  if (isSuspectedCanadaChromeImage(rawUrl)) {
-    return 'suspected-canada-chrome-image';
+  if (source === 'AU_PRODUCT_SAFETY') {
+    try {
+      const url = new URL(rawUrl);
+      return url.hostname === 'www.productsafety.gov.au' &&
+        /^\/system\/files\/(?:styles\/[^/]+\/)?(?:public|private)\//i.test(url.pathname)
+        ? ''
+        : 'non-official-australia-image-url';
+    } catch {
+      return 'non-official-australia-image-url';
+    }
   }
 
-  return isOfficialCanadaImageUrl(rawUrl) ? '' : 'non-official-canada-image-url';
+  return '';
 }
 
 async function fetchStatus(
@@ -229,19 +242,25 @@ async function fetchStatus(
     const timeout = setTimeout(() => controller.abort(), liveTimeoutMs);
 
     try {
+      const parsedUrl = new URL(url);
+      const headers: Record<string, string> = {
+        accept: 'image/*,*/*',
+        'user-agent': 'Recall Radar image audit',
+        range: 'bytes=0-1024'
+      };
+
+      if (parsedUrl.hostname === 'ec.europa.eu') {
+        headers.language = 'en';
+        headers.lang = 'en';
+        headers.origin = 'https://ec.europa.eu';
+        headers.referer = 'https://ec.europa.eu/safety-gate-alerts/screen/webReport';
+      }
+
       const response = await fetch(url, {
         method: 'GET',
         redirect: 'manual',
         signal: controller.signal,
-        headers: {
-          accept: 'image/*,*/*',
-          language: 'en',
-          lang: 'en',
-          origin: 'https://ec.europa.eu',
-          referer: 'https://ec.europa.eu/safety-gate-alerts/screen/webReport',
-          'user-agent': 'Recall Radar image audit',
-          range: 'bytes=0-1024'
-        }
+        headers
       });
       const body = new Uint8Array(await response.arrayBuffer());
       const contentType = response.headers.get('content-type') ?? '';
@@ -311,7 +330,9 @@ async function run(): Promise<void> {
           ? 'CA_RECALLS'
           : file.includes('uk-fsa')
             ? 'UK_FSA'
-            : 'UNKNOWN';
+            : file.includes('australia-product-safety')
+              ? 'AU_PRODUCT_SAFETY'
+              : 'UNKNOWN';
 
     for (const record of records) {
       const source = sourceFor(record, fallbackSource);
@@ -456,6 +477,9 @@ async function run(): Promise<void> {
     }
     if (summary.source === 'CA_RECALLS' && summary.officialImageUrlIssues > 0) {
       failures.push(`CA_RECALLS image audit found ${summary.officialImageUrlIssues} non-official or chrome image URL issue(s).`);
+    }
+    if (summary.source === 'AU_PRODUCT_SAFETY' && summary.officialImageUrlIssues > 0) {
+      failures.push(`AU_PRODUCT_SAFETY image audit found ${summary.officialImageUrlIssues} non-official image URL issue(s).`);
     }
     return failures;
   });

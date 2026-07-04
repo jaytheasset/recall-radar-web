@@ -101,6 +101,18 @@ function cleanText(value?: string | null): string {
   return (value ?? '').replace(/\s+/g, ' ').trim();
 }
 
+function cleanAustraliaField(value: unknown): string {
+  return safeText(value)
+    .replace(
+      /^(?:Product description|Brand|Reason the product is recalled|The hazards to consumers|What consumers should do|Dates available for sale|Manufacturer country ID)\s+/i,
+      ''
+    )
+    .replace(/\s+See a list of details to help identify the product\b.*$/i, '')
+    .replace(/\s+Details to help identify the product\b.*$/i, '')
+    .replace(/\s*Any products marked with \* along the mentioned batch numbers are safe to use\.?/gi, '')
+    .trim();
+}
+
 function safeText(value: unknown): string {
   return typeof value === 'string' || typeof value === 'number' ? cleanText(String(value)) : '';
 }
@@ -538,6 +550,94 @@ function buildCanadaView(recall: SiteRecall, raw: RawObject): SourceDetailView {
   };
 }
 
+function rawStringArray(raw: RawObject, key: string): string[] {
+  const value = raw[key];
+  return Array.isArray(value) ? uniqueNonEmpty(value.map(safeText)) : uniqueNonEmpty([safeText(value)]);
+}
+
+function buildAustraliaProductSafetyView(recall: SiteRecall, raw: RawObject): SourceDetailView {
+  const detail = rawObject(raw, 'detail');
+  const productName = firstNonEmpty(
+    [cleanAustraliaField(detail.productDescription), ...recall.productNames, rawText(detail, 'title'), rawText(raw, 'title')],
+    'Product'
+  );
+  const brandName = firstNonEmpty(
+    [
+      cleanAustraliaField(detail.brand),
+      rawText(detail, 'supplierName'),
+      rawText(raw, 'supplierName'),
+      ...recall.displayBrandNames,
+      recall.primaryBrand
+    ],
+    'Brand or supplier not listed'
+  );
+  const officialTitle = firstNonEmpty([rawText(detail, 'title'), rawText(raw, 'title'), recall.title], recall.title);
+  const reason = firstNonEmpty([cleanAustraliaField(detail.defects), recall.reason ?? '', recall.hazard], 'Reason not listed.');
+  const action = firstNonEmpty(
+    [cleanAustraliaField(detail.consumerAction), recall.remedy],
+    getRecallDefaultActionFallback(recall.source)
+  );
+  const identifiers = uniqueNonEmpty(
+    identifierDetails(
+      [
+        officialTitle,
+        productName,
+        cleanAustraliaField(detail.brand),
+        cleanAustraliaField(detail.defects),
+        cleanAustraliaField(detail.hazards),
+        cleanAustraliaField(detail.consumerAction),
+        cleanAustraliaField(detail.traders),
+        cleanAustraliaField(detail.saleDates),
+        cleanAustraliaField(detail.soldWhere)
+      ].join(' ')
+    )
+  );
+  const details: DetailFact[] = [];
+  const categories = uniqueNonEmpty([...rawStringArray(detail, 'categories'), ...rawStringArray(raw, 'categories')]);
+
+  addFact(details, 'Product', productName);
+  addFact(details, 'Brand or company', brandName);
+  addFact(details, 'Model, barcode, batch, lot, or item details', identifiers);
+  addFact(details, 'Product category', categories);
+  addFact(details, 'Supplier running recall', cleanAustraliaField(detail.supplierRunningRecall) || rawText(detail, 'supplierName'));
+  addFact(details, 'Trader or seller', cleanAustraliaField(detail.traders));
+  addFact(details, 'Sale dates', cleanAustraliaField(detail.saleDates));
+  addFact(details, 'Sold in', cleanAustraliaField(detail.soldWhere));
+  addFact(details, 'Country of manufacture', cleanAustraliaField(detail.manufacturerCountry));
+
+  return {
+    displayTitle: displayTitleFor(productName, officialTitle),
+    officialTitle,
+    productName,
+    brandName,
+    recallDate: formatDate(rawText(detail, 'publishedDate') || rawText(raw, 'publishedDate') || recall.recallDate),
+    recallNumber: rawText(detail, 'recallNumber') || rawText(raw, 'id') || recall.recallNumber || '',
+    imageCaptions: imageCaptions(raw, recall),
+    reason,
+    action,
+    actionDetail: action,
+    actionParagraphs: paragraphs(action),
+    description: firstNonEmpty([recall.description, productName], productName),
+    identificationDetails: details,
+    consumerContact: '',
+    soldAt: uniqueNonEmpty([
+      cleanAustraliaField(detail.traders),
+      cleanAustraliaField(detail.soldWhere),
+      cleanAustraliaField(detail.saleDates)
+    ]),
+    incidents: [],
+    importer: [],
+    manufacturer: uniqueNonEmpty([
+      cleanAustraliaField(detail.supplierRunningRecall),
+      rawText(detail, 'supplierName'),
+      rawText(raw, 'supplierName')
+    ]),
+    manufacturedIn: uniqueNonEmpty([cleanAustraliaField(detail.manufacturerCountry)]),
+    units: recall.affectedUnits || recall.productQuantity || '',
+    fdaDetails: details
+  };
+}
+
 function ukFsaTypeCodes(raw: RawObject): string[] {
   return uniqueNonEmpty(
     (Array.isArray(raw.type) ? raw.type : [raw.type])
@@ -811,7 +911,9 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
             ? buildEuSafetyGateView(recall, raw)
             : recall.source === 'UK_FSA'
               ? buildUkFsaView(recall, raw)
-              : buildCpscView(recall, raw);
+              : recall.source === 'AU_PRODUCT_SAFETY'
+                ? buildAustraliaProductSafetyView(recall, raw)
+                : buildCpscView(recall, raw);
   const productIntro = sourceSpecificView.productName
     ? `This recall involves ${sourceSpecificView.productName}`
     : 'This recall involves a recalled product';

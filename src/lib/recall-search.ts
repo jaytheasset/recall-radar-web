@@ -77,6 +77,7 @@ const IDENTIFIER_TERMS = [
   'alert id',
   'safety gate reference',
   'safety gate',
+  'product safety australia',
   'fsa alert',
   'fsa reference',
   'best before',
@@ -353,6 +354,10 @@ export function getRecallIdentifierHint(recall: Pick<SiteRecall, 'source'>): str
 
   if (recall.source === 'UK_FSA') {
     return 'Check FSA reference, product name, pack size, batch/date code, allergen details, and official notice.';
+  }
+
+  if (recall.source === 'AU_PRODUCT_SAFETY') {
+    return 'Check product name, brand, model, barcode, sale dates, supplier or trader details, and official notice.';
   }
 
   if (recall.source === 'CPSC') {

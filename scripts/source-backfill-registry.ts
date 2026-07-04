@@ -4,7 +4,8 @@ export type SourceBackfillId =
   | 'FR_RAPPELCONSO'
   | 'CA_RECALLS'
   | 'EU_SAFETY_GATE'
-  | 'UK_FSA';
+  | 'UK_FSA'
+  | 'AU_PRODUCT_SAFETY';
 
 export type BackfillStatus = 'ready' | 'partial' | 'needs-investigation' | 'not-applicable';
 
@@ -259,6 +260,51 @@ export const sourceBackfillRegistry: SourceBackfillRegistryEntry[] = [
     ],
     recommendedNextStep: 'Add a UK FSA dry-run pipeline with pagination, detail refresh controls, and source-specific chunk audit.',
     deferredWork: ['Full UK FSA backfill.', 'FSA pagination/date-window strategy.', 'Related media/image policy.']
+  },
+  {
+    sourceId: 'AU_PRODUCT_SAFETY',
+    outputKey: 'australia-product-safety',
+    label: 'Australia - Product Safety Australia',
+    currentCount: 100,
+    rawPath: 'data/raw/australia-product-safety-recalls.json',
+    processedPath: 'data/processed/australia-product-safety-recalls.json',
+    existingFetchScript: 'npm run fetch:australia-product-safety',
+    existingNormalizeScript: 'npm run normalize:australia-product-safety',
+    existingAuditScript: 'npm run audit:australia-product-safety',
+    existingUpdateScript: 'npm run update:australia-product-safety',
+    backfillStatus: 'partial',
+    suggestedBackfillMode: ['latest-pagination', 'detail-refresh', 'manual-source-specific'],
+    outputDir: 'data/backfill/australia-product-safety',
+    checkpointPath:
+      'data/backfill/australia-product-safety/checkpoints/australia-product-safety-backfill-checkpoint.json',
+    endpointOrInput: 'https://www.productsafety.gov.au/recalls',
+    currentFetchMode:
+      'Bounded official recalls listing via Drupal AJAX view, followed by official detail page extraction for the latest 100 records.',
+    paginationStatus:
+      'The source listing supports page/items_per_page AJAX controls; full historical pagination is not enabled in canonical data.',
+    dateFilterStatus: 'Not implemented in current script; date-filter behavior should be investigated before full backfill.',
+    detailRefreshStatus: 'Implemented for the bounded latest 100 records during fetch.',
+    imageSupport: 'Current records can include official Product Safety Australia product image and thumbnail URLs.',
+    updateScriptBehavior: 'Fetches bounded source data, normalizes, merges canonical data, and runs the Australia audit.',
+    estimatedRisk: 'medium',
+    riskNotes: [
+      'Official RSS link currently redirects to itself; the implemented source path uses the official Drupal AJAX view instead.',
+      'Full source has thousands of records and should not be merged without selection, chunking, route-count review, and build-size review.',
+      'Detail pages are HTML, so selector drift should be monitored with the source-specific audit.'
+    ],
+    knownLimitations: [
+      'No full Australia backfill.',
+      'No specialist Australia food or vehicle source ingestion.',
+      'No cross-source dedupe.'
+    ],
+    recommendedNextStep:
+      'Add a dry-run Australia backfill planner that pages the official AJAX view into ignored chunks before any canonical expansion.',
+    deferredWork: [
+      'Full Australia backfill.',
+      'Date-window strategy.',
+      'Australia food/vehicle specialist sources.',
+      'Cross-source dedupe.'
+    ]
   }
 ];
 

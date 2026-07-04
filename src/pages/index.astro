@@ -2,6 +2,7 @@
 import EuImageResourceHints from '../components/EuImageResourceHints.astro';
 import {
   getRecallsByCategory,
+  processedAustraliaProductSafetyRecordCount,
   processedCanadaRecordCount,
   processedCpscRecordCount,
   processedEuSafetyGateRecordCount,
@@ -31,7 +32,8 @@ const activeSourceCount = [
   processedFranceRappelConsoRecordCount,
   processedCanadaRecordCount,
   processedEuSafetyGateRecordCount,
-  processedUkFsaRecordCount
+  processedUkFsaRecordCount,
+  processedAustraliaProductSafetyRecordCount
 ].filter((count) => count > 0).length;
 const countLine = `${processedLocalRecordCount} recall notices from ${activeSourceCount} official sources. Coverage is expanding and remains limited to sources currently included.`;
 const productTypes = [
@@ -105,6 +107,14 @@ const sourceCardDetails = {
     description: 'Food recalls and allergy alerts from the UK FSA.',
     sourceLabel: 'FSA Food Alerts',
     cta: 'Browse UK food alerts'
+  },
+  '/australia-product-recalls': {
+    flagSrc: '/flags/au.svg',
+    flagAlt: 'Australia flag',
+    title: 'Australia',
+    description: 'Product recalls from Product Safety Australia.',
+    sourceLabel: 'Product Safety Australia',
+    cta: 'Browse Australia recalls'
   }
 } as const;
 ---

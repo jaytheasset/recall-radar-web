@@ -2,6 +2,7 @@
 import EuImageResourceHints from '../components/EuImageResourceHints.astro';
 import {
   dataSourceLabel,
+  processedAustraliaProductSafetyRecordCount,
   processedCanadaRecordCount,
   processedCpscRecordCount,
   processedEuSafetyGateRecordCount,
@@ -101,6 +102,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
               <span class="tag">{processedCanadaRecordCount} Canada recall and safety alert notices</span>
               <span class="tag">{processedEuSafetyGateRecordCount} EU Safety Gate alerts</span>
               <span class="tag">{processedUkFsaRecordCount} UK FSA food alerts</span>
+              <span class="tag">{processedAustraliaProductSafetyRecordCount} Australia Product Safety notices</span>
             </>
           ) : null}
         </div>

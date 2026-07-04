@@ -301,6 +301,78 @@ function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
     return 'general-consumer-product';
   }
 
+  if (record.source === 'AU_PRODUCT_SAFETY') {
+    const rawCategory = normalize(record.category);
+
+    if (
+      textHasAny(rawCategory, ['baby', 'babies', 'toddler', 'children', 'kids', 'toy', 'toys']) ||
+      textHasAny(text, ['baby', 'infant', 'child', 'children', 'kids', 'toy', 'toys', 'dummy', 'pram'])
+    ) {
+      return 'baby-kids';
+    }
+
+    if (
+      textHasAny(rawCategory, [
+        'electronics',
+        'technology',
+        'electrical',
+        'button batteries',
+        'batteries',
+        'chargers'
+      ]) ||
+      textHasAny(text, [
+        'battery',
+        'batteries',
+        'button battery',
+        'charger',
+        'charging',
+        'lithium',
+        'power bank',
+        'electronics',
+        'electrical'
+      ])
+    ) {
+      return 'battery-electronics';
+    }
+
+    if (
+      textHasAny(rawCategory, ['food', 'grocery', 'packaging']) ||
+      textHasAny(text, ['food', 'allergen', 'allergy', 'undeclared', 'milk', 'egg', 'wheat', 'peanut', 'sesame'])
+    ) {
+      return 'food-allergy';
+    }
+
+    if (
+      textHasAny(rawCategory, [
+        'home',
+        'garden',
+        'gas products',
+        'appliances',
+        'furniture',
+        'household',
+        'chemicals',
+        'poisons'
+      ]) ||
+      textHasAny(text, [
+        'appliance',
+        'household',
+        'furniture',
+        'kitchen',
+        'heater',
+        'gas',
+        'lamp',
+        'table',
+        'chair',
+        'cleaner',
+        'chemical'
+      ])
+    ) {
+      return 'household-appliance';
+    }
+
+    return 'general-consumer-product';
+  }
+
   if (
     textHasAny(text, [
       'baby',
@@ -406,6 +478,8 @@ function isOfficialRecallImageUrl(url: string): boolean {
       url
     ) ||
     /^https:\/\/ec\.europa\.eu\/safety-gate-alerts\/public\/api\/notification\/(?:image|thumbnail)\//i.test(url)
+    ||
+    /^https:\/\/www\.productsafety\.gov\.au\/system\/files\/(?:styles\/[^/]+\/)?(?:public|private)\//i.test(url)
   );
 }
 
@@ -453,7 +527,8 @@ function extractRecallImages(record: NormalizedRecall): RecallImage[] {
   return record.source === 'CPSC' ||
     record.source === 'FR_RAPPELCONSO' ||
     record.source === 'CA_RECALLS' ||
-    record.source === 'EU_SAFETY_GATE'
+    record.source === 'EU_SAFETY_GATE' ||
+    record.source === 'AU_PRODUCT_SAFETY'
     ? uniqueImages(images)
     : [];
 }
@@ -558,19 +633,24 @@ export const processedEuSafetyGateRecordCount = processedLocalRecalls.filter(
   (recall) => recall.source === 'EU_SAFETY_GATE'
 ).length;
 export const processedUkFsaRecordCount = processedLocalRecalls.filter((recall) => recall.source === 'UK_FSA').length;
+export const processedAustraliaProductSafetyRecordCount = processedLocalRecalls.filter(
+  (recall) => recall.source === 'AU_PRODUCT_SAFETY'
+).length;
 export const usingProcessedCpscData = processedCpscRecordCount > 0;
 export const usingProcessedFdaData = processedFdaRecordCount > 0;
 export const usingProcessedFranceRappelConsoData = processedFranceRappelConsoRecordCount > 0;
 export const usingProcessedCanadaData = processedCanadaRecordCount > 0;
 export const usingProcessedEuSafetyGateData = processedEuSafetyGateRecordCount > 0;
 export const usingProcessedUkFsaData = processedUkFsaRecordCount > 0;
+export const usingProcessedAustraliaProductSafetyData = processedAustraliaProductSafetyRecordCount > 0;
 export const processedActiveSourceCount = [
   usingProcessedCpscData,
   usingProcessedFdaData,
   usingProcessedFranceRappelConsoData,
   usingProcessedCanadaData,
   usingProcessedEuSafetyGateData,
-  usingProcessedUkFsaData
+  usingProcessedUkFsaData,
+  usingProcessedAustraliaProductSafetyData
 ].filter(Boolean).length;
 export const dataSourceLabel = usingProcessedLocalData
   ? `${processedActiveSourceCount} official source feed${processedActiveSourceCount === 1 ? '' : 's'}`

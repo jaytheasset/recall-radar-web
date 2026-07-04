@@ -11,3 +11,4 @@ Files used by Recall Radar:
 - `eu.svg`
 - `fr.svg`
 - `gb.svg`
+- `au.svg`

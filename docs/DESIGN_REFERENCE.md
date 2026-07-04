@@ -30,7 +30,7 @@ Phase 12A is a planning-only reference for the next homepage UI pass. It uses ge
 - Header navigation.
 - H1: "Check recalled products before they stay in your home"
 - Short subheadline: "Search local CPSC and FDA/openFDA recall records by product, brand, model, UPC, lot code, or keyword."
-- One muted count line: "801 indexed recall notices from 6 official source feeds"
+- One muted count line: "901 indexed recall notices from 7 official source feeds"
 - Strong search path to `/checker`.
 - CPSC/FDA source labels where recall cards appear.
 - Real CPSC product images where available.

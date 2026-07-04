@@ -12,10 +12,11 @@ Recall Radar currently uses local JSON files only. The current seed sources are:
 - Canada Recalls and Safety Alerts: 100 records
 - EU Safety Gate dangerous non-food product alerts: 100 records
 - UK FSA Food Alerts: 100 records
+- Australia Product Safety recalls: 100 records
 - Canonical merged file: `data/processed/recalls.json`
-- Total current records: 801
+- Total current records: 901
 
-The UI is positioned for a global consumer recall search experience. France RappelConso is included as the first non-U.S. source spike, Canada Recalls and Safety Alerts is included as the second non-U.S. source spike, EU Safety Gate is included as the first regional multi-country source spike, and UK FSA Food Alerts is included as the first UK food/allergy-focused source spike. The site remains static/local-first and does not use a backend, database, email service, account system, or browser runtime API call.
+The UI is positioned for a global consumer recall search experience. France RappelConso is included as the first non-U.S. source spike, Canada Recalls and Safety Alerts is included as the second non-U.S. source spike, EU Safety Gate is included as the first regional multi-country source spike, UK FSA Food Alerts is included as the first UK food/allergy-focused source spike, and Australia Product Safety is included as the first Oceania source spike. The site remains static/local-first and does not use a backend, database, email service, account system, or browser runtime API call.
 
 ## B. Current Source Flow
 
@@ -28,6 +29,7 @@ The existing source flow is:
    - Canada raw file: `data/raw/canada-recalls.json`
    - EU Safety Gate raw file: `data/raw/eu-safety-gate-recalls.json`
    - UK FSA raw file: `data/raw/uk-fsa-alerts.json`
+   - Australia Product Safety raw file: `data/raw/australia-product-safety-recalls.json`
 2. Source-specific normalization scripts map raw records into `NormalizedRecall`.
    - CPSC normalizer: `scripts/normalize-cpsc.ts`
    - FDA/openFDA normalizer: `scripts/normalize-fda-food.ts`
@@ -35,6 +37,7 @@ The existing source flow is:
    - Canada normalizer: `scripts/normalize-canada-recalls.ts`
    - EU Safety Gate normalizer: `scripts/normalize-eu-safety-gate.ts`
    - UK FSA normalizer: `scripts/normalize-uk-fsa-alerts.ts`
+   - Australia Product Safety normalizer: `scripts/normalize-australia-product-safety.ts`
 3. Source-specific processed files are written under `data/processed/`.
    - CPSC processed file: `data/processed/cpsc-recalls.json`
    - FDA/openFDA processed file: `data/processed/fda-recalls.json`
@@ -42,6 +45,7 @@ The existing source flow is:
    - Canada processed file: `data/processed/canada-recalls.json`
    - EU Safety Gate processed file: `data/processed/eu-safety-gate-recalls.json`
    - UK FSA processed file: `data/processed/uk-fsa-alerts.json`
+   - Australia Product Safety processed file: `data/processed/australia-product-safety-recalls.json`
 4. `scripts/merge-recalls.ts` merges source-specific processed files into the canonical file.
    - Canonical processed file: `data/processed/recalls.json`
 5. `src/data/recall-types.ts` defines the shared `NormalizedRecall` and `ProcessedRecallFile` contract.
@@ -64,6 +68,8 @@ Current package scripts:
 - `npm run normalize:eu-safety-gate`
 - `npm run fetch:uk-fsa`
 - `npm run normalize:uk-fsa`
+- `npm run fetch:australia-product-safety`
+- `npm run normalize:australia-product-safety`
 - `npm run data:rappelconso:fetch`
 - `npm run data:rappelconso:normalize`
 - `npm run data:canada:fetch`
@@ -72,16 +78,20 @@ Current package scripts:
 - `npm run data:eu-safety-gate:normalize`
 - `npm run data:uk-fsa:fetch`
 - `npm run data:uk-fsa:normalize`
+- `npm run data:australia-product-safety:fetch`
+- `npm run data:australia-product-safety:normalize`
 - `npm run data:merge`
 - `npm run audit:sources`
 - `npm run audit:rappelconso`
 - `npm run audit:canada`
 - `npm run audit:eu-safety-gate`
 - `npm run audit:uk-fsa`
+- `npm run audit:australia-product-safety`
 - `npm run update:rappelconso`
 - `npm run update:canada`
 - `npm run update:eu-safety-gate`
 - `npm run update:uk-fsa`
+- `npm run update:australia-product-safety`
 - `npm run build:data`
 
 Do not run fetch scripts in UI or planning phases unless a later task explicitly requests a data refresh.
@@ -89,13 +99,14 @@ Do not run fetch scripts in UI or planning phases unless a later task explicitly
 `npm run update:canada` is an explicit Canada refresh workflow that performs a bounded network fetch, writes raw Canada data, normalizes Canada records, rebuilds the canonical merged file, and runs the Canada audit; it is not part of `npm run check` or `npm run build`.
 `npm run update:eu-safety-gate` is an explicit EU Safety Gate refresh workflow that performs a bounded official Safety Gate API fetch, writes raw EU data, normalizes EU records, rebuilds the canonical merged file, and runs the EU audit; it is not part of `npm run check` or `npm run build`.
 `npm run update:uk-fsa` is an explicit UK FSA refresh workflow that performs a bounded official Food Alerts API fetch, normalizes from saved raw, rebuilds the canonical merged file, and runs the UK FSA audit; it is not part of `npm run check` or `npm run build`.
+`npm run update:australia-product-safety` is an explicit Australia Product Safety refresh workflow that performs a bounded official Product Safety Australia fetch, normalizes from saved raw, rebuilds the canonical merged file, and runs the Australia audit; it is not part of `npm run check` or `npm run build`.
 `npm run audit:sources` is a local-only integrated source audit that reads `data/processed/recalls.json`, checks expected source ids/counts, reports missing fields by source, and verifies the active source registry matches the canonical data.
 
 Canada update expectations for the current spike:
 
 - Default limit: `CANADA_RECALLS_LIMIT=100`
 - Expected `CA_RECALLS` count: 100
-- Expected canonical total: 801
+- Expected canonical total: 901
 - Local-only validation sequence: `npm run data:canada:normalize`, `npm run data:merge`, `npm run audit:canada`
 - Full Canada backfill remains a separate phase.
 
@@ -103,7 +114,7 @@ EU Safety Gate update expectations for the current spike:
 
 - Default limit: `EU_SAFETY_GATE_LIMIT=100`
 - Expected `EU_SAFETY_GATE` count: 100
-- Expected canonical total: 801
+- Expected canonical total: 901
 - Explicit refresh command: `npm run update:eu-safety-gate`
 - Local-only validation sequence: `npm run data:eu-safety-gate:normalize`, `npm run data:merge`, `npm run audit:eu-safety-gate`
 - Commit together for the current spike: `data/raw/eu-safety-gate-recalls.json`, `data/processed/eu-safety-gate-recalls.json`, and `data/processed/recalls.json`
@@ -115,18 +126,29 @@ UK FSA update expectations for the current spike:
 
 - Default limit: `UK_FSA_LIMIT=100`
 - Expected `UK_FSA` count: 100
-- Expected canonical total: 801
+- Expected canonical total: 901
 - Explicit refresh command: `npm run update:uk-fsa`
 - Local-only validation sequence: `npm run data:uk-fsa:normalize`, `npm run data:merge`, `npm run audit:uk-fsa`
 - Commit together for the current spike: `data/raw/uk-fsa-alerts.json`, `data/processed/uk-fsa-alerts.json`, and `data/processed/recalls.json`
 - Block or investigate the merge if UK FSA count is 0, duplicate ids exist, slug collisions exist, suspicious category mappings exist, UK FSA records stop mapping to `food-allergy`, source filter values change, or total/source counts change unexpectedly.
 - Full UK FSA backfill remains a separate phase.
 
+Australia Product Safety update expectations for the current spike:
+
+- Default limit: `AU_PRODUCT_SAFETY_LIMIT=100`
+- Expected `AU_PRODUCT_SAFETY` count: 100
+- Expected canonical total: 901
+- Explicit refresh command: `npm run update:australia-product-safety`
+- Local-only validation sequence: `npm run data:australia-product-safety:normalize`, `npm run data:merge`, `npm run audit:australia-product-safety`
+- Commit together for the current spike: `data/raw/australia-product-safety-recalls.json`, `data/processed/australia-product-safety-recalls.json`, and `data/processed/recalls.json`
+- Block or investigate the merge if Australia count is 0, duplicate ids exist, slug collisions exist, suspicious category mappings exist, official image URLs are malformed, source filter values change, or total/source counts change unexpectedly.
+- Full Australia Product Safety backfill remains a separate phase.
+
 Current build/runtime size note:
 
-- Current canonical data: 801 records.
-- Current build output: around 1382 pages.
-- Current `data/processed/recalls.json` size: around 5.8 MB.
+- Current canonical data: 901 records.
+- Current build output: around 1550 pages.
+- Current `data/processed/recalls.json` size: around 6.3 MB.
 - Full backfills should measure canonical data size, detail page count, brand page count, build time, and static output size before merge.
 
 ## C. Current Source Registry

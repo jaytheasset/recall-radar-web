@@ -3,7 +3,6 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { NormalizedRecall, ProcessedRecallFile, RecallSource } from '../src/data/recall-types.ts';
 import { getSourceOptionsForCurrentCoverage } from '../src/lib/recall-sources.ts';
-import { isOfficialCanadaImageUrl, isSuspectedCanadaChromeImage } from './canada-detail-images.ts';
 
 type AuditIssue = {
   id: string;
@@ -11,22 +10,28 @@ type AuditIssue = {
   detail?: string;
 };
 
+type SourceCounts = Record<RecallSource, number> & {
+  total: number;
+};
+
 type AuditSummary = {
-  source: 'CA_RECALLS';
+  source: 'AU_PRODUCT_SAFETY';
   total: number;
   duplicateIds: AuditIssue[];
+  slugCollisions: AuditIssue[];
   missing: Record<string, number>;
   rawCategoryDistribution: Record<string, number>;
   siteCategoryDistribution: Record<string, number>;
   recordsWithImages: number;
   recordsWithPrimaryImageUrl: number;
   recordsWithPrimaryImageThumbnailUrl: number;
-  recordsWithOfficialDetailUrl: number;
+  recordsWithOfficialNoticeUrlShape: number;
   invalidImageUrls: AuditIssue[];
   nonOfficialImageHosts: AuditIssue[];
-  suspectedChromeImageFalsePositives: AuditIssue[];
   duplicateImageUrls: AuditIssue[];
-  sampleRecoveredRecords: Array<{
+  recordsWithModelBarcodeBatchOrLotLikeValues: number;
+  recordsWithDistributionDetails: number;
+  sampleImageRecords: Array<{
     id: string;
     title: string;
     sourceUrl: string;
@@ -35,18 +40,7 @@ type AuditSummary = {
     images: number;
     slug: string;
   }>;
-  recordsWithUpcOrBarcodeLikeValues: number;
-  recordsWithModelOrItemNumberLikeValues: number;
-  recordsWithLotBatchCodeOrDateLikeValues: number;
-  recordsWithDistributionDetails: number;
-  recordsWithOfficialNoticeUrlShape: number;
-  slugCollisions: AuditIssue[];
-  suspiciousCategoryMappings: AuditIssue[];
   warnings: string[];
-};
-
-type SourceCounts = Record<RecallSource, number> & {
-  total: number;
 };
 
 const expectedSourceFilterValues = [
@@ -60,7 +54,7 @@ const expectedSourceFilterValues = [
   'AU_PRODUCT_SAFETY'
 ];
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const processedPath = resolve(projectRoot, 'data/processed/canada-recalls.json');
+const processedPath = resolve(projectRoot, 'data/processed/australia-product-safety-recalls.json');
 const canonicalProcessedPath = resolve(projectRoot, 'data/processed/recalls.json');
 const runtimeEnv = (process as typeof process & { env?: Record<string, string | undefined> }).env ?? {};
 
@@ -89,73 +83,56 @@ function compactIssue(record: NormalizedRecall, detail?: string): AuditIssue {
   };
 }
 
-function classifyCanadaRecall(record: NormalizedRecall): string {
-  const rawCategory = normalize(record.category);
-  const raw = record.raw && typeof record.raw === 'object' ? (record.raw as Record<string, unknown>) : {};
-  const organization = normalize(String(raw.Organization ?? ''));
-  const text = normalize(
-    [
-      record.title,
-      record.category,
-      organization,
-      record.description,
-      record.hazard,
-      record.remedy,
-      ...record.productNames,
-      ...record.brandNames
-    ].join(' ')
-  );
-
-  if (organization === 'cfia' || hasAny(text, ['food', 'allergen', 'allergy', 'undeclared', 'salmonella', 'listeria', 'milk', 'egg', 'wheat', 'sesame', 'pistachio'])) {
-    return 'food-allergy';
-  }
-
-  if (hasAny(text, ['baby', 'child', 'children', 'infant', 'toy', 'nursery', 'kids'])) {
-    return 'baby-kids';
-  }
-
-  if (hasAny(text, ['battery', 'batteries', 'charger', 'charging', 'electronics', 'power bank', 'lithium'])) {
-    return 'battery-electronics';
-  }
-
-  if (
-    hasAny(text, ['appliance', 'household', 'kitchenware', 'tableware', 'air conditioner', 'heat pump', 'furniture', 'furnishings']) ||
-    rawCategory.includes('household') ||
-    rawCategory.includes('furniture')
-  ) {
-    return 'household-appliance';
-  }
-
-  return 'general-consumer-product';
+function expectedNumber(name: string, fallback: number): number {
+  const parsed = Number.parseInt(runtimeEnv[name] ?? '', 10);
+  return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-function hasUpcOrBarcodeLikeValue(record: NormalizedRecall): boolean {
-  return /\b(?:upc|barcode)\b|\b\d{8,14}\b/i.test(
-    [record.title, record.description, record.affectedUnits, ...record.productNames].join(' ')
-  );
+function sourceFilterValues(): string[] {
+  return ['all', ...getSourceOptionsForCurrentCoverage().map((option) => option.value)];
 }
 
-function hasModelOrItemNumberLikeValue(record: NormalizedRecall): boolean {
-  const text = [record.title, record.description, record.affectedUnits, ...record.productNames].join(' ');
-  return [
-    /\b(?:model|item|product)\s*(?:number|no\.?|#)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/i,
-    /\b(?:model|item|product)\s+#[A-Z0-9][A-Z0-9./_-]{2,}\b/i,
-    /\b(?:model|item|product)\s+(?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,}\b/i,
-    /\b(?:DIN|NPN)\s*[:#-]?\s*[0-9]{5,}\b/i
-  ].some((pattern) => pattern.test(text));
+async function readProcessedAustraliaRecords(): Promise<NormalizedRecall[]> {
+  const text = await readFile(processedPath, 'utf8');
+  const payload = JSON.parse(text) as ProcessedRecallFile;
+  return Array.isArray(payload.records) ? payload.records.filter((record) => record.source === 'AU_PRODUCT_SAFETY') : [];
 }
 
-function hasLotBatchCodeOrDateLikeValue(record: NormalizedRecall): boolean {
-  const text = [record.title, record.description, record.affectedUnits, ...record.productNames].join(' ');
-  return [
-    /\b(?:lot|batch)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/i,
-    /\b(?:date code|code)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/i,
-    /\b(?:best before|best-by|use by|expiry date|expiration date|expiry|expiration)\s*[:#-]?\s*[A-Z0-9][A-Z0-9 ,./_-]{2,30}\b/i
-  ].some((pattern) => pattern.test(text));
+async function readCanonicalCounts(): Promise<SourceCounts> {
+  const text = await readFile(canonicalProcessedPath, 'utf8');
+  const payload = JSON.parse(text) as ProcessedRecallFile;
+  const records = Array.isArray(payload.records) ? payload.records : [];
+
+  return {
+    total: records.length,
+    CPSC: records.filter((record) => record.source === 'CPSC').length,
+    FDA: records.filter((record) => record.source === 'FDA').length,
+    FR_RAPPELCONSO: records.filter((record) => record.source === 'FR_RAPPELCONSO').length,
+    CA_RECALLS: records.filter((record) => record.source === 'CA_RECALLS').length,
+    EU_SAFETY_GATE: records.filter((record) => record.source === 'EU_SAFETY_GATE').length,
+    UK_FSA: records.filter((record) => record.source === 'UK_FSA').length,
+    AU_PRODUCT_SAFETY: records.filter((record) => record.source === 'AU_PRODUCT_SAFETY').length
+  };
+}
+
+function countMissing(records: NormalizedRecall[], test: (record: NormalizedRecall) => boolean): number {
+  return records.filter(test).length;
 }
 
 function looksLikeOfficialNoticeUrl(value: string): boolean {
-  return /^https:\/\/recalls-rappels\.canada\.ca\/en\/alert-recall\/[a-z0-9-]+$/i.test(value);
+  return /^https:\/\/www\.productsafety\.gov\.au\/search-consumer-product-recalls\/[^?#]+$/i.test(value);
+}
+
+function isOfficialAustraliaImageUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return (
+      url.hostname === 'www.productsafety.gov.au' &&
+      /^\/system\/files\/(?:styles\/[^/]+\/)?(?:public|private)\//i.test(url.pathname)
+    );
+  } catch {
+    return false;
+  }
 }
 
 function imageUrlsFor(record: NormalizedRecall): string[] {
@@ -189,75 +166,67 @@ function invalidImageIssues(records: NormalizedRecall[]): AuditIssue[] {
 function nonOfficialImageHostIssues(records: NormalizedRecall[]): AuditIssue[] {
   return records.flatMap((record) =>
     imageUrlsFor(record)
-      .filter((url) => {
-        try {
-          new URL(url);
-          return !isOfficialCanadaImageUrl(url);
-        } catch {
-          return false;
-        }
-      })
-      .map((url) => compactIssue(record, url))
-  );
-}
-
-function suspectedChromeImageIssues(records: NormalizedRecall[]): AuditIssue[] {
-  return records.flatMap((record) =>
-    imageUrlsFor(record)
-      .filter(isSuspectedCanadaChromeImage)
+      .filter((url) => !isOfficialAustraliaImageUrl(url))
       .map((url) => compactIssue(record, url))
   );
 }
 
 function duplicateImageUrlIssues(records: NormalizedRecall[]): AuditIssue[] {
-  const imageUrlCounts = new Map<string, number>();
+  const counts = new Map<string, number>();
   for (const record of records) {
     for (const url of imageUrlsFor(record)) {
-      imageUrlCounts.set(url, (imageUrlCounts.get(url) ?? 0) + 1);
+      counts.set(url, (counts.get(url) ?? 0) + 1);
     }
   }
 
   return records.flatMap((record) =>
     imageUrlsFor(record)
-      .filter((url) => (imageUrlCounts.get(url) ?? 0) > 1)
+      .filter((url) => (counts.get(url) ?? 0) > 1)
       .map((url) => compactIssue(record, url))
   );
 }
 
-function countMissing(records: NormalizedRecall[], test: (record: NormalizedRecall) => boolean): number {
-  return records.filter(test).length;
+function hasIdentifierLikeValue(record: NormalizedRecall): boolean {
+  const text = [record.title, record.description, record.affectedUnits, record.productQuantity ?? '', ...record.productNames].join(' ');
+  return [
+    /\b(?:model|item|product)\s*(?:number|no\.?|#)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/i,
+    /\b(?:barcode|GTIN|UPC)\s*[:#-]?\s*[0-9][0-9 -]{5,}\b/i,
+    /\b\d{8,14}\b/,
+    /\b(?:batch|lot|code)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/i
+  ].some((pattern) => pattern.test(text));
 }
 
-function expectedNumber(name: string, fallback: number): number {
-  const parsed = Number.parseInt(runtimeEnv[name] ?? '', 10);
-  return Number.isFinite(parsed) ? parsed : fallback;
-}
+function classifyAustraliaRecord(record: NormalizedRecall): string {
+  const text = normalize(
+    [
+      record.title,
+      record.category,
+      record.hazard,
+      record.reason ?? '',
+      record.remedy,
+      record.description,
+      ...record.productNames,
+      ...record.brandNames
+    ].join(' ')
+  );
 
-function sourceFilterValues(): string[] {
-  return ['all', ...getSourceOptionsForCurrentCoverage().map((option) => option.value)];
-}
+  if (hasAny(text, ['baby', 'toddler', 'child', 'children', 'kids', 'toy', 'dummy', 'pram'])) {
+    return 'baby-kids';
+  }
 
-async function readProcessedCanadaRecords(): Promise<NormalizedRecall[]> {
-  const text = await readFile(processedPath, 'utf8');
-  const payload = JSON.parse(text) as ProcessedRecallFile;
-  return Array.isArray(payload.records) ? payload.records.filter((record) => record.source === 'CA_RECALLS') : [];
-}
+  if (hasAny(text, ['battery', 'batteries', 'button battery', 'charger', 'charging', 'lithium', 'electronics', 'electrical'])) {
+    return 'battery-electronics';
+  }
 
-async function readCanonicalCounts(): Promise<SourceCounts> {
-  const text = await readFile(canonicalProcessedPath, 'utf8');
-  const payload = JSON.parse(text) as ProcessedRecallFile;
-  const records = Array.isArray(payload.records) ? payload.records : [];
+  if (hasAny(text, ['food', 'grocery', 'allergen', 'allergy', 'undeclared', 'milk', 'egg', 'wheat', 'peanut', 'sesame'])) {
+    return 'food-allergy';
+  }
 
-  return {
-    total: records.length,
-    CPSC: records.filter((record) => record.source === 'CPSC').length,
-    FDA: records.filter((record) => record.source === 'FDA').length,
-    FR_RAPPELCONSO: records.filter((record) => record.source === 'FR_RAPPELCONSO').length,
-    CA_RECALLS: records.filter((record) => record.source === 'CA_RECALLS').length,
-    EU_SAFETY_GATE: records.filter((record) => record.source === 'EU_SAFETY_GATE').length,
-    UK_FSA: records.filter((record) => record.source === 'UK_FSA').length,
-    AU_PRODUCT_SAFETY: records.filter((record) => record.source === 'AU_PRODUCT_SAFETY').length
-  };
+  if (hasAny(text, ['home', 'garden', 'appliance', 'household', 'furniture', 'gas', 'heater', 'chemical', 'poison'])) {
+    return 'household-appliance';
+  }
+
+  return 'general-consumer-product';
 }
 
 function audit(records: NormalizedRecall[]): AuditSummary {
@@ -270,7 +239,7 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     idCounts.set(record.id, (idCounts.get(record.id) ?? 0) + 1);
     slugCounts.set(record.slug, (slugCounts.get(record.slug) ?? 0) + 1);
     increment(rawCategoryDistribution, record.category || '(missing)');
-    increment(siteCategoryDistribution, classifyCanadaRecall(record));
+    increment(siteCategoryDistribution, classifyAustraliaRecord(record));
   }
 
   const duplicateIds = records
@@ -279,51 +248,24 @@ function audit(records: NormalizedRecall[]): AuditSummary {
   const slugCollisions = records
     .filter((record) => (slugCounts.get(record.slug) ?? 0) > 1)
     .map((record) => compactIssue(record, record.slug));
-  const suspiciousCategoryMappings = records
-    .map((record) => ({ record, siteCategory: classifyCanadaRecall(record) }))
-    .filter(({ record, siteCategory }) => {
-      const text = normalize([record.title, record.category, record.description, record.hazard, record.reason ?? ''].join(' '));
-
-      if (siteCategory === 'food-allergy') {
-        return !hasAny(text, ['cfia', 'food', 'allergen', 'allergy', 'salmonella', 'listeria', 'milk', 'egg', 'wheat', 'sesame']);
-      }
-
-      if (siteCategory === 'baby-kids') {
-        return !hasAny(text, ['baby', 'child', 'children', 'infant', 'toy', 'nursery', 'kids']);
-      }
-
-      if (siteCategory === 'battery-electronics') {
-        return !hasAny(text, ['battery', 'charger', 'electronics', 'power bank', 'lithium']);
-      }
-
-      return false;
-    })
-    .map(({ record, siteCategory }) => compactIssue(record, `${record.category} -> ${siteCategory}`));
   const recordsWithImages = records.filter((record) => (record.images?.length ?? 0) > 0);
   const invalidImageUrls = invalidImageIssues(records);
   const nonOfficialImageHosts = nonOfficialImageHostIssues(records);
-  const suspectedChromeImageFalsePositives = suspectedChromeImageIssues(records);
   const duplicateImageUrls = duplicateImageUrlIssues(records);
-
   const warnings = [
-    countMissing(records, (record) => record.brandNames.length === 0) > 0
-      ? 'Some Canada open-data records do not expose brand/company in a structured field.'
+    countMissing(records, (record) => record.affectedUnits.length === 0) > 0
+      ? 'Product Safety Australia detail pages do not expose affected unit counts in a consistent structured field.'
       : '',
-    countMissing(records, (record) => !record.remedy) > 0
-      ? 'Some Canada open-data records do not expose action text in the JSON feed.'
-      : '',
-    records.filter((record) => Boolean(record.distributionPattern)).length === 0
-      ? 'The selected Canada open-data JSON feed does not include structured distribution details.'
-      : '',
-    recordsWithImages.length === 0
-      ? 'No official Canada detail-page product images were normalized.'
+    recordsWithImages.length < Math.floor(records.length * 0.4)
+      ? 'Fewer than 40% of Australia records include official product image URLs; review extraction if this changes unexpectedly.'
       : ''
   ].filter(Boolean);
 
   return {
-    source: 'CA_RECALLS',
+    source: 'AU_PRODUCT_SAFETY',
     total: records.length,
     duplicateIds,
+    slugCollisions,
     missing: {
       sourceUrl: countMissing(records, (record) => !record.sourceUrl),
       title: countMissing(records, (record) => !record.title),
@@ -339,12 +281,13 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     recordsWithImages: recordsWithImages.length,
     recordsWithPrimaryImageUrl: records.filter((record) => Boolean(record.primaryImageUrl)).length,
     recordsWithPrimaryImageThumbnailUrl: records.filter((record) => Boolean(record.primaryImageThumbnailUrl)).length,
-    recordsWithOfficialDetailUrl: records.filter((record) => looksLikeOfficialNoticeUrl(record.sourceUrl)).length,
+    recordsWithOfficialNoticeUrlShape: records.filter((record) => looksLikeOfficialNoticeUrl(record.sourceUrl)).length,
     invalidImageUrls,
     nonOfficialImageHosts,
-    suspectedChromeImageFalsePositives,
     duplicateImageUrls,
-    sampleRecoveredRecords: recordsWithImages.slice(0, 5).map((record) => ({
+    recordsWithModelBarcodeBatchOrLotLikeValues: records.filter(hasIdentifierLikeValue).length,
+    recordsWithDistributionDetails: records.filter((record) => Boolean(record.distributionPattern)).length,
+    sampleImageRecords: recordsWithImages.slice(0, 5).map((record) => ({
       id: record.id,
       title: record.title,
       sourceUrl: record.sourceUrl,
@@ -353,13 +296,6 @@ function audit(records: NormalizedRecall[]): AuditSummary {
       images: record.images?.length ?? 0,
       slug: record.slug
     })),
-    recordsWithUpcOrBarcodeLikeValues: records.filter(hasUpcOrBarcodeLikeValue).length,
-    recordsWithModelOrItemNumberLikeValues: records.filter(hasModelOrItemNumberLikeValue).length,
-    recordsWithLotBatchCodeOrDateLikeValues: records.filter(hasLotBatchCodeOrDateLikeValue).length,
-    recordsWithDistributionDetails: records.filter((record) => Boolean(record.distributionPattern)).length,
-    recordsWithOfficialNoticeUrlShape: records.filter((record) => looksLikeOfficialNoticeUrl(record.sourceUrl)).length,
-    slugCollisions,
-    suspiciousCategoryMappings,
     warnings
   };
 }
@@ -376,10 +312,11 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
     AU_PRODUCT_SAFETY: expectedNumber('EXPECTED_AU_PRODUCT_SAFETY_COUNT', 100)
   };
   const severeMissingThreshold = Math.max(1, Math.floor(summary.total * 0.05));
-  const blockers = [
-    summary.total === 0 ? 'CA_RECALLS count is 0.' : '',
-    summary.total !== expectedCounts.CA_RECALLS
-      ? `CA_RECALLS count ${summary.total} does not match expected ${expectedCounts.CA_RECALLS}.`
+
+  return [
+    summary.total === 0 ? 'AU_PRODUCT_SAFETY count is 0.' : '',
+    summary.total !== expectedCounts.AU_PRODUCT_SAFETY
+      ? `AU_PRODUCT_SAFETY count ${summary.total} does not match expected ${expectedCounts.AU_PRODUCT_SAFETY}.`
       : '',
     canonicalCounts.total !== expectedCounts.total
       ? `Total processed count ${canonicalCounts.total} does not match expected ${expectedCounts.total}.`
@@ -394,7 +331,7 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
       ? `FR_RAPPELCONSO count ${canonicalCounts.FR_RAPPELCONSO} does not match expected ${expectedCounts.FR_RAPPELCONSO}.`
       : '',
     canonicalCounts.CA_RECALLS !== expectedCounts.CA_RECALLS
-      ? `Canonical CA_RECALLS count ${canonicalCounts.CA_RECALLS} does not match expected ${expectedCounts.CA_RECALLS}.`
+      ? `CA_RECALLS count ${canonicalCounts.CA_RECALLS} does not match expected ${expectedCounts.CA_RECALLS}.`
       : '',
     canonicalCounts.EU_SAFETY_GATE !== expectedCounts.EU_SAFETY_GATE
       ? `EU_SAFETY_GATE count ${canonicalCounts.EU_SAFETY_GATE} does not match expected ${expectedCounts.EU_SAFETY_GATE}.`
@@ -403,39 +340,31 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
       ? `UK_FSA count ${canonicalCounts.UK_FSA} does not match expected ${expectedCounts.UK_FSA}.`
       : '',
     canonicalCounts.AU_PRODUCT_SAFETY !== expectedCounts.AU_PRODUCT_SAFETY
-      ? `AU_PRODUCT_SAFETY count ${canonicalCounts.AU_PRODUCT_SAFETY} does not match expected ${expectedCounts.AU_PRODUCT_SAFETY}.`
+      ? `Canonical AU_PRODUCT_SAFETY count ${canonicalCounts.AU_PRODUCT_SAFETY} does not match expected ${expectedCounts.AU_PRODUCT_SAFETY}.`
       : '',
     summary.duplicateIds.length > 0 ? `Duplicate ids found: ${summary.duplicateIds.length}.` : '',
     summary.slugCollisions.length > 0 ? `Slug collisions found: ${summary.slugCollisions.length}.` : '',
-    summary.suspiciousCategoryMappings.length > 0
-      ? `Suspicious category mappings found: ${summary.suspiciousCategoryMappings.length}.`
-      : '',
     summary.missing.sourceUrl > severeMissingThreshold ? `Missing source URLs found: ${summary.missing.sourceUrl}.` : '',
     summary.missing.title > severeMissingThreshold ? `Missing titles found: ${summary.missing.title}.` : '',
     summary.missing.recallDate > severeMissingThreshold ? `Missing recall dates found: ${summary.missing.recallDate}.` : '',
     summary.recordsWithOfficialNoticeUrlShape !== summary.total
-      ? `Official Canada URL shape mismatch count: ${summary.total - summary.recordsWithOfficialNoticeUrlShape}.`
+      ? `Official Australia URL shape mismatch count: ${summary.total - summary.recordsWithOfficialNoticeUrlShape}.`
       : '',
-    summary.recordsWithPrimaryImageUrl === 0 ? 'No Canada official detail-page image URLs were normalized.' : '',
-    summary.invalidImageUrls.length > 0 ? `Invalid Canada image URLs found: ${summary.invalidImageUrls.length}.` : '',
+    summary.recordsWithPrimaryImageUrl === 0 ? 'No Australia official product image URLs were normalized.' : '',
+    summary.invalidImageUrls.length > 0 ? `Invalid Australia image URLs found: ${summary.invalidImageUrls.length}.` : '',
     summary.nonOfficialImageHosts.length > 0
-      ? `Non-official Canada image URLs found: ${summary.nonOfficialImageHosts.length}.`
-      : '',
-    summary.suspectedChromeImageFalsePositives.length > 0
-      ? `Suspected Canada chrome/logo image false positives found: ${summary.suspectedChromeImageFalsePositives.length}.`
+      ? `Non-official Australia image URLs found: ${summary.nonOfficialImageHosts.length}.`
       : '',
     sourceFilters.join('|') !== expectedSourceFilterValues.join('|')
       ? `Source filter values changed unexpectedly: ${sourceFilters.join(', ')}.`
       : ''
   ].filter(Boolean);
-
-  return blockers;
 }
 
 async function runAudit(): Promise<void> {
-  const records = await readProcessedCanadaRecords();
+  const records = await readProcessedAustraliaRecords();
   if (records.length === 0) {
-    throw new Error(`No CA_RECALLS records found in ${processedPath}`);
+    throw new Error(`No AU_PRODUCT_SAFETY records found in ${processedPath}`);
   }
 
   const summary = audit(records);
@@ -452,11 +381,11 @@ async function runAudit(): Promise<void> {
         auditSummary: {
           result: passed ? 'pass' : 'fail',
           source: summary.source,
-          caRecallsCount: summary.total,
+          auProductSafetyCount: summary.total,
           totalProcessedCount: canonicalCounts.total,
           duplicateIds: summary.duplicateIds.length,
           slugCollisions: summary.slugCollisions.length,
-          suspiciousCategoryMappings: summary.suspiciousCategoryMappings.length,
+          recordsWithImages: summary.recordsWithImages,
           sourceFilterValues: sourceFilters
         },
         operationalSummary: {
@@ -471,23 +400,16 @@ async function runAudit(): Promise<void> {
             UK_FSA: canonicalCounts.UK_FSA,
             AU_PRODUCT_SAFETY: canonicalCounts.AU_PRODUCT_SAFETY
           },
-          duplicateIds: summary.duplicateIds.length,
-          slugCollisions: summary.slugCollisions.length,
-          suspiciousCategoryMappings: summary.suspiciousCategoryMappings.length,
           recordsWithImages: summary.recordsWithImages,
           recordsWithPrimaryImageUrl: summary.recordsWithPrimaryImageUrl,
           recordsWithPrimaryImageThumbnailUrl: summary.recordsWithPrimaryImageThumbnailUrl,
-          recordsWithOfficialDetailUrl: summary.recordsWithOfficialDetailUrl,
+          recordsWithOfficialNoticeUrlShape: summary.recordsWithOfficialNoticeUrlShape,
+          recordsWithDistributionDetails: summary.recordsWithDistributionDetails,
+          recordsWithModelBarcodeBatchOrLotLikeValues: summary.recordsWithModelBarcodeBatchOrLotLikeValues,
           invalidImageUrls: summary.invalidImageUrls.length,
           nonOfficialImageHosts: summary.nonOfficialImageHosts.length,
-          suspectedChromeImageFalsePositives: summary.suspectedChromeImageFalsePositives.length,
           duplicateImageUrls: summary.duplicateImageUrls.length,
-          sampleRecoveredRecords: summary.sampleRecoveredRecords,
-          recordsWithUpcOrBarcodeLikeValues: summary.recordsWithUpcOrBarcodeLikeValues,
-          recordsWithModelOrItemNumberLikeValues: summary.recordsWithModelOrItemNumberLikeValues,
-          recordsWithLotBatchCodeOrDateLikeValues: summary.recordsWithLotBatchCodeOrDateLikeValues,
-          recordsWithDistributionDetails: summary.recordsWithDistributionDetails,
-          recordsWithOfficialNoticeUrlShape: summary.recordsWithOfficialNoticeUrlShape,
+          sampleImageRecords: summary.sampleImageRecords,
           sourceFilterValues: sourceFilters,
           warnings: summary.warnings
         },

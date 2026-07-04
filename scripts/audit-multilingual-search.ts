@@ -20,7 +20,8 @@ type SourceId =
   | 'FR_RAPPELCONSO'
   | 'CA_RECALLS'
   | 'EU_SAFETY_GATE'
-  | 'UK_FSA';
+  | 'UK_FSA'
+  | 'AU_PRODUCT_SAFETY';
 
 type ScenarioResult = {
   id: string;
@@ -81,7 +82,8 @@ const EXPECTED_SOURCE_COUNTS: Record<SourceId, number> = {
   FR_RAPPELCONSO: 100,
   CA_RECALLS: 100,
   EU_SAFETY_GATE: 100,
-  UK_FSA: 100
+  UK_FSA: 100,
+  AU_PRODUCT_SAFETY: 100
 };
 
 const SOURCE_CATEGORY_CHECKS: Array<{
@@ -130,6 +132,14 @@ const SOURCE_CATEGORY_CHECKS: Array<{
     sources: ['UK_FSA'],
     category: 'food-allergy',
     query: 'allergen',
+    minMatches: 1
+  },
+  {
+    id: 'australia-product-safety-button-battery',
+    label: 'Australia Product Safety battery search',
+    sources: ['AU_PRODUCT_SAFETY'],
+    category: 'battery-electronics',
+    query: 'button battery',
     minMatches: 1
   }
 ];

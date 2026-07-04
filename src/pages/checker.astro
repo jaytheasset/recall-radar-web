@@ -4,6 +4,7 @@ import {
   brandGroups,
   categoryRoutes,
   dataSourceLabel,
+  processedAustraliaProductSafetyRecordCount,
   processedCanadaRecordCount,
   processedCpscRecordCount,
   processedEuSafetyGateRecordCount,
@@ -128,6 +129,7 @@ const sourcePages = getSourceLandingPageCards();
               <span class="tag">{processedCanadaRecordCount} Canada recall and safety alert notices</span>
               <span class="tag">{processedEuSafetyGateRecordCount} EU Safety Gate alerts</span>
               <span class="tag">{processedUkFsaRecordCount} UK FSA food alerts</span>
+              <span class="tag">{processedAustraliaProductSafetyRecordCount} Australia Product Safety notices</span>
             </>
           ) : null}
         </div>
@@ -303,7 +305,8 @@ const sourcePages = getSourceLandingPageCards();
         | 'FR_RAPPELCONSO'
         | 'CA_RECALLS'
         | 'EU_SAFETY_GATE'
-        | 'UK_FSA';
+        | 'UK_FSA'
+        | 'AU_PRODUCT_SAFETY';
       type CategoryFilter =
         | 'all'
         | 'baby-kids'
@@ -329,7 +332,8 @@ const sourcePages = getSourceLandingPageCards();
         'FR_RAPPELCONSO',
         'CA_RECALLS',
         'EU_SAFETY_GATE',
-        'UK_FSA'
+        'UK_FSA',
+        'AU_PRODUCT_SAFETY'
       ];
       const categoryValues: CategoryFilter[] = [
         'all',

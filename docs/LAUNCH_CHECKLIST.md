@@ -6,9 +6,9 @@ Use this checklist before a controlled public launch, staging deployment, or fin
 
 - Static Astro site.
 - Static processed JSON is bundled at build/runtime from `data/processed/recalls.json`.
-- 801 indexed recall notices.
-- 6 official source feeds.
-- Active sources: `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`.
+- 901 indexed recall notices.
+- 7 official source feeds.
+- Active sources: `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, `AU_PRODUCT_SAFETY`.
 - No backend, database, email service, runtime API, or account system.
 - No live alerting, product registration, affiliate/referral, or LLM feature.
 - No full source backfills yet.
@@ -20,6 +20,7 @@ Run from the project root:
 
 ```powershell
 npm run audit:sources
+npm run audit:australia-product-safety
 npm run audit:uk-fsa
 npm run audit:eu-safety-gate
 npm run audit:canada
@@ -47,29 +48,33 @@ These commands perform network fetches or may update local data files. Run them 
 - `npm run fetch:canada`
 - `npm run fetch:eu-safety-gate`
 - `npm run fetch:uk-fsa`
+- `npm run fetch:australia-product-safety`
 - `npm run data:rappelconso:fetch`
 - `npm run data:canada:fetch`
 - `npm run data:eu-safety-gate:fetch`
 - `npm run data:uk-fsa:fetch`
+- `npm run data:australia-product-safety:fetch`
 - `npm run update:rappelconso`
 - `npm run update:canada`
 - `npm run update:eu-safety-gate`
 - `npm run update:uk-fsa`
+- `npm run update:australia-product-safety`
 
 ## D. Data/Source Checklist
 
 Confirm current counts:
 
-- Total: 801
+- Total: 901
 - CPSC: 301
 - FDA/openFDA: 100
 - FR_RAPPELCONSO: 100
 - CA_RECALLS: 100
 - EU_SAFETY_GATE: 100
 - UK_FSA: 100
+- AU_PRODUCT_SAFETY: 100
 - Duplicate ids: 0
 - Unknown source ids: 0
-- Active source filters: `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`
+- Active source filters: `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, `AU_PRODUCT_SAFETY`
 
 `npm run audit:sources` should pass before launch.
 
@@ -96,8 +101,8 @@ Required no-result warning substance:
 
 Allowed wording:
 
-- 801 indexed recall notices
-- 6 official source feeds
+- 901 indexed recall notices
+- 7 official source feeds
 - official recall notices across markets
 - possible matches
 - verify with official notice
@@ -121,6 +126,7 @@ Verify these routes return 200:
 - `/checker?source=CA_RECALLS`
 - `/checker?source=EU_SAFETY_GATE`
 - `/checker?source=UK_FSA`
+- `/checker?source=AU_PRODUCT_SAFETY`
 - `/checker?q=zzzz-not-real`
 - `/watchlist`
 - `/baby-product-recalls`
@@ -132,6 +138,7 @@ Verify these routes return 200:
 - `/eu-safety-gate-recalls`
 - `/france-product-recalls`
 - `/uk-food-recalls`
+- `/australia-product-recalls`
 - `/brands/aldi`
 - `/404`
 - `/robots.txt`
@@ -144,6 +151,7 @@ Representative detail pages:
 - Canada: `/recalls/9227-8712-quebec-inc-brand-and-l-erabeille-brand-pure-maple-syrup-ca-recalls-82260`
 - EU Safety Gate: `/recalls/abirdon-teething-toy-safety-gate-alert-eu-safety-gate-10099469`
 - UK FSA: `/recalls/3d-trading-m-and-m-s-pipoca-popcorn-because-of-undeclared-allergens-uk-fsa-fsa-aa-20-2026`
+- Australia Product Safety: `/recalls/12-lcd-writing-tablet-au-product-safety-12-lcd-writing-tablet`
 
 ## H. Mobile/Responsive Checklist
 

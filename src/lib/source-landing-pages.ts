@@ -90,6 +90,18 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
     searchLabel: 'Search within UK food alerts',
     searchPlaceholder: 'Search food, brand, allergen, batch, date, alert reference, or keyword',
     noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
+  },
+  {
+    route: '/australia-product-recalls',
+    title: 'Australia Product Recalls | Recall Radar',
+    heading: 'Australia Product Recalls',
+    eyebrow: 'Australia',
+    description: 'Browse indexed Product Safety Australia recall notices.',
+    metaDescription: 'Browse indexed Product Safety Australia recall notices in Recall Radar.',
+    sourceIds: ['AU_PRODUCT_SAFETY'],
+    searchLabel: 'Search within Australia notices',
+    searchPlaceholder: 'Search product, brand, model, barcode, supplier, hazard, or keyword',
+    noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
   }
 ];
 

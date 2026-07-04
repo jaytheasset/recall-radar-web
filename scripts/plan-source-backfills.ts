@@ -6,7 +6,16 @@ import { sourceBackfillRegistry, type SourceBackfillRegistryEntry } from './sour
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const canonicalProcessedPath = resolve(projectRoot, 'data/processed/recalls.json');
-const validSourceFilterValues = ['all', 'CPSC', 'FDA', 'FR_RAPPELCONSO', 'CA_RECALLS', 'EU_SAFETY_GATE', 'UK_FSA'];
+const validSourceFilterValues = [
+  'all',
+  'CPSC',
+  'FDA',
+  'FR_RAPPELCONSO',
+  'CA_RECALLS',
+  'EU_SAFETY_GATE',
+  'UK_FSA',
+  'AU_PRODUCT_SAFETY'
+];
 
 function readOption(name: string): string | undefined {
   const prefix = `--${name}=`;
@@ -86,7 +95,9 @@ async function run(): Promise<void> {
   const warnings: string[] = [];
 
   if (entries.length === 0) {
-    warnings.push(`Unknown source option: ${sourceOption}. Use all, CPSC, FDA, FR_RAPPELCONSO, CA_RECALLS, EU_SAFETY_GATE, or UK_FSA.`);
+    warnings.push(
+      `Unknown source option: ${sourceOption}. Use all, CPSC, FDA, FR_RAPPELCONSO, CA_RECALLS, EU_SAFETY_GATE, UK_FSA, or AU_PRODUCT_SAFETY.`
+    );
   }
 
   const sources = entries.map((entry) => sourceReport(entry, counts.countsBySource[entry.sourceId] ?? 0));
@@ -118,6 +129,7 @@ async function run(): Promise<void> {
       'FDA: dry-run tooling already exists; choose a launch subset before expansion.',
       'CPSC: add date-window dry-run and chunk audit next because the API supports date windows.',
       'UK_FSA: add list pagination plus detail refresh controls.',
+      'AU_PRODUCT_SAFETY: add dry-run pagination and detail refresh controls before full Australia expansion.',
       'FR_RAPPELCONSO: add offset/date filters and recall-level dedupe.',
       'CA_RECALLS: design full-feed chunking and optional detail-image refresh.',
       'EU_SAFETY_GATE: investigate historical/date strategy before full backfill because payloads and images are verbose.'
@@ -141,7 +153,7 @@ async function run(): Promise<void> {
 
   console.log(JSON.stringify(report, null, 2));
 
-  if (entries.length === 0 || countMismatches.length > 0 || counts.total !== 801) {
+  if (entries.length === 0 || countMismatches.length > 0 || counts.total !== 901) {
     process.exitCode = 1;
   }
 }

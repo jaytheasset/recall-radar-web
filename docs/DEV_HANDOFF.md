@@ -122,10 +122,11 @@ Phase 24 global backfill planning:
 Phase 31 Asia/Oceania source discovery:
 
 - `docs/asia-oceania-source-discovery.md` documents official source candidates for Australia, New Zealand, Japan, Korea, Singapore, Hong Kong, and Taiwan.
-- No Asia/Oceania records, active filters, source registry entries, country pages, backfills, or source refreshes were added.
-- Recommended next overall candidate is `AU_PRODUCT_SAFETY`; recommended Asia-specific candidate is `KR_SAFETYKOREA` after official API access is confirmed.
+- Phase 33 added Australia Product Safety as the first active Oceania source spike.
+- New Zealand, Japan, Korea, Singapore, Hong Kong, and Taiwan remain discovery candidates.
+- Recommended next Asia-specific candidate is `KR_SAFETYKOREA` after official API access is confirmed.
 
-Phase 10 current source counts:
+Current source counts:
 
 - CPSC: 301
 - FDA/openFDA: 100
@@ -133,7 +134,8 @@ Phase 10 current source counts:
 - Canada Recalls and Safety Alerts: 100
 - EU Safety Gate: 100
 - UK FSA Food Alerts: 100
-- Total: 801
+- Australia Product Safety: 100
+- Total: 901
 
 Phase 10.1 UK FSA QA notes:
 
@@ -149,10 +151,10 @@ Phase 10.2 UK FSA update workflow:
 
 Phase 11 integrated source QA:
 
-- Active source ids are `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, and `UK_FSA`.
+- Active source ids are `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, and `AU_PRODUCT_SAFETY`.
 - `npm run audit:sources` verifies the integrated source registry and canonical `data/processed/recalls.json` stay aligned.
-- Current expected counts are 301 CPSC, 100 FDA/openFDA, 100 France RappelConso, 100 Canada Recalls and Safety Alerts, 100 EU Safety Gate, and 100 UK FSA Food Alerts, for 801 total records.
-- Current static build output is around 1382 pages, and `data/processed/recalls.json` is around 5.8 MB.
+- Current expected counts are 301 CPSC, 100 FDA/openFDA, 100 France RappelConso, 100 Canada Recalls and Safety Alerts, 100 EU Safety Gate, 100 UK FSA Food Alerts, and 100 Australia Product Safety records, for 901 total records.
+- Current static build output is around 1550 pages, and `data/processed/recalls.json` is around 6.3 MB.
 - Full backfills should measure canonical data size, detail page count, brand page count, build time, and static output size before merge.
 - Cross-source dedupe is not implemented yet; source-prefixed ids are preserved.
 

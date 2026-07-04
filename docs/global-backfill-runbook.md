@@ -2,7 +2,7 @@
 
 ## Current state
 
-Recall Radar currently indexes 801 static records:
+Recall Radar currently indexes 901 static records:
 
 - CPSC: 301
 - FDA/openFDA: 100
@@ -10,6 +10,7 @@ Recall Radar currently indexes 801 static records:
 - Canada Recalls and Safety Alerts: 100
 - EU Safety Gate: 100
 - UK FSA Food Alerts: 100
+- Australia Product Safety: 100
 
 Phase 24 does not change canonical data. It adds a source registry, a non-mutating source backfill planning command, a generic ignored-output audit, and a global runbook for future launch-time backfill work.
 
@@ -53,15 +54,17 @@ No source backfill chunks found; nothing to audit.
 | Canada Recalls | Partial | official-download, detail-refresh | Broad feed, sparse fields, detail image calls |
 | EU Safety Gate | Partial | latest-pagination, detail-refresh, source-specific investigation | Verbose details and historical endpoint strategy |
 | UK FSA | Partial | latest-pagination, detail-refresh, date-window | Detail payload size and pagination strategy |
+| Australia Product Safety | Partial | latest-pagination, detail-refresh, source-specific investigation | Full source size, HTML selector drift, and pagination strategy |
 
 ## Recommended launch-time backfill order
 
 1. FDA/openFDA: dry-run pipeline exists; choose an audited launch subset before expansion.
 2. CPSC: add date-window dry-run and chunk audit next.
 3. UK FSA: add pagination and detail-refresh controls.
-4. France RappelConso: add offset/date filters and recall-level dedupe.
-5. Canada Recalls: design official-feed chunking and optional detail refresh.
-6. EU Safety Gate: investigate historical/date strategy before full backfill because payloads and images are verbose.
+4. Australia Product Safety: add dry-run pagination and detail refresh controls.
+5. France RappelConso: add offset/date filters and recall-level dedupe.
+6. Canada Recalls: design official-feed chunking and optional detail refresh.
+7. EU Safety Gate: investigate historical/date strategy before full backfill because payloads and images are verbose.
 
 ## Source-specific notes
 
@@ -89,6 +92,10 @@ The current script fetches most recent alerts and official detail payloads. Futu
 
 The current script fetches a bounded list and then detail payloads for each alert notation. Future backfill should add pagination, optional detail refresh, and an audit for batch/date, pack size, allergen/risk details, source ids, and slug collisions.
 
+### Australia Product Safety
+
+The current script reads the official Product Safety Australia recalls page, uses its Drupal AJAX view for a bounded latest listing, and fetches official detail pages for each selected notice. Future full backfill should page into ignored chunks, audit selector stability, and review generated route count before canonical expansion.
+
 ## Output directory policy
 
 Generated backfill output belongs under:
@@ -100,6 +107,7 @@ data/backfill/rappelconso/
 data/backfill/canada/
 data/backfill/eu-safety-gate/
 data/backfill/uk-fsa/
+data/backfill/australia-product-safety/
 ```
 
 Generated `.json`, `.jsonl`, `.tmp`, and `.log` files under those directories are ignored by `.gitignore`. Only tiny `README.md` or `.gitkeep` placeholders should ever be committed.
@@ -173,12 +181,13 @@ For planning-only or dry-run phases, rollback is usually deleting local ignored 
 
 ## Source-specific future phases
 
-- Asia/Oceania source prototype after Phase 31 discovery, likely starting with `AU_PRODUCT_SAFETY` or `KR_SAFETYKOREA` after access verification
+- Additional Asia/Oceania source prototype after Phase 31 discovery, likely `KR_SAFETYKOREA` or another officially accessible source after access verification
 - CPSC backfill pipeline
 - RappelConso backfill pipeline
 - Canada backfill pipeline
 - EU Safety Gate backfill pipeline
 - UK FSA backfill pipeline
+- Australia Product Safety backfill pipeline
 - Canonical launch subset selection
 - Cross-source dedupe review
 
