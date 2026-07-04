@@ -243,3 +243,10 @@ Canonical/site URL status:
 - Confirm no network update scripts run during deploy.
 - Smoke test the deployed/staging URL.
 - Tag a release only after smoke testing passes.
+
+## L. Recall Taxonomy V2 Design Gate
+
+- Run `npm run audit:recall-taxonomy-v2-design` before starting taxonomy migration work.
+- Confirm Phase 41 did not change source ids, source routes, source counts, canonical processed data, or current category pages.
+- Treat old `category` compatibility as deprecated future debt, not as a permanent launch requirement.
+- Do not migrate UI routes to taxonomy v2 until an offline classifier dry run and human review pass are complete.

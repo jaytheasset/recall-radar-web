@@ -1,0 +1,250 @@
+[
+  {
+    "id": "sample-yamaha-umax-bistro",
+    "input": {
+      "source": "CPSC",
+      "title": "Yamaha UMAX Bistro golf cars and utility vehicles recalled due to injury hazard",
+      "productNames": ["Yamaha UMAX Bistro golf car", "utility vehicle"],
+      "brandNames": ["Yamaha"],
+      "rawSourceCategory": "consumer product",
+      "hazard": "The vehicle can lose steering control, posing crash and injury hazards.",
+      "remedy": "Stop using affected vehicles and contact the dealer for repair.",
+      "description": "Golf cars and utility vehicles sold for campus and facility mobility.",
+      "identifiers": ["UMAX Bistro"],
+      "sourceUrl": "https://example.test/yamaha-umax-bistro"
+    },
+    "expectedClassification": {
+      "taxonomyVersion": "recall-taxonomy-v2",
+      "method": "llm",
+      "model": "fixture",
+      "promptVersion": "recall-classifier-v1",
+      "productFamily": "vehicles-mobility",
+      "productType": "golf-cart-utility-vehicle",
+      "hazardType": "injury",
+      "hazardTags": ["loss of control", "crash"],
+      "recallDomain": "consumer-product",
+      "audience": ["vehicle-users"],
+      "confidence": 0.91,
+      "needsReview": false,
+      "reason": "The product is a golf car or utility vehicle and the notice describes loss of control and injury risk.",
+      "evidenceFields": ["title", "productNames", "hazard", "description"]
+    }
+  },
+  {
+    "id": "sample-undeclared-milk-cookie",
+    "input": {
+      "source": "FDA",
+      "title": "Chocolate chip cookies recalled because of undeclared milk",
+      "productNames": ["Chocolate chip cookies"],
+      "brandNames": ["Example Bakery"],
+      "rawSourceCategory": "food",
+      "hazard": "Undeclared milk allergen.",
+      "remedy": "Consumers with milk allergy should not consume the product.",
+      "description": "Packaged cookies distributed to retail stores.",
+      "identifiers": ["UPC 000000000001"],
+      "sourceUrl": "https://example.test/undeclared-milk-cookie"
+    },
+    "expectedClassification": {
+      "taxonomyVersion": "recall-taxonomy-v2",
+      "method": "llm",
+      "model": "fixture",
+      "promptVersion": "recall-classifier-v1",
+      "productFamily": "food-grocery",
+      "productType": "snacks-bakery",
+      "hazardType": "allergen",
+      "hazardTags": ["milk"],
+      "recallDomain": "food",
+      "audience": ["allergy-sensitive-consumers"],
+      "confidence": 0.96,
+      "needsReview": false,
+      "reason": "The product is packaged bakery food and the hazard is undeclared milk.",
+      "evidenceFields": ["title", "productNames", "hazard", "rawSourceCategory"]
+    }
+  },
+  {
+    "id": "sample-salmonella-nut-butter",
+    "input": {
+      "source": "FDA",
+      "title": "Nut butter recalled for possible Salmonella contamination",
+      "productNames": ["Creamy almond butter"],
+      "brandNames": ["Example Foods"],
+      "rawSourceCategory": "food",
+      "hazard": "Potential Salmonella contamination.",
+      "remedy": "Do not consume affected lots.",
+      "description": "Packaged grocery product with lot codes printed on the lid.",
+      "identifiers": ["Lot AB123"],
+      "sourceUrl": "https://example.test/salmonella-nut-butter"
+    },
+    "expectedClassification": {
+      "taxonomyVersion": "recall-taxonomy-v2",
+      "method": "llm",
+      "model": "fixture",
+      "promptVersion": "recall-classifier-v1",
+      "productFamily": "food-grocery",
+      "productType": "packaged-food",
+      "hazardType": "contamination-pathogen",
+      "hazardTags": ["salmonella"],
+      "recallDomain": "food",
+      "audience": ["general"],
+      "confidence": 0.94,
+      "needsReview": false,
+      "reason": "The product is packaged food and the hazard is pathogen contamination, not an allergen.",
+      "evidenceFields": ["title", "hazard", "description", "identifiers"]
+    }
+  },
+  {
+    "id": "sample-toy-small-parts",
+    "input": {
+      "source": "EU_SAFETY_GATE",
+      "title": "Plastic toy set recalled because small parts may detach",
+      "productNames": ["Plastic toy set"],
+      "brandNames": ["Toy Example"],
+      "rawSourceCategory": "Toys",
+      "hazard": "Small parts may detach and pose a choking hazard.",
+      "remedy": "Recall from consumers.",
+      "description": "Toy intended for young children.",
+      "identifiers": ["Model TOY-1"],
+      "sourceUrl": "https://example.test/toy-small-parts"
+    },
+    "expectedClassification": {
+      "taxonomyVersion": "recall-taxonomy-v2",
+      "method": "llm",
+      "model": "fixture",
+      "promptVersion": "recall-classifier-v1",
+      "productFamily": "baby-kids",
+      "productType": "toy",
+      "hazardType": "choking",
+      "hazardTags": ["small parts"],
+      "recallDomain": "consumer-product",
+      "audience": ["children"],
+      "confidence": 0.97,
+      "needsReview": false,
+      "reason": "The record is for a toy and the hazard is small parts choking.",
+      "evidenceFields": ["title", "productNames", "rawSourceCategory", "hazard"]
+    }
+  },
+  {
+    "id": "sample-power-bank-fire",
+    "input": {
+      "source": "CPSC",
+      "title": "Power banks recalled due to overheating and fire hazard",
+      "productNames": ["Portable power bank"],
+      "brandNames": ["Charge Example"],
+      "rawSourceCategory": "consumer product",
+      "hazard": "Lithium-ion battery can overheat, posing fire and burn hazards.",
+      "remedy": "Stop using and request a refund.",
+      "description": "Rechargeable battery pack for phones.",
+      "identifiers": ["Model PB-5000"],
+      "sourceUrl": "https://example.test/power-bank-fire"
+    },
+    "expectedClassification": {
+      "taxonomyVersion": "recall-taxonomy-v2",
+      "method": "llm",
+      "model": "fixture",
+      "promptVersion": "recall-classifier-v1",
+      "productFamily": "electronics-batteries",
+      "productType": "power-bank",
+      "hazardType": "battery-overheat",
+      "hazardTags": ["lithium-ion", "fire", "burn"],
+      "recallDomain": "consumer-product",
+      "audience": ["general"],
+      "confidence": 0.96,
+      "needsReview": false,
+      "reason": "The product is a power bank and the hazard is overheating from a lithium-ion battery.",
+      "evidenceFields": ["title", "productNames", "hazard", "description"]
+    }
+  },
+  {
+    "id": "sample-furniture-tip-over",
+    "input": {
+      "source": "CPSC",
+      "title": "Dressers recalled due to tip-over and entrapment hazards",
+      "productNames": ["Six-drawer dresser"],
+      "brandNames": ["Furniture Example"],
+      "rawSourceCategory": "consumer product",
+      "hazard": "The dresser can tip over if not anchored, posing injury and entrapment hazards.",
+      "remedy": "Anchor kit and repair offered.",
+      "description": "Household bedroom furniture.",
+      "identifiers": ["SKU DRESS-6"],
+      "sourceUrl": "https://example.test/furniture-tip-over"
+    },
+    "expectedClassification": {
+      "taxonomyVersion": "recall-taxonomy-v2",
+      "method": "llm",
+      "model": "fixture",
+      "promptVersion": "recall-classifier-v1",
+      "productFamily": "furniture-household",
+      "productType": "furniture",
+      "hazardType": "entrapment",
+      "hazardTags": ["tip-over", "entrapment"],
+      "recallDomain": "consumer-product",
+      "audience": ["children"],
+      "confidence": 0.92,
+      "needsReview": false,
+      "reason": "The product is household furniture and the source text describes tip-over and entrapment hazards.",
+      "evidenceFields": ["title", "productNames", "hazard", "description"]
+    }
+  },
+  {
+    "id": "sample-cleaning-chemical-exposure",
+    "input": {
+      "source": "CA_RECALLS",
+      "title": "Cleaning spray recalled due to chemical exposure hazard",
+      "productNames": ["Household cleaning spray"],
+      "brandNames": ["Clean Example"],
+      "rawSourceCategory": "Chemicals",
+      "hazard": "The product may leak and expose consumers to irritating chemicals.",
+      "remedy": "Stop use and contact the company.",
+      "description": "Consumer cleaning product sold for household use.",
+      "identifiers": ["Lot CLEAN-7"],
+      "sourceUrl": "https://example.test/cleaning-chemical-exposure"
+    },
+    "expectedClassification": {
+      "taxonomyVersion": "recall-taxonomy-v2",
+      "method": "llm",
+      "model": "fixture",
+      "promptVersion": "recall-classifier-v1",
+      "productFamily": "chemicals-cleaning",
+      "productType": "cleaning-product",
+      "hazardType": "chemical-exposure",
+      "hazardTags": ["leak", "irritation"],
+      "recallDomain": "chemical",
+      "audience": ["general"],
+      "confidence": 0.9,
+      "needsReview": false,
+      "reason": "The product is a household cleaning chemical and the hazard is chemical exposure.",
+      "evidenceFields": ["title", "productNames", "rawSourceCategory", "hazard"]
+    }
+  },
+  {
+    "id": "sample-pet-food-contamination",
+    "input": {
+      "source": "FDA",
+      "title": "Dog food recalled because of possible Salmonella contamination",
+      "productNames": ["Dry dog food"],
+      "brandNames": ["Pet Example"],
+      "rawSourceCategory": "food",
+      "hazard": "Possible Salmonella contamination.",
+      "remedy": "Do not feed affected bags to pets.",
+      "description": "Pet food sold in 5 lb bags.",
+      "identifiers": ["Best by 2027-01-01"],
+      "sourceUrl": "https://example.test/pet-food-contamination"
+    },
+    "expectedClassification": {
+      "taxonomyVersion": "recall-taxonomy-v2",
+      "method": "llm",
+      "model": "fixture",
+      "promptVersion": "recall-classifier-v1",
+      "productFamily": "pet-products",
+      "productType": "pet-food",
+      "hazardType": "contamination-pathogen",
+      "hazardTags": ["salmonella"],
+      "recallDomain": "food",
+      "audience": ["pet-owners"],
+      "confidence": 0.91,
+      "needsReview": false,
+      "reason": "The product is pet food and the hazard is pathogen contamination.",
+      "evidenceFields": ["title", "productNames", "hazard", "description"]
+    }
+  }
+]

@@ -355,3 +355,14 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Search results show the required disclaimer.
 - No page claims that a product is safe.
 - Recall detail pages show what to check and direct users to verify official notices.
+
+## Recall Taxonomy V2 Design
+
+- Confirm `npm run audit:recall-taxonomy-v2-design` passes.
+- Confirm `docs/recall-taxonomy-v2.md` documents the old `category` field as deprecated for future data.
+- Confirm `docs/llm-recall-classifier-contract.md` requires strict JSON, enum-only output, confidence, reason, evidence fields, and `needsReview`.
+- Confirm `src/data/recall-taxonomy-v2.ts` is not imported into the current runtime schema yet.
+- Confirm no canonical data files in `data/processed` changed.
+- Confirm no source fetch, normalize, merge, backfill, LLM, backend, database, translation, or UI route migration was introduced in Phase 41.
+- Confirm the Yamaha UMAX Bistro example maps to `vehicles-mobility`, not `food-grocery`.
+- Confirm food contamination examples use contamination hazard types rather than forcing every food recall into `allergen`.

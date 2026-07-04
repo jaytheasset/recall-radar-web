@@ -741,3 +741,11 @@ This command is local-only. It runs:
 11. `npm run build`
 
 It does not run fetch, update, or data-refresh scripts. Use it before launch, staging deployment, or final merge to `main`.
+
+## Recall Taxonomy V2 Design Audit
+
+```powershell
+npm run audit:recall-taxonomy-v2-design
+```
+
+This command is static and non-network. It validates the Phase 41 taxonomy v2 design contract, draft enum/type file, artificial classification fixtures, and LLM classifier contract. It does not call an LLM, fetch sources, normalize records, merge data, change `data/processed/recalls.json`, or migrate runtime UI.

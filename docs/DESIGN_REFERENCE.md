@@ -276,3 +276,7 @@ Next implementation steps:
 - Tighten vertical spacing across homepage sections.
 - Keep watchlist CTA compact.
 - Run `npm run check` and `npm run build`.
+
+## Recall Taxonomy V2 Design Note
+
+Phase 41 adds `docs/recall-taxonomy-v2.md` as the future category/navigation design source. The current homepage and category pages still use the legacy category model. Future product-family navigation should be derived from taxonomy v2 fields such as `productFamily`, `productType`, and `hazardType`, not from the old single `category` string. No UI route migration happens in Phase 41.

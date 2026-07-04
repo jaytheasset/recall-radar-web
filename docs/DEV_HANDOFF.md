@@ -351,3 +351,15 @@ Phase 15 adds planning docs for future multilingual UI support without wiring lo
 ## Guardrails
 
 Keep this repo static/local-first. Do not add secrets, deployments, databases, or runtime source calls. Only run source fetch scripts when a data-pipeline or source-refresh phase explicitly requests them.
+
+## Recall Taxonomy V2 Design
+
+Phase 41 adds a breaking-schema design for future recall classification without changing runtime behavior.
+
+- Design doc: `docs/recall-taxonomy-v2.md`
+- LLM classifier contract: `docs/llm-recall-classifier-contract.md`
+- Draft enum/type contract: `src/data/recall-taxonomy-v2.ts`
+- Artificial fixture examples: `data/samples/recall-taxonomy-v2-examples.json`
+- Static audit: `npm run audit:recall-taxonomy-v2-design`
+
+The old single `category` field is deprecated for future data because it mixes product family, product type, hazard type, source type, recall domain, and UI grouping. Phase 41 does not migrate existing records, does not modify `NormalizedRecall`, does not regenerate canonical data, and does not call an LLM. The recommended next phase is an offline LLM classifier dry run and cost estimate.
