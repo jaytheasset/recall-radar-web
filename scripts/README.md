@@ -749,3 +749,37 @@ npm run audit:recall-taxonomy-v2-design
 ```
 
 This command is static and non-network. It validates the Phase 41 taxonomy v2 design contract, draft enum/type file, artificial classification fixtures, and LLM classifier contract. It does not call an LLM, fetch sources, normalize records, merge data, change `data/processed/recalls.json`, or migrate runtime UI.
+
+## Recall Taxonomy V2 Classifier Dry Run
+
+```powershell
+npm run classify:recalls:taxonomy-v2:dry-run
+```
+
+This command reads the current canonical processed recalls, selects a balanced sample, builds compact classifier inputs, and writes ignored local dry-run outputs under `outputs/llm-classifier/`. Default mode is deterministic `mock` and requires no network or API key.
+
+Optional live-provider modes are key-gated:
+
+```powershell
+$env:RECALL_CLASSIFIER_PROVIDER = "gemini"
+$env:GEMINI_API_KEY = "<set outside git>"
+npm run classify:recalls:taxonomy-v2:dry-run
+Remove-Item Env:RECALL_CLASSIFIER_PROVIDER
+```
+
+or:
+
+```powershell
+$env:RECALL_CLASSIFIER_PROVIDER = "openai"
+$env:OPENAI_API_KEY = "<set outside git>"
+npm run classify:recalls:taxonomy-v2:dry-run
+Remove-Item Env:RECALL_CLASSIFIER_PROVIDER
+```
+
+Audit the dry-run wiring and local output:
+
+```powershell
+npm run audit:llm-classifier-dry-run
+```
+
+Phase 42 dry runs do not fetch, normalize, merge, backfill, edit canonical data, activate Korea, change source ids/counts, or modify runtime pages and filters. Keep generated `outputs/llm-classifier/` files uncommitted.

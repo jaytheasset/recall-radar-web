@@ -250,3 +250,12 @@ Canonical/site URL status:
 - Confirm Phase 41 did not change source ids, source routes, source counts, canonical processed data, or current category pages.
 - Treat old `category` compatibility as deprecated future debt, not as a permanent launch requirement.
 - Do not migrate UI routes to taxonomy v2 until an offline classifier dry run and human review pass are complete.
+
+## M. LLM Classifier Dry-Run Gate
+
+- Run `npm run classify:recalls:taxonomy-v2:dry-run` in mock mode before any taxonomy migration phase.
+- Run `npm run audit:llm-classifier-dry-run`.
+- Confirm generated files stay under ignored `outputs/llm-classifier/`.
+- Confirm no dry-run outputs, API keys, canonical data changes, route changes, or source-count changes are committed.
+- Confirm the known Yamaha/UMAX/Bistro vehicle-style edge case is sampled and reported.
+- Confirm any future live-provider run is reviewed separately and uses only local environment variables.

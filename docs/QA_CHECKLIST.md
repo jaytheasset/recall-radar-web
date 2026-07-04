@@ -366,3 +366,16 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm no source fetch, normalize, merge, backfill, LLM, backend, database, translation, or UI route migration was introduced in Phase 41.
 - Confirm the Yamaha UMAX Bistro example maps to `vehicles-mobility`, not `food-grocery`.
 - Confirm food contamination examples use contamination hazard types rather than forcing every food recall into `allergen`.
+
+## LLM Recall Classifier Dry Run
+
+- Confirm `npm run classify:recalls:taxonomy-v2:dry-run` succeeds in default mock mode.
+- Confirm `npm run audit:llm-classifier-dry-run` passes.
+- Confirm generated dry-run files are under ignored `outputs/llm-classifier/`.
+- Confirm generated dry-run files are not staged or committed.
+- Confirm the mock sample includes at least one Yamaha/UMAX/Bistro/golf/utility vehicle edge case when present in current data.
+- Confirm strict JSON output validates against `RecallClassificationV2`.
+- Confirm the dry run reports success, failed, needsReview, legacy comparison flags, and token/cost estimates.
+- Confirm live providers are skipped unless the matching local env key exists.
+- Confirm no canonical data files in `data/raw` or `data/processed` changed.
+- Confirm no runtime pages, filters, source ids, source counts, backend, database, translation, or source refresh scripts changed.

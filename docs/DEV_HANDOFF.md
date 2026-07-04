@@ -363,3 +363,19 @@ Phase 41 adds a breaking-schema design for future recall classification without 
 - Static audit: `npm run audit:recall-taxonomy-v2-design`
 
 The old single `category` field is deprecated for future data because it mixes product family, product type, hazard type, source type, recall domain, and UI grouping. Phase 41 does not migrate existing records, does not modify `NormalizedRecall`, does not regenerate canonical data, and does not call an LLM. The recommended next phase is an offline LLM classifier dry run and cost estimate.
+
+## LLM Recall Classifier Dry Run
+
+Phase 42 adds an offline-first dry-run classifier pipeline for Recall Taxonomy V2 without changing runtime behavior.
+
+- Dry-run guide: `docs/llm-recall-classifier-dry-run.md`
+- Mock/default command: `npm run classify:recalls:taxonomy-v2:dry-run`
+- Static/output audit: `npm run audit:llm-classifier-dry-run`
+- Default provider: deterministic `mock`
+- Optional providers: `gemini` with `GEMINI_API_KEY`, or `openai` with `OPENAI_API_KEY`
+- Output folder: ignored `outputs/llm-classifier/`
+- Prompt version: `recall-classifier-v1`
+
+The dry run reads `data/processed/recalls.json`, builds short structured classifier inputs, validates strict JSON output against `RecallClassificationV2`, compares taxonomy v2 fields to the legacy `category`, and estimates token/cost projections. It does not write canonical taxonomy fields, does not modify `data/raw` or `data/processed`, does not change UI routes or filters, and does not run source refreshes.
+
+Keep Phase 42 outputs uncommitted. If a live provider is used later, provide keys only through local environment variables and do not print or commit them.

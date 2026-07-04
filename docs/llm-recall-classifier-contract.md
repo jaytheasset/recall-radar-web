@@ -44,7 +44,7 @@ The classifier must:
 8. Classify, not summarize, judge, or advise.
 9. Not rewrite source facts.
 10. Not make safety claims.
-11. Not say a product is safe, unsafe, definitely affected, or not affected.
+11. Not assert product safety status or affected/not-affected status.
 12. Keep hazard classification separate from product classification.
 
 ## Output JSON Shape

@@ -6,6 +6,7 @@ dist/
 .env.production
 npm-debug.log*
 *.log
+outputs/llm-classifier/
 data/backfill/cpsc/**/*.json
 data/backfill/cpsc/**/*.jsonl
 data/backfill/cpsc/**/*.tmp
