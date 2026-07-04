@@ -6,6 +6,7 @@ export type RecallSourceId =
   | 'EU_SAFETY_GATE'
   | 'UK_FSA'
   | 'AU_PRODUCT_SAFETY'
+  | 'NZ_PRODUCT_SAFETY'
   | 'Mock';
 export type CurrentCoverageSourceId = Exclude<RecallSourceId, 'Mock'>;
 export type RecallSourceType = 'official-api' | 'sample';
@@ -349,6 +350,51 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     officialVerificationCopy:
       'Use the official notice to confirm affected products, identifiers, sale dates, traders, locations sold, hazards, and consumer action.'
   },
+  NZ_PRODUCT_SAFETY: {
+    id: 'NZ_PRODUCT_SAFETY',
+    marketCode: 'NZ',
+    marketLabel: 'New Zealand',
+    agencyLabel: 'Product Safety',
+    sourceType: 'official-api',
+    displayLabel: 'New Zealand · Product Safety',
+    noticeTypeLabel: 'Product safety recall',
+    productScopeLabel: 'Consumer products and product safety recalls',
+    identifierTypes: [
+      'model number',
+      'SKU',
+      'barcode',
+      'batch or lot code',
+      'product name',
+      'brand/company',
+      'supplier details',
+      'sale dates'
+    ],
+    supportsImages: true,
+    supportsDistributionDetails: true,
+    rawPayloadNotes:
+      'Product Safety New Zealand records are collected from the official recalled-products listing pages and official recall detail pages. Detail pages can include product identifiers, supplier contact, responsible agency, hazard, consumer action, categories, and official product images.',
+    officialSourceLabel: 'Source: New Zealand · Product Safety',
+    placeholderLabel: 'Product Safety New Zealand recall',
+    reasonLabel: 'Hazard',
+    actionLabel: 'Action',
+    quantityLabel: 'Quantity',
+    distributionLabel: 'Product identifiers / sold by',
+    defaultActionFallback: DEFAULT_ACTION_FALLBACK,
+    verificationIntro:
+      'Compare the details below with your product label, packaging, receipt, model information, supplier details, and official Product Safety New Zealand notice. A matching search result does not confirm your exact product is included.',
+    verificationChecklist: [
+      'Product name and brand/company',
+      'Model, SKU, barcode, batch, lot, or item details if listed',
+      'Product photo and label details',
+      'Supplier contact details',
+      'Sale dates or seller details if listed',
+      'Hazard and action in the official notice'
+    ],
+    sparseIdentificationCopy:
+      'This indexed notice may not list every identifier in a structured field. Review the official Product Safety New Zealand notice and product label carefully.',
+    officialVerificationCopy:
+      'Use the official notice to confirm affected products, identifiers, sale dates, suppliers, hazards, and consumer action.'
+  },
   Mock: {
     id: 'Mock',
     marketCode: '',
@@ -391,7 +437,8 @@ const currentCoverageSources: CurrentCoverageSourceId[] = [
   'CA_RECALLS',
   'EU_SAFETY_GATE',
   'UK_FSA',
-  'AU_PRODUCT_SAFETY'
+  'AU_PRODUCT_SAFETY',
+  'NZ_PRODUCT_SAFETY'
 ];
 
 function normalizeSourceId(source: string): RecallSourceId {
@@ -402,6 +449,7 @@ function normalizeSourceId(source: string): RecallSourceId {
     source === 'EU_SAFETY_GATE' ||
     source === 'UK_FSA' ||
     source === 'AU_PRODUCT_SAFETY' ||
+    source === 'NZ_PRODUCT_SAFETY' ||
     source === 'Mock'
     ? source
     : 'Mock';

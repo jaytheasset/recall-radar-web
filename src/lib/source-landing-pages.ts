@@ -102,6 +102,18 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
     searchLabel: 'Search within Australia notices',
     searchPlaceholder: 'Search product, brand, model, barcode, supplier, hazard, or keyword',
     noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
+  },
+  {
+    route: '/new-zealand-product-recalls',
+    title: 'New Zealand Product Recalls | Recall Radar',
+    heading: 'New Zealand Product Recalls',
+    eyebrow: 'New Zealand',
+    description: 'Browse indexed Product Safety New Zealand recall notices.',
+    metaDescription: 'Browse indexed Product Safety New Zealand recall notices in Recall Radar.',
+    sourceIds: ['NZ_PRODUCT_SAFETY'],
+    searchLabel: 'Search within New Zealand notices',
+    searchPlaceholder: 'Search product, brand, model, SKU, supplier, hazard, or keyword',
+    noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
   }
 ];
 

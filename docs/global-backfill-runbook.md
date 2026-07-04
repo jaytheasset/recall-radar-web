@@ -2,7 +2,7 @@
 
 ## Current state
 
-Recall Radar currently indexes 901 static records:
+Recall Radar currently indexes 1001 static records:
 
 - CPSC: 301
 - FDA/openFDA: 100
@@ -11,6 +11,7 @@ Recall Radar currently indexes 901 static records:
 - EU Safety Gate: 100
 - UK FSA Food Alerts: 100
 - Australia Product Safety: 100
+- New Zealand Product Safety: 100
 
 Phase 24 does not change canonical data. It adds a source registry, a non-mutating source backfill planning command, a generic ignored-output audit, and a global runbook for future launch-time backfill work.
 
@@ -55,6 +56,7 @@ No source backfill chunks found; nothing to audit.
 | EU Safety Gate | Partial | latest-pagination, detail-refresh, source-specific investigation | Verbose details and historical endpoint strategy |
 | UK FSA | Partial | latest-pagination, detail-refresh, date-window | Detail payload size and pagination strategy |
 | Australia Product Safety | Partial | latest-pagination, detail-refresh, source-specific investigation | Full source size, HTML selector drift, and pagination strategy |
+| New Zealand Product Safety | Partial | latest-pagination, detail-refresh, source-specific investigation | HTML selector drift and no confirmed JSON/RSS feed |
 | Korea SafetyKorea | Deferred | contract-prep, access-diagnostic-only | Service ID/AuthKey required before live source activation |
 
 ## Recommended launch-time backfill order
@@ -63,9 +65,10 @@ No source backfill chunks found; nothing to audit.
 2. CPSC: add date-window dry-run and chunk audit next.
 3. UK FSA: add pagination and detail-refresh controls.
 4. Australia Product Safety: add dry-run pagination and detail refresh controls.
-5. France RappelConso: add offset/date filters and recall-level dedupe.
-6. Canada Recalls: design official-feed chunking and optional detail refresh.
-7. EU Safety Gate: investigate historical/date strategy before full backfill because payloads and images are verbose.
+5. New Zealand Product Safety: add ignored chunk pagination and selector stability checks.
+6. France RappelConso: add offset/date filters and recall-level dedupe.
+7. Canada Recalls: design official-feed chunking and optional detail refresh.
+8. EU Safety Gate: investigate historical/date strategy before full backfill because payloads and images are verbose.
 
 ## Source-specific notes
 
@@ -97,6 +100,10 @@ The current script fetches a bounded list and then detail payloads for each aler
 
 The current script reads the official Product Safety Australia recalls page, uses its Drupal AJAX view for a bounded latest listing, and fetches official detail pages for each selected notice. The investigated RSS endpoint self-redirected and is not used for the current 100-record spike. Future full backfill should page into ignored chunks, audit selector stability, validate official source URLs, image hosts, duplicate source URLs, invalid dates, raw HTML leakage, and review generated route count before canonical expansion.
 
+### New Zealand Product Safety
+
+The current script reads the official Product Safety New Zealand recalls page with `start` pagination and fetches official detail pages for each selected notice. The investigated JSON/RSS candidates did not expose a usable feed in Phase 37. Future full backfill should page into ignored chunks, audit selector stability, validate official source URLs, official image hosts, duplicate source URLs, invalid dates, raw HTML leakage, specialist-source exclusions, and review generated route count before canonical expansion.
+
 ### Korea SafetyKorea
 
 Phase 35 added a non-mutating access diagnostic only. The data.go.kr SafetyKorea metadata is official and reachable, but it indicates an application/login/service-key flow and does not expose a callable recall-record payload without credentials. Phase 36 reviewed the SafetyKorea Open API interface document and prepared the domestic recall list/detail contract, including `AuthKey` header handling, fixture mapping, image extraction, and a non-network contract audit. Keep `KR_SAFETYKOREA` out of active filters and canonical data until a future phase receives an issued SafetyKorea service ID/AuthKey and validates a bounded live probe.
@@ -113,6 +120,7 @@ data/backfill/canada/
 data/backfill/eu-safety-gate/
 data/backfill/uk-fsa/
 data/backfill/australia-product-safety/
+data/backfill/new-zealand-product-safety/
 ```
 
 Generated `.json`, `.jsonl`, `.tmp`, and `.log` files under those directories are ignored by `.gitignore`. Only tiny `README.md` or `.gitkeep` placeholders should ever be committed.
@@ -193,6 +201,7 @@ For planning-only or dry-run phases, rollback is usually deleting local ignored 
 - EU Safety Gate backfill pipeline
 - UK FSA backfill pipeline
 - Australia Product Safety backfill pipeline
+- New Zealand Product Safety backfill pipeline
 - Canonical launch subset selection
 - Cross-source dedupe review
 

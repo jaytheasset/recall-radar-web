@@ -14,7 +14,8 @@ const validSourceFilterValues = [
   'CA_RECALLS',
   'EU_SAFETY_GATE',
   'UK_FSA',
-  'AU_PRODUCT_SAFETY'
+  'AU_PRODUCT_SAFETY',
+  'NZ_PRODUCT_SAFETY'
 ];
 
 function readOption(name: string): string | undefined {
@@ -96,7 +97,7 @@ async function run(): Promise<void> {
 
   if (entries.length === 0) {
     warnings.push(
-      `Unknown source option: ${sourceOption}. Use all, CPSC, FDA, FR_RAPPELCONSO, CA_RECALLS, EU_SAFETY_GATE, UK_FSA, or AU_PRODUCT_SAFETY.`
+      `Unknown source option: ${sourceOption}. Use all, CPSC, FDA, FR_RAPPELCONSO, CA_RECALLS, EU_SAFETY_GATE, UK_FSA, AU_PRODUCT_SAFETY, or NZ_PRODUCT_SAFETY.`
     );
   }
 
@@ -130,6 +131,7 @@ async function run(): Promise<void> {
       'CPSC: add date-window dry-run and chunk audit next because the API supports date windows.',
       'UK_FSA: add list pagination plus detail refresh controls.',
       'AU_PRODUCT_SAFETY: add dry-run pagination and detail refresh controls before full Australia expansion.',
+      'NZ_PRODUCT_SAFETY: add dry-run start-pagination and detail refresh controls before full New Zealand expansion.',
       'FR_RAPPELCONSO: add offset/date filters and recall-level dedupe.',
       'CA_RECALLS: design full-feed chunking and optional detail-image refresh.',
       'EU_SAFETY_GATE: investigate historical/date strategy before full backfill because payloads and images are verbose.'
@@ -153,7 +155,7 @@ async function run(): Promise<void> {
 
   console.log(JSON.stringify(report, null, 2));
 
-  if (entries.length === 0 || countMismatches.length > 0 || counts.total !== 901) {
+  if (entries.length === 0 || countMismatches.length > 0 || counts.total !== 1001) {
     process.exitCode = 1;
   }
 }

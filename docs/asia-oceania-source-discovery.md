@@ -2,7 +2,9 @@
 
 ## A. Purpose
 
-Phase 31 evaluates official Asia and Oceania recall source candidates for future Recall Radar ingestion. This is planning-only work. It does not add records, activate source filters, create UI pages, refresh source data, or change the canonical processed data.
+Phase 31 evaluated official Asia and Oceania recall source candidates for future Recall Radar ingestion. This was planning-only work and did not add records, activate source filters, create UI pages, refresh source data, or change the canonical processed data.
+
+Phase 33 later activated the bounded `AU_PRODUCT_SAFETY` source. Phase 37 later activated the bounded `NZ_PRODUCT_SAFETY` source. The remaining notes in this document are source-discovery context for future expansion, not the current active source list.
 
 The current site remains limited to the active indexed sources already in `src/lib/recall-sources.ts`:
 
@@ -12,10 +14,12 @@ The current site remains limited to the active indexed sources already in `src/l
 - `CA_RECALLS`
 - `EU_SAFETY_GATE`
 - `UK_FSA`
+- `AU_PRODUCT_SAFETY`
+- `NZ_PRODUCT_SAFETY`
 
 ## B. Current Coverage Gap
 
-Recall Radar has no active Asia or Oceania source coverage yet. The current global foundation covers the United States, France, Canada, the European Union, and the United Kingdom, but there are no indexed official notices for Australia, New Zealand, Japan, South Korea, Singapore, Hong Kong, or Taiwan.
+Recall Radar now has bounded active Oceania coverage for Australia Product Safety and New Zealand Product Safety. The current global foundation covers the United States, France, Canada, the European Union, the United Kingdom, Australia, and New Zealand, but there are still no indexed official notices for Japan, South Korea, Singapore, Hong Kong, or Taiwan.
 
 The gap is mostly source-readiness work, not UI work. Before any country is exposed in filters or source pages, Recall Radar needs a source-specific connector, normalized output, source registry entry, audit script, count policy, detail-page field extraction, and a clear statement of coverage limits.
 
@@ -26,7 +30,7 @@ The gap is mostly source-readiness work, not UI work. Before any country is expo
 | Australia | Product Safety Australia / ACCC recalls (`https://www.productsafety.gov.au/recalls`) | ACCC | Consumer products, child products, electronics, household, tools, non-road-vehicle consumer products | Search pages plus RSS by category and saved search (`https://www.productsafety.gov.au/about-us/product-safety-news/subscribe-to-rss-feeds`) | Likely medium through RSS/search pagination; exact historical completeness needs prototype | Product pages show images | Good: product name, category, hazard/remedy, supplier, dates likely available on details | English | Medium | 1 | Best low-risk next source because it is official, English, consumer-product focused, and RSS-supported. |
 | Australia | Australian food recall alerts (`https://www.foodstandards.gov.au/food-recalls/recall-alert`) | Food Standards Australia New Zealand | Australian food recalls | HTML list/search; email subscription; API/RSS unknown | Medium if HTML pagination is stable | Images appear on listing/detail pages | Good for food products, allergens, state, dates; lot/barcode varies by notice | English | Medium | 4 | Useful food source, but overlaps partially with product safety experience and needs access prototype. |
 | Australia | Vehicle Recalls (`https://www.vehiclerecalls.gov.au/`) | Department of Infrastructure, Transport, Regional Development, Communications, Sport and the Arts | Road vehicles and approved road vehicle components | HTML search/list; API unknown | Medium if browse pages are stable | Limited or unknown | Strong vehicle make/model/year; VIN-specific checks are not suitable for static ingestion | English | Medium | Defer | Vehicle-specific category and VIN-safe UX are needed before activation. |
-| New Zealand | Product Safety New Zealand recalls (`https://www.productsafety.govt.nz/recalls`) | MBIE Product Safety | Consumer products; links out to NZTA and MPI for vehicle/food | HTML search/list with filters and counts; API/RSS unknown | Medium to high; likely HTML scraping unless an endpoint is discovered | Images/details appear on pages | Good product/category/date; model/batch varies | English | Medium-high | 3 | Good coverage, but no confirmed machine feed yet. |
+| New Zealand | Product Safety New Zealand recalls (`https://www.productsafety.govt.nz/recalls`) | MBIE Product Safety | Consumer products; links out to NZTA and MPI for vehicle/food | Official HTML listing/detail pages with `start` pagination; JSON/RSS candidates were not usable in Phase 37 | Partial bounded source is active for the latest 100 notices | Images/details appear on pages | Good product/category/date; model/batch varies | English | Medium-high | Active bounded spike | Active as `NZ_PRODUCT_SAFETY`; full backfill remains deferred. |
 | New Zealand | MPI recalled food products (`https://www.mpi.govt.nz/food-safety-home/food-recalls-and-complaints/recalled-food-products`) | Ministry for Primary Industries | Food recalls | HTML list; email subscription; API/RSS unknown | Medium; HTML/date paging needs prototype | Unknown | Good food product and allergen/lot fields where present | English | Medium | 5 | Good food source after product source path is proven. |
 | New Zealand | NZTA vehicle safety recalls (`https://www.vehiclerecallsafety.nzta.govt.nz/`) | NZ Transport Agency Waka Kotahi | Vehicle safety recalls | HTML list; API unknown | Limited; site emphasizes current recalls | Unknown | Vehicle make/model high, consumer-product fit low | English | Medium | Defer | Vehicle UX/category work should come first. |
 | Japan | Consumer Affairs Agency Recall Information Site (`https://www.recall.caa.go.jp/`) | Consumer Affairs Agency | Food, appliances, housing equipment, toys, vehicles, cosmetics, consumer goods | HTML list/detail with pagination; API/RSS not confirmed | Medium if pagination remains stable; high due language and encoding | Product images on many notices | Good official management number, product, category, date; identifiers vary | Japanese | High | 6 | Broad and valuable, but source-language and scraper quality risk are high. |
@@ -62,12 +66,12 @@ Risks:
 
 ## E. New Zealand Assessment
 
-New Zealand has a strong official product-safety site through MBIE Product Safety. The recall page exposes categories, counts, sorting, date filters, resolved-recall inclusion, and links to NZTA and MPI for vehicle and food coverage. It is a good consumer-product candidate, but no API or RSS feed was confirmed in this discovery pass.
+New Zealand has a strong official product-safety site through MBIE Product Safety. The recall page exposes categories, counts, sorting, date filters, resolved-recall inclusion, and links to NZTA and MPI for vehicle and food coverage. Phase 37 confirmed official HTML listing/detail access and activated a bounded latest-100 `NZ_PRODUCT_SAFETY` spike; no usable API or RSS feed was confirmed.
 
 Recommended next action:
 
-- Keep `NZ_PRODUCT_SAFETY` as a second-wave Oceania candidate after Australia.
-- Prototype HTML list/detail extraction only if no official feed is found.
+- Keep `NZ_PRODUCT_SAFETY` as a bounded active source until a separate reviewed full-backfill phase exists.
+- Use official HTML list/detail extraction only while no official feed is found.
 - Keep `NZ_MPI_FOOD` and `NZTA_VEHICLE_RECALLS` separate because food and vehicle sources have different field quality and UX needs.
 
 Risks:
@@ -133,8 +137,8 @@ Risks:
 1. `AU_PRODUCT_SAFETY` - best next overall candidate. Official, English, consumer-product focused, RSS-supported, and close to existing CPSC/Canada consumer recall UX.
 2. `KR_SAFETYKOREA` - best next Asia candidate if API access can be confirmed. Strong official API signal and useful product identifiers.
 3. `KR_MFDS` - strong food recall source with official JSON/XML metadata and product photo URL fields.
-4. `NZ_PRODUCT_SAFETY` - strong official consumer-product coverage, but feed/API not confirmed.
-5. `HK_CFS` - narrow but promising official XML food/allergy feed.
+4. `HK_CFS` - narrow but promising official XML food/allergy feed.
+5. `NZ_MPI_FOOD` - official New Zealand food recalls, separate from `NZ_PRODUCT_SAFETY`.
 6. `AU_FSANZ` - official English food recall source, likely HTML/detail work.
 7. `JP_CAA` - broad coverage but high source-language and HTML-maintenance risk.
 8. `SG_SFA` - useful English food recall pages, but feed/API not confirmed.
@@ -143,17 +147,15 @@ Risks:
 
 Best next source candidate:
 
-- Overall: `AU_PRODUCT_SAFETY`
+- Overall: continue with active `AU_PRODUCT_SAFETY` and `NZ_PRODUCT_SAFETY` maintenance before adding another Oceania source.
 - Asia-specific: `KR_SAFETYKOREA`, after confirming API access, required key/approval flow, field schema, and allowed traffic.
 
 ## J. Source ID Proposals
 
 Planning-only source id proposals:
 
-- `AU_PRODUCT_SAFETY`
 - `AU_FSANZ`
 - `AU_VEHICLE_RECALLS`
-- `NZ_PRODUCT_SAFETY`
 - `NZ_MPI_FOOD`
 - `NZTA_VEHICLE_RECALLS`
 - `JP_CAA`
@@ -170,7 +172,7 @@ Planning-only source id proposals:
 - `TW_TFDA`
 - `TW_BSMI`
 
-These ids are not active source ids and must not be added to `src/data/recall-types.ts`, `src/lib/recall-sources.ts`, source filters, or processed data until a future ingestion phase explicitly implements and validates one source.
+These ids are not active source ids and must not be added to `src/data/recall-types.ts`, `src/lib/recall-sources.ts`, source filters, or processed data until a future ingestion phase explicitly implements and validates one source. `AU_PRODUCT_SAFETY` and `NZ_PRODUCT_SAFETY` are already active bounded source ids and should be managed through their source-specific docs instead.
 
 ## K. Known Risks
 

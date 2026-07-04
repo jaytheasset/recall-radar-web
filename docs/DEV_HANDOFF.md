@@ -62,13 +62,17 @@ Commands:
 - `npm run normalize:uk-fsa` rebuilds UK FSA processed data from `data/raw/uk-fsa-alerts.json`.
 - `npm run fetch:australia-product-safety` fetches the bounded Australia Product Safety source spike.
 - `npm run normalize:australia-product-safety` rebuilds Australia processed data from `data/raw/australia-product-safety-recalls.json`.
+- `npm run fetch:new-zealand-product-safety` fetches the bounded New Zealand Product Safety source spike.
+- `npm run normalize:new-zealand-product-safety` rebuilds New Zealand processed data from `data/raw/new-zealand-product-safety-recalls.json`.
+- `npm run debug:new-zealand-product-safety-access` checks official Product Safety New Zealand access without writing data.
 - `npm run debug:korea-safetykorea-access` checks official SafetyKorea/data.go.kr access without writing records or changing canonical data.
 - `npm run audit:korea-safetykorea-contract` validates the prepared SafetyKorea API contract and fixture mapping without network access.
 - `npm run audit:sources` audits integrated source counts, active source ids, duplicate ids, sparse fields, and category distribution without making network calls.
 - `npm run audit:uk-fsa` audits the bounded UK FSA source spike.
 - `npm run audit:australia-product-safety` audits the bounded Australia source spike, including source ids, duplicate ids/slugs/source URLs, official URL shape, image host validity, invalid dates, raw HTML leakage, category distribution, and identifier coverage.
+- `npm run audit:new-zealand-product-safety` audits the bounded New Zealand source spike, including source ids, duplicate ids/slugs/source URLs, official URL shape, image host validity, invalid dates, raw HTML leakage, specialist-source exclusions, category distribution, and identifier coverage.
 - `npm run validate:launch` runs the local-only launch validation sequence: integrated/source audits, `npm run check`, and `npm run build`.
-- `npm run build:data` currently runs the CPSC, FDA/openFDA, France RappelConso, Canada, EU Safety Gate, UK FSA, and Australia Product Safety fetch pipelines.
+- `npm run build:data` currently runs the CPSC, FDA/openFDA, France RappelConso, Canada, EU Safety Gate, UK FSA, Australia Product Safety, and New Zealand Product Safety fetch pipelines.
 
 Local output files:
 
@@ -79,6 +83,7 @@ Local output files:
 - `data/raw/eu-safety-gate-recalls.json`
 - `data/raw/uk-fsa-alerts.json`
 - `data/raw/australia-product-safety-recalls.json`
+- `data/raw/new-zealand-product-safety-recalls.json`
 - `data/processed/cpsc-recalls.json`
 - `data/processed/fda-recalls.json`
 - `data/processed/rappelconso-recalls.json`
@@ -86,6 +91,7 @@ Local output files:
 - `data/processed/eu-safety-gate-recalls.json`
 - `data/processed/uk-fsa-alerts.json`
 - `data/processed/australia-product-safety-recalls.json`
+- `data/processed/new-zealand-product-safety-recalls.json`
 - `data/processed/recalls.json`
 
 The fetch script calls `https://www.saferproducts.gov/RestWebServices/Recall` without an API key. It writes only after the API returns non-empty records, and each raw file includes a `fetchedAt` timestamp.
@@ -107,6 +113,8 @@ The UK FSA fetch script calls official FSA Food Alerts endpoints only:
 It fetches a bounded default of 100 recent food alerts, allergy alerts, product recall information notices, and food alerts for action. It writes only after non-empty records return, and each raw file includes a `fetchedAt` timestamp. See `docs/uk-fsa-source.md`.
 
 The Australia Product Safety fetch script calls the official Product Safety Australia recalls page and official Drupal AJAX listing endpoint, then fetches official detail pages for the bounded records. The RSS endpoint investigated during source discovery self-redirected and is not used for the current spike. It writes only after non-empty records return, keeps the default limit at 100, and each raw file includes a `fetchedAt` timestamp. See `docs/australia-product-safety-source.md`.
+
+The New Zealand Product Safety fetch script calls the official Product Safety New Zealand recalls page with `start` pagination, then fetches official detail pages for the bounded records. JSON and RSS candidates investigated during Phase 37 did not expose a usable feed, so the current connector uses official HTML listing/detail pages only. It writes only after non-empty records return, keeps the default limit at 100, and each raw file includes a `fetchedAt` timestamp. See `docs/new-zealand-product-safety-source.md`.
 
 The Korea SafetyKorea diagnostic script checks official SafetyKorea and data.go.kr candidates only. Phase 35 did not add `KR_SAFETYKOREA` because the official data.go.kr page indicates an application/login/service-key flow, the reachable structured metadata is not a recall-record payload, and SafetyKorea page access was not stable enough to justify a live source or HTML scraper. See `docs/korea-safetykorea-source-discovery.md`.
 
@@ -130,6 +138,15 @@ Australia Product Safety operational update strategy:
 - For the current 100-record spike, commit `data/raw/australia-product-safety-recalls.json`, `data/processed/australia-product-safety-recalls.json`, and `data/processed/recalls.json` together only after audit passes.
 - Block or investigate an Australia data merge if source counts change unexpectedly, wrong source ids appear, duplicate ids/slugs/source URLs appear, official source URLs are malformed, recall dates are invalid, official image URLs are malformed or off-host, raw HTML leaks into visible fields, or source filter values change.
 
+New Zealand Product Safety operational update strategy:
+
+- Explicit refresh command: `npm run update:new-zealand-product-safety`
+- The refresh command fetches the bounded Product Safety New Zealand data, writes raw New Zealand data, normalizes New Zealand records, rebuilds `data/processed/recalls.json`, and runs `npm run audit:new-zealand-product-safety`.
+- Local-only validation sequence: `npm run data:new-zealand-product-safety:normalize`, `npm run data:merge`, `npm run audit:new-zealand-product-safety`.
+- Default limit remains `NZ_PRODUCT_SAFETY_LIMIT=100`; full New Zealand backfill is a separate phase.
+- For the current 100-record spike, commit `data/raw/new-zealand-product-safety-recalls.json`, `data/processed/new-zealand-product-safety-recalls.json`, and `data/processed/recalls.json` together only after audit passes.
+- Block or investigate a New Zealand data merge if source counts change unexpectedly, wrong source ids appear, duplicate ids/slugs/source URLs appear, official source URLs are malformed, recall dates are invalid, official image URLs are malformed or off-host, raw HTML leaks into visible fields, specialist vehicle/medical records appear, or source filter values change.
+
 Normalized records use `src/data/recall-types.ts` and include `id`, `source`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard`, `remedy`, `recallDate`, `affectedUnits`, `description`, `slug`, and `raw`. FDA, France, Canada, EU, UK FSA, and Australia records can also include `classification`, `reason`, `distributionPattern`, `productQuantity`, `recallNumber`, `status`, and official image fields when available.
 
 Do not call fetch scripts during UI-only phases unless a later task explicitly asks for fresh local data.
@@ -145,7 +162,8 @@ Phase 31 Asia/Oceania source discovery:
 
 - `docs/asia-oceania-source-discovery.md` documents official source candidates for Australia, New Zealand, Japan, Korea, Singapore, Hong Kong, and Taiwan.
 - Phase 33 added Australia Product Safety as the first active Oceania source spike.
-- New Zealand, Japan, Korea, Singapore, Hong Kong, and Taiwan remain discovery candidates.
+- Phase 37 added New Zealand Product Safety as the second active Oceania source spike.
+- Japan, Korea, Singapore, Hong Kong, and Taiwan remain discovery candidates.
 - Phase 35 checked Korea SafetyKorea access and deferred `KR_SAFETYKOREA`.
 - Phase 36 prepared the SafetyKorea AuthKey/list/detail contract and fixture audit. Live activation still requires an issued SafetyKorea service ID/AuthKey and a separate Korea source activation phase.
 
@@ -158,7 +176,8 @@ Current source counts:
 - EU Safety Gate: 100
 - UK FSA Food Alerts: 100
 - Australia Product Safety: 100
-- Total: 901
+- New Zealand Product Safety: 100
+- Total: 1001
 
 Phase 10.1 UK FSA QA notes:
 
@@ -174,10 +193,10 @@ Phase 10.2 UK FSA update workflow:
 
 Phase 11 integrated source QA:
 
-- Active source ids are `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, and `AU_PRODUCT_SAFETY`.
+- Active source ids are `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, `AU_PRODUCT_SAFETY`, and `NZ_PRODUCT_SAFETY`.
 - `npm run audit:sources` verifies the integrated source registry and canonical `data/processed/recalls.json` stay aligned.
-- Current expected counts are 301 CPSC, 100 FDA/openFDA, 100 France RappelConso, 100 Canada Recalls and Safety Alerts, 100 EU Safety Gate, 100 UK FSA Food Alerts, and 100 Australia Product Safety records, for 901 total records.
-- Current static build output is around 1550 pages, and `data/processed/recalls.json` is around 6.3 MB.
+- Current expected counts are 301 CPSC, 100 FDA/openFDA, 100 France RappelConso, 100 Canada Recalls and Safety Alerts, 100 EU Safety Gate, 100 UK FSA Food Alerts, 100 Australia Product Safety, and 100 New Zealand Product Safety records, for 1001 total records.
+- Current static build output is around 1700 pages, and `data/processed/recalls.json` is around 7 MB.
 - Full backfills should measure canonical data size, detail page count, brand page count, build time, and static output size before merge.
 - Cross-source dedupe is not implemented yet; source-prefixed ids are preserved.
 
@@ -243,7 +262,7 @@ The checker renders grouped indexed-notice results with match badges, recall dat
 Phase 7 added local-only search controls on `/checker`:
 
 - keyword/product/brand/model/UPC/lot text query
-- source filter for all markets plus `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, and `UK_FSA`
+- source filter for all markets plus `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, `AU_PRODUCT_SAFETY`, and `NZ_PRODUCT_SAFETY`
 - category filter for baby/kids, battery/electronics, food/allergy, household/appliance, food, and general records
 - sort controls for best match, newest first, and oldest first
 - optional date windows for last 30 days, last 90 days, and all time

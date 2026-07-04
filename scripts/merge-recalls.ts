@@ -16,6 +16,10 @@ export const australiaProductSafetyProcessedPath = resolve(
   projectRoot,
   'data/processed/australia-product-safety-recalls.json'
 );
+export const newZealandProductSafetyProcessedPath = resolve(
+  projectRoot,
+  'data/processed/new-zealand-product-safety-recalls.json'
+);
 
 type MergeResult = ProcessedRecallFile & {
   countsBySource: Record<RecallSource, number>;
@@ -82,7 +86,8 @@ function countBySource(records: NormalizedRecall[]): Record<RecallSource, number
     CA_RECALLS: records.filter((record) => record.source === 'CA_RECALLS').length,
     EU_SAFETY_GATE: records.filter((record) => record.source === 'EU_SAFETY_GATE').length,
     UK_FSA: records.filter((record) => record.source === 'UK_FSA').length,
-    AU_PRODUCT_SAFETY: records.filter((record) => record.source === 'AU_PRODUCT_SAFETY').length
+    AU_PRODUCT_SAFETY: records.filter((record) => record.source === 'AU_PRODUCT_SAFETY').length,
+    NZ_PRODUCT_SAFETY: records.filter((record) => record.source === 'NZ_PRODUCT_SAFETY').length
   };
 }
 
@@ -95,7 +100,8 @@ export async function mergeProcessedRecalls(): Promise<MergeResult> {
     canadaFile,
     euSafetyGateFile,
     ukFsaFile,
-    australiaProductSafetyFile
+    australiaProductSafetyFile,
+    newZealandProductSafetyFile
   ] = await Promise.all([
     readProcessedFile(canonicalProcessedPath),
     readProcessedFile(cpscProcessedPath),
@@ -104,7 +110,8 @@ export async function mergeProcessedRecalls(): Promise<MergeResult> {
     readProcessedFile(canadaProcessedPath),
     readProcessedFile(euSafetyGateProcessedPath),
     readProcessedFile(ukFsaProcessedPath),
-    readProcessedFile(australiaProductSafetyProcessedPath)
+    readProcessedFile(australiaProductSafetyProcessedPath),
+    readProcessedFile(newZealandProductSafetyProcessedPath)
   ]);
   const cpscRecords = sourceRecords(cpscFile, 'CPSC').length
     ? sourceRecords(cpscFile, 'CPSC')
@@ -115,6 +122,7 @@ export async function mergeProcessedRecalls(): Promise<MergeResult> {
   const euSafetyGateRecords = sourceRecords(euSafetyGateFile, 'EU_SAFETY_GATE');
   const ukFsaRecords = sourceRecords(ukFsaFile, 'UK_FSA');
   const australiaProductSafetyRecords = sourceRecords(australiaProductSafetyFile, 'AU_PRODUCT_SAFETY');
+  const newZealandProductSafetyRecords = sourceRecords(newZealandProductSafetyFile, 'NZ_PRODUCT_SAFETY');
   const records = mergeRecords([
     ...cpscRecords,
     ...fdaRecords,
@@ -122,7 +130,8 @@ export async function mergeProcessedRecalls(): Promise<MergeResult> {
     ...canadaRecords,
     ...euSafetyGateRecords,
     ...ukFsaRecords,
-    ...australiaProductSafetyRecords
+    ...australiaProductSafetyRecords,
+    ...newZealandProductSafetyRecords
   ]);
 
   if (records.length === 0) {

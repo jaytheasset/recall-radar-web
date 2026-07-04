@@ -9,6 +9,7 @@ Recall Radar includes a bounded Australia Product Safety source spike:
 - Official source page: `https://www.productsafety.gov.au/recalls`
 - Current count: 100 indexed notices
 - Canonical total after Phase 33: 901 records
+- Current canonical total after Phase 37: 1001 records
 
 This is not a full Australia backfill and does not imply complete Australia recall coverage.
 
@@ -109,7 +110,7 @@ npm run audit:australia-product-safety
 The Australia audit verifies:
 
 - source count is exactly 100
-- canonical total is exactly 901
+- canonical total is exactly 1001
 - existing source counts remain unchanged
 - source filter values remain unchanged
 - source id is `AU_PRODUCT_SAFETY`

@@ -40,6 +40,7 @@ type SourceCounts = {
   EU_SAFETY_GATE: number;
   UK_FSA: number;
   AU_PRODUCT_SAFETY: number;
+  NZ_PRODUCT_SAFETY: number;
 };
 
 function normalize(value: string): string {
@@ -164,7 +165,8 @@ async function readCanonicalCounts(): Promise<SourceCounts> {
     CA_RECALLS: records.filter((record) => record.source === 'CA_RECALLS').length,
     EU_SAFETY_GATE: records.filter((record) => record.source === 'EU_SAFETY_GATE').length,
     UK_FSA: records.filter((record) => record.source === 'UK_FSA').length,
-    AU_PRODUCT_SAFETY: records.filter((record) => record.source === 'AU_PRODUCT_SAFETY').length
+    AU_PRODUCT_SAFETY: records.filter((record) => record.source === 'AU_PRODUCT_SAFETY').length,
+    NZ_PRODUCT_SAFETY: records.filter((record) => record.source === 'NZ_PRODUCT_SAFETY').length
   };
 }
 
@@ -246,14 +248,15 @@ function audit(records: NormalizedRecall[]): AuditSummary {
 
 function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts): string[] {
   const expectedCounts: SourceCounts = {
-    total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 901),
+    total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 1001),
     CPSC: expectedNumber('EXPECTED_CPSC_COUNT', 301),
     FDA: expectedNumber('EXPECTED_FDA_COUNT', 100),
     FR_RAPPELCONSO: expectedNumber('EXPECTED_RAPPELCONSO_COUNT', 100),
     CA_RECALLS: expectedNumber('EXPECTED_CANADA_RECALLS_COUNT', 100),
     EU_SAFETY_GATE: expectedNumber('EXPECTED_EU_SAFETY_GATE_COUNT', 100),
     UK_FSA: expectedNumber('EXPECTED_UK_FSA_COUNT', 100),
-    AU_PRODUCT_SAFETY: expectedNumber('EXPECTED_AU_PRODUCT_SAFETY_COUNT', 100)
+    AU_PRODUCT_SAFETY: expectedNumber('EXPECTED_AU_PRODUCT_SAFETY_COUNT', 100),
+    NZ_PRODUCT_SAFETY: expectedNumber('EXPECTED_NZ_PRODUCT_SAFETY_COUNT', 100)
   };
   const blockers = [
     summary.total === 0 ? 'FR_RAPPELCONSO count is 0.' : '',
@@ -283,6 +286,9 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts): st
       : '',
     canonicalCounts.AU_PRODUCT_SAFETY !== expectedCounts.AU_PRODUCT_SAFETY
       ? `AU_PRODUCT_SAFETY count ${canonicalCounts.AU_PRODUCT_SAFETY} does not match expected ${expectedCounts.AU_PRODUCT_SAFETY}.`
+      : '',
+    canonicalCounts.NZ_PRODUCT_SAFETY !== expectedCounts.NZ_PRODUCT_SAFETY
+      ? `NZ_PRODUCT_SAFETY count ${canonicalCounts.NZ_PRODUCT_SAFETY} does not match expected ${expectedCounts.NZ_PRODUCT_SAFETY}.`
       : '',
     summary.duplicateIds.length > 0 ? `Duplicate ids found: ${summary.duplicateIds.length}.` : '',
     summary.slugCollisions.length > 0 ? `Slug collisions found: ${summary.slugCollisions.length}.` : '',
@@ -328,7 +334,8 @@ async function runAudit(): Promise<void> {
             CA_RECALLS: canonicalCounts.CA_RECALLS,
             EU_SAFETY_GATE: canonicalCounts.EU_SAFETY_GATE,
             UK_FSA: canonicalCounts.UK_FSA,
-            AU_PRODUCT_SAFETY: canonicalCounts.AU_PRODUCT_SAFETY
+            AU_PRODUCT_SAFETY: canonicalCounts.AU_PRODUCT_SAFETY,
+            NZ_PRODUCT_SAFETY: canonicalCounts.NZ_PRODUCT_SAFETY
           },
           duplicateIds: summary.duplicateIds.length,
           slugCollisions: summary.slugCollisions.length,

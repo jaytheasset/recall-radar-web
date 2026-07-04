@@ -6,7 +6,8 @@ Phase 36 prepares the SafetyKorea API contract for a future `KR_SAFETYKOREA` sou
 
 - Live source active: no
 - Korea records added: no
-- Canonical total: 901
+- Canonical total after Phase 36: 901
+- Current canonical total after Phase 37: 1001
 - Source filters changed: no
 - Prepared helper: `scripts/korea-safetykorea-api-contract.ts`
 - Fixture audit: `npm run audit:korea-safetykorea-contract`
@@ -229,4 +230,3 @@ Keep these separate:
 - Korea MFDS food recalls
 - Korea vehicle recalls
 - Korea medical, drug, or device recalls if product scope expands
-

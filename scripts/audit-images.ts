@@ -41,7 +41,8 @@ const processedFiles = [
   'data/processed/rappelconso-recalls.json',
   'data/processed/canada-recalls.json',
   'data/processed/uk-fsa-alerts.json',
-  'data/processed/australia-product-safety-recalls.json'
+  'data/processed/australia-product-safety-recalls.json',
+  'data/processed/new-zealand-product-safety-recalls.json'
 ];
 
 const runtimeEnv = (process as typeof process & { env?: Record<string, string | undefined> }).env ?? {};
@@ -229,6 +230,17 @@ function sourceSpecificImageIssue(source: string, rawUrl: string): string {
     }
   }
 
+  if (source === 'NZ_PRODUCT_SAFETY') {
+    try {
+      const url = new URL(rawUrl);
+      return url.hostname === 'www.productsafety.govt.nz' && /^\/assets\/uploads\//i.test(url.pathname)
+        ? ''
+        : 'non-official-new-zealand-image-url';
+    } catch {
+      return 'non-official-new-zealand-image-url';
+    }
+  }
+
   return '';
 }
 
@@ -332,6 +344,8 @@ async function run(): Promise<void> {
             ? 'UK_FSA'
             : file.includes('australia-product-safety')
               ? 'AU_PRODUCT_SAFETY'
+              : file.includes('new-zealand-product-safety')
+                ? 'NZ_PRODUCT_SAFETY'
               : 'UNKNOWN';
 
     for (const record of records) {
@@ -480,6 +494,9 @@ async function run(): Promise<void> {
     }
     if (summary.source === 'AU_PRODUCT_SAFETY' && summary.officialImageUrlIssues > 0) {
       failures.push(`AU_PRODUCT_SAFETY image audit found ${summary.officialImageUrlIssues} non-official image URL issue(s).`);
+    }
+    if (summary.source === 'NZ_PRODUCT_SAFETY' && summary.officialImageUrlIssues > 0) {
+      failures.push(`NZ_PRODUCT_SAFETY image audit found ${summary.officialImageUrlIssues} non-official image URL issue(s).`);
     }
     return failures;
   });

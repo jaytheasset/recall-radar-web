@@ -11,6 +11,7 @@ Current rules:
 - The official EU Safety Gate public API endpoints are allowed only when a task asks for EU Safety Gate refreshes.
 - The official UK FSA Food Alerts API endpoints are allowed only when a task asks for UK FSA refreshes.
 - The official Product Safety Australia recalls page is allowed only when a task asks for Australia Product Safety refreshes.
+- The official Product Safety New Zealand recalls page is allowed only when a task asks for New Zealand Product Safety refreshes.
 - The official Korea SafetyKorea/data.go.kr endpoints are currently diagnostic-only through `npm run debug:korea-safetykorea-access`; do not add Korea records until official recall-record access is confirmed.
 - UI-only phases should use the existing local `data/processed/recalls.json` file and should not fetch unless a later task explicitly asks for fresh data.
 - Do not connect databases.
@@ -139,7 +140,7 @@ npm run data:merge
 npm run audit:rappelconso
 ```
 
-The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada, EU Safety Gate, and UK FSA records.
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, Australia Product Safety, and New Zealand Product Safety records.
 
 ## Canada Recalls and Safety Alerts Fetch
 
@@ -427,6 +428,81 @@ Do not increase `AU_PRODUCT_SAFETY_LIMIT` above the current bounded 100-record s
 
 The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, and Australia Product Safety records.
 
+## New Zealand Product Safety Fetch
+
+```powershell
+npm run fetch:new-zealand-product-safety
+```
+
+This uses the official Product Safety New Zealand recalls page:
+
+`https://www.productsafety.govt.nz/recalls`
+
+The JSON and RSS candidates checked during Phase 37 did not expose a usable feed. The fetch script reads official HTML listing pages with `start` pagination and then fetches official detail pages for the bounded records.
+
+Default behavior:
+
+- Requests the 100 most recent Product Safety New Zealand recall notices.
+- Fetches official detail HTML for each bounded record.
+- Saves the bounded raw response wrapper to `data/raw/new-zealand-product-safety-recalls.json`.
+- Saves normalized New Zealand records to `data/processed/new-zealand-product-safety-recalls.json`.
+- Rebuilds the merged canonical file at `data/processed/recalls.json`.
+- Adds `fetchedAt` to the raw output.
+- Refuses to overwrite processed output when the official listing returns zero records.
+- Uses official Product Safety New Zealand image URLs when official detail images are available.
+
+Optional limit:
+
+```powershell
+npm run fetch:new-zealand-product-safety -- --limit=50
+```
+
+The default New Zealand limit is 100. It can also be set with an environment variable:
+
+```powershell
+$env:NZ_PRODUCT_SAFETY_LIMIT = "100"
+npm run fetch:new-zealand-product-safety
+Remove-Item Env:NZ_PRODUCT_SAFETY_LIMIT
+```
+
+To rebuild New Zealand processed data from the saved raw file:
+
+```powershell
+npm run normalize:new-zealand-product-safety
+```
+
+To audit the current local New Zealand processed data without making network calls:
+
+```powershell
+npm run audit:new-zealand-product-safety
+```
+
+The New Zealand audit checks the 100-record source count, canonical total, source filter values, wrong source ids, duplicate ids/slugs/source URLs, official notice URL shape, invalid dates, official image URL hosts, specialist-source exclusions, required field coverage, category distribution, identifier-like text coverage, and raw HTML leakage in visible normalized fields.
+
+To run the explicit New Zealand Product Safety refresh workflow, including network fetch and local audit:
+
+```powershell
+npm run update:new-zealand-product-safety
+```
+
+`update:new-zealand-product-safety` runs `data:new-zealand-product-safety:fetch`, `data:new-zealand-product-safety:normalize`, `data:merge`, and `audit:new-zealand-product-safety` in that order. The fetch step already writes raw, processed, and canonical files; the explicit normalize and merge steps make the final files reproducible from the saved raw payload before audit.
+
+For local-only validation from the existing raw file:
+
+```powershell
+npm run data:new-zealand-product-safety:normalize
+npm run data:merge
+npm run audit:new-zealand-product-safety
+```
+
+Do not wire New Zealand fetches into `npm run check`, `npm run build`, or UI tests.
+
+For the current 100-record New Zealand spike, commit the raw New Zealand file, processed New Zealand file, and merged canonical processed file together only after the New Zealand audit passes. Any future full New Zealand backfill should use ignored chunks and source-specific audit before canonical expansion.
+
+Do not increase `NZ_PRODUCT_SAFETY_LIMIT` above the current bounded 100-record spike without a separate source expansion or backfill phase. Keep New Zealand MPI food recalls and NZTA vehicle recalls as separate future source candidates instead of mixing them into `NZ_PRODUCT_SAFETY`.
+
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, Australia Product Safety, and New Zealand Product Safety records.
+
 ## Korea SafetyKorea Access Diagnostic
 
 ```powershell
@@ -460,7 +536,7 @@ Do not add Korea fetch, normalize, live audit, merge, landing-page, or source-fi
 npm run audit:sources
 ```
 
-This is a local-only launch-readiness audit for the canonical merged file. It reads `data/processed/recalls.json`, checks the seven active source ids and expected counts, verifies the active source registry matches the canonical data, reports duplicate ids, reports sparse fields by source, and summarizes category distribution by source.
+This is a local-only launch-readiness audit for the canonical merged file. It reads `data/processed/recalls.json`, checks the eight active source ids and expected counts, verifies the active source registry matches the canonical data, reports duplicate ids, reports sparse fields by source, and summarizes category distribution by source.
 
 Expected current counts:
 
@@ -471,7 +547,8 @@ Expected current counts:
 - EU Safety Gate: 100
 - UK FSA Food Alerts: 100
 - Australia Product Safety: 100
-- Total: 901
+- New Zealand Product Safety: 100
+- Total: 1001
 
 ## Image Audit
 
@@ -499,11 +576,12 @@ This command is local-only. It runs:
 
 1. `npm run audit:sources`
 2. `npm run audit:australia-product-safety`
-3. `npm run audit:uk-fsa`
-4. `npm run audit:eu-safety-gate`
-5. `npm run audit:canada`
-6. `npm run audit:rappelconso`
-7. `npm run check`
-8. `npm run build`
+3. `npm run audit:new-zealand-product-safety`
+4. `npm run audit:uk-fsa`
+5. `npm run audit:eu-safety-gate`
+6. `npm run audit:canada`
+7. `npm run audit:rappelconso`
+8. `npm run check`
+9. `npm run build`
 
 It does not run fetch, update, or data-refresh scripts. Use it before launch, staging deployment, or final merge to `main`.

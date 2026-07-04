@@ -9,6 +9,7 @@ import {
   processedFdaRecordCount,
   processedFranceRappelConsoRecordCount,
   processedLocalRecordCount,
+  processedNewZealandProductSafetyRecordCount,
   processedUkFsaRecordCount,
   siteRecalls
 } from '../lib/recall-data';
@@ -33,7 +34,8 @@ const activeSourceCount = [
   processedCanadaRecordCount,
   processedEuSafetyGateRecordCount,
   processedUkFsaRecordCount,
-  processedAustraliaProductSafetyRecordCount
+  processedAustraliaProductSafetyRecordCount,
+  processedNewZealandProductSafetyRecordCount
 ].filter((count) => count > 0).length;
 const countLine = `${processedLocalRecordCount} recall notices from ${activeSourceCount} official sources. Coverage is expanding and remains limited to sources currently included.`;
 const productTypes = [
@@ -115,6 +117,14 @@ const sourceCardDetails = {
     description: 'Product recalls from Product Safety Australia.',
     sourceLabel: 'Product Safety Australia',
     cta: 'Browse Australia recalls'
+  },
+  '/new-zealand-product-recalls': {
+    flagSrc: '/flags/nz.svg',
+    flagAlt: 'New Zealand flag',
+    title: 'New Zealand',
+    description: 'Product recalls from Product Safety New Zealand.',
+    sourceLabel: 'Product Safety',
+    cta: 'Browse New Zealand recalls'
   }
 } as const;
 ---

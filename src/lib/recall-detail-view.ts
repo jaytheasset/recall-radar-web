@@ -638,6 +638,54 @@ function buildAustraliaProductSafetyView(recall: SiteRecall, raw: RawObject): So
   };
 }
 
+function buildNewZealandProductSafetyView(recall: SiteRecall, raw: RawObject): SourceDetailView {
+  const detail = rawObject(raw, 'detail');
+  const productIdentifiers = rawText(detail, 'productIdentifiers');
+  const productName = firstNonEmpty([productIdentifiers, rawText(detail, 'title'), rawText(raw, 'title'), ...recall.productNames], 'Product');
+  const brandName = firstNonEmpty(
+    [rawText(detail, 'supplierName'), ...recall.displayBrandNames, recall.primaryBrand],
+    'Supplier not listed'
+  );
+  const officialTitle = firstNonEmpty([rawText(detail, 'title'), rawText(raw, 'title'), recall.title], recall.title);
+  const reason = firstNonEmpty([rawText(detail, 'hazard'), recall.reason ?? '', recall.hazard], 'Hazard not listed.');
+  const action = firstNonEmpty([rawText(detail, 'action'), recall.remedy], getRecallDefaultActionFallback(recall.source));
+  const identifiers = uniqueNonEmpty(identifierDetails([officialTitle, productName, recall.description, productIdentifiers].join(' ')));
+  const categories = rawStringArray(raw, 'categories');
+  const details: DetailFact[] = [];
+
+  addFact(details, 'Product', productName);
+  addFact(details, 'Brand or company', brandName);
+  addFact(details, 'Model, SKU, barcode, batch, lot, or item details', identifiers);
+  addFact(details, 'Product identifiers', productIdentifiers);
+  addFact(details, 'Product category', categories);
+  addFact(details, 'Supplier contact', rawText(detail, 'supplierContact'));
+  addFact(details, 'Responsible agency', rawText(detail, 'responsibleAgency'));
+
+  return {
+    displayTitle: displayTitleFor(productName, officialTitle),
+    officialTitle,
+    productName,
+    brandName,
+    recallDate: formatDate(rawText(detail, 'publishedDate') || rawText(raw, 'publishedDate') || recall.recallDate),
+    recallNumber: rawText(raw, 'id') || recall.recallNumber || '',
+    imageCaptions: imageCaptions(raw, recall),
+    reason,
+    action,
+    actionDetail: action,
+    actionParagraphs: paragraphs(action),
+    description: firstNonEmpty([rawText(detail, 'metaDescription'), recall.description, productName], productName),
+    identificationDetails: details,
+    consumerContact: rawText(detail, 'supplierContact'),
+    soldAt: uniqueNonEmpty([productIdentifiers]),
+    incidents: [],
+    importer: [],
+    manufacturer: uniqueNonEmpty([rawText(detail, 'supplierName')]),
+    manufacturedIn: [],
+    units: recall.affectedUnits || recall.productQuantity || '',
+    fdaDetails: details
+  };
+}
+
 function ukFsaTypeCodes(raw: RawObject): string[] {
   return uniqueNonEmpty(
     (Array.isArray(raw.type) ? raw.type : [raw.type])
@@ -913,7 +961,9 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
               ? buildUkFsaView(recall, raw)
               : recall.source === 'AU_PRODUCT_SAFETY'
                 ? buildAustraliaProductSafetyView(recall, raw)
-                : buildCpscView(recall, raw);
+                : recall.source === 'NZ_PRODUCT_SAFETY'
+                  ? buildNewZealandProductSafetyView(recall, raw)
+                  : buildCpscView(recall, raw);
   const productIntro = sourceSpecificView.productName
     ? `This recall involves ${sourceSpecificView.productName}`
     : 'This recall involves a recalled product';

@@ -21,7 +21,8 @@ type SourceId =
   | 'CA_RECALLS'
   | 'EU_SAFETY_GATE'
   | 'UK_FSA'
-  | 'AU_PRODUCT_SAFETY';
+  | 'AU_PRODUCT_SAFETY'
+  | 'NZ_PRODUCT_SAFETY';
 
 type ScenarioResult = {
   id: string;
@@ -83,7 +84,8 @@ const EXPECTED_SOURCE_COUNTS: Record<SourceId, number> = {
   CA_RECALLS: 100,
   EU_SAFETY_GATE: 100,
   UK_FSA: 100,
-  AU_PRODUCT_SAFETY: 100
+  AU_PRODUCT_SAFETY: 100,
+  NZ_PRODUCT_SAFETY: 100
 };
 
 const SOURCE_CATEGORY_CHECKS: Array<{
@@ -140,6 +142,14 @@ const SOURCE_CATEGORY_CHECKS: Array<{
     sources: ['AU_PRODUCT_SAFETY'],
     category: 'battery-electronics',
     query: 'button battery',
+    minMatches: 1
+  },
+  {
+    id: 'new-zealand-product-safety-toy',
+    label: 'New Zealand Product Safety toy search',
+    sources: ['NZ_PRODUCT_SAFETY'],
+    category: 'baby-kids',
+    query: 'toy',
     minMatches: 1
   }
 ];
@@ -386,7 +396,23 @@ function runScenario(recordPool: SiteRecall[], scenario: (typeof MULTILINGUAL_SE
   };
 }
 
+function searchableIdentifierText(record: SiteRecall): string {
+  return [record.recallNumber, record.title, ...record.productNames, record.description, record.hazard, record.remedy]
+    .filter(Boolean)
+    .join(' ');
+}
+
 function findIdentifierCandidate(records: SiteRecall[], source: SourceId): SiteRecall | undefined {
+  if (source === 'NZ_PRODUCT_SAFETY') {
+    return (
+      records.find(
+        (record) =>
+          record.source === source &&
+          /\b(?:model|sku|serial numbers?)\s*:/i.test(searchableIdentifierText(record))
+      ) ?? records.find((record) => record.source === source)
+    );
+  }
+
   return (
     records.find((record) => record.source === source && Boolean(record.recallNumber)) ??
     records.find((record) => record.source === source)
@@ -394,6 +420,13 @@ function findIdentifierCandidate(records: SiteRecall[], source: SourceId): SiteR
 }
 
 function identifierQueryFor(record: SiteRecall): string {
+  if (record.source === 'NZ_PRODUCT_SAFETY') {
+    const identifier = searchableIdentifierText(record).match(/\b(?:model|sku)\s*:\s*([A-Z0-9][A-Z0-9-]{2,})/i)?.[1];
+    if (identifier) {
+      return identifier;
+    }
+  }
+
   return record.recallNumber || record.id;
 }
 

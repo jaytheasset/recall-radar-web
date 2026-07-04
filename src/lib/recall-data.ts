@@ -373,6 +373,37 @@ function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
     return 'general-consumer-product';
   }
 
+  if (record.source === 'NZ_PRODUCT_SAFETY') {
+    const rawCategory = normalize(record.category);
+
+    if (
+      textHasAny(rawCategory, ['baby', 'child', 'children', 'toy', 'toys']) ||
+      textHasAny(text, ['baby', 'infant', 'child', 'children', 'kids', 'toy', 'toys', 'nursery', 'cot', 'pram', 'teether'])
+    ) {
+      return 'baby-kids';
+    }
+
+    if (
+      textHasAny(rawCategory, ['appliances', 'electronics', 'electrical']) ||
+      textHasAny(text, ['battery', 'batteries', 'button battery', 'charger', 'charging', 'lithium', 'electrical', 'electronics', 'smoke alarm'])
+    ) {
+      return 'battery-electronics';
+    }
+
+    if (textHasAny(text, ['food', 'allergen', 'allergy', 'undeclared', 'milk', 'egg', 'wheat', 'peanut', 'sesame'])) {
+      return 'food-allergy';
+    }
+
+    if (
+      textHasAny(rawCategory, ['home', 'living', 'household', 'furniture']) ||
+      textHasAny(text, ['appliance', 'household', 'furniture', 'kitchen', 'home', 'night light', 'heater', 'washing machine', 'lamp'])
+    ) {
+      return 'household-appliance';
+    }
+
+    return 'general-consumer-product';
+  }
+
   if (
     textHasAny(text, [
       'baby',
@@ -479,7 +510,8 @@ function isOfficialRecallImageUrl(url: string): boolean {
     ) ||
     /^https:\/\/ec\.europa\.eu\/safety-gate-alerts\/public\/api\/notification\/(?:image|thumbnail)\//i.test(url)
     ||
-    /^https:\/\/www\.productsafety\.gov\.au\/system\/files\/(?:styles\/[^/]+\/)?(?:public|private)\//i.test(url)
+    /^https:\/\/www\.productsafety\.gov\.au\/system\/files\/(?:styles\/[^/]+\/)?(?:public|private)\//i.test(url) ||
+    /^https:\/\/www\.productsafety\.govt\.nz\/assets\/uploads\//i.test(url)
   );
 }
 
@@ -528,7 +560,8 @@ function extractRecallImages(record: NormalizedRecall): RecallImage[] {
     record.source === 'FR_RAPPELCONSO' ||
     record.source === 'CA_RECALLS' ||
     record.source === 'EU_SAFETY_GATE' ||
-    record.source === 'AU_PRODUCT_SAFETY'
+    record.source === 'AU_PRODUCT_SAFETY' ||
+    record.source === 'NZ_PRODUCT_SAFETY'
     ? uniqueImages(images)
     : [];
 }
@@ -636,6 +669,9 @@ export const processedUkFsaRecordCount = processedLocalRecalls.filter((recall) =
 export const processedAustraliaProductSafetyRecordCount = processedLocalRecalls.filter(
   (recall) => recall.source === 'AU_PRODUCT_SAFETY'
 ).length;
+export const processedNewZealandProductSafetyRecordCount = processedLocalRecalls.filter(
+  (recall) => recall.source === 'NZ_PRODUCT_SAFETY'
+).length;
 export const usingProcessedCpscData = processedCpscRecordCount > 0;
 export const usingProcessedFdaData = processedFdaRecordCount > 0;
 export const usingProcessedFranceRappelConsoData = processedFranceRappelConsoRecordCount > 0;
@@ -643,6 +679,7 @@ export const usingProcessedCanadaData = processedCanadaRecordCount > 0;
 export const usingProcessedEuSafetyGateData = processedEuSafetyGateRecordCount > 0;
 export const usingProcessedUkFsaData = processedUkFsaRecordCount > 0;
 export const usingProcessedAustraliaProductSafetyData = processedAustraliaProductSafetyRecordCount > 0;
+export const usingProcessedNewZealandProductSafetyData = processedNewZealandProductSafetyRecordCount > 0;
 export const processedActiveSourceCount = [
   usingProcessedCpscData,
   usingProcessedFdaData,
@@ -650,7 +687,8 @@ export const processedActiveSourceCount = [
   usingProcessedCanadaData,
   usingProcessedEuSafetyGateData,
   usingProcessedUkFsaData,
-  usingProcessedAustraliaProductSafetyData
+  usingProcessedAustraliaProductSafetyData,
+  usingProcessedNewZealandProductSafetyData
 ].filter(Boolean).length;
 export const dataSourceLabel = usingProcessedLocalData
   ? `${processedActiveSourceCount} official source feed${processedActiveSourceCount === 1 ? '' : 's'}`

@@ -5,7 +5,8 @@ export type SourceBackfillId =
   | 'CA_RECALLS'
   | 'EU_SAFETY_GATE'
   | 'UK_FSA'
-  | 'AU_PRODUCT_SAFETY';
+  | 'AU_PRODUCT_SAFETY'
+  | 'NZ_PRODUCT_SAFETY';
 
 export type BackfillStatus = 'ready' | 'partial' | 'needs-investigation' | 'not-applicable';
 
@@ -303,6 +304,51 @@ export const sourceBackfillRegistry: SourceBackfillRegistryEntry[] = [
       'Full Australia backfill.',
       'Date-window strategy.',
       'Australia food/vehicle specialist sources.',
+      'Cross-source dedupe.'
+    ]
+  },
+  {
+    sourceId: 'NZ_PRODUCT_SAFETY',
+    outputKey: 'new-zealand-product-safety',
+    label: 'New Zealand - Product Safety',
+    currentCount: 100,
+    rawPath: 'data/raw/new-zealand-product-safety-recalls.json',
+    processedPath: 'data/processed/new-zealand-product-safety-recalls.json',
+    existingFetchScript: 'npm run fetch:new-zealand-product-safety',
+    existingNormalizeScript: 'npm run normalize:new-zealand-product-safety',
+    existingAuditScript: 'npm run audit:new-zealand-product-safety',
+    existingUpdateScript: 'npm run update:new-zealand-product-safety',
+    backfillStatus: 'partial',
+    suggestedBackfillMode: ['latest-pagination', 'detail-refresh', 'manual-source-specific'],
+    outputDir: 'data/backfill/new-zealand-product-safety',
+    checkpointPath:
+      'data/backfill/new-zealand-product-safety/checkpoints/new-zealand-product-safety-backfill-checkpoint.json',
+    endpointOrInput: 'https://www.productsafety.govt.nz/recalls',
+    currentFetchMode:
+      'Bounded official recalled-products listing pages with start pagination, followed by official detail page extraction for the latest 100 eligible product-safety records.',
+    paginationStatus:
+      'The source listing supports start pagination in 12-record pages; full historical pagination is not enabled in canonical data.',
+    dateFilterStatus: 'Not implemented in current script; date-filter behavior should be investigated before full backfill.',
+    detailRefreshStatus: 'Implemented for the bounded latest 100 records during fetch.',
+    imageSupport: 'Current records can include official Product Safety New Zealand product image and thumbnail URLs.',
+    updateScriptBehavior: 'Fetches bounded source data, normalizes, merges canonical data, and runs the New Zealand audit.',
+    estimatedRisk: 'medium',
+    riskNotes: [
+      'No official JSON or RSS feed was confirmed; the current spike uses official HTML list/detail pages.',
+      'Vehicle/NZTA and MedSafe-style specialist records are excluded from this product-safety source.',
+      'Full source has more than a thousand records and should not be merged without selection, chunking, route-count review, and build-size review.'
+    ],
+    knownLimitations: [
+      'No full New Zealand backfill.',
+      'No specialist New Zealand food or vehicle source ingestion.',
+      'No cross-source dedupe.'
+    ],
+    recommendedNextStep:
+      'Add a dry-run New Zealand backfill planner that pages official listing results into ignored chunks before any canonical expansion.',
+    deferredWork: [
+      'Full New Zealand backfill.',
+      'Date-window strategy.',
+      'New Zealand MPI food and NZTA vehicle sources.',
       'Cross-source dedupe.'
     ]
   }

@@ -18,6 +18,7 @@ const requiredRoutes = [
   '/france-product-recalls',
   '/uk-food-recalls',
   '/australia-product-recalls',
+  '/new-zealand-product-recalls',
   '/brands/aldi',
   '/404',
   '/robots.txt',
@@ -27,7 +28,8 @@ const requiredRoutes = [
   '/recalls/9227-8712-quebec-inc-brand-and-l-erabeille-brand-pure-maple-syrup-ca-recalls-82260',
   '/recalls/abirdon-teething-toy-safety-gate-alert-eu-safety-gate-10099469',
   '/recalls/3d-trading-m-and-m-s-pipoca-popcorn-because-of-undeclared-allergens-uk-fsa-fsa-aa-20-2026',
-  '/recalls/12-lcd-writing-tablet-au-product-safety-12-lcd-writing-tablet'
+  '/recalls/12-lcd-writing-tablet-au-product-safety-12-lcd-writing-tablet',
+  '/recalls/bath-toy-squishy-dollarama-nz-product-safety-bath-toy-squishy-and-music-instrument-toy'
 ];
 
 function routeToDistPath(route: string): string {
