@@ -55,6 +55,7 @@ No source backfill chunks found; nothing to audit.
 | EU Safety Gate | Partial | latest-pagination, detail-refresh, source-specific investigation | Verbose details and historical endpoint strategy |
 | UK FSA | Partial | latest-pagination, detail-refresh, date-window | Detail payload size and pagination strategy |
 | Australia Product Safety | Partial | latest-pagination, detail-refresh, source-specific investigation | Full source size, HTML selector drift, and pagination strategy |
+| Korea SafetyKorea | Deferred | access-diagnostic-only | Official recall-record API access not confirmed without application/service-key flow |
 
 ## Recommended launch-time backfill order
 
@@ -95,6 +96,10 @@ The current script fetches a bounded list and then detail payloads for each aler
 ### Australia Product Safety
 
 The current script reads the official Product Safety Australia recalls page, uses its Drupal AJAX view for a bounded latest listing, and fetches official detail pages for each selected notice. The investigated RSS endpoint self-redirected and is not used for the current 100-record spike. Future full backfill should page into ignored chunks, audit selector stability, validate official source URLs, image hosts, duplicate source URLs, invalid dates, raw HTML leakage, and review generated route count before canonical expansion.
+
+### Korea SafetyKorea
+
+Phase 35 added a non-mutating access diagnostic only. The data.go.kr SafetyKorea metadata is official and reachable, but it indicates an application/login/service-key flow and does not expose a callable recall-record payload without credentials. SafetyKorea Open API and recall board access was not stable enough in this environment to activate a live source or HTML scraper. Keep `KR_SAFETYKOREA` out of active filters and canonical data until a future phase confirms official API/feed access or approved stable HTML selectors.
 
 ## Output directory policy
 
@@ -181,7 +186,7 @@ For planning-only or dry-run phases, rollback is usually deleting local ignored 
 
 ## Source-specific future phases
 
-- Additional Asia/Oceania source prototype after Phase 31 discovery, likely `KR_SAFETYKOREA` or another officially accessible source after access verification
+- Additional Asia/Oceania source prototype after official access verification; `KR_SAFETYKOREA` is deferred until SafetyKorea/data.go.kr recall-record access is confirmed
 - CPSC backfill pipeline
 - RappelConso backfill pipeline
 - Canada backfill pipeline

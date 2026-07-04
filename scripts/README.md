@@ -11,6 +11,7 @@ Current rules:
 - The official EU Safety Gate public API endpoints are allowed only when a task asks for EU Safety Gate refreshes.
 - The official UK FSA Food Alerts API endpoints are allowed only when a task asks for UK FSA refreshes.
 - The official Product Safety Australia recalls page is allowed only when a task asks for Australia Product Safety refreshes.
+- The official Korea SafetyKorea/data.go.kr endpoints are currently diagnostic-only through `npm run debug:korea-safetykorea-access`; do not add Korea records until official recall-record access is confirmed.
 - UI-only phases should use the existing local `data/processed/recalls.json` file and should not fetch unless a later task explicitly asks for fresh data.
 - Do not connect databases.
 - Do not write secrets.
@@ -425,6 +426,18 @@ For the current 100-record Australia spike, commit the raw Australia file, proce
 Do not increase `AU_PRODUCT_SAFETY_LIMIT` above the current bounded 100-record spike without a separate source expansion or backfill phase. Keep FSANZ food and vehicle recalls as separate future source candidates instead of mixing them into `AU_PRODUCT_SAFETY`.
 
 The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, and Australia Product Safety records.
+
+## Korea SafetyKorea Access Diagnostic
+
+```powershell
+npm run debug:korea-safetykorea-access
+```
+
+This command is non-mutating. It checks official SafetyKorea and data.go.kr candidates and prints structured JSON with access type, HTTP status, content type, response size, parse signals, pagination/detail evidence, API-key/authentication signals, and suspected feasibility.
+
+Phase 35 did not add `KR_SAFETYKOREA` as a live source. The official data.go.kr SafetyKorea metadata is reachable, but it indicates an application/login/service-key flow and the reachable structured metadata is not a recall-record payload endpoint. SafetyKorea page access was not stable enough in this environment to justify an official HTML scraper.
+
+Do not add Korea fetch, normalize, audit, merge, landing-page, or source-filter code until a future phase confirms official SafetyKorea/data.go.kr recall-record API/feed access or explicitly approves a bounded official HTML ingestion strategy. If credentials are later required, use `SAFETYKOREA_API_KEY` as an environment variable and never commit secrets.
 
 ## Integrated Source Audit
 

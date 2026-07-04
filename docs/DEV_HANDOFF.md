@@ -62,6 +62,7 @@ Commands:
 - `npm run normalize:uk-fsa` rebuilds UK FSA processed data from `data/raw/uk-fsa-alerts.json`.
 - `npm run fetch:australia-product-safety` fetches the bounded Australia Product Safety source spike.
 - `npm run normalize:australia-product-safety` rebuilds Australia processed data from `data/raw/australia-product-safety-recalls.json`.
+- `npm run debug:korea-safetykorea-access` checks official SafetyKorea/data.go.kr access without writing records or changing canonical data.
 - `npm run audit:sources` audits integrated source counts, active source ids, duplicate ids, sparse fields, and category distribution without making network calls.
 - `npm run audit:uk-fsa` audits the bounded UK FSA source spike.
 - `npm run audit:australia-product-safety` audits the bounded Australia source spike, including source ids, duplicate ids/slugs/source URLs, official URL shape, image host validity, invalid dates, raw HTML leakage, category distribution, and identifier coverage.
@@ -106,6 +107,8 @@ It fetches a bounded default of 100 recent food alerts, allergy alerts, product 
 
 The Australia Product Safety fetch script calls the official Product Safety Australia recalls page and official Drupal AJAX listing endpoint, then fetches official detail pages for the bounded records. The RSS endpoint investigated during source discovery self-redirected and is not used for the current spike. It writes only after non-empty records return, keeps the default limit at 100, and each raw file includes a `fetchedAt` timestamp. See `docs/australia-product-safety-source.md`.
 
+The Korea SafetyKorea diagnostic script checks official SafetyKorea and data.go.kr candidates only. Phase 35 did not add `KR_SAFETYKOREA` because the official data.go.kr page indicates an application/login/service-key flow, the reachable structured metadata is not a recall-record payload, and SafetyKorea page access was not stable enough to justify a live source or HTML scraper. See `docs/korea-safetykorea-source-discovery.md`.
+
 EU Safety Gate operational update strategy:
 
 - Explicit refresh command: `npm run update:eu-safety-gate`
@@ -140,7 +143,7 @@ Phase 31 Asia/Oceania source discovery:
 - `docs/asia-oceania-source-discovery.md` documents official source candidates for Australia, New Zealand, Japan, Korea, Singapore, Hong Kong, and Taiwan.
 - Phase 33 added Australia Product Safety as the first active Oceania source spike.
 - New Zealand, Japan, Korea, Singapore, Hong Kong, and Taiwan remain discovery candidates.
-- Recommended next Asia-specific candidate is `KR_SAFETYKOREA` after official API access is confirmed.
+- Phase 35 checked Korea SafetyKorea access and deferred `KR_SAFETYKOREA` until official SafetyKorea/data.go.kr recall-record API/feed access or an approved stable official HTML ingestion path is confirmed.
 
 Current source counts:
 

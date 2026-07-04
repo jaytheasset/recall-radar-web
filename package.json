@@ -20,6 +20,7 @@
     "fetch:eu-safety-gate": "node --experimental-strip-types scripts/fetch-eu-safety-gate.ts",
     "fetch:uk-fsa": "node --experimental-strip-types scripts/fetch-uk-fsa-alerts.ts",
     "fetch:australia-product-safety": "node --experimental-strip-types scripts/fetch-australia-product-safety.ts",
+    "debug:korea-safetykorea-access": "node --experimental-strip-types scripts/debug-korea-safetykorea-access.ts",
     "data:rappelconso:fetch": "npm run fetch:rappelconso",
     "data:rappelconso:normalize": "npm run normalize:rappelconso",
     "data:canada:fetch": "npm run fetch:canada",

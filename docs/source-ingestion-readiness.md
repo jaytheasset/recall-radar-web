@@ -70,6 +70,7 @@ Current package scripts:
 - `npm run normalize:uk-fsa`
 - `npm run fetch:australia-product-safety`
 - `npm run normalize:australia-product-safety`
+- `npm run debug:korea-safetykorea-access`
 - `npm run data:rappelconso:fetch`
 - `npm run data:rappelconso:normalize`
 - `npm run data:canada:fetch`
@@ -100,6 +101,7 @@ Do not run fetch scripts in UI or planning phases unless a later task explicitly
 `npm run update:eu-safety-gate` is an explicit EU Safety Gate refresh workflow that performs a bounded official Safety Gate API fetch, writes raw EU data, normalizes EU records, rebuilds the canonical merged file, and runs the EU audit; it is not part of `npm run check` or `npm run build`.
 `npm run update:uk-fsa` is an explicit UK FSA refresh workflow that performs a bounded official Food Alerts API fetch, normalizes from saved raw, rebuilds the canonical merged file, and runs the UK FSA audit; it is not part of `npm run check` or `npm run build`.
 `npm run update:australia-product-safety` is an explicit Australia Product Safety refresh workflow that performs a bounded official Product Safety Australia fetch, normalizes from saved raw, rebuilds the canonical merged file, and runs the Australia audit; it is not part of `npm run check` or `npm run build`.
+`npm run debug:korea-safetykorea-access` is a non-mutating official SafetyKorea/data.go.kr access diagnostic. It does not write Korea raw files, processed files, source filters, or canonical data.
 `npm run audit:sources` is a local-only integrated source audit that reads `data/processed/recalls.json`, checks expected source ids/counts, reports missing fields by source, and verifies the active source registry matches the canonical data.
 
 Canada update expectations for the current spike:
@@ -145,6 +147,15 @@ Australia Product Safety update expectations for the current spike:
 - Commit together for the current spike: `data/raw/australia-product-safety-recalls.json`, `data/processed/australia-product-safety-recalls.json`, and `data/processed/recalls.json`
 - Block or investigate the merge if Australia count is 0 or not 100, wrong source ids appear, duplicate ids/slugs/source URLs exist, official source URLs are malformed, recall dates are invalid, official image URLs are malformed or off-host, raw HTML/script/style leaks into visible fields, source filter values change, or total/source counts change unexpectedly.
 - Full Australia Product Safety backfill remains a separate phase.
+
+Korea SafetyKorea discovery expectations:
+
+- Phase 35 did not activate `KR_SAFETYKOREA`.
+- Official data.go.kr metadata for SafetyKorea is reachable, but it indicates an application/login/service-key flow and does not expose a callable recall-record payload without credentials.
+- SafetyKorea Open API and recall board access was not stable enough in Phase 35 to justify a live source or HTML scraper.
+- Non-mutating diagnostic command: `npm run debug:korea-safetykorea-access`
+- Documentation: `docs/korea-safetykorea-source-discovery.md`
+- Expected canonical total remains 901 until a future reviewed Korea source phase confirms official API/feed access and adds validated records.
 
 Current build/runtime size note:
 
@@ -280,7 +291,7 @@ Future candidates to evaluate as planning notes only:
 - Hong Kong CFS / EMSD
 - Taiwan TFDA / BSMI
 
-Phase 31 source discovery is documented in `docs/asia-oceania-source-discovery.md`. Phase 33 activated the bounded `AU_PRODUCT_SAFETY` spike; `KR_SAFETYKOREA` remains the strongest Asia-specific candidate after official API access is confirmed.
+Phase 31 source discovery is documented in `docs/asia-oceania-source-discovery.md`. Phase 33 activated the bounded `AU_PRODUCT_SAFETY` spike. Phase 35 checked SafetyKorea access and deferred `KR_SAFETYKOREA` because official recall-record API access was not confirmed without an application/service-key flow; see `docs/korea-safetykorea-source-discovery.md`.
 
 These future candidates are not active filters or active coverage in this phase. They should not appear in consumer-facing source filters until real data ingestion, source labels, validation, and product detail behavior are implemented.
 
