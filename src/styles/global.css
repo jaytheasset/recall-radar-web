@@ -881,6 +881,105 @@ button:disabled {
   font-size: 0.88rem;
 }
 
+.home-page .source-country-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.home-page .source-country-card {
+  display: grid;
+  gap: 0.95rem;
+  align-content: start;
+  min-height: 264px;
+  border: 0;
+  border-radius: 28px;
+  padding: 1.1rem;
+  background: var(--surface);
+  box-shadow: 0 20px 52px rgba(17, 24, 39, 0.09);
+}
+
+.home-page .source-country-card:hover {
+  box-shadow: 0 30px 76px rgba(17, 24, 39, 0.15);
+}
+
+.source-marker {
+  display: inline-grid;
+  width: 54px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 14px;
+  color: #101828;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+
+.source-marker-us {
+  background:
+    linear-gradient(180deg, rgba(180, 35, 24, 0.18) 0 16%, transparent 16% 32%, rgba(180, 35, 24, 0.18) 32% 48%, transparent 48% 64%, rgba(180, 35, 24, 0.18) 64% 80%, transparent 80%),
+    #F8FAFC;
+}
+
+.source-marker-canada {
+  background:
+    linear-gradient(90deg, rgba(180, 35, 24, 0.18) 0 26%, transparent 26% 74%, rgba(180, 35, 24, 0.18) 74%),
+    #F8FAFC;
+}
+
+.source-marker-eu {
+  background:
+    radial-gradient(circle at 28% 34%, rgba(251, 191, 36, 0.75) 0 2px, transparent 2.4px),
+    radial-gradient(circle at 50% 24%, rgba(251, 191, 36, 0.75) 0 2px, transparent 2.4px),
+    radial-gradient(circle at 72% 34%, rgba(251, 191, 36, 0.75) 0 2px, transparent 2.4px),
+    #EEF4FF;
+}
+
+.source-marker-france {
+  background:
+    linear-gradient(90deg, rgba(37, 99, 235, 0.18) 0 33%, transparent 33% 66%, rgba(180, 35, 24, 0.18) 66%),
+    #F8FAFC;
+}
+
+.source-marker-uk {
+  background:
+    linear-gradient(135deg, transparent 0 42%, rgba(37, 99, 235, 0.16) 42% 58%, transparent 58%),
+    linear-gradient(45deg, transparent 0 42%, rgba(180, 35, 24, 0.16) 42% 58%, transparent 58%),
+    #F8FAFC;
+}
+
+.home-page .source-country-card .category-card-body {
+  align-content: start;
+  gap: 0.48rem;
+}
+
+.source-card-kicker {
+  display: block;
+  overflow: hidden;
+  color: var(--source);
+  font-size: 0.72rem;
+  font-weight: 860;
+  letter-spacing: 0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-page .source-country-card p {
+  display: -webkit-box;
+  overflow: hidden;
+  min-height: 2.6em;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.home-page .source-country-card .btn-link {
+  margin-top: 0.35rem;
+  color: var(--black);
+  font-size: 0.86rem;
+}
+
 .home-watchlist-section {
   padding-bottom: 34px;
 }
