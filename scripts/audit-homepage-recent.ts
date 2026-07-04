@@ -14,7 +14,7 @@ type ProcessedRecallFile = {
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const processedPath = resolve(projectRoot, 'data/processed/recalls.json');
 const selectedCountWarningThreshold = 9;
-const sourceDominanceWarningThreshold = 4;
+const sourceDominanceWarningThreshold = 5;
 const targetCount = 12;
 
 function increment(map: Record<string, number>, key: string): void {
@@ -52,11 +52,20 @@ async function main(): Promise<void> {
   const selected = getBalancedRecentRecalls(records, { limit: targetCount });
   const sourceDistribution = distributionFor(selected, 'source');
   const categoryDistribution = distributionFor(selected, 'category');
-  const recordsWithImages = selected.filter(hasBalancedRecentImage).length;
+  const recordsWithRealImages = selected.filter(hasBalancedRecentImage).length;
+  const imageLessSelectedCount = selected.length - recordsWithRealImages;
   const warnings: string[] = [];
 
   if (selected.length < selectedCountWarningThreshold) {
     warnings.push(`selectedCount below ${selectedCountWarningThreshold}`);
+  }
+
+  if (recordsWithRealImages < selected.length) {
+    warnings.push('recordsWithRealImages below selectedCount');
+  }
+
+  if (imageLessSelectedCount > 0) {
+    warnings.push(`${imageLessSelectedCount} selected records have no real product image`);
   }
 
   for (const [source, count] of sortedEntries(sourceDistribution)) {
@@ -73,17 +82,15 @@ async function main(): Promise<void> {
     warnings.push('all selected records are from one category');
   }
 
-  if (recordsWithImages === 0 && selected.length > 0) {
-    warnings.push('no selected records have images');
-  }
-
   console.log(`selectedCount: ${selected.length}`);
+  console.log(`recordsWithRealImages: ${recordsWithRealImages}`);
+  console.log(`imageLessSelectedCount: ${imageLessSelectedCount}`);
   console.log(`sourceDistribution: ${JSON.stringify(sourceDistribution)}`);
   console.log(`categoryDistribution: ${JSON.stringify(categoryDistribution)}`);
-  console.log(`recordsWithImages: ${recordsWithImages}`);
   console.log(`selectedTitles: ${JSON.stringify(titlesFor(selected), null, 2)}`);
   console.log(`selectedSources: ${JSON.stringify(selected.map((recall) => recall.source))}`);
   console.log(`selectedCategories: ${JSON.stringify(selected.map((recall) => recall.category || 'Uncategorized'))}`);
+  console.log(`selectedImageStatus: ${JSON.stringify(selected.map((recall) => hasBalancedRecentImage(recall) ? 'real-image' : 'fallback'))}`);
   console.log(`warnings: ${JSON.stringify(warnings)}`);
   console.log(warnings.length ? 'WARN homepage recent audit completed' : 'PASS homepage recent audit completed');
 }

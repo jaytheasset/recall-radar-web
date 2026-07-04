@@ -9,13 +9,13 @@ export type BalancedRecentRecallCandidate = {
     url?: string;
     thumbnailUrl?: string;
   }>;
+  raw?: unknown;
 };
 
 type BalancedRecentOptions = {
   limit?: number;
-  firstPassSourceCap?: number;
-  fillSourceCap?: number;
-  imagePreferenceWindow?: number;
+  imageSourceCap?: number;
+  imageSoftSourceCap?: number;
 };
 
 function sortByDateDescending<T extends BalancedRecentRecallCandidate>(left: T, right: T): number {
@@ -27,21 +27,33 @@ export function hasBalancedRecentImage(recall: BalancedRecentRecallCandidate): b
   return Boolean(
     recall.primaryImageUrl ||
       recall.primaryImageThumbnailUrl ||
-      recall.images?.some((image) => image.url || image.thumbnailUrl)
+      recall.images?.some((image) => image.url || image.thumbnailUrl) ||
+      extractRawImages(recall.raw).some((image) => image.url || image.thumbnailUrl)
   );
 }
 
-function rankSourceCandidates<T extends BalancedRecentRecallCandidate>(
-  candidates: T[],
-  imagePreferenceWindow: number
-): T[] {
-  const sorted = [...candidates].sort(sortByDateDescending);
-  const recentWindow = sorted.slice(0, imagePreferenceWindow);
-  const remaining = sorted.slice(imagePreferenceWindow);
-  const withImages = recentWindow.filter(hasBalancedRecentImage);
-  const withoutImages = recentWindow.filter((recall) => !hasBalancedRecentImage(recall));
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
 
-  return [...withImages, ...withoutImages, ...remaining];
+function safeText(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function extractRawImages(raw: unknown): Array<{ url?: string; thumbnailUrl?: string }> {
+  if (!isObject(raw) || !Array.isArray(raw.Images)) {
+    return [];
+  }
+
+  return raw.Images.filter(isObject).map((image) => {
+    const url = safeText(image.url) || safeText(image.URL);
+    const thumbnailUrl = safeText(image.thumbnailUrl) || safeText(image.thumbnailURL) || safeText(image.ThumbnailURL);
+
+    return {
+      ...(url ? { url } : {}),
+      ...(thumbnailUrl ? { thumbnailUrl } : {})
+    };
+  });
 }
 
 function sourceCounts<T extends BalancedRecentRecallCandidate>(recalls: T[]): Map<string, number> {
@@ -54,6 +66,34 @@ function sourceCounts<T extends BalancedRecentRecallCandidate>(recalls: T[]): Ma
   return counts;
 }
 
+function fillFromCandidates<T extends BalancedRecentRecallCandidate>(
+  selected: T[],
+  selectedIds: Set<string>,
+  candidates: T[],
+  limit: number,
+  sourceCap?: number
+): void {
+  for (const candidate of candidates) {
+    if (selected.length >= limit) {
+      break;
+    }
+
+    if (selectedIds.has(candidate.id)) {
+      continue;
+    }
+
+    if (sourceCap !== undefined) {
+      const counts = sourceCounts(selected);
+      if ((counts.get(candidate.source) ?? 0) >= sourceCap) {
+        continue;
+      }
+    }
+
+    selected.push(candidate);
+    selectedIds.add(candidate.id);
+  }
+}
+
 export function getBalancedRecentRecalls<T extends BalancedRecentRecallCandidate>(
   recalls: T[],
   options: BalancedRecentOptions = {}
@@ -63,78 +103,18 @@ export function getBalancedRecentRecalls<T extends BalancedRecentRecallCandidate
     return [];
   }
 
-  const firstPassSourceCap = options.firstPassSourceCap ?? 2;
-  const fillSourceCap = options.fillSourceCap ?? 3;
-  const imagePreferenceWindow = options.imagePreferenceWindow ?? 8;
+  const imageSourceCap = options.imageSourceCap ?? 3;
+  const imageSoftSourceCap = options.imageSoftSourceCap ?? 5;
   const sorted = [...recalls].sort(sortByDateDescending);
-  const groupedBySource = new Map<string, T[]>();
-
-  for (const recall of sorted) {
-    const sourceGroup = groupedBySource.get(recall.source) ?? [];
-    sourceGroup.push(recall);
-    groupedBySource.set(recall.source, sourceGroup);
-  }
-
-  const sourceOrder = [...groupedBySource.keys()].sort((leftSource, rightSource) => {
-    const leftLatest = groupedBySource.get(leftSource)?.[0];
-    const rightLatest = groupedBySource.get(rightSource)?.[0];
-
-    if (!leftLatest || !rightLatest) {
-      return leftSource.localeCompare(rightSource);
-    }
-
-    return sortByDateDescending(leftLatest, rightLatest);
-  });
-  const rankedGroups = new Map(
-    [...groupedBySource.entries()].map(([source, group]) => [
-      source,
-      rankSourceCandidates(group, imagePreferenceWindow)
-    ])
-  );
+  const imageBacked = sorted.filter(hasBalancedRecentImage);
+  const imageLess = sorted.filter((recall) => !hasBalancedRecentImage(recall));
   const selected: T[] = [];
   const selectedIds = new Set<string>();
 
-  function addCandidate(candidate: T | undefined): void {
-    if (!candidate || selected.length >= limit || selectedIds.has(candidate.id)) {
-      return;
-    }
-
-    selected.push(candidate);
-    selectedIds.add(candidate.id);
-  }
-
-  for (let sourceSlot = 0; sourceSlot < firstPassSourceCap && selected.length < limit; sourceSlot += 1) {
-    for (const source of sourceOrder) {
-      addCandidate(rankedGroups.get(source)?.[sourceSlot]);
-
-      if (selected.length >= limit) {
-        break;
-      }
-    }
-  }
-
-  function fillBySourceCap(cap: number): void {
-    for (const candidate of sorted) {
-      if (selected.length >= limit) {
-        break;
-      }
-
-      const counts = sourceCounts(selected);
-      if ((counts.get(candidate.source) ?? 0) < cap) {
-        addCandidate(candidate);
-      }
-    }
-  }
-
-  fillBySourceCap(fillSourceCap);
-
-  for (const candidate of sorted) {
-    addCandidate(candidate);
-
-    if (selected.length >= limit) {
-      break;
-    }
-  }
+  fillFromCandidates(selected, selectedIds, imageBacked, limit, imageSourceCap);
+  fillFromCandidates(selected, selectedIds, imageBacked, limit, imageSoftSourceCap);
+  fillFromCandidates(selected, selectedIds, imageBacked, limit);
+  fillFromCandidates(selected, selectedIds, imageLess, limit);
 
   return selected.sort(sortByDateDescending).slice(0, limit);
 }
