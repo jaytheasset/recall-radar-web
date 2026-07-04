@@ -379,3 +379,14 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm live providers are skipped unless the matching local env key exists.
 - Confirm no canonical data files in `data/raw` or `data/processed` changed.
 - Confirm no runtime pages, filters, source ids, source counts, backend, database, translation, or source refresh scripts changed.
+
+## Recall Data Schema V2
+
+- Confirm `npm run audit:recall-data-schema-v2-readiness` passes.
+- Confirm `docs/recall-data-schema-v2.md` defines the final future normalized record shape.
+- Confirm `docs/recall-db-schema-v2.md` is planning only and does not add DB implementation.
+- Confirm `docs/phase-44-per-source-llm-classification-plan.md` plans Gemini per-source classification into ignored outputs only.
+- Confirm `src/data/recall-data-schema-v2.ts` is type-only and not wired into runtime loaders.
+- Confirm `NormalizedRecallV2` requires `classification` and does not require old `category`.
+- Confirm current canonical `data/processed/recalls.json` remains unchanged.
+- Confirm no UI category migration, route migration, source refresh, LLM call, backend, database, or translation was introduced in Phase 43.

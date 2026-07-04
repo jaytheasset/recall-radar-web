@@ -2,6 +2,8 @@
 
 Phase 41 defines a future breaking schema for Recall Radar classification. It does not migrate live records, regenerate canonical data, change source ids, change routes, or call an LLM.
 
+Phase 43 adds the future Recall Data Schema V2 plan in `docs/recall-data-schema-v2.md` and `src/data/recall-data-schema-v2.ts`. Runtime data is still not migrated; current `category` remains only as a deprecated field until a separate migration phase.
+
 ## 1. Why The Old Category Is Deprecated
 
 The current `category` string is deprecated for future data because it mixes several different concepts:

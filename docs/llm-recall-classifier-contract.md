@@ -2,6 +2,8 @@
 
 This contract defines the future offline classifier for Recall Taxonomy V2. Phase 41 does not call an LLM and does not classify live records.
 
+Phase 43 defines where this classification will live in future records: `NormalizedRecallV2.classification`. The current runtime schema and canonical processed data are not migrated in Phase 43.
+
 ## Runtime Boundary
 
 - The classifier runs offline during data generation or a dry-run audit.

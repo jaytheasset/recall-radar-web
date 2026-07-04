@@ -379,3 +379,15 @@ Phase 42 adds an offline-first dry-run classifier pipeline for Recall Taxonomy V
 The dry run reads `data/processed/recalls.json`, builds short structured classifier inputs, validates strict JSON output against `RecallClassificationV2`, compares taxonomy v2 fields to the legacy `category`, and estimates token/cost projections. It does not write canonical taxonomy fields, does not modify `data/raw` or `data/processed`, does not change UI routes or filters, and does not run source refreshes.
 
 Keep Phase 42 outputs uncommitted. If a live provider is used later, provide keys only through local environment variables and do not print or commit them.
+
+## Recall Data Schema V2
+
+Phase 43 finalizes the future V2 schema plan without runtime migration.
+
+- Schema plan: `docs/recall-data-schema-v2.md`
+- Future DB plan: `docs/recall-db-schema-v2.md`
+- Phase 44 plan: `docs/phase-44-per-source-llm-classification-plan.md`
+- Type-only draft: `src/data/recall-data-schema-v2.ts`
+- Readiness audit: `npm run audit:recall-data-schema-v2-readiness`
+
+Future `NormalizedRecallV2` records require `classification` and do not require the old `category` field. The current runtime still uses legacy category-derived fields until a separate migration phase. Phase 44 should run a bounded Gemini per-source classification test into ignored `outputs/llm-classifier/per-source/` files only.

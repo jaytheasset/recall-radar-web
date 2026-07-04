@@ -259,3 +259,11 @@ Canonical/site URL status:
 - Confirm no dry-run outputs, API keys, canonical data changes, route changes, or source-count changes are committed.
 - Confirm the known Yamaha/UMAX/Bistro vehicle-style edge case is sampled and reported.
 - Confirm any future live-provider run is reviewed separately and uses only local environment variables.
+
+## N. Recall Data Schema V2 Gate
+
+- Run `npm run audit:recall-data-schema-v2-readiness`.
+- Confirm future V2 records require classification and do not require old category.
+- Confirm `data/processed/recalls-v2.json` is not created until a separate reviewed migration phase.
+- Confirm Phase 44 per-source outputs are planned for ignored `outputs/llm-classifier/per-source/` files only.
+- Confirm runtime category/search/filter pages still use the current schema until an explicit V2 migration branch.

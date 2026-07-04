@@ -68,6 +68,7 @@
     "audit:homepage-recent": "node --experimental-strip-types scripts/audit-homepage-recent.ts",
     "audit:multilingual-search": "node --experimental-strip-types scripts/audit-multilingual-search.ts",
     "audit:recall-taxonomy-v2-design": "node --experimental-strip-types scripts/audit-recall-taxonomy-v2-design.ts",
+    "audit:recall-data-schema-v2-readiness": "node --experimental-strip-types scripts/audit-recall-data-schema-v2-readiness.ts",
     "classify:recalls:taxonomy-v2:dry-run": "node --experimental-strip-types scripts/classify-recalls-taxonomy-v2-dry-run.ts",
     "audit:llm-classifier-dry-run": "node --experimental-strip-types scripts/audit-llm-classifier-dry-run.ts",
     "audit:static-routes": "node --experimental-strip-types scripts/audit-static-routes.ts",

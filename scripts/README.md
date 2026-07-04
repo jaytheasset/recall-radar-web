@@ -783,3 +783,11 @@ npm run audit:llm-classifier-dry-run
 ```
 
 Phase 42 dry runs do not fetch, normalize, merge, backfill, edit canonical data, activate Korea, change source ids/counts, or modify runtime pages and filters. Keep generated `outputs/llm-classifier/` files uncommitted.
+
+## Recall Data Schema V2 Readiness Audit
+
+```powershell
+npm run audit:recall-data-schema-v2-readiness
+```
+
+This command is static and non-network. It validates the Phase 43 schema docs, type-only V2 schema draft, future DB planning doc, and Phase 44 per-source LLM classification plan. It does not call an LLM, fetch sources, normalize records, merge data, change canonical processed files, create a database, or modify runtime pages.

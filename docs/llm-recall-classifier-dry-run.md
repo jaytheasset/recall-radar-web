@@ -2,6 +2,8 @@
 
 Phase 42 adds an offline-first dry-run pipeline for Recall Taxonomy V2. It does not migrate canonical data, does not change UI filtering, and does not write to `data/raw` or `data/processed`.
 
+Phase 43 keeps this dry-run pipeline as a review tool and defines the future V2 persistence path. Per-source classification outputs for the next phase should go under ignored `outputs/llm-classifier/per-source/` and should not modify canonical data.
+
 ## Purpose
 
 The dry run tests whether Recall Taxonomy V2 can classify the current indexed notices into the new taxonomy shape before any migration phase. It compares generated taxonomy fields with the existing legacy `category` field and highlights suspicious mismatches for manual review.
