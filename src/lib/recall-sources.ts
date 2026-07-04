@@ -448,7 +448,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     marketLabel: 'Australia/New Zealand',
     agencyLabel: 'FSANZ',
     sourceType: 'official-api',
-    displayLabel: 'Australia/New Zealand 쨌 FSANZ',
+    displayLabel: 'Australia/New Zealand · FSANZ',
     noticeTypeLabel: 'Food recall',
     productScopeLabel: 'Food recalls published by Food Standards Australia New Zealand',
     identifierTypes: [
@@ -465,7 +465,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     supportsDistributionDetails: true,
     rawPayloadNotes:
       'FSANZ food recall records are collected from the official food recall listing pages, official recall detail pages, and the official RSS feed for supplemental latest metadata. Detail pages can include product images, recall date, date marking, problem, food safety hazard, consumer action, contact, and PDF recall notice links.',
-    officialSourceLabel: 'Source: Australia/New Zealand 쨌 FSANZ',
+    officialSourceLabel: 'Source: Australia/New Zealand · FSANZ',
     placeholderLabel: 'FSANZ food recall',
     reasonLabel: 'Reason',
     actionLabel: 'Consumer action',

@@ -201,7 +201,7 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm `npm run fetch:fsanz-food-recalls` rebuilds canonical `data/processed/recalls.json`.
 - Confirm raw FSANZ output includes `fetchedAt`.
 - Confirm FSANZ records include `source: FSANZ_FOOD_RECALLS`, official FSANZ `sourceUrl`, `title`, company/brand where available, `productNames`, `category`, `hazard` or `reason`, `recallDate`, `description`, `slug`, official FSANZ image URLs when available, and `raw`.
-- Confirm the FSANZ source label renders as `Australia/New Zealand 쨌 FSANZ`.
+- Confirm the FSANZ source label renders as `Australia/New Zealand · FSANZ`.
 - Confirm official source URLs use `https://www.foodstandards.gov.au/food-recalls/recall-alert/...`.
 - Confirm official image URLs use `https://www.foodstandards.gov.au/sites/default/files/...` only.
 - Confirm canonical records preserve existing sources and append bounded FSANZ records by stable id.
@@ -256,6 +256,9 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm page labels identify New Zealand records as New Zealand Product Safety records.
 - Confirm page labels identify Hong Kong records as Centre for Food Safety food alerts.
 - Confirm page labels identify FSANZ records as Australia/New Zealand FSANZ food recalls.
+- Confirm homepage source cards distinguish market, official source, and recall domain.
+- Confirm Australia and New Zealand homepage cards remain separate general product recall cards.
+- Confirm the FSANZ homepage card is presented as a regional food recall source and not as a merged Australia/New Zealand product recall card.
 - Confirm `/robots.txt` allows crawling.
 - Confirm sitemap generation remains deferred until a canonical deployment URL is chosen.
 - Confirm category pages show a matching local record count.

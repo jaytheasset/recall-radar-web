@@ -203,6 +203,13 @@ Phase 31 Asia/Oceania source discovery:
 - Phase 35 checked Korea SafetyKorea access and deferred `KR_SAFETYKOREA`.
 - Phase 36 prepared the SafetyKorea AuthKey/list/detail contract and fixture audit. Live activation still requires an issued SafetyKorea service ID/AuthKey and a separate Korea source activation phase.
 
+Homepage source-card guidance:
+
+- Browse-by-source cards distinguish market, official source/agency, and recall domain.
+- Australia Product Safety and New Zealand Product Safety remain separate general product recall cards.
+- FSANZ Food Recalls is a regional Australia/New Zealand food recall source card; it does not replace or merge the Australia/New Zealand general product recall sources.
+- Phase 40 changed source-card copy and layout only. It did not change routes, source ids, source counts, or canonical data.
+
 Current source counts:
 
 - CPSC: 301

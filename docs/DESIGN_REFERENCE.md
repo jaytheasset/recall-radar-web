@@ -35,6 +35,7 @@ Phase 12A is a planning-only reference for the next homepage UI pass. It uses ge
 - CPSC/FDA source labels where recall cards appear.
 - Real CPSC product images where available.
 - Exactly four category entry cards.
+- Browse-by-source cards must distinguish market, official source, and recall domain.
 - Compact browser-based watchlist CTA.
 - No claim that a product is safe.
 
@@ -120,6 +121,14 @@ Relevant pattern to adapt: a trustworthy consumer landing page, not a dashboard.
 - No product examples inside category cards.
 - This section should feel like navigation, not content marketing.
 
+### Section 5A: Source Entry Cards
+
+- Show all active source landing pages without hiding lower-volume or regional sources.
+- Each card should show source/agency, market or region, recall domain, count, and a clear browse link.
+- Australia Product Safety and New Zealand Product Safety remain separate general product recall cards.
+- FSANZ is a regional food recall source card, not a combined Australia/New Zealand general product recall page.
+- Food-specific source cards should say food recalls, food alerts, or allergy alerts without implying complete food coverage.
+
 ### Section 6: Watchlist CTA
 
 - Small white or soft-gray panel.
@@ -140,6 +149,7 @@ Relevant pattern to adapt: a trustworthy consumer landing page, not a dashboard.
 - Search must be visually dominant.
 - Product imagery must be visually important.
 - Category section must be compact.
+- Source cards must not rely on country name alone when source/domain clarity matters.
 - Footer/CTA must be minimal.
 - No dashboard stat cards.
 - No radar, scan, signal, map, monitor-room, or government-table metaphor.

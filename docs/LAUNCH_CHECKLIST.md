@@ -164,6 +164,13 @@ Verify these routes return 200:
 - `/404`
 - `/robots.txt`
 
+Homepage source cards:
+
+- Australia card says Product Safety Australia and general product recalls.
+- New Zealand card says Product Safety New Zealand and general product recalls.
+- FSANZ card says Food Standards Australia New Zealand / FSANZ Food Recalls and food recalls.
+- FSANZ is not presented as a merged Australia/New Zealand general product source.
+
 Representative detail pages:
 
 - CPSC: `/recalls/17-stories-furniture-14-drawer-dressers-tip-over-and-entrapment-hazards-cpsc-26323`
