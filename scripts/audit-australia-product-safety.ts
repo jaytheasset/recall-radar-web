@@ -17,8 +17,12 @@ type SourceCounts = Record<RecallSource, number> & {
 type AuditSummary = {
   source: 'AU_PRODUCT_SAFETY';
   total: number;
+  wrongSourceIds: AuditIssue[];
   duplicateIds: AuditIssue[];
   slugCollisions: AuditIssue[];
+  duplicateSourceUrls: AuditIssue[];
+  invalidRecallDates: AuditIssue[];
+  nonOfficialSourceUrls: AuditIssue[];
   missing: Record<string, number>;
   rawCategoryDistribution: Record<string, number>;
   siteCategoryDistribution: Record<string, number>;
@@ -29,8 +33,26 @@ type AuditSummary = {
   invalidImageUrls: AuditIssue[];
   nonOfficialImageHosts: AuditIssue[];
   duplicateImageUrls: AuditIssue[];
+  suspiciousImageCandidates: AuditIssue[];
+  recordsWithSupplierOrBrand: number;
+  recordsWithProductNames: number;
+  recordsWithHazardOrReason: number;
+  recordsWithRemedyOrAction: number;
   recordsWithModelBarcodeBatchOrLotLikeValues: number;
   recordsWithDistributionDetails: number;
+  rawHtmlLeakage: AuditIssue[];
+  sourceUrlHostDistribution: Record<string, number>;
+  imageHostDistribution: Record<string, number>;
+  sampleRecords: Array<{
+    id: string;
+    title: string;
+    sourceUrl: string;
+    recallDate: string;
+    category: string;
+    brandNames: string[];
+    productNames: string[];
+    slug: string;
+  }>;
   sampleImageRecords: Array<{
     id: string;
     title: string;
@@ -120,7 +142,16 @@ function countMissing(records: NormalizedRecall[], test: (record: NormalizedReca
 }
 
 function looksLikeOfficialNoticeUrl(value: string): boolean {
-  return /^https:\/\/www\.productsafety\.gov\.au\/search-consumer-product-recalls\/[^?#]+$/i.test(value);
+  try {
+    const url = new URL(value);
+    return (
+      url.protocol === 'https:' &&
+      url.hostname === 'www.productsafety.gov.au' &&
+      /^\/search-consumer-product-recalls\/[^/][^?#]*$/i.test(url.pathname)
+    );
+  } catch {
+    return false;
+  }
 }
 
 function isOfficialAustraliaImageUrl(value: string): boolean {
@@ -146,6 +177,58 @@ function imageUrlsFor(record: NormalizedRecall): string[] {
   }
 
   return [...new Set(urls.map((url) => url.trim()).filter(Boolean))];
+}
+
+function hostFor(value: string): string {
+  try {
+    return new URL(value).hostname;
+  } catch {
+    return '(invalid)';
+  }
+}
+
+function isValidRecallDate(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return false;
+  }
+
+  const date = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
+function textFieldsFor(record: NormalizedRecall): string {
+  return [
+    record.title,
+    record.category,
+    record.hazard,
+    record.reason ?? '',
+    record.remedy,
+    record.affectedUnits,
+    record.description,
+    record.productQuantity ?? '',
+    record.recallNumber ?? '',
+    record.status ?? '',
+    record.classification ?? '',
+    record.distributionPattern ?? '',
+    ...record.productNames,
+    ...record.brandNames
+  ].join(' ');
+}
+
+function duplicateSourceUrlIssues(records: NormalizedRecall[]): AuditIssue[] {
+  const counts = new Map<string, number>();
+  for (const record of records) {
+    counts.set(record.sourceUrl, (counts.get(record.sourceUrl) ?? 0) + 1);
+  }
+
+  return records
+    .filter((record) => (counts.get(record.sourceUrl) ?? 0) > 1)
+    .map((record) => compactIssue(record, record.sourceUrl));
+}
+
+function rawHtmlLeakageIssues(records: NormalizedRecall[]): AuditIssue[] {
+  const leakagePattern = /<script\b|<style\b|<\/?[a-z][^>]*>|&(?:lt|gt|nbsp|quot|#039|apos);/i;
+  return records.filter((record) => leakagePattern.test(textFieldsFor(record))).map((record) => compactIssue(record));
 }
 
 function invalidImageIssues(records: NormalizedRecall[]): AuditIssue[] {
@@ -186,13 +269,28 @@ function duplicateImageUrlIssues(records: NormalizedRecall[]): AuditIssue[] {
   );
 }
 
+function suspiciousImageCandidateIssues(records: NormalizedRecall[]): AuditIssue[] {
+  const suspiciousPattern =
+    /\b(?:logo|favicon|sprite|icon|social|share|tracking|analytics|header|footer|placeholder|default|avatar|banner|og-image)\b/i;
+
+  return records.flatMap((record) =>
+    (record.images ?? [])
+      .filter((image) =>
+        suspiciousPattern.test([image.url, image.thumbnailUrl ?? '', image.alt ?? '', image.caption ?? ''].join(' '))
+      )
+      .map((image) => compactIssue(record, image.url))
+  );
+}
+
 function hasIdentifierLikeValue(record: NormalizedRecall): boolean {
   const text = [record.title, record.description, record.affectedUnits, record.productQuantity ?? '', ...record.productNames].join(' ');
   return [
     /\b(?:model|item|product)\s*(?:number|no\.?|#)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/i,
+    /\b(?:SKU|serial|campaign|recall)\s*(?:number|no\.?|#)?\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/i,
     /\b(?:barcode|GTIN|UPC)\s*[:#-]?\s*[0-9][0-9 -]{5,}\b/i,
     /\b\d{8,14}\b/,
-    /\b(?:batch|lot|code)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/i
+    /\b(?:batch|lot|code)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/i,
+    /\b(?:APVMA|AICIS)\s*[:#-]?\s*[A-Z0-9][A-Z0-9./_-]{2,}\b/i
   ].some((pattern) => pattern.test(text));
 }
 
@@ -234,42 +332,73 @@ function audit(records: NormalizedRecall[]): AuditSummary {
   const slugCounts = new Map<string, number>();
   const rawCategoryDistribution: Record<string, number> = {};
   const siteCategoryDistribution: Record<string, number> = {};
+  const sourceUrlHostDistribution: Record<string, number> = {};
+  const imageHostDistribution: Record<string, number> = {};
 
   for (const record of records) {
     idCounts.set(record.id, (idCounts.get(record.id) ?? 0) + 1);
     slugCounts.set(record.slug, (slugCounts.get(record.slug) ?? 0) + 1);
     increment(rawCategoryDistribution, record.category || '(missing)');
     increment(siteCategoryDistribution, classifyAustraliaRecord(record));
+    increment(sourceUrlHostDistribution, hostFor(record.sourceUrl));
+
+    for (const url of imageUrlsFor(record)) {
+      increment(imageHostDistribution, hostFor(url));
+    }
   }
 
+  const wrongSourceIds = records
+    .filter((record) => record.source !== 'AU_PRODUCT_SAFETY')
+    .map((record) => compactIssue(record, String(record.source)));
   const duplicateIds = records
     .filter((record) => (idCounts.get(record.id) ?? 0) > 1)
     .map((record) => compactIssue(record));
   const slugCollisions = records
     .filter((record) => (slugCounts.get(record.slug) ?? 0) > 1)
     .map((record) => compactIssue(record, record.slug));
+  const duplicateSourceUrls = duplicateSourceUrlIssues(records);
+  const invalidRecallDates = records
+    .filter((record) => !isValidRecallDate(record.recallDate))
+    .map((record) => compactIssue(record, record.recallDate));
+  const nonOfficialSourceUrls = records
+    .filter((record) => !looksLikeOfficialNoticeUrl(record.sourceUrl))
+    .map((record) => compactIssue(record, record.sourceUrl));
   const recordsWithImages = records.filter((record) => (record.images?.length ?? 0) > 0);
   const invalidImageUrls = invalidImageIssues(records);
   const nonOfficialImageHosts = nonOfficialImageHostIssues(records);
   const duplicateImageUrls = duplicateImageUrlIssues(records);
+  const suspiciousImageCandidates = suspiciousImageCandidateIssues(records);
+  const rawHtmlLeakage = rawHtmlLeakageIssues(records);
+  const recordsWithSupplierOrBrand = records.filter((record) => record.brandNames.length > 0).length;
+  const recordsWithProductNames = records.filter((record) => record.productNames.length > 0).length;
+  const recordsWithHazardOrReason = records.filter((record) => Boolean(record.hazard || record.reason)).length;
+  const recordsWithRemedyOrAction = records.filter((record) => Boolean(record.remedy)).length;
   const warnings = [
     countMissing(records, (record) => record.affectedUnits.length === 0) > 0
       ? 'Product Safety Australia detail pages do not expose affected unit counts in a consistent structured field.'
       : '',
     recordsWithImages.length < Math.floor(records.length * 0.4)
       ? 'Fewer than 40% of Australia records include official product image URLs; review extraction if this changes unexpectedly.'
+      : '',
+    suspiciousImageCandidates.length > 0
+      ? `Suspicious Australia image candidate strings found: ${suspiciousImageCandidates.length}; review before accepting future refreshes.`
       : ''
   ].filter(Boolean);
 
   return {
     source: 'AU_PRODUCT_SAFETY',
     total: records.length,
+    wrongSourceIds,
     duplicateIds,
     slugCollisions,
+    duplicateSourceUrls,
+    invalidRecallDates,
+    nonOfficialSourceUrls,
     missing: {
       sourceUrl: countMissing(records, (record) => !record.sourceUrl),
       title: countMissing(records, (record) => !record.title),
       recallDate: countMissing(records, (record) => !record.recallDate),
+      category: countMissing(records, (record) => !record.category),
       productNames: countMissing(records, (record) => record.productNames.length === 0),
       brandNames: countMissing(records, (record) => record.brandNames.length === 0),
       hazardOrReason: countMissing(records, (record) => !record.hazard && !record.reason),
@@ -285,8 +414,26 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     invalidImageUrls,
     nonOfficialImageHosts,
     duplicateImageUrls,
+    suspiciousImageCandidates,
+    recordsWithSupplierOrBrand,
+    recordsWithProductNames,
+    recordsWithHazardOrReason,
+    recordsWithRemedyOrAction,
     recordsWithModelBarcodeBatchOrLotLikeValues: records.filter(hasIdentifierLikeValue).length,
     recordsWithDistributionDetails: records.filter((record) => Boolean(record.distributionPattern)).length,
+    rawHtmlLeakage,
+    sourceUrlHostDistribution,
+    imageHostDistribution,
+    sampleRecords: records.slice(0, 5).map((record) => ({
+      id: record.id,
+      title: record.title,
+      sourceUrl: record.sourceUrl,
+      recallDate: record.recallDate,
+      category: record.category,
+      brandNames: record.brandNames.slice(0, 3),
+      productNames: record.productNames.slice(0, 3),
+      slug: record.slug
+    })),
     sampleImageRecords: recordsWithImages.slice(0, 5).map((record) => ({
       id: record.id,
       title: record.title,
@@ -342,19 +489,24 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
     canonicalCounts.AU_PRODUCT_SAFETY !== expectedCounts.AU_PRODUCT_SAFETY
       ? `Canonical AU_PRODUCT_SAFETY count ${canonicalCounts.AU_PRODUCT_SAFETY} does not match expected ${expectedCounts.AU_PRODUCT_SAFETY}.`
       : '',
+    summary.wrongSourceIds.length > 0 ? `Wrong source ids found in Australia file: ${summary.wrongSourceIds.length}.` : '',
     summary.duplicateIds.length > 0 ? `Duplicate ids found: ${summary.duplicateIds.length}.` : '',
     summary.slugCollisions.length > 0 ? `Slug collisions found: ${summary.slugCollisions.length}.` : '',
+    summary.duplicateSourceUrls.length > 0 ? `Duplicate source URLs found: ${summary.duplicateSourceUrls.length}.` : '',
     summary.missing.sourceUrl > severeMissingThreshold ? `Missing source URLs found: ${summary.missing.sourceUrl}.` : '',
     summary.missing.title > severeMissingThreshold ? `Missing titles found: ${summary.missing.title}.` : '',
     summary.missing.recallDate > severeMissingThreshold ? `Missing recall dates found: ${summary.missing.recallDate}.` : '',
-    summary.recordsWithOfficialNoticeUrlShape !== summary.total
-      ? `Official Australia URL shape mismatch count: ${summary.total - summary.recordsWithOfficialNoticeUrlShape}.`
+    summary.missing.category > severeMissingThreshold ? `Missing categories found: ${summary.missing.category}.` : '',
+    summary.invalidRecallDates.length > 0 ? `Invalid Australia recall dates found: ${summary.invalidRecallDates.length}.` : '',
+    summary.nonOfficialSourceUrls.length > 0
+      ? `Non-official Australia source URLs found: ${summary.nonOfficialSourceUrls.length}.`
       : '',
     summary.recordsWithPrimaryImageUrl === 0 ? 'No Australia official product image URLs were normalized.' : '',
     summary.invalidImageUrls.length > 0 ? `Invalid Australia image URLs found: ${summary.invalidImageUrls.length}.` : '',
     summary.nonOfficialImageHosts.length > 0
       ? `Non-official Australia image URLs found: ${summary.nonOfficialImageHosts.length}.`
       : '',
+    summary.rawHtmlLeakage.length > 0 ? `Raw HTML/script/style leakage found in visible fields: ${summary.rawHtmlLeakage.length}.` : '',
     sourceFilters.join('|') !== expectedSourceFilterValues.join('|')
       ? `Source filter values changed unexpectedly: ${sourceFilters.join(', ')}.`
       : ''
@@ -385,6 +537,9 @@ async function runAudit(): Promise<void> {
           totalProcessedCount: canonicalCounts.total,
           duplicateIds: summary.duplicateIds.length,
           slugCollisions: summary.slugCollisions.length,
+          duplicateSourceUrls: summary.duplicateSourceUrls.length,
+          invalidRecallDates: summary.invalidRecallDates.length,
+          nonOfficialSourceUrls: summary.nonOfficialSourceUrls.length,
           recordsWithImages: summary.recordsWithImages,
           sourceFilterValues: sourceFilters
         },
@@ -404,11 +559,20 @@ async function runAudit(): Promise<void> {
           recordsWithPrimaryImageUrl: summary.recordsWithPrimaryImageUrl,
           recordsWithPrimaryImageThumbnailUrl: summary.recordsWithPrimaryImageThumbnailUrl,
           recordsWithOfficialNoticeUrlShape: summary.recordsWithOfficialNoticeUrlShape,
+          recordsWithSupplierOrBrand: summary.recordsWithSupplierOrBrand,
+          recordsWithProductNames: summary.recordsWithProductNames,
+          recordsWithHazardOrReason: summary.recordsWithHazardOrReason,
+          recordsWithRemedyOrAction: summary.recordsWithRemedyOrAction,
           recordsWithDistributionDetails: summary.recordsWithDistributionDetails,
           recordsWithModelBarcodeBatchOrLotLikeValues: summary.recordsWithModelBarcodeBatchOrLotLikeValues,
           invalidImageUrls: summary.invalidImageUrls.length,
           nonOfficialImageHosts: summary.nonOfficialImageHosts.length,
           duplicateImageUrls: summary.duplicateImageUrls.length,
+          suspiciousImageCandidates: summary.suspiciousImageCandidates.length,
+          rawHtmlLeakage: summary.rawHtmlLeakage.length,
+          sourceUrlHostDistribution: summary.sourceUrlHostDistribution,
+          imageHostDistribution: summary.imageHostDistribution,
+          sampleRecords: summary.sampleRecords,
           sampleImageRecords: summary.sampleImageRecords,
           sourceFilterValues: sourceFilters,
           warnings: summary.warnings

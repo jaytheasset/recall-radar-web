@@ -136,12 +136,14 @@ UK FSA update expectations for the current spike:
 Australia Product Safety update expectations for the current spike:
 
 - Default limit: `AU_PRODUCT_SAFETY_LIMIT=100`
+- Current fetch mode: official Product Safety Australia recalls page, official Drupal AJAX listing view, and official detail pages
+- The RSS endpoint investigated during source discovery currently self-redirects and is not used for this spike
 - Expected `AU_PRODUCT_SAFETY` count: 100
 - Expected canonical total: 901
 - Explicit refresh command: `npm run update:australia-product-safety`
 - Local-only validation sequence: `npm run data:australia-product-safety:normalize`, `npm run data:merge`, `npm run audit:australia-product-safety`
 - Commit together for the current spike: `data/raw/australia-product-safety-recalls.json`, `data/processed/australia-product-safety-recalls.json`, and `data/processed/recalls.json`
-- Block or investigate the merge if Australia count is 0, duplicate ids exist, slug collisions exist, suspicious category mappings exist, official image URLs are malformed, source filter values change, or total/source counts change unexpectedly.
+- Block or investigate the merge if Australia count is 0 or not 100, wrong source ids appear, duplicate ids/slugs/source URLs exist, official source URLs are malformed, recall dates are invalid, official image URLs are malformed or off-host, raw HTML/script/style leaks into visible fields, source filter values change, or total/source counts change unexpectedly.
 - Full Australia Product Safety backfill remains a separate phase.
 
 Current build/runtime size note:
@@ -175,6 +177,7 @@ The registry currently exposes only active seed sources through current coverage
 - `CA_RECALLS`
 - `EU_SAFETY_GATE`
 - `UK_FSA`
+- `AU_PRODUCT_SAFETY`
 
 Future source planning notes must not become active filters until a real source connector, normalized data, and validation path exist.
 
@@ -270,7 +273,6 @@ France RappelConso is active as the first non-U.S. source spike. Canada Recalls 
 
 Future candidates to evaluate as planning notes only:
 
-- Australia Product Safety / ACCC
 - Korea SafetyKorea / MFDS
 - New Zealand Product Safety / MPI
 - Japan Consumer Affairs Agency
@@ -278,7 +280,7 @@ Future candidates to evaluate as planning notes only:
 - Hong Kong CFS / EMSD
 - Taiwan TFDA / BSMI
 
-Phase 31 source discovery is documented in `docs/asia-oceania-source-discovery.md`. It recommends `AU_PRODUCT_SAFETY` as the lowest-risk next overall source candidate and `KR_SAFETYKOREA` as the strongest Asia-specific candidate after official API access is confirmed.
+Phase 31 source discovery is documented in `docs/asia-oceania-source-discovery.md`. Phase 33 activated the bounded `AU_PRODUCT_SAFETY` spike; `KR_SAFETYKOREA` remains the strongest Asia-specific candidate after official API access is confirmed.
 
 These future candidates are not active filters or active coverage in this phase. They should not appear in consumer-facing source filters until real data ingestion, source labels, validation, and product detail behavior are implemented.
 
@@ -286,7 +288,7 @@ These future candidates are not active filters or active coverage in this phase.
 
 This phase does not add:
 
-- Additional API ingestion beyond the current CPSC, FDA/openFDA, RappelConso, Canada, EU Safety Gate, and UK FSA scripts
+- Additional API ingestion beyond the current CPSC, FDA/openFDA, RappelConso, Canada, EU Safety Gate, UK FSA, and Australia Product Safety scripts
 - Additional countries as active coverage
 - Backend services
 - Database storage

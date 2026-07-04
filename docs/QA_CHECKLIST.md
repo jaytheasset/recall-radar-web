@@ -120,10 +120,11 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm canonical records preserve existing sources and append bounded Australia records by stable id.
 - Confirm canonical records are sorted by `recallDate` descending where possible.
 - Confirm `npm run audit:australia-product-safety` passes.
-- Confirm Australia audit reports official URL shape, image availability, category distribution, distribution detail availability, source filter values, duplicate ids, and slug collisions.
+- Confirm Australia audit reports source count, canonical count, wrong source ids, duplicate ids/slugs/source URLs, official URL shape, invalid dates, image availability, official image host validity, suspicious image candidates, category distribution, supplier/brand coverage, product coverage, hazard/reason coverage, remedy/action coverage, distribution detail availability, identifier coverage, raw HTML leakage, and source filter values.
 - Confirm `npm run update:australia-product-safety` remains an explicit refresh command and is not part of `npm run check` or `npm run build`.
 - For no-network QA phases, confirm `npm run data:australia-product-safety:normalize`, `npm run data:merge`, and `npm run audit:australia-product-safety` validate the committed raw file path without calling Product Safety Australia.
 - Confirm the default Australia Product Safety limit remains `AU_PRODUCT_SAFETY_LIMIT=100`.
+- Confirm future full Australia backfills are kept in ignored chunks and do not expand canonical data without a separate reviewed phase.
 
 ## Pages
 

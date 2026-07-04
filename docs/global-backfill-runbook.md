@@ -94,7 +94,7 @@ The current script fetches a bounded list and then detail payloads for each aler
 
 ### Australia Product Safety
 
-The current script reads the official Product Safety Australia recalls page, uses its Drupal AJAX view for a bounded latest listing, and fetches official detail pages for each selected notice. Future full backfill should page into ignored chunks, audit selector stability, and review generated route count before canonical expansion.
+The current script reads the official Product Safety Australia recalls page, uses its Drupal AJAX view for a bounded latest listing, and fetches official detail pages for each selected notice. The investigated RSS endpoint self-redirected and is not used for the current 100-record spike. Future full backfill should page into ignored chunks, audit selector stability, validate official source URLs, image hosts, duplicate source URLs, invalid dates, raw HTML leakage, and review generated route count before canonical expansion.
 
 ## Output directory policy
 

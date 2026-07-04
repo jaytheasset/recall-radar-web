@@ -60,10 +60,13 @@ Commands:
 - `npm run normalize:eu-safety-gate` rebuilds EU Safety Gate processed data from `data/raw/eu-safety-gate-recalls.json`.
 - `npm run fetch:uk-fsa` fetches the bounded UK FSA Food Alerts source spike.
 - `npm run normalize:uk-fsa` rebuilds UK FSA processed data from `data/raw/uk-fsa-alerts.json`.
+- `npm run fetch:australia-product-safety` fetches the bounded Australia Product Safety source spike.
+- `npm run normalize:australia-product-safety` rebuilds Australia processed data from `data/raw/australia-product-safety-recalls.json`.
 - `npm run audit:sources` audits integrated source counts, active source ids, duplicate ids, sparse fields, and category distribution without making network calls.
 - `npm run audit:uk-fsa` audits the bounded UK FSA source spike.
+- `npm run audit:australia-product-safety` audits the bounded Australia source spike, including source ids, duplicate ids/slugs/source URLs, official URL shape, image host validity, invalid dates, raw HTML leakage, category distribution, and identifier coverage.
 - `npm run validate:launch` runs the local-only launch validation sequence: integrated/source audits, `npm run check`, and `npm run build`.
-- `npm run build:data` currently runs the CPSC, FDA/openFDA, France RappelConso, Canada, EU Safety Gate, and UK FSA fetch pipelines.
+- `npm run build:data` currently runs the CPSC, FDA/openFDA, France RappelConso, Canada, EU Safety Gate, UK FSA, and Australia Product Safety fetch pipelines.
 
 Local output files:
 
@@ -73,12 +76,14 @@ Local output files:
 - `data/raw/canada-recalls.json`
 - `data/raw/eu-safety-gate-recalls.json`
 - `data/raw/uk-fsa-alerts.json`
+- `data/raw/australia-product-safety-recalls.json`
 - `data/processed/cpsc-recalls.json`
 - `data/processed/fda-recalls.json`
 - `data/processed/rappelconso-recalls.json`
 - `data/processed/canada-recalls.json`
 - `data/processed/eu-safety-gate-recalls.json`
 - `data/processed/uk-fsa-alerts.json`
+- `data/processed/australia-product-safety-recalls.json`
 - `data/processed/recalls.json`
 
 The fetch script calls `https://www.saferproducts.gov/RestWebServices/Recall` without an API key. It writes only after the API returns non-empty records, and each raw file includes a `fetchedAt` timestamp.
@@ -99,6 +104,8 @@ The UK FSA fetch script calls official FSA Food Alerts endpoints only:
 
 It fetches a bounded default of 100 recent food alerts, allergy alerts, product recall information notices, and food alerts for action. It writes only after non-empty records return, and each raw file includes a `fetchedAt` timestamp. See `docs/uk-fsa-source.md`.
 
+The Australia Product Safety fetch script calls the official Product Safety Australia recalls page and official Drupal AJAX listing endpoint, then fetches official detail pages for the bounded records. The RSS endpoint investigated during source discovery self-redirected and is not used for the current spike. It writes only after non-empty records return, keeps the default limit at 100, and each raw file includes a `fetchedAt` timestamp. See `docs/australia-product-safety-source.md`.
+
 EU Safety Gate operational update strategy:
 
 - Explicit refresh command: `npm run update:eu-safety-gate`
@@ -108,7 +115,16 @@ EU Safety Gate operational update strategy:
 - For the current 100-record spike, commit `data/raw/eu-safety-gate-recalls.json`, `data/processed/eu-safety-gate-recalls.json`, and `data/processed/recalls.json` together only after audit passes.
 - Block or investigate an EU data merge if source counts change unexpectedly, duplicate ids or slug collisions appear, suspicious category mappings appear, or any EU record maps to `food-allergy`.
 
-Normalized records use `src/data/recall-types.ts` and include `id`, `source`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard`, `remedy`, `recallDate`, `affectedUnits`, `description`, `slug`, and `raw`. FDA, France, Canada, and EU records can also include `classification`, `reason`, `distributionPattern`, `productQuantity`, `recallNumber`, `status`, and official image fields when available.
+Australia Product Safety operational update strategy:
+
+- Explicit refresh command: `npm run update:australia-product-safety`
+- The refresh command fetches the bounded Product Safety Australia data, writes raw Australia data, normalizes Australia records, rebuilds `data/processed/recalls.json`, and runs `npm run audit:australia-product-safety`.
+- Local-only validation sequence: `npm run data:australia-product-safety:normalize`, `npm run data:merge`, `npm run audit:australia-product-safety`.
+- Default limit remains `AU_PRODUCT_SAFETY_LIMIT=100`; full Australia backfill is a separate phase.
+- For the current 100-record spike, commit `data/raw/australia-product-safety-recalls.json`, `data/processed/australia-product-safety-recalls.json`, and `data/processed/recalls.json` together only after audit passes.
+- Block or investigate an Australia data merge if source counts change unexpectedly, wrong source ids appear, duplicate ids/slugs/source URLs appear, official source URLs are malformed, recall dates are invalid, official image URLs are malformed or off-host, raw HTML leaks into visible fields, or source filter values change.
+
+Normalized records use `src/data/recall-types.ts` and include `id`, `source`, `sourceUrl`, `title`, `brandNames`, `productNames`, `category`, `hazard`, `remedy`, `recallDate`, `affectedUnits`, `description`, `slug`, and `raw`. FDA, France, Canada, EU, UK FSA, and Australia records can also include `classification`, `reason`, `distributionPattern`, `productQuantity`, `recallNumber`, `status`, and official image fields when available.
 
 Do not call fetch scripts during UI-only phases unless a later task explicitly asks for fresh local data.
 

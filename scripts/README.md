@@ -400,6 +400,8 @@ To audit the current local Australia processed data without making network calls
 npm run audit:australia-product-safety
 ```
 
+The Australia audit checks the 100-record source count, canonical total, source filter values, wrong source ids, duplicate ids/slugs/source URLs, official notice URL shape, invalid dates, official image URL hosts, suspicious image candidates, required field coverage, category distribution, identifier-like text coverage, and raw HTML leakage in visible normalized fields.
+
 To run the explicit Australia refresh workflow, including network fetch and local audit:
 
 ```powershell
@@ -419,6 +421,8 @@ npm run audit:australia-product-safety
 Do not wire Australia fetches into `npm run check`, `npm run build`, or UI tests.
 
 For the current 100-record Australia spike, commit the raw Australia file, processed Australia file, and merged canonical processed file together only after the Australia audit passes. Any future full Australia backfill should use ignored chunks and source-specific audit before canonical expansion.
+
+Do not increase `AU_PRODUCT_SAFETY_LIMIT` above the current bounded 100-record spike without a separate source expansion or backfill phase. Keep FSANZ food and vehicle recalls as separate future source candidates instead of mixing them into `AU_PRODUCT_SAFETY`.
 
 The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, and Australia Product Safety records.
 
