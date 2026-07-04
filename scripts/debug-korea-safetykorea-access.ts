@@ -1,342 +1,214 @@
-type CandidateAccessType = 'official-api-page' | 'official-recall-board' | 'official-open-data-metadata';
-type Feasibility = 'feasible' | 'needs-api-key' | 'html-only' | 'blocked' | 'unknown';
+import { readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import {
+  SAFETYKOREA_AUTH_HEADER_NAME,
+  buildDomesticRecallDetailUrl,
+  buildDomesticRecallListUrl,
+  buildSafetyKoreaHeaders,
+  getSafetyKoreaAuthKey,
+  mapSafetyKoreaDomesticRecallDraft,
+  type SafetyKoreaDomesticRecallRaw
+} from './korea-safetykorea-api-contract.ts';
 
-type Candidate = {
-  name: string;
-  endpoint: string;
-  accessType: CandidateAccessType;
+type SafetyKoreaFixtureFile = {
+  domesticRecallListSample?: {
+    resultCode?: unknown;
+    resultMsg?: unknown;
+    resultCount?: unknown;
+    items?: unknown;
+  };
+  domesticRecallDetailSample?: {
+    resultCode?: unknown;
+    resultMsg?: unknown;
+    item?: unknown;
+  };
 };
 
-type CandidateResult = {
-  candidateName: string;
+type LiveProbe = {
   endpoint: string;
-  accessType: CandidateAccessType;
   httpStatus: number | null;
-  responseContentType: string;
-  responseSize: number;
-  parsedJsonPossible: boolean;
-  parsedXmlPossible: boolean;
-  parsedRssPossible: boolean;
+  contentType: string;
+  parsedOk: boolean;
+  resultCode: string;
+  resultMsg: string;
+  resultCount: number | null;
   sampleKeys: string[];
-  paginationEvidence: string[];
-  detailUrlEvidence: string[];
-  requiresKeyOrAuth: boolean;
-  hasSafetyKoreaRecallTerms: boolean;
-  hasRecordLikeRows: boolean;
-  error: string | null;
-  suspectedFeasibility: Feasibility;
-  notes: string[];
+  error?: string;
 };
 
-const runtimeEnv = (process as typeof process & { env?: Record<string, string | undefined> }).env ?? {};
-const timeoutMs = 15000;
+const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const fixturePath = resolve(projectRoot, 'data/samples/korea-safetykorea-domestic-recall-samples.json');
 
-const candidates: Candidate[] = [
-  {
-    name: 'SafetyKorea Open API landing page',
-    endpoint: 'https://www.safetykorea.kr/release/openapi',
-    accessType: 'official-api-page'
-  },
-  {
-    name: 'SafetyKorea recall board',
-    endpoint: 'https://www.safetykorea.kr/recall/recallBoard',
-    accessType: 'official-recall-board'
-  },
-  {
-    name: 'data.go.kr SafetyKorea open API metadata',
-    endpoint: 'https://www.data.go.kr/data/15116894/openapi.do',
-    accessType: 'official-open-data-metadata'
-  },
-  {
-    name: 'data.go.kr SafetyKorea schema.org metadata',
-    endpoint: 'https://www.data.go.kr/catalog/15116894/openapi.json',
-    accessType: 'official-open-data-metadata'
-  },
-  {
-    name: 'data.go.kr SafetyKorea DCAT metadata',
-    endpoint: 'https://www.data.go.kr/dcat/metadata/15116894',
-    accessType: 'official-open-data-metadata'
-  }
-];
-
-function compactWhitespace(value: string): string {
-  return value.replace(/\s+/g, ' ').trim();
+function asObject(value: unknown): Record<string, unknown> {
+  return value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
 }
 
-function sampleKeysFromJson(value: unknown): string[] {
-  if (!value || typeof value !== 'object') {
-    return [];
-  }
+function asString(value: unknown): string {
+  return typeof value === 'string' || typeof value === 'number' ? String(value).trim() : '';
+}
 
+function asNumber(value: unknown): number | null {
+  const parsed = Number.parseInt(asString(value), 10);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function sampleKeys(value: unknown): string[] {
   if (Array.isArray(value)) {
-    const firstObject = value.find((item): item is Record<string, unknown> => Boolean(item) && typeof item === 'object');
-    return firstObject ? Object.keys(firstObject).slice(0, 20) : [];
+    const first = value.find((item) => item && typeof item === 'object');
+    return first ? Object.keys(first as Record<string, unknown>).slice(0, 25) : [];
   }
 
-  return Object.keys(value as Record<string, unknown>).slice(0, 30);
+  return value && typeof value === 'object' ? Object.keys(value as Record<string, unknown>).slice(0, 25) : [];
 }
 
-function includesAny(text: string, terms: string[]): boolean {
-  return terms.some((term) => text.includes(term));
+function maskAuthKey(value: string): string {
+  if (value.length <= 8) {
+    return `${value.slice(0, 2)}...${value.slice(-2)}`;
+  }
+
+  return `${value.slice(0, 4)}...${value.slice(-4)}`;
 }
 
-function evidence(text: string, patterns: RegExp[]): string[] {
-  return patterns
-    .flatMap((pattern) => [...text.matchAll(pattern)].map((match) => compactWhitespace(match[0]).slice(0, 160)))
-    .filter((value, index, list) => value && list.indexOf(value) === index)
-    .slice(0, 12);
+async function readFixture(): Promise<SafetyKoreaFixtureFile> {
+  return JSON.parse(await readFile(fixturePath, 'utf8')) as SafetyKoreaFixtureFile;
 }
 
-function parseStructured(text: string, contentType: string): {
-  parsedJsonPossible: boolean;
-  parsedXmlPossible: boolean;
-  parsedRssPossible: boolean;
-  sampleKeys: string[];
+function fixtureMappingFor(fixture: SafetyKoreaFixtureFile): {
+  listSampleCount: number;
+  detailSampleImages: number;
+  draftRecordPreview: {
+    id: string;
+    source: string;
+    title: string;
+    category: string;
+    recallDate: string;
+    productNames: string[];
+    brandNames: string[];
+    images: number;
+    proposedSlug: string;
+  };
+  KoreanTextPreserved: boolean;
 } {
-  const trimmed = text.trim();
-  const looksJson = contentType.includes('json') || trimmed.startsWith('{') || trimmed.startsWith('[');
-  const looksXml = contentType.includes('xml') || trimmed.startsWith('<?xml') || /^<[a-z]/i.test(trimmed);
-
-  let parsedJsonPossible = false;
-  let sampleKeys: string[] = [];
-  if (looksJson) {
-    try {
-      const json = JSON.parse(trimmed) as unknown;
-      parsedJsonPossible = true;
-      sampleKeys = sampleKeysFromJson(json);
-    } catch {
-      parsedJsonPossible = false;
-    }
-  }
+  const listItems = Array.isArray(fixture.domesticRecallListSample?.items)
+    ? (fixture.domesticRecallListSample.items as SafetyKoreaDomesticRecallRaw[])
+    : [];
+  const detailItem = asObject(fixture.domesticRecallDetailSample?.item) as SafetyKoreaDomesticRecallRaw;
+  const draft = mapSafetyKoreaDomesticRecallDraft(detailItem);
+  const koreanText = [draft.title, draft.description, ...draft.productNames, ...draft.brandNames].join(' ');
 
   return {
-    parsedJsonPossible,
-    parsedXmlPossible: looksXml,
-    parsedRssPossible: /<rss\b|<feed\b|<item\b|<entry\b/i.test(trimmed),
-    sampleKeys
+    listSampleCount: listItems.length,
+    detailSampleImages: draft.images.length,
+    draftRecordPreview: {
+      id: draft.id,
+      source: draft.source,
+      title: draft.title,
+      category: draft.category,
+      recallDate: draft.recallDate,
+      productNames: draft.productNames,
+      brandNames: draft.brandNames,
+      images: draft.images.length,
+      proposedSlug: draft.proposedSlug
+    },
+    KoreanTextPreserved: /[가-힣]/.test(koreanText)
   };
 }
 
-function classifyFeasibility(args: {
-  candidate: Candidate;
-  status: number | null;
-  contentType: string;
-  text: string;
-  error: string | null;
-  parsedJsonPossible: boolean;
-  parsedXmlPossible: boolean;
-  parsedRssPossible: boolean;
-  hasRecordLikeRows: boolean;
-  requiresKeyOrAuth: boolean;
-}): { suspectedFeasibility: Feasibility; notes: string[] } {
-  const notes: string[] = [];
-
-  if (args.error || args.status === null || args.status >= 500 || args.status === 403 || args.status === 429) {
-    notes.push('Official endpoint did not return stable successful access from this environment.');
-    return { suspectedFeasibility: 'blocked', notes };
-  }
-
-  if (args.requiresKeyOrAuth) {
-    notes.push('Official metadata/page indicates application, login, service key, or API-key flow.');
-    return { suspectedFeasibility: 'needs-api-key', notes };
-  }
-
-  if (args.candidate.accessType === 'official-open-data-metadata') {
-    notes.push('Reachable structured response is metadata only, not a recall-record payload endpoint.');
-    return { suspectedFeasibility: 'unknown', notes };
-  }
-
-  if (args.parsedJsonPossible || args.parsedRssPossible || (args.parsedXmlPossible && !args.contentType.includes('html'))) {
-    notes.push('Structured response was reachable without a private key.');
-    return { suspectedFeasibility: 'feasible', notes };
-  }
-
-  if (args.candidate.accessType === 'official-recall-board' && args.hasRecordLikeRows) {
-    notes.push('Official HTML board appears to expose record-like content, but no stable structured feed was confirmed.');
-    return { suspectedFeasibility: 'html-only', notes };
-  }
-
-  if (args.contentType.includes('html')) {
-    notes.push('Reachable response is HTML, with no confirmed machine-readable recall payload.');
-    return { suspectedFeasibility: 'html-only', notes };
-  }
-
-  notes.push('No recall record payload or documented callable endpoint was confirmed.');
-  return { suspectedFeasibility: 'unknown', notes };
-}
-
-async function fetchCandidate(candidate: Candidate): Promise<CandidateResult> {
-  let status: number | null = null;
+async function runLiveProbe(authKey: string): Promise<LiveProbe> {
+  const endpoint = buildDomesticRecallListUrl({ conditionKey: 'all', conditionValue: '' }).toString();
+  let httpStatus: number | null = null;
   let contentType = '';
   let text = '';
-  let error: string | null = null;
 
   try {
-    const response = await fetch(candidate.endpoint, {
-      signal: AbortSignal.timeout(timeoutMs),
-      headers: {
-        accept: 'text/html,application/xhtml+xml,application/json,application/xml,text/xml,*/*',
-        'accept-language': 'ko-KR,ko;q=0.9,en;q=0.8',
-        'user-agent': 'Recall Radar Korea SafetyKorea access diagnostic'
-      }
+    const response = await fetch(endpoint, {
+      signal: AbortSignal.timeout(15000),
+      headers: buildSafetyKoreaHeaders(authKey)
     });
-
-    status = response.status;
-    contentType = response.headers.get('content-type')?.toLowerCase() ?? '';
+    httpStatus = response.status;
+    contentType = response.headers.get('content-type') ?? '';
     text = await response.text();
-  } catch (fetchError) {
-    error =
-      fetchError instanceof Error
-        ? `${fetchError.name}: ${fetchError.message}`
-        : `Unknown fetch error: ${String(fetchError)}`;
-  }
-
-  const normalizedText = compactWhitespace(text);
-  const lower = text.toLowerCase();
-  const structured = parseStructured(text, contentType);
-  const paginationEvidence = evidence(text, [
-    /(?:page|pageNo|pageIndex|currentPage|paging|pagination|다음|페이지)[^"'<>]{0,80}/gi,
-    /href=["'][^"']*(?:page|recallBoard|recall)[^"']*["']/gi
-  ]);
-  const detailUrlEvidence = evidence(text, [
-    /https?:\/\/www\.safetykorea\.kr\/[^"'<> ]*(?:recall|cert|release|product)[^"'<> ]*/gi,
-    /(?:href|action)=["'][^"']*(?:recall|cert|release|product)[^"']*["']/gi,
-    /(?:recall|cert|product)[A-Za-z0-9_/-]{0,80}(?:Seq|No|Id|Detail|View)[A-Za-z0-9_/-]{0,80}/gi
-  ]);
-  const requiresKeyOrAuth =
-    Boolean(runtimeEnv.SAFETYKOREA_API_KEY) === false &&
-    includesAny(text, [
-      'serviceKey',
-      '서비스키',
-      '인증키',
-      '활용신청',
-      'apiRequestForm',
-      '로그인',
-      '신청가능 트래픽',
-      '발급'
-    ]);
-  const hasSafetyKoreaRecallTerms = includesAny(text, [
-    '제품 안전인증 및 리콜 정보',
-    '국내리콜',
-    '해외리콜',
-    '리콜',
-    '제품안전정보센터',
-    'SafetyKorea',
-    'recall'
-  ]);
-  const hasRecordLikeRows =
-    /<tr\b[\s\S]{0,300}(?:리콜|제품명|모델명|사업자|공표일|recall)[\s\S]{0,300}<\/tr>/i.test(text) ||
-    /class=["'][^"']*(?:recall|board|list|product)[^"']*["']/i.test(text);
-
-  const feasibility = classifyFeasibility({
-    candidate,
-    status,
-    contentType,
-    text: normalizedText,
-    error,
-    ...structured,
-    hasRecordLikeRows,
-    requiresKeyOrAuth
-  });
-
-  return {
-    candidateName: candidate.name,
-    endpoint: candidate.endpoint,
-    accessType: candidate.accessType,
-    httpStatus: status,
-    responseContentType: contentType,
-    responseSize: text.length,
-    parsedJsonPossible: structured.parsedJsonPossible,
-    parsedXmlPossible: structured.parsedXmlPossible,
-    parsedRssPossible: structured.parsedRssPossible,
-    sampleKeys: structured.sampleKeys,
-    paginationEvidence,
-    detailUrlEvidence,
-    requiresKeyOrAuth,
-    hasSafetyKoreaRecallTerms,
-    hasRecordLikeRows,
-    error,
-    suspectedFeasibility: feasibility.suspectedFeasibility,
-    notes: feasibility.notes
-  };
-}
-
-function overallFeasibility(results: CandidateResult[]): {
-  liveSourceFeasible: boolean;
-  accessStatus: Feasibility;
-  reason: string;
-  nextRequirement: string;
-} {
-  const directStructured = results.find(
-    (result) =>
-      result.accessType !== 'official-open-data-metadata' &&
-      result.suspectedFeasibility === 'feasible' &&
-      result.hasSafetyKoreaRecallTerms &&
-      (result.parsedJsonPossible || result.parsedRssPossible || result.parsedXmlPossible)
-  );
-
-  if (directStructured) {
+  } catch (error) {
     return {
-      liveSourceFeasible: true,
-      accessStatus: 'feasible',
-      reason: `${directStructured.candidateName} returned a structured official response.`,
-      nextRequirement: 'Implement bounded fetch/normalize/audit using the confirmed official endpoint.'
+      endpoint,
+      httpStatus,
+      contentType,
+      parsedOk: false,
+      resultCode: '',
+      resultMsg: '',
+      resultCount: null,
+      sampleKeys: [],
+      error: error instanceof Error ? `${error.name}: ${error.message}` : String(error)
     };
   }
 
-  const needsKey = results.find((result) => result.suspectedFeasibility === 'needs-api-key');
-  if (needsKey) {
+  try {
+    const payload = JSON.parse(text) as unknown;
+    const objectPayload = asObject(payload);
+    const items = Array.isArray(objectPayload.items) ? objectPayload.items : objectPayload.items ? [objectPayload.items] : [];
+
     return {
-      liveSourceFeasible: false,
-      accessStatus: 'needs-api-key',
-      reason: `${needsKey.candidateName} indicates an application/login/service-key flow and no callable recall API endpoint was confirmed without credentials.`,
-      nextRequirement: 'Obtain official SafetyKorea/data.go.kr API access details or service key documentation before ingestion.'
+      endpoint,
+      httpStatus,
+      contentType,
+      parsedOk: true,
+      resultCode: asString(objectPayload.resultCode),
+      resultMsg: asString(objectPayload.resultMsg),
+      resultCount: asNumber(objectPayload.resultCount) ?? items.length,
+      sampleKeys: sampleKeys(items.length ? items : payload)
+    };
+  } catch (error) {
+    return {
+      endpoint,
+      httpStatus,
+      contentType,
+      parsedOk: false,
+      resultCode: '',
+      resultMsg: '',
+      resultCount: null,
+      sampleKeys: [],
+      error: error instanceof Error ? `JSON parse failed: ${error.message}` : String(error)
     };
   }
-
-  const blocked = results.find((result) => result.suspectedFeasibility === 'blocked');
-  if (blocked) {
-    return {
-      liveSourceFeasible: false,
-      accessStatus: 'blocked',
-      reason: `${blocked.candidateName} did not provide stable successful access from this environment.`,
-      nextRequirement: 'Retry official access later or verify from an approved network/API access path.'
-    };
-  }
-
-  const htmlOnly = results.find((result) => result.suspectedFeasibility === 'html-only');
-  return {
-    liveSourceFeasible: false,
-    accessStatus: htmlOnly ? 'html-only' : 'unknown',
-    reason: htmlOnly
-      ? 'Only HTML access was observed, without a stable official machine-readable recall payload.'
-      : 'No official callable recall record endpoint was confirmed.',
-    nextRequirement: 'Confirm a stable official API/feed/export or explicitly accept a bounded official HTML scraper after selector validation.'
-  };
 }
 
 async function runDiagnostic(): Promise<void> {
-  const results: CandidateResult[] = [];
-
-  for (const candidate of candidates) {
-    results.push(await fetchCandidate(candidate));
-  }
-
-  const conclusion = overallFeasibility(results);
+  const authKey = getSafetyKoreaAuthKey();
+  const fixture = await readFixture();
+  const fixtureMapping = fixtureMappingFor(fixture);
+  const listEndpoint = buildDomesticRecallListUrl({ conditionKey: 'all', conditionValue: '' }).toString();
+  const detailEndpointExample = buildDomesticRecallDetailUrl('SKR-SAMPLE-0001').toString();
+  const liveProbe = authKey ? await runLiveProbe(authKey) : undefined;
+  const feasibility = authKey
+    ? liveProbe?.parsedOk && liveProbe.httpStatus && liveProbe.httpStatus < 400
+      ? 'ready-for-live-activation-with-key'
+      : 'failed-live-probe'
+    : 'missing-auth-key';
 
   console.log(
     JSON.stringify(
       {
         source: 'KR_SAFETYKOREA',
-        checkedAt: new Date().toISOString(),
-        safetyKoreaApiKeyProvided: Boolean(runtimeEnv.SAFETYKOREA_API_KEY),
-        conclusion,
-        candidates: results
+        generatedAt: new Date().toISOString(),
+        hasAuthKey: Boolean(authKey),
+        authHeaderName: SAFETYKOREA_AUTH_HEADER_NAME,
+        ...(authKey ? { maskedAuthKey: maskAuthKey(authKey) } : {}),
+        listEndpoint,
+        detailEndpointExample,
+        requestMode: authKey ? 'live-with-auth' : 'missing-auth',
+        fixtureMapping,
+        ...(liveProbe ? { liveProbe } : {}),
+        feasibility
       },
       null,
       2
     )
   );
+
+  if (authKey && feasibility === 'failed-live-probe') {
+    process.exitCode = 1;
+  }
 }
 
 runDiagnostic().catch((error: unknown) => {

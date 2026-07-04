@@ -30,6 +30,7 @@
 - `npm run normalize:australia-product-safety`
 - `npm run audit:australia-product-safety`
 - `npm run debug:korea-safetykorea-access`
+- `npm run audit:korea-safetykorea-contract`
 - `npm run validate:launch`
 - `npm run plan:source-backfills`
 - `npm run audit:source-backfills`
@@ -42,7 +43,7 @@ For launch or staging readiness, use `docs/LAUNCH_CHECKLIST.md`. `npm run valida
 
 Global backfill planning is documented in `docs/global-backfill-runbook.md`. `npm run plan:source-backfills` must not mutate source data, and `npm run audit:source-backfills` should pass with "No source backfill chunks found; nothing to audit." when no ignored chunks exist.
 
-Asia/Oceania source discovery is documented in `docs/asia-oceania-source-discovery.md`. Australia Product Safety is now a bounded active source. Korea SafetyKorea access discovery is documented in `docs/korea-safetykorea-source-discovery.md`; `npm run debug:korea-safetykorea-access` is non-mutating and does not add coverage. New Zealand, Japan, Korea, Singapore, Hong Kong, and Taiwan must not appear as active source filters or live coverage until a future ingestion phase adds validated data and source registry entries.
+Asia/Oceania source discovery is documented in `docs/asia-oceania-source-discovery.md`. Australia Product Safety is now a bounded active source. Korea SafetyKorea access discovery is documented in `docs/korea-safetykorea-source-discovery.md`; contract prep is documented in `docs/korea-safetykorea-api-contract.md`. `npm run debug:korea-safetykorea-access` and `npm run audit:korea-safetykorea-contract` are non-mutating and do not add coverage. New Zealand, Japan, Korea, Singapore, Hong Kong, and Taiwan must not appear as active source filters or live coverage until a future ingestion phase adds validated data and source registry entries.
 
 USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt returned HTTP `403 Forbidden` / `Access Denied`, likely from FSIS-side access control, CDN/WAF filtering, User-Agent/header filtering, IP/range filtering, or temporary endpoint restrictions. No USDA data was written, no bypass should be attempted, and no USDA fetch script is active. See `docs/USDA_FSIS_DEFERRED.md`.
 
@@ -130,8 +131,11 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 ## Korea SafetyKorea Access Discovery
 
 - Confirm `npm run debug:korea-safetykorea-access` runs without writing raw Korea records, processed Korea records, or canonical data.
-- Confirm the diagnostic reports official SafetyKorea/data.go.kr candidate endpoints, status, content type, response size, parse signals, key/auth signals, and feasibility.
+- Confirm the diagnostic reports `hasAuthKey`, `authHeaderName: AuthKey`, generated list/detail endpoints, request mode, fixture mapping, and feasibility.
+- Confirm missing `SAFETYKOREA_API_KEY` exits successfully with missing-auth behavior.
+- Confirm `npm run audit:korea-safetykorea-contract` validates URL builders, AuthKey header handling, fixture mapping, Korean text preservation, category mapping, and image extraction without network access.
 - Confirm Phase 35 did not add `KR_SAFETYKOREA` to active source filters because official recall-record access was not confirmed without an application/service-key flow.
+- Confirm Phase 36 did not add `KR_SAFETYKOREA` to active source filters; it only prepared the official AuthKey/list/detail API contract.
 - Confirm no Korea landing page exists until a future live source phase adds validated records.
 - Confirm canonical total remains 901 after Korea discovery-only work.
 - Confirm `SAFETYKOREA_API_KEY` is not committed or stored in the repo.

@@ -43,6 +43,7 @@
     "audit:eu-safety-gate": "node --experimental-strip-types scripts/audit-eu-safety-gate.ts",
     "audit:uk-fsa": "node --experimental-strip-types scripts/audit-uk-fsa-alerts.ts",
     "audit:australia-product-safety": "node --experimental-strip-types scripts/audit-australia-product-safety.ts",
+    "audit:korea-safetykorea-contract": "node --experimental-strip-types scripts/audit-korea-safetykorea-contract.ts",
     "audit:images": "node --experimental-strip-types scripts/audit-images.ts",
     "audit:images:live": "cross-env IMAGE_LIVE_CHECK=1 node --experimental-strip-types scripts/audit-images.ts",
     "audit:image-performance": "node --experimental-strip-types scripts/audit-image-performance.ts",

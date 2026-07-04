@@ -433,11 +433,26 @@ The canonical `data/processed/recalls.json` file is the local site source and ca
 npm run debug:korea-safetykorea-access
 ```
 
-This command is non-mutating. It checks official SafetyKorea and data.go.kr candidates and prints structured JSON with access type, HTTP status, content type, response size, parse signals, pagination/detail evidence, API-key/authentication signals, and suspected feasibility.
+This command is non-mutating. It checks the prepared SafetyKorea contract and fixture mapping. If `SAFETYKOREA_API_KEY` is missing, it exits successfully in missing-auth mode and does not send a live SafetyKorea request. If the key is present, it sends one bounded domestic recall list probe using the official `AuthKey` header.
 
 Phase 35 did not add `KR_SAFETYKOREA` as a live source. The official data.go.kr SafetyKorea metadata is reachable, but it indicates an application/login/service-key flow and the reachable structured metadata is not a recall-record payload endpoint. SafetyKorea page access was not stable enough in this environment to justify an official HTML scraper.
 
-Do not add Korea fetch, normalize, audit, merge, landing-page, or source-filter code until a future phase confirms official SafetyKorea/data.go.kr recall-record API/feed access or explicitly approves a bounded official HTML ingestion strategy. If credentials are later required, use `SAFETYKOREA_API_KEY` as an environment variable and never commit secrets.
+Phase 36 prepared the official domestic recall API contract after the SafetyKorea interface document review:
+
+- Auth header name: `AuthKey`
+- env var: `SAFETYKOREA_API_KEY`
+- list endpoint: `http://www.safetykorea.kr/openapi/api/recall/recallList.json`
+- detail endpoint: `http://www.safetykorea.kr/openapi/api/recall/recallDetail.json`
+- helper: `scripts/korea-safetykorea-api-contract.ts`
+- fixture: `data/samples/korea-safetykorea-domestic-recall-samples.json`
+
+Run the non-network contract audit:
+
+```powershell
+npm run audit:korea-safetykorea-contract
+```
+
+Do not add Korea fetch, normalize, live audit, merge, landing-page, or source-filter code until a future phase confirms a working SafetyKorea AuthKey/service ID. If credentials are later required, use `SAFETYKOREA_API_KEY` as an environment variable and never commit secrets.
 
 ## Integrated Source Audit
 

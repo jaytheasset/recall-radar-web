@@ -1,0 +1,116 @@
+{
+  "description": "Small fixture based on the official SafetyKorea domestic recall API document field structure. This is not fetched live data and contains no service key.",
+  "domesticRecallListSample": {
+    "resultCode": "00",
+    "resultMsg": "NORMAL SERVICE",
+    "resultCount": 2,
+    "items": [
+      {
+        "recallUid": "SKR-SAMPLE-0001",
+        "recallProductName": "어린이 전동완구",
+        "recallBrandName": "샘플브랜드",
+        "recallModelName": "KID-POWER-100",
+        "recallModelCnt": "1",
+        "recallTypeName": "수거 등의 명령",
+        "recallMeans": "판매중지 및 회수",
+        "barcodeNum": "8801234567890",
+        "categoryName": "어린이제품",
+        "certNum": "CB000R000-0001",
+        "productItemName": "완구",
+        "recallCmpnyDivName": "수입업체",
+        "recallInqryTel": "02-0000-0000",
+        "recallCmpnyName": "샘플수입 주식회사",
+        "recallFrgnCmpnyName": "Sample Toy Co.",
+        "makerCntryName": "중국",
+        "makerName": "Sample Toy Factory",
+        "makingCntryName": "중국",
+        "publishDate": "20240603",
+        "publishRecallVol": "1,000개",
+        "recallActionAmt": "500개",
+        "recallStaDate": "20240610",
+        "recallEndDate": "20240910",
+        "harmDscr": "배터리함 고정 구조가 미흡하여 어린이가 단추형 전지를 삼킬 우려가 있음",
+        "accidentCaseDscr": "공식 문서 샘플용 사고사례 없음",
+        "publishActionDscr": "소비자는 사용을 중지하고 사업자에게 교환 또는 환불을 문의해야 함"
+      },
+      {
+        "recallUid": "SKR-SAMPLE-0002",
+        "recallProductName": "가정용 전기찜기",
+        "recallBrandName": "생활샘플",
+        "recallModelName": "HOME-STEAM-200",
+        "recallModelCnt": "2",
+        "recallTypeName": "자발적 리콜",
+        "recallMeans": "무상수리",
+        "barcodeNum": "8809876543210",
+        "categoryName": "전기용품",
+        "certNum": "HU000R000-0002",
+        "productItemName": "생활가전",
+        "recallCmpnyDivName": "제조업체",
+        "recallInqryTel": "031-000-0000",
+        "recallCmpnyName": "생활샘플전자",
+        "recallFrgnCmpnyName": "",
+        "makerCntryName": "대한민국",
+        "makerName": "생활샘플전자",
+        "makingCntryName": "대한민국",
+        "publishDate": "2024-06-04",
+        "publishRecallVol": "300대",
+        "recallActionAmt": "120대",
+        "recallStaDate": "2024.06.12",
+        "recallEndDate": "2024.12.12",
+        "harmDscr": "전원부 과열로 화재가 발생할 가능성이 있음",
+        "accidentCaseDscr": "공식 문서 샘플용 사고사례 없음",
+        "publishActionDscr": "사업자는 전원부 부품을 무상 교체함"
+      }
+    ]
+  },
+  "domesticRecallDetailSample": {
+    "resultCode": "00",
+    "resultMsg": "NORMAL SERVICE",
+    "item": {
+      "recallUid": "SKR-SAMPLE-0001",
+      "recallProductName": "어린이 전동완구",
+      "recallBrandName": "샘플브랜드",
+      "recallModelName": "KID-POWER-100",
+      "recallModelCnt": "1",
+      "recallTypeName": "수거 등의 명령",
+      "recallMeans": "판매중지 및 회수",
+      "barcodeNum": "8801234567890",
+      "categoryName": "어린이제품",
+      "certNum": "CB000R000-0001",
+      "productItemName": "완구",
+      "recallCmpnyDivName": "수입업체",
+      "recallInqryTel": "02-0000-0000",
+      "recallCmpnyName": "샘플수입 주식회사",
+      "recallFrgnCmpnyName": "Sample Toy Co.",
+      "makerCntryName": "중국",
+      "makerName": "Sample Toy Factory",
+      "makingCntryName": "중국",
+      "publishDate": "20240603",
+      "publishRecallVol": "1,000개",
+      "recallActionAmt": "500개",
+      "recallStaDate": "20240610",
+      "recallEndDate": "20240910",
+      "harmDscr": "배터리함 고정 구조가 미흡하여 어린이가 단추형 전지를 삼킬 우려가 있음",
+      "accidentCaseDscr": "공식 문서 샘플용 사고사례 없음",
+      "publishActionDscr": "소비자는 사용을 중지하고 사업자에게 교환 또는 환불을 문의해야 함",
+      "recallFiles": [
+        {
+          "fileDiv": "제품 전면 사진",
+          "imageUrl": "https://www.safetykorea.kr/openapi/sample/skr-sample-0001-front.jpg"
+        },
+        {
+          "fileDiv": "제품 라벨 사진",
+          "imageUrl": "https://office.safetykorea.kr/openapi/sample/skr-sample-0001-label.png"
+        },
+        {
+          "fileDiv": "logo.png",
+          "imageUrl": "https://www.safetykorea.kr/openapi/sample/logo.png"
+        }
+      ]
+    }
+  },
+  "minimalErrorSample": {
+    "resultCode": "AUTH_ERROR",
+    "resultMsg": "AuthKey header is required"
+  }
+}

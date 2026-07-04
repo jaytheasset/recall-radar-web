@@ -2,6 +2,8 @@
 
 Phase 35 checked whether Recall Radar can safely add a bounded `KR_SAFETYKOREA` source spike from official Korea SafetyKorea data. The live source was not added in this phase.
 
+Phase 36 reviewed the SafetyKorea Open API interface document and prepared the API contract helper, fixture mapping, and non-network contract audit. Live activation still awaits an issued SafetyKorea service ID/AuthKey.
+
 ## Summary
 
 - Proposed source id: `KR_SAFETYKOREA`
@@ -38,7 +40,9 @@ The data.go.kr metadata describes the official National Agency for Technology an
 npm run debug:korea-safetykorea-access
 ```
 
-The command is non-mutating. It does not write raw Korea records, does not normalize records, does not merge canonical data, and does not add source filters. It reports:
+The command is non-mutating. It does not write raw Korea records, does not normalize records, does not merge canonical data, and does not add source filters. After Phase 36, it uses the prepared API contract and fixture mapping. If `SAFETYKOREA_API_KEY` is missing, it exits successfully in missing-auth mode. If the key is present, it sends a single live list probe with the official `AuthKey` header.
+
+It reports:
 
 - candidate name and endpoint
 - access type
@@ -48,10 +52,40 @@ The command is non-mutating. It does not write raw Korea records, does not norma
 - JSON/XML/RSS parse signals
 - sample keys when structured metadata is available
 - pagination and detail URL evidence
-- API-key/login/application signals
-- suspected feasibility
+- `AuthKey` header name
+- masked AuthKey when present
+- generated list/detail endpoint examples
+- fixture mapping preview
+- live probe status only when a key is present
+- feasibility
 
-If a future phase receives official credentials or access instructions, use the environment variable name `SAFETYKOREA_API_KEY`. Do not commit secrets.
+If a future phase receives official credentials or access instructions, use the environment variable name `SAFETYKOREA_API_KEY`. The official document requires the service ID in the case-sensitive HTTP header `AuthKey`, not as a query parameter. Do not commit secrets.
+
+## Phase 36 Contract Prep
+
+Prepared files:
+
+- `scripts/korea-safetykorea-api-contract.ts`
+- `scripts/audit-korea-safetykorea-contract.ts`
+- `data/samples/korea-safetykorea-domestic-recall-samples.json`
+- `docs/korea-safetykorea-api-contract.md`
+
+The helper prepares:
+
+- domestic recall list URL builder
+- domestic recall detail URL builder
+- `AuthKey` header handling
+- date normalization
+- text sanitization
+- `recallFiles[].imageUrl` extraction
+- conservative draft category mapping
+- future-ready draft recall mapping without importing active `RecallSource`
+
+Run:
+
+```powershell
+npm run audit:korea-safetykorea-contract
+```
 
 ## Why Live Source Was Not Added
 
@@ -165,4 +199,3 @@ Keep these as separate future candidates:
 - MFDS food recall and sales-suspension data
 - Korea vehicle recall source
 - Medical, drug, or device recall sources if later product scope expands
-

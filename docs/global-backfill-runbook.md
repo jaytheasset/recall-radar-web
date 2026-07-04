@@ -55,7 +55,7 @@ No source backfill chunks found; nothing to audit.
 | EU Safety Gate | Partial | latest-pagination, detail-refresh, source-specific investigation | Verbose details and historical endpoint strategy |
 | UK FSA | Partial | latest-pagination, detail-refresh, date-window | Detail payload size and pagination strategy |
 | Australia Product Safety | Partial | latest-pagination, detail-refresh, source-specific investigation | Full source size, HTML selector drift, and pagination strategy |
-| Korea SafetyKorea | Deferred | access-diagnostic-only | Official recall-record API access not confirmed without application/service-key flow |
+| Korea SafetyKorea | Deferred | contract-prep, access-diagnostic-only | Service ID/AuthKey required before live source activation |
 
 ## Recommended launch-time backfill order
 
@@ -99,7 +99,7 @@ The current script reads the official Product Safety Australia recalls page, use
 
 ### Korea SafetyKorea
 
-Phase 35 added a non-mutating access diagnostic only. The data.go.kr SafetyKorea metadata is official and reachable, but it indicates an application/login/service-key flow and does not expose a callable recall-record payload without credentials. SafetyKorea Open API and recall board access was not stable enough in this environment to activate a live source or HTML scraper. Keep `KR_SAFETYKOREA` out of active filters and canonical data until a future phase confirms official API/feed access or approved stable HTML selectors.
+Phase 35 added a non-mutating access diagnostic only. The data.go.kr SafetyKorea metadata is official and reachable, but it indicates an application/login/service-key flow and does not expose a callable recall-record payload without credentials. Phase 36 reviewed the SafetyKorea Open API interface document and prepared the domestic recall list/detail contract, including `AuthKey` header handling, fixture mapping, image extraction, and a non-network contract audit. Keep `KR_SAFETYKOREA` out of active filters and canonical data until a future phase receives an issued SafetyKorea service ID/AuthKey and validates a bounded live probe.
 
 ## Output directory policy
 

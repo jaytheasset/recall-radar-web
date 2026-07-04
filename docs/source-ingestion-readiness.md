@@ -71,6 +71,7 @@ Current package scripts:
 - `npm run fetch:australia-product-safety`
 - `npm run normalize:australia-product-safety`
 - `npm run debug:korea-safetykorea-access`
+- `npm run audit:korea-safetykorea-contract`
 - `npm run data:rappelconso:fetch`
 - `npm run data:rappelconso:normalize`
 - `npm run data:canada:fetch`
@@ -101,7 +102,8 @@ Do not run fetch scripts in UI or planning phases unless a later task explicitly
 `npm run update:eu-safety-gate` is an explicit EU Safety Gate refresh workflow that performs a bounded official Safety Gate API fetch, writes raw EU data, normalizes EU records, rebuilds the canonical merged file, and runs the EU audit; it is not part of `npm run check` or `npm run build`.
 `npm run update:uk-fsa` is an explicit UK FSA refresh workflow that performs a bounded official Food Alerts API fetch, normalizes from saved raw, rebuilds the canonical merged file, and runs the UK FSA audit; it is not part of `npm run check` or `npm run build`.
 `npm run update:australia-product-safety` is an explicit Australia Product Safety refresh workflow that performs a bounded official Product Safety Australia fetch, normalizes from saved raw, rebuilds the canonical merged file, and runs the Australia audit; it is not part of `npm run check` or `npm run build`.
-`npm run debug:korea-safetykorea-access` is a non-mutating official SafetyKorea/data.go.kr access diagnostic. It does not write Korea raw files, processed files, source filters, or canonical data.
+`npm run debug:korea-safetykorea-access` is a non-mutating official SafetyKorea/data.go.kr access diagnostic. It does not write Korea raw files, processed files, source filters, or canonical data. After Phase 36 it uses the prepared SafetyKorea API contract and only sends a live probe when `SAFETYKOREA_API_KEY` is present.
+`npm run audit:korea-safetykorea-contract` is a non-network fixture audit for the prepared SafetyKorea AuthKey header, domestic recall list/detail URL builders, draft mapping, image extraction, category mapping, and Korean text preservation.
 `npm run audit:sources` is a local-only integrated source audit that reads `data/processed/recalls.json`, checks expected source ids/counts, reports missing fields by source, and verifies the active source registry matches the canonical data.
 
 Canada update expectations for the current spike:
@@ -151,9 +153,14 @@ Australia Product Safety update expectations for the current spike:
 Korea SafetyKorea discovery expectations:
 
 - Phase 35 did not activate `KR_SAFETYKOREA`.
+- Phase 36 prepared the SafetyKorea API contract after reviewing the official interface document, but still did not activate `KR_SAFETYKOREA`.
+- Official authentication requires the case-sensitive HTTP header `AuthKey: <issued service ID>`.
+- Local environment variable for future activation prep: `SAFETYKOREA_API_KEY`
+- Prepared contract documentation: `docs/korea-safetykorea-api-contract.md`
 - Official data.go.kr metadata for SafetyKorea is reachable, but it indicates an application/login/service-key flow and does not expose a callable recall-record payload without credentials.
 - SafetyKorea Open API and recall board access was not stable enough in Phase 35 to justify a live source or HTML scraper.
 - Non-mutating diagnostic command: `npm run debug:korea-safetykorea-access`
+- Non-network fixture audit command: `npm run audit:korea-safetykorea-contract`
 - Documentation: `docs/korea-safetykorea-source-discovery.md`
 - Expected canonical total remains 901 until a future reviewed Korea source phase confirms official API/feed access and adds validated records.
 

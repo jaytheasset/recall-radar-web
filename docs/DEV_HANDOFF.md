@@ -63,6 +63,7 @@ Commands:
 - `npm run fetch:australia-product-safety` fetches the bounded Australia Product Safety source spike.
 - `npm run normalize:australia-product-safety` rebuilds Australia processed data from `data/raw/australia-product-safety-recalls.json`.
 - `npm run debug:korea-safetykorea-access` checks official SafetyKorea/data.go.kr access without writing records or changing canonical data.
+- `npm run audit:korea-safetykorea-contract` validates the prepared SafetyKorea API contract and fixture mapping without network access.
 - `npm run audit:sources` audits integrated source counts, active source ids, duplicate ids, sparse fields, and category distribution without making network calls.
 - `npm run audit:uk-fsa` audits the bounded UK FSA source spike.
 - `npm run audit:australia-product-safety` audits the bounded Australia source spike, including source ids, duplicate ids/slugs/source URLs, official URL shape, image host validity, invalid dates, raw HTML leakage, category distribution, and identifier coverage.
@@ -109,6 +110,8 @@ The Australia Product Safety fetch script calls the official Product Safety Aust
 
 The Korea SafetyKorea diagnostic script checks official SafetyKorea and data.go.kr candidates only. Phase 35 did not add `KR_SAFETYKOREA` because the official data.go.kr page indicates an application/login/service-key flow, the reachable structured metadata is not a recall-record payload, and SafetyKorea page access was not stable enough to justify a live source or HTML scraper. See `docs/korea-safetykorea-source-discovery.md`.
 
+Phase 36 prepared the SafetyKorea domestic recall API contract after the official interface document review. SafetyKorea requires a separately issued service ID in the case-sensitive HTTP header `AuthKey`; use `SAFETYKOREA_API_KEY` locally and never commit it. Prepared docs and tests are in `docs/korea-safetykorea-api-contract.md`, `scripts/korea-safetykorea-api-contract.ts`, `scripts/audit-korea-safetykorea-contract.ts`, and `data/samples/korea-safetykorea-domestic-recall-samples.json`. This is not a live source activation.
+
 EU Safety Gate operational update strategy:
 
 - Explicit refresh command: `npm run update:eu-safety-gate`
@@ -143,7 +146,8 @@ Phase 31 Asia/Oceania source discovery:
 - `docs/asia-oceania-source-discovery.md` documents official source candidates for Australia, New Zealand, Japan, Korea, Singapore, Hong Kong, and Taiwan.
 - Phase 33 added Australia Product Safety as the first active Oceania source spike.
 - New Zealand, Japan, Korea, Singapore, Hong Kong, and Taiwan remain discovery candidates.
-- Phase 35 checked Korea SafetyKorea access and deferred `KR_SAFETYKOREA` until official SafetyKorea/data.go.kr recall-record API/feed access or an approved stable official HTML ingestion path is confirmed.
+- Phase 35 checked Korea SafetyKorea access and deferred `KR_SAFETYKOREA`.
+- Phase 36 prepared the SafetyKorea AuthKey/list/detail contract and fixture audit. Live activation still requires an issued SafetyKorea service ID/AuthKey and a separate Korea source activation phase.
 
 Current source counts:
 
