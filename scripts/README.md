@@ -791,3 +791,19 @@ npm run audit:recall-data-schema-v2-readiness
 ```
 
 This command is static and non-network. It validates the Phase 43 schema docs, type-only V2 schema draft, future DB planning doc, and Phase 44 per-source LLM classification plan. It does not call an LLM, fetch sources, normalize records, merge data, change canonical processed files, create a database, or modify runtime pages.
+
+## LLM Classifier Environment Diagnostic
+
+```powershell
+npm run debug:llm-classifier-env
+```
+
+This command loads `.env.local` and `.env` for local CLI scripts, prints masked key readiness, and confirms `outputs/llm-classifier/` is ignored. It does not call an LLM.
+
+## Gemini Classifier Probe
+
+```powershell
+npm run probe:gemini-classifier
+```
+
+This command uses one artificial recall prompt to check Gemini connectivity and strict JSON validation when `GEMINI_API_KEY` is present. It does not use live recall records, does not write canonical data, and does not run per-source classification. If the key is missing, it prints setup guidance and exits without a live request.

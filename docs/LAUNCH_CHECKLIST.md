@@ -267,3 +267,12 @@ Canonical/site URL status:
 - Confirm `data/processed/recalls-v2.json` is not created until a separate reviewed migration phase.
 - Confirm Phase 44 per-source outputs are planned for ignored `outputs/llm-classifier/per-source/` files only.
 - Confirm runtime category/search/filter pages still use the current schema until an explicit V2 migration branch.
+
+## O. LLM Environment Gate
+
+- Copy `.env.example` to `.env.local` only on local machines.
+- Run `npm run debug:llm-classifier-env`.
+- Run `npm run probe:gemini-classifier`.
+- Confirm API keys are masked in logs and never committed.
+- Confirm `.env.local`, `.env.*.local`, and `outputs/llm-classifier/` are ignored.
+- Do not run full per-source classification during environment setup.

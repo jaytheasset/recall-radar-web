@@ -390,3 +390,13 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm `NormalizedRecallV2` requires `classification` and does not require old `category`.
 - Confirm current canonical `data/processed/recalls.json` remains unchanged.
 - Confirm no UI category migration, route migration, source refresh, LLM call, backend, database, or translation was introduced in Phase 43.
+
+## LLM Environment Setup
+
+- Confirm `.env.example` exists and contains no real keys.
+- Confirm `.env.local` and `.env.*.local` are ignored.
+- Confirm `npm run debug:llm-classifier-env` prints masked key status only.
+- Confirm `npm run probe:gemini-classifier` skips clearly when `GEMINI_API_KEY` is missing.
+- If `GEMINI_API_KEY` is present, confirm the probe validates one artificial recall response.
+- Confirm generated outputs under `outputs/llm-classifier/` are ignored and not committed.
+- Confirm no full per-source classification, canonical data migration, UI migration, source refresh, backend, database, or translation happened in Phase 44A.

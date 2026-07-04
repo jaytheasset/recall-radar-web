@@ -11,6 +11,7 @@ import {
   type RecallClassifierInput
 } from './build-recall-classifier-input.ts';
 import { buildRecallClassifierPrompt, RECALL_CLASSIFIER_PROMPT_VERSION } from './llm-recall-classifier-prompt.ts';
+import { loadLocalEnv } from './load-local-env.ts';
 import {
   classifyWithProvider,
   getProviderSettingsFromEnv,
@@ -285,6 +286,7 @@ async function writeDryRunOutputs(payload: DryRunPayload, outputDir: string, sou
 }
 
 async function runDryRun(): Promise<void> {
+  await loadLocalEnv();
   const settings = getProviderSettingsFromEnv();
   const records = await readProcessedRecalls();
   const sourceCountSummary = sourceCounts(records);

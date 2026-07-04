@@ -2,12 +2,15 @@
 
 Phase 44 should run a bounded Gemini classification test by source. It must not modify canonical data.
 
+Phase 44A adds the local env loader, `.env.example`, env diagnostic, and Gemini connectivity probe. Run those first before starting this per-source classification phase.
+
 ## Provider
 
 - Preferred provider: Gemini
 - Preferred model: Gemini 2.5 Flash-Lite or the current cheapest suitable Gemini model available in the local environment
 - API key: local environment variable only
 - No key should be committed or printed
+- Prerequisite: `npm run debug:llm-classifier-env` and `npm run probe:gemini-classifier` should pass or clearly report missing-key setup.
 
 ## Output Location
 

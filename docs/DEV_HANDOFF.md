@@ -391,3 +391,16 @@ Phase 43 finalizes the future V2 schema plan without runtime migration.
 - Readiness audit: `npm run audit:recall-data-schema-v2-readiness`
 
 Future `NormalizedRecallV2` records require `classification` and do not require the old `category` field. The current runtime still uses legacy category-derived fields until a separate migration phase. Phase 44 should run a bounded Gemini per-source classification test into ignored `outputs/llm-classifier/per-source/` files only.
+
+## LLM Environment Setup
+
+Phase 44A adds local-only environment handling for classifier CLI scripts.
+
+- Env setup guide: `docs/llm-env-setup.md`
+- Example env file: `.env.example`
+- Local secret file: `.env.local`, ignored by git
+- Env loader: `scripts/load-local-env.ts`
+- Diagnostic: `npm run debug:llm-classifier-env`
+- Gemini probe: `npm run probe:gemini-classifier`
+
+The Gemini probe uses one artificial recall classification prompt and does not read source records, write canonical data, or run per-source classification. Full Phase 44 classification remains deferred.

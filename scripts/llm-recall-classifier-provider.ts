@@ -6,6 +6,7 @@ import {
   type RecallClassificationV2
 } from '../src/data/recall-taxonomy-v2.ts';
 import type { RecallClassifierInput } from './build-recall-classifier-input.ts';
+import { getLocalEnvValue } from './load-local-env.ts';
 import { buildRecallClassifierPrompt, RECALL_CLASSIFIER_PROMPT_VERSION } from './llm-recall-classifier-prompt.ts';
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -37,7 +38,7 @@ type FixtureRecord = {
 };
 
 function envNumber(name: string): number | undefined {
-  const raw = envValue(name);
+  const raw = getLocalEnvValue(name);
   if (!raw) {
     return undefined;
   }
@@ -45,29 +46,24 @@ function envNumber(name: string): number | undefined {
   return Number.isFinite(value) && value >= 0 ? value : undefined;
 }
 
-function envValue(name: string): string {
-  const env = (process as unknown as { env?: Record<string, string | undefined> }).env ?? {};
-  return env[name] ?? '';
-}
-
 function providerFromEnv(value: string | undefined): RecallClassifierProviderName {
   return value === 'gemini' || value === 'openai' || value === 'mock' ? value : 'mock';
 }
 
 export function getProviderSettingsFromEnv(): RecallClassifierProviderSettings {
-  const provider = providerFromEnv(envValue('RECALL_CLASSIFIER_PROVIDER'));
+  const provider = providerFromEnv(getLocalEnvValue('RECALL_CLASSIFIER_PROVIDER'));
   const defaultModel =
-    provider === 'gemini' ? 'gemini-1.5-flash' : provider === 'openai' ? 'gpt-4.1-mini' : 'mock-deterministic-v1';
-  const model = envValue('RECALL_CLASSIFIER_MODEL').trim() || defaultModel;
-  const limit = Math.max(1, Math.min(500, Number(envValue('RECALL_CLASSIFIER_LIMIT') || 100) || 100));
-  const outputDir = envValue('RECALL_CLASSIFIER_OUTPUT_DIR').trim() || 'outputs/llm-classifier';
+    provider === 'gemini' ? 'gemini-2.5-flash-lite' : provider === 'openai' ? 'gpt-4.1-mini' : 'mock-deterministic-v1';
+  const model = getLocalEnvValue('RECALL_CLASSIFIER_MODEL').trim() || defaultModel;
+  const limit = Math.max(1, Math.min(500, Number(getLocalEnvValue('RECALL_CLASSIFIER_LIMIT') || 100) || 100));
+  const outputDir = getLocalEnvValue('RECALL_CLASSIFIER_OUTPUT_DIR').trim() || 'outputs/llm-classifier';
 
-  if (provider === 'gemini' && !envValue('GEMINI_API_KEY')) {
+  if (provider === 'gemini' && !getLocalEnvValue('GEMINI_API_KEY')) {
     return {
       provider,
       model,
       limit,
-      sampleStrategy: envValue('RECALL_CLASSIFIER_SAMPLE_STRATEGY') || 'balanced',
+      sampleStrategy: getLocalEnvValue('RECALL_CLASSIFIER_SAMPLE_STRATEGY') || 'balanced',
       outputDir,
       inputUsdPer1M: envNumber('RECALL_CLASSIFIER_INPUT_USD_PER_1M'),
       outputUsdPer1M: envNumber('RECALL_CLASSIFIER_OUTPUT_USD_PER_1M'),
@@ -76,12 +72,12 @@ export function getProviderSettingsFromEnv(): RecallClassifierProviderSettings {
     };
   }
 
-  if (provider === 'openai' && !envValue('OPENAI_API_KEY')) {
+  if (provider === 'openai' && !getLocalEnvValue('OPENAI_API_KEY')) {
     return {
       provider,
       model,
       limit,
-      sampleStrategy: envValue('RECALL_CLASSIFIER_SAMPLE_STRATEGY') || 'balanced',
+      sampleStrategy: getLocalEnvValue('RECALL_CLASSIFIER_SAMPLE_STRATEGY') || 'balanced',
       outputDir,
       inputUsdPer1M: envNumber('RECALL_CLASSIFIER_INPUT_USD_PER_1M'),
       outputUsdPer1M: envNumber('RECALL_CLASSIFIER_OUTPUT_USD_PER_1M'),
@@ -94,7 +90,7 @@ export function getProviderSettingsFromEnv(): RecallClassifierProviderSettings {
     provider,
     model,
     limit,
-    sampleStrategy: envValue('RECALL_CLASSIFIER_SAMPLE_STRATEGY') || 'balanced',
+    sampleStrategy: getLocalEnvValue('RECALL_CLASSIFIER_SAMPLE_STRATEGY') || 'balanced',
     outputDir,
     inputUsdPer1M: envNumber('RECALL_CLASSIFIER_INPUT_USD_PER_1M'),
     outputUsdPer1M: envNumber('RECALL_CLASSIFIER_OUTPUT_USD_PER_1M'),
@@ -287,7 +283,7 @@ async function classifyWithMock(input: RecallClassifierInput): Promise<ProviderC
 }
 
 async function classifyWithGemini(input: RecallClassifierInput, settings: RecallClassifierProviderSettings): Promise<ProviderClassificationResult> {
-  const key = envValue('GEMINI_API_KEY');
+  const key = getLocalEnvValue('GEMINI_API_KEY');
   if (!key) {
     throw new Error('GEMINI_API_KEY is not set.');
   }
@@ -327,7 +323,7 @@ async function classifyWithGemini(input: RecallClassifierInput, settings: Recall
 }
 
 async function classifyWithOpenAi(input: RecallClassifierInput, settings: RecallClassifierProviderSettings): Promise<ProviderClassificationResult> {
-  const key = envValue('OPENAI_API_KEY');
+  const key = getLocalEnvValue('OPENAI_API_KEY');
   if (!key) {
     throw new Error('OPENAI_API_KEY is not set.');
   }
