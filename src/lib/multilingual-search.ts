@@ -32,7 +32,24 @@ function unique(values: string[]): string[] {
   return [...new Set(values.filter(Boolean))];
 }
 
-const SEARCH_STOP_WORDS = new Set(['fake', 'not', 'real', 'test']);
+const SEARCH_STOP_WORDS = new Set([
+  'fake',
+  'not',
+  'real',
+  'test',
+  'no',
+  'qwerty',
+  'zzzz',
+  'recall',
+  'recalls',
+  'recalled',
+  'alert',
+  'alerts',
+  'product',
+  'products',
+  'barcode'
+]);
+const NOISE_STOP_WORDS = new Set(['fake', 'not', 'real', 'test', 'no', 'qwerty', 'zzzz']);
 
 export function normalizeSearchText(value: string): string {
   return value
@@ -57,7 +74,9 @@ export function tokenizeExpandedSearchTerms(terms: string[]): string[] {
 export function expandSearchQuery(query: string): string[] {
   const rawQuery = query.trim().toLowerCase();
   const normalizedQuery = normalizeSearchText(query);
+  const normalizedTokens = normalizedQuery.split(' ').filter(Boolean);
   const baseTokens = tokenizeSearchQuery(query);
+  const hasNoiseStopWord = normalizedTokens.some((token) => NOISE_STOP_WORDS.has(token));
   const expanded = new Set<string>();
 
   function add(value: string): void {
@@ -75,6 +94,10 @@ export function expandSearchQuery(query: string): string[] {
   }
 
   for (const group of SEARCH_ALIAS_GROUPS) {
+    if (group.id === 'recall-alert' && hasNoiseStopWord) {
+      continue;
+    }
+
     const shouldExpand = [...group.terms, ...group.aliases].some((rawTerm) => {
       const term = normalizeSearchText(rawTerm);
       const rawNeedle = rawTerm.trim().toLowerCase();

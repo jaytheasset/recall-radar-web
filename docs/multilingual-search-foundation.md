@@ -26,6 +26,18 @@ Exact identifiers remain searchable through the normal record text:
 
 The search helper normalizes punctuation and hyphens for matching but does not mutate stored records.
 
+## QA Coverage
+
+The multilingual audit script validates search-only coverage without adding translated pages or changing source data. It checks Korean, Japanese, English, French/source, mixed-language, exact identifier, source/category, and negative/noise queries against the current indexed records.
+
+The audit report includes scenario counts, exact identifier ranking checks, source/category checks, negative query checks, and ranking notes. Negative queries are expected not to match generic recall/source words alone, while exact identifiers should return the expected source record near the top.
+
+Run:
+
+```bash
+npm run audit:multilingual-search
+```
+
 ## Unsupported In This Phase
 
 - No `/ko`, `/ja`, or `/fr` routes.

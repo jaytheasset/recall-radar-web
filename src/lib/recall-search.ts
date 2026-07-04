@@ -4,7 +4,7 @@ import {
   normalizeSearchText,
   tokenizeExpandedSearchTerms,
   tokenizeSearchQuery
-} from './multilingual-search';
+} from './multilingual-search.ts';
 
 export type RecallMatchType = 'exact' | 'possible' | 'related' | 'none';
 export type RecallMatchReason =
@@ -251,6 +251,22 @@ function looksLikeIdentifier(query: string, normalizedQuery: string): boolean {
   return normalizedCompact.length >= 6 && /[a-z]/i.test(normalizedCompact) && /\d/.test(normalizedCompact);
 }
 
+function compactIdentifier(value: string): string {
+  return normalize(value).replace(/\s+/g, '');
+}
+
+function hasExactIdentifierMatch(normalizedQuery: string, values: string[]): boolean {
+  const compactQuery = compactIdentifier(normalizedQuery);
+  if (!compactQuery || compactQuery.length < 4) {
+    return false;
+  }
+
+  return values.some((value) => {
+    const compactValue = compactIdentifier(value);
+    return compactValue.length >= compactQuery.length && compactValue.includes(compactQuery);
+  });
+}
+
 function hasAllergenQuery(normalizedQuery: string, queryTokens: string[]): boolean {
   return ALLERGEN_TERMS.some((term) => {
     const normalizedTerm = normalize(term);
@@ -421,6 +437,10 @@ export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchTy
 
   if (exactFields(recall).some((field) => isStrongFieldMatch(normalizedQuery, queryTokens, field))) {
     return 'exact';
+  }
+
+  if (looksLikeIdentifier(query, normalizedQuery)) {
+    return hasExactIdentifierMatch(normalizedQuery, identifierFields(recall)) ? 'possible' : 'none';
   }
 
   const possibleText = possibleFields(recall);
