@@ -281,4 +281,6 @@ Canonical/site URL status:
 
 - Keep `/dev/taxonomy-v2-preview` noindex and unlinked from public discovery.
 - Run `npm run audit:taxonomy-v2-ui-preview` before any Taxonomy V2 classification or UI migration phase.
+- Confirm the approved public category list uses all 15 product-family labels, including `Need Review`.
+- Confirm issue/hazard tags remain secondary metadata and are not presented as the primary homepage navigation model.
 - Do not replace public category routes until product owner review is complete.

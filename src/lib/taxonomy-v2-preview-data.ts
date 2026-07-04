@@ -80,8 +80,8 @@ const PRODUCT_TYPES_BY_FAMILY: Record<ProductFamily, ProductType[]> = {
   'furniture-household': ['furniture', 'bedding', 'cookware', 'tableware', 'household-product'],
   'vehicles-mobility': ['golf-cart-utility-vehicle', 'bicycle', 'scooter', 'mobility-device', 'vehicle-accessory'],
   'sports-outdoor': ['exercise-equipment', 'camping-outdoor', 'pool-water-sports', 'helmet-protective-gear'],
-  'tools-equipment': ['power-tool', 'hand-tool', 'ladder', 'machinery-equipment'],
   'clothing-accessories': ['clothing', 'footwear', 'jewelry-accessory', 'bag-luggage'],
+  'tools-equipment': ['power-tool', 'hand-tool', 'ladder', 'machinery-equipment'],
   'health-personal-care': ['cosmetic', 'personal-care-product', 'medical-device-consumer', 'hygiene-product'],
   'chemicals-cleaning': ['cleaning-product', 'detergent', 'pesticide', 'chemical-product'],
   'pet-products': ['pet-food', 'pet-toy', 'pet-equipment'],
@@ -153,12 +153,12 @@ export const taxonomyV2LegacyReplacementMap = [
   {
     current: '/battery-recalls',
     future: ['/recalls/electronics-batteries'],
-    note: 'Battery and electronics becomes a product family with Fire, Battery overheating, Burn, and Electric shock hazard filters.'
+    note: 'Battery and electronics becomes a product family with Fire, Battery overheating, Burn, and Electric shock as secondary issue tags.'
   },
   {
     current: '/food-allergy-recalls',
     future: ['/recalls/food-grocery'],
-    note: 'Food and allergy becomes Food & Grocery with separate Allergen, Pathogen contamination, Chemical contamination, Foreign matter, and Labeling issue filters.'
+    note: 'Food and allergy becomes Food & Grocery with Allergen, Pathogen contamination, Chemical contamination, Foreign matter, and Labeling issue as secondary issue tags.'
   },
   {
     current: '/household-product-recalls',

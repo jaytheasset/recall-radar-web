@@ -4,6 +4,8 @@ Phase 44 should run a bounded Gemini classification test by source. It must not 
 
 Phase 44A adds the local env loader, `.env.example`, env diagnostic, and Gemini connectivity probe. Run those first before starting this per-source classification phase.
 
+Phase 44C locks all 15 Taxonomy V2 product families as the future public category list. Gemini classification should preserve the enum values; public route migration remains deferred until classified outputs pass review. Hazard types should be treated as secondary issue tags, not primary public navigation.
+
 ## Provider
 
 - Preferred provider: Gemini

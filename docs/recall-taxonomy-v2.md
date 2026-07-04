@@ -24,7 +24,7 @@ Recall Taxonomy V2 is a breaking schema direction:
 
 - `category` may remain in current records only until migration.
 - Future canonical records should require `classification`.
-- The UI should derive public browsing routes from `classification.productFamily`, `classification.productType`, and `classification.hazardType`.
+- The UI should derive public category routes from `classification.productFamily`. `classification.productType` and `classification.hazardType` should support secondary detail tags and optional filters.
 - Compatibility with the old category string is not required for the long-term design.
 - Data can be regenerated after the classifier is validated.
 
@@ -88,14 +88,14 @@ Top-level families should stay broad enough for global recall sources:
 | `furniture-household` | Furniture, bedding, cookware, tableware, and non-electrical household products. |
 | `vehicles-mobility` | Passenger vehicles, golf carts, utility vehicles, bicycles, scooters, mobility devices, trailers, and vehicle accessories. |
 | `sports-outdoor` | Exercise equipment, outdoor/camping gear, pool/water products, and protective sports gear. |
-| `tools-equipment` | Power tools, hand tools, ladders, and machinery/equipment. |
 | `clothing-accessories` | Clothing, footwear, jewelry, bags, luggage, and fashion accessories. |
+| `tools-equipment` | Power tools, hand tools, ladders, and machinery/equipment. |
 | `health-personal-care` | Cosmetics, personal care, hygiene products, and consumer medical devices. |
 | `chemicals-cleaning` | Cleaning products, detergents, pesticides, and chemical products. |
 | `pet-products` | Pet food, pet toys, and pet equipment. |
 | `industrial-workplace` | Workplace-only equipment and industrial products. |
 | `other` | Known product that does not fit a listed family. |
-| `unknown` | Product family cannot be determined from available source text. |
+| `unknown` | Product family cannot be determined from available source text. The public label is Need Review. |
 
 Examples:
 
@@ -284,28 +284,33 @@ This is the intended future breaking schema, not a runtime schema in Phase 41:
 }
 ```
 
-The old `category` field should not be required in final v2 runtime data. UI pages should derive groupings from `classification.productFamily` and `classification.hazardType`.
+The old `category` field should not be required in final v2 runtime data. Public category pages should derive groupings from `classification.productFamily`; product type and hazard type should appear as secondary detail tags and optional filters.
 
 ## 12. Future UI Category Model
 
-Proposed top-level public routes:
+Phase 44C locks the full product-family list as the future public category model. Do not reduce the public category model to a small subset, and do not use hazard-first browsing as the main navigation model.
+
+Approved future public product-family routes:
 
 - `/recalls/food-grocery` - Food & Grocery Recalls
 - `/recalls/baby-kids` - Baby & Kids Recalls
-- `/recalls/electronics-batteries` - Electronics & Battery Recalls
-- `/recalls/home-appliances` - Home Appliance Recalls
+- `/recalls/electronics-batteries` - Electronics & Batteries Recalls
+- `/recalls/home-appliances` - Home Appliances Recalls
 - `/recalls/furniture-household` - Furniture & Household Recalls
-- `/recalls/vehicles-mobility` - Vehicle & Mobility Recalls
+- `/recalls/vehicles-mobility` - Vehicles & Mobility Recalls
 - `/recalls/sports-outdoor` - Sports & Outdoor Recalls
-- `/recalls/tools-equipment` - Tools & Equipment Recalls
 - `/recalls/clothing-accessories` - Clothing & Accessories Recalls
+- `/recalls/tools-equipment` - Tools & Equipment Recalls
 - `/recalls/health-personal-care` - Health & Personal Care Recalls
-- `/recalls/chemicals-cleaning` - Chemical & Cleaning Product Recalls
-- `/recalls/pet-products` - Pet Product Recalls
+- `/recalls/chemicals-cleaning` - Chemicals & Cleaning Recalls
+- `/recalls/pet-products` - Pet Products Recalls
+- `/recalls/industrial-workplace` - Industrial & Workplace Recalls
+- `/recalls/other` - Other Recalls
+- `/recalls/need-review` - Need Review
 
-Do not implement these routes in Phase 41.
+Do not implement these routes in Phase 41. Do not implement these routes until a separate public UI migration phase.
 
-Hazard filters should appear within category pages:
+Issue tags derived from `hazardType` are secondary metadata. They may appear on result/detail cards and support optional filters later:
 
 - Food & Grocery: All, Allergens, Contamination, Foreign matter, Labeling issues
 - Electronics & Battery: All, Battery overheating, Fire, Electric shock
@@ -318,7 +323,7 @@ Taxonomy v2 should make public routes clearer and less source-specific:
 
 - Product-family routes should be stable and global.
 - Source landing pages should remain source/market entry points.
-- Hazard filters should refine category pages, not create every possible route.
+- Issue tags should refine category pages or detail cards, not become the primary homepage navigation or create every possible route.
 - Do not add multilingual routes, `hreflang`, or translated slugs as part of taxonomy migration.
 - Avoid "all recalls" and complete-coverage claims. Continue using indexed-notice language.
 

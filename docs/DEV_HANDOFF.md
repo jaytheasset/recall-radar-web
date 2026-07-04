@@ -407,11 +407,11 @@ The Gemini probe uses one artificial recall classification prompt and does not r
 
 ## Taxonomy V2 UI Preview
 
-Phase 44B adds `/dev/taxonomy-v2-preview` as a noindex development preview for future Taxonomy V2 menus, hazard filters, detail-page sections, and legacy category replacement planning.
+Phase 44B adds `/dev/taxonomy-v2-preview` as a noindex development preview for future Taxonomy V2 menus, issue tags, detail-page sections, and legacy category replacement planning. Phase 44C locks the product-owner-approved public product-family list as all 15 Taxonomy V2 families, using `Need Review` as the visible label for `unknown`.
 
 - Preview doc: `docs/taxonomy-v2-ui-preview.md`
 - Display helpers: `src/lib/taxonomy-v2-display.ts`
 - Preview data helper: `src/lib/taxonomy-v2-preview-data.ts`
 - Audit: `npm run audit:taxonomy-v2-ui-preview`
 
-The preview uses artificial examples only. It does not change canonical records, current public category pages, source pages, homepage category links, runtime filtering, or detail pages.
+The preview uses artificial examples only. Product family categories are the future primary public browse model; hazard types are secondary issue tags for results/details and optional later filtering. Phase 44C does not change canonical records, current public category pages, source pages, homepage category links, runtime filtering, or detail pages.

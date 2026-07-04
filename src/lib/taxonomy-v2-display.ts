@@ -26,7 +26,7 @@ export const PRODUCT_FAMILY_LABELS: Record<ProductFamily, string> = {
   'pet-products': 'Pet Products',
   'industrial-workplace': 'Industrial & Workplace',
   other: 'Other',
-  unknown: 'Needs Review'
+  unknown: 'Need Review'
 };
 
 export const PRODUCT_TYPE_LABELS: Record<ProductType, string> = {
@@ -164,8 +164,8 @@ export const TAXONOMY_V2_PUBLIC_CATEGORY_ORDER: ProductFamily[] = [
   'furniture-household',
   'vehicles-mobility',
   'sports-outdoor',
-  'tools-equipment',
   'clothing-accessories',
+  'tools-equipment',
   'health-personal-care',
   'chemicals-cleaning',
   'pet-products',
@@ -189,7 +189,7 @@ const PRODUCT_FAMILY_HREFS: Record<ProductFamily, string> = {
   'pet-products': '/recalls/pet-products',
   'industrial-workplace': '/recalls/industrial-workplace',
   other: '/recalls/other',
-  unknown: '/recalls/needs-review'
+  unknown: '/recalls/need-review'
 };
 
 export function getProductFamilyLabel(value: string): string {
@@ -213,7 +213,7 @@ export function getAudienceLabel(value: string): string {
 }
 
 export function getTaxonomyV2CategoryHref(productFamily: string): string {
-  return PRODUCT_FAMILY_HREFS[productFamily as ProductFamily] ?? '/recalls/needs-review';
+  return PRODUCT_FAMILY_HREFS[productFamily as ProductFamily] ?? '/recalls/need-review';
 }
 
 export function missingTaxonomyV2DisplayLabels(): Record<string, string[]> {

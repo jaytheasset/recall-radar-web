@@ -405,6 +405,8 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 
 - Confirm `npm run audit:taxonomy-v2-ui-preview` passes.
 - Open `/dev/taxonomy-v2-preview` and confirm it is clearly labeled Development Preview.
-- Confirm the page shows future product family cards, hazard filter chips, sample detail sections, sample classified records, and the legacy replacement map.
+- Confirm the page shows all 15 approved future product-family cards in order, secondary issue tags, sample detail sections, sample classified records, and the legacy replacement map.
+- Confirm the visible public category label is exactly `Need Review`.
+- Confirm issue/hazard tags are described as secondary metadata, not primary public navigation.
 - Confirm `/dev/taxonomy-v2-preview` is not linked from the public homepage or primary navigation.
 - Confirm current category pages, source pages, checker, homepage, and detail pages still work unchanged.

@@ -6,7 +6,7 @@ Phase 43 finalizes the future normalized recall data schema. It is a planning an
 
 The current single `category` field is deprecated. It may exist in current test records until migration, but it is not a long-term compatibility requirement.
 
-Future canonical records require a `classification` object using Recall Taxonomy V2. Public UI categories, category routes, filters, SEO groupings, and source-page product type filters should be derived from `classification.productFamily`, `classification.productType`, `classification.hazardType`, and `classification.recallDomain`, not from the old `category` string.
+Future canonical records require a `classification` object using Recall Taxonomy V2. Public category routes and primary browse groupings should be derived from `classification.productFamily`. Product type, hazard type, recall domain, source, and date can support secondary tags and optional filters. These should replace dependence on the old `category` string.
 
 Current test records can be deleted and regenerated later after the classifier and review gate are accepted.
 
@@ -167,7 +167,7 @@ Future filter controls should derive from:
 - market/source: `source`, `market`, `agency`
 - product family: `classification.productFamily`
 - product type: `classification.productType`
-- hazard: `classification.hazardType`
+- issue / hazard: `classification.hazardType`
 - recall domain: `classification.recallDomain`
 - review/admin status: `classification.needsReview`
 - date: `recallDate`
@@ -178,7 +178,7 @@ Future SEO/category pages should derive from:
 
 - product category pages: `classification.productFamily`
 - deeper product pages: `classification.productType`
-- hazard pages: `classification.hazardType`
+- secondary issue tags and optional filters: `classification.hazardType`
 - source/country pages: `source`, `market`, `agency`
 - food/consumer/vehicle/health grouping: `classification.recallDomain`
 
@@ -213,7 +213,7 @@ Before any V2 classified data becomes canonical:
 - no raw HTML appears in visible fields
 - no safety claims are introduced
 - category routes are derived from `productFamily`
-- hazard filters are derived from `hazardType`
+- hazard filters are derived from `hazardType`; in the Phase 44C public model these are secondary issue tags or optional filters, not primary public navigation
 
 Initial rule:
 

@@ -814,4 +814,4 @@ This command uses one artificial recall prompt to check Gemini connectivity and 
 npm run audit:taxonomy-v2-ui-preview
 ```
 
-This command validates the development-only Taxonomy V2 UI preview at `/dev/taxonomy-v2-preview`. The preview uses artificial records from `data/samples/recall-taxonomy-v2-examples.json` and does not run LLM classification, source fetches, source normalizers, source merges, or canonical record migration.
+This command validates the development-only Taxonomy V2 UI preview at `/dev/taxonomy-v2-preview`. It checks the locked 15-label public product-family list, `Need Review` display label, secondary issue-tag framing, and no canonical data migration. The preview uses artificial records from `data/samples/recall-taxonomy-v2-examples.json` and does not run LLM classification, source fetches, source normalizers, source merges, or canonical record migration.

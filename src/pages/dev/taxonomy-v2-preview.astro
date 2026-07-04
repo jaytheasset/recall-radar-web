@@ -15,7 +15,7 @@ import '../../styles/global.css';
 
 const title = 'Development Preview: Taxonomy V2 UI Structure | Recall Radar';
 const description =
-  'Development-only preview of possible Recall Taxonomy V2 menus, hazard filters, detail sections, and legacy category replacements.';
+  'Development-only preview of approved Recall Taxonomy V2 public product-family categories, secondary issue tags, detail sections, and legacy category replacements.';
 const detailPreviewRecord =
   taxonomyV2PreviewRecords.find((record) => record.id === 'sample-yamaha-umax-bistro') ??
   taxonomyV2PreviewRecords[0];
@@ -47,23 +47,27 @@ const detailPreviewRecord =
         <p class="eyebrow">Development Preview</p>
         <h1>Taxonomy V2 UI Structure</h1>
         <p class="lead">
-          This private review page previews future product-family menus, hazard filters, and detail-page sections before
-          Gemini classification or any canonical record migration.
+          This private review page locks the approved future public product-family category list and previews secondary
+          issue tags and detail-page sections before Gemini classification or any canonical record migration.
         </p>
         <div class="preview-warning">
-          Artificial examples only. Current public routes, current source pages, current category pages, and canonical
-          recall records are unchanged.
+          Artificial examples only. All 15 product-family categories are approved as future public categories. Current
+          public routes, source pages, category pages, and canonical recall records are unchanged.
         </div>
       </section>
 
       <section class="preview-section" aria-labelledby="future-menu-title">
         <div class="preview-section-header">
           <div>
-            <p class="eyebrow">Future menu preview</p>
-            <h2 id="future-menu-title">Top-level product families</h2>
+            <p class="eyebrow">Approved future public categories</p>
+            <h2 id="future-menu-title">Product-family category list</h2>
           </div>
-          <span class="preview-pill">Not active filters yet</span>
+          <span class="preview-pill">Future routes only</span>
         </div>
+        <p class="preview-section-copy">
+          Search remains the first product experience. These 15 product-family categories are the approved public
+          browsing model after Taxonomy V2 classification is migrated. They are not active filters yet.
+        </p>
         <div class="taxonomy-menu-grid">
           {taxonomyV2MenuPreview.map((item) => (
             <article class="taxonomy-family-card">
@@ -82,7 +86,7 @@ const detailPreviewRecord =
                   <dd>{item.productTypes.slice(0, 4).map(getProductTypeLabel).join(', ')}</dd>
                 </div>
                 <div>
-                  <dt>Likely hazard filters</dt>
+                  <dt>Secondary issue tags</dt>
                   <dd>{item.hazardFilters.slice(0, 4).map(getHazardTypeLabel).join(', ')}</dd>
                 </div>
                 <div>
@@ -95,19 +99,24 @@ const detailPreviewRecord =
         </div>
       </section>
 
-      <section class="preview-section" aria-labelledby="hazard-filter-title">
+      <section class="preview-section" aria-labelledby="issue-tags-title">
         <div class="preview-section-header">
           <div>
-            <p class="eyebrow">Secondary filter preview</p>
-            <h2 id="hazard-filter-title">Hazard filters by family</h2>
+            <p class="eyebrow">Secondary classification metadata</p>
+            <h2 id="issue-tags-title">Issue tags preview</h2>
           </div>
         </div>
+        <p class="preview-section-copy">
+          These are future secondary tags derived from <code>hazardType</code>. They help explain results and may
+          support optional filtering later. Hazard types are secondary issue tags, not primary public browsing
+          categories. Product-family categories remain the primary browse model.
+        </p>
         <div class="hazard-preview-grid">
           {selectedHazardFilterPreview.map((item) => (
             <article class="hazard-preview-card">
               <h3>{item.label}</h3>
               <div class="chip-row">
-                <span class="preview-chip strong">All</span>
+                <span class="preview-chip strong">Product family</span>
                 {item.productTypes.slice(0, 3).map((type) => <span class="preview-chip">{getProductTypeLabel(type)}</span>)}
                 {item.hazardFilters.map((hazard) => <span class="preview-chip danger">{getHazardTypeLabel(hazard)}</span>)}
               </div>
@@ -174,8 +183,8 @@ const detailPreviewRecord =
           <section class="classification-preview">
             <h4>Classification</h4>
             <p>
-              Development/review visibility only. Public launch may hide or minimize these internals after product owner
-              review.
+              Development/review visibility only. Public pages may show simplified product family, product type, and
+              issue tags. Confidence, evidence fields, prompt version, and model should not be public by default.
             </p>
             <dl class="classification-grid">
               <div>
@@ -187,11 +196,11 @@ const detailPreviewRecord =
                 <dd>{detailPreviewRecord.productTypeLabel}</dd>
               </div>
               <div>
-                <dt>Hazard type</dt>
+                <dt>Issue / hazard type</dt>
                 <dd>{detailPreviewRecord.hazardTypeLabel}</dd>
               </div>
               <div>
-                <dt>Hazard tags</dt>
+                <dt>Issue tags</dt>
                 <dd>{detailPreviewRecord.expectedClassification.hazardTags.join(', ')}</dd>
               </div>
               <div>
@@ -207,7 +216,7 @@ const detailPreviewRecord =
                 <dd>{detailPreviewRecord.expectedClassification.confidence}</dd>
               </div>
               <div>
-                <dt>Needs review</dt>
+                <dt>Review flag</dt>
                 <dd>{detailPreviewRecord.expectedClassification.needsReview ? 'Yes' : 'No'}</dd>
               </div>
               <div>
@@ -272,20 +281,28 @@ const detailPreviewRecord =
             </article>
           ))}
         </div>
+        <div class="future-route-list">
+          <p class="eyebrow">Approved future product-family routes</p>
+          <div class="chip-row">
+            {taxonomyV2MenuPreview.map((item) => <code>{item.href}</code>)}
+          </div>
+          <p>
+            These routes are future targets only. Existing public category routes stay in place until a separate public
+            UI migration phase.
+          </p>
+        </div>
       </section>
 
       <section class="preview-section decision-section" aria-labelledby="decision-title">
-        <p class="eyebrow">Product owner review</p>
-        <h2 id="decision-title">Open decisions before classification</h2>
+        <p class="eyebrow">Locked product decision</p>
+        <h2 id="decision-title">Public category decision before classification</h2>
         <ol>
-          <li>Are top-level category names acceptable?</li>
-          <li>Are there too many categories for homepage discovery?</li>
-          <li>Which categories should appear on the homepage first?</li>
-          <li>Should Vehicles & Mobility be a top-level public category?</li>
-          <li>Should Industrial & Workplace be public or hidden until enough records exist?</li>
-          <li>Should Classification remain dev-only?</li>
-          <li>Should Food & Grocery replace Food & Allergy publicly?</li>
-          <li>Should hazard filters appear as chips under each category?</li>
+          <li>Use all 15 approved product-family labels as future public categories.</li>
+          <li>Keep search first, product family categories second, source/country browsing third.</li>
+          <li>Use issue tags as secondary metadata on results and detail pages.</li>
+          <li>Keep the Classification section dev/review-facing unless a later phase approves public visibility.</li>
+          <li>Handle Need Review carefully in launch UI while keeping the public label available.</li>
+          <li>Do not migrate current public routes until classified V2 data has passed review.</li>
         </ol>
       </section>
     </main>
@@ -349,6 +366,13 @@ const detailPreviewRecord =
 
       .preview-section h2 {
         margin: 0.1rem 0 0;
+      }
+
+      .preview-section-copy {
+        max-width: 860px;
+        margin: -0.35rem 0 1.2rem;
+        color: #536176;
+        font-weight: 650;
       }
 
       .preview-pill,
@@ -505,6 +529,17 @@ const detailPreviewRecord =
 
       .legacy-map-card p {
         margin: 0;
+      }
+
+      .future-route-list {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eef1f6;
+      }
+
+      .future-route-list p:last-child {
+        margin-bottom: 0;
+        color: #536176;
       }
 
       .decision-section ol {

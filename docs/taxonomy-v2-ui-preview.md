@@ -1,6 +1,6 @@
 # Taxonomy V2 UI Preview
 
-Phase 44B adds a development-only preview for the future Taxonomy V2 browsing and detail-page structure. It does not classify canonical records, call an LLM, regenerate source files, or change public category behavior.
+Phase 44C locks the product-owner-approved public product-family category list for future Taxonomy V2 browsing. It does not classify canonical records, call an LLM, regenerate source files, or change current public category behavior.
 
 Preview route:
 
@@ -8,40 +8,55 @@ Preview route:
 - noindex / nofollow
 - not linked from the public homepage or primary navigation
 
-## Purpose
+## Public Category Decision
 
-The preview helps review the future product menu before Gemini per-source classification. It shows how `productFamily`, `productType`, `hazardType`, `recallDomain`, and `audience` could shape public browsing and detail pages.
+Use the full Taxonomy V2 product family list as public categories. Do not reduce the future public category model to a small subset. Do not hide the approved category list behind an overflow bucket as the main information architecture.
 
-## Why The Old Category UI Is Not Enough
+Approved public product-family labels, in order:
 
-The old single `category` field mixes product type, hazard, source, and landing-page grouping. That is too weak for global recall browsing because:
+1. Food & Grocery
+2. Baby & Kids
+3. Electronics & Batteries
+4. Home Appliances
+5. Furniture & Household
+6. Vehicles & Mobility
+7. Sports & Outdoor
+8. Clothing & Accessories
+9. Tools & Equipment
+10. Health & Personal Care
+11. Chemicals & Cleaning
+12. Pet Products
+13. Industrial & Workplace
+14. Other
+15. Need Review
 
-- food notices need separate allergen, contamination, foreign matter, and labeling filters
-- vehicle-like consumer products such as Yamaha UMAX Bistro should not be pulled into food-like or household-like groups
-- batteries, electronics, appliances, and tools need separate product-family and hazard views
-- household products need to split into appliances, furniture, chemicals, and tools where appropriate
+`Need Review` is the public label for records requiring manual review before final classification. It should be handled carefully in launch UI, but the label is part of the approved public category list.
 
-## Proposed Top-Level Menu Names
+## Browse Hierarchy
 
-- Food & Grocery
-- Baby & Kids
-- Electronics & Batteries
-- Home Appliances
-- Furniture & Household
-- Vehicles & Mobility
-- Sports & Outdoor
-- Tools & Equipment
-- Clothing & Accessories
-- Health & Personal Care
-- Chemicals & Cleaning
-- Pet Products
-- Industrial & Workplace
-- Other
-- Needs Review
+The future public browsing hierarchy is:
+
+1. Search first
+2. Product family categories
+3. Source / country
+4. Date, source, issue, and other filters later
+
+Users usually know the product, brand, model, barcode, ingredient, or source market before they know the hazard. Hazard types are therefore secondary issue tags, not primary public browsing categories.
+
+## Secondary Issue Tags
+
+`hazardType` remains part of Taxonomy V2. It should support:
+
+- result and detail tags
+- optional secondary filtering later
+- internal classification review
+- clearer explanation of why a notice matters
+
+It should not replace product-family categories as the main homepage or public navigation model.
 
 ## Proposed Future Routes
 
-These routes are preview targets only and are not implemented in Phase 44B:
+These routes are future targets only and are not implemented in Phase 44C:
 
 - `/recalls/food-grocery`
 - `/recalls/baby-kids`
@@ -50,14 +65,14 @@ These routes are preview targets only and are not implemented in Phase 44B:
 - `/recalls/furniture-household`
 - `/recalls/vehicles-mobility`
 - `/recalls/sports-outdoor`
-- `/recalls/tools-equipment`
 - `/recalls/clothing-accessories`
+- `/recalls/tools-equipment`
 - `/recalls/health-personal-care`
 - `/recalls/chemicals-cleaning`
 - `/recalls/pet-products`
 - `/recalls/industrial-workplace`
 - `/recalls/other`
-- `/recalls/needs-review`
+- `/recalls/need-review`
 
 ## Proposed Detail Page Sections
 
@@ -72,36 +87,21 @@ Future detail pages can be structured around:
 7. Source Notice
 8. Classification
 
-The Classification section is for development and review visibility. Public launch may hide or minimize classification internals after review.
-
-## Public vs Development Classification Visibility
-
-Development preview can show:
-
-- product family
-- product type
-- hazard type
-- hazard tags
-- recall domain
-- audience
-- confidence
-- needs review
-- evidence fields
-- reason
-
-Public pages should focus on useful consumer browsing labels and official notice verification. Confidence, evidence fields, and model reasoning may remain internal.
+The Classification section is for development and review visibility. Public pages may show simplified product family, product type, and issue tags. Confidence, evidence fields, prompt version, and model should not be public by default.
 
 ## Legacy Replacement Map
 
-Current legacy pages remain in place during Phase 44B.
+Current legacy pages remain in place during Phase 44C.
 
 | Current | Future direction |
 | --- | --- |
 | `/baby-product-recalls` | `/recalls/baby-kids` |
 | `/battery-recalls` | `/recalls/electronics-batteries` |
-| `/food-allergy-recalls` | `/recalls/food-grocery` with hazard filters such as `allergen`, `contamination-pathogen`, `contamination-chemical`, and `foreign-matter` |
+| `/food-allergy-recalls` | `/recalls/food-grocery` with secondary issue tags such as `allergen`, `contamination-pathogen`, `contamination-chemical`, and `foreign-matter` |
 | `/household-product-recalls` | split into `/recalls/home-appliances`, `/recalls/furniture-household`, `/recalls/chemicals-cleaning`, and `/recalls/tools-equipment` |
 | vehicle-like consumer products in mixed legacy groups | `/recalls/vehicles-mobility` |
+
+Existing routes must not be removed until a separate public UI migration phase.
 
 ## What Is Not Implemented Yet
 
@@ -116,13 +116,10 @@ Current legacy pages remain in place during Phase 44B.
 - no backend
 - no translation
 
-## Product Owner Decision Points
+## Next Product Review Points
 
-1. Are top-level category names acceptable?
-2. Are there too many categories for homepage discovery?
-3. Which categories should appear on homepage first?
-4. Should Vehicles & Mobility be a top-level public category?
-5. Should Industrial & Workplace be public or hidden until enough records exist?
-6. Should Classification remain dev-only?
-7. Should Food & Grocery replace Food & Allergy publicly?
-8. Should hazard filters appear as chips under each category?
+1. How should all 15 public categories be presented on the homepage after migration?
+2. Which category card layout works best across desktop and mobile?
+3. How should `Need Review` be handled in public launch UI?
+4. Which issue tags should be visible on result cards?
+5. Which classification internals should remain dev-only?
