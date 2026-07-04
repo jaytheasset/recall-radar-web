@@ -12,6 +12,8 @@ Phase 44E-2 adds an FSANZ-only food recall input preview before live per-source 
 
 Phase 44E-3 adds a New Zealand Product Safety-only input preview before live per-source classification. See `docs/new-zealand-classifier-input-preview.md`.
 
+Phase 44E-4 adds a Hong Kong CFS-only food alert input preview before live per-source classification. See `docs/hong-kong-cfs-classifier-input-preview.md`.
+
 ## Purpose
 
 The dry run tests whether Recall Taxonomy V2 can classify the current indexed notices into the new taxonomy shape before any migration phase. It compares generated taxonomy fields with the existing legacy `category` field and highlights suspicious mismatches for manual review.
@@ -147,6 +149,15 @@ npm run audit:new-zealand-classifier-input-preview
 ```
 
 Those commands compare generic input with a New Zealand-specific consumer product input shape, write ignored preview reports only, and do not call an LLM.
+
+For Hong Kong CFS input-noise review, run:
+
+```powershell
+npm run preview:hong-kong-cfs-classifier-input
+npm run audit:hong-kong-cfs-classifier-input-preview
+```
+
+Those commands compare generic input with a Hong Kong CFS-specific food alert input shape, write ignored preview reports only, and do not call an LLM.
 
 ## Non-Goals
 

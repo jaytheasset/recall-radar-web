@@ -320,3 +320,12 @@ Canonical/site URL status:
 - Confirm generated preview outputs are not committed.
 - Confirm baby/kids or toy and electronics/battery cases are included when present.
 - Confirm no live LLM classification, source refresh, canonical data migration, UI migration, backend, database, or translation was introduced.
+
+## U. Hong Kong CFS Classifier Input Preview Gate
+
+- Run `npm run preview:hong-kong-cfs-classifier-input`.
+- Run `npm run audit:hong-kong-cfs-classifier-input-preview`.
+- Confirm generated Hong Kong CFS preview outputs stay under ignored `outputs/llm-classifier/input-preview/hong-kong-cfs/`.
+- Confirm generated preview outputs are not committed.
+- Confirm allergen, contamination, and foreign matter cases are included when present.
+- Confirm no live LLM classification, source refresh, canonical data migration, UI migration, backend, database, or translation was introduced.

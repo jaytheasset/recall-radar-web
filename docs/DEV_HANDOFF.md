@@ -460,3 +460,14 @@ Phase 44E-3 adds the same input-noise gate for New Zealand Product Safety record
 - Output folder: ignored `outputs/llm-classifier/input-preview/new-zealand/`
 
 The preview keeps product identifiers, supplier names, official categories, hazard/action evidence, and model/SKU/serial/barcode-style identifiers source-specific while checking that supplier/contact boilerplate does not dominate the prompt. It does not call Gemini or OpenAI, does not classify records, does not modify `data/raw` or `data/processed`, and does not change runtime UI.
+
+## Hong Kong CFS Classifier Input Preview
+
+Phase 44E-4 adds the same input-noise gate for Hong Kong CFS food alerts before any live per-source classification.
+
+- Guide: `docs/hong-kong-cfs-classifier-input-preview.md`
+- Preview command: `npm run preview:hong-kong-cfs-classifier-input`
+- Static audit: `npm run audit:hong-kong-cfs-classifier-input-preview`
+- Output folder: ignored `outputs/llm-classifier/input-preview/hong-kong-cfs/`
+
+The preview keeps product description, risk/action evidence, importer, retailer, origin, pack/date/batch/barcode-style identifiers, and fixed food-domain source hints while checking that government footer, hotline, and press-release boilerplate do not dominate the prompt. It does not call Gemini or OpenAI, does not classify records, does not modify `data/raw` or `data/processed`, and does not change runtime UI.

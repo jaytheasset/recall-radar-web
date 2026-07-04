@@ -930,3 +930,36 @@ npm run audit:new-zealand-classifier-input-preview
 ```
 
 The preview samples baby/kids, electronics/battery, household/furniture/appliance, mobility-like, identifier-rich, sparse-identifier, image-backed, image-less when present, long hazard/action, and ambiguous category records. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
+
+## Hong Kong CFS Classifier Input Preview
+
+```powershell
+npm run preview:hong-kong-cfs-classifier-input
+```
+
+This command reads the current canonical processed recalls, filters Hong Kong CFS food alert records only, builds the current generic classifier input and a proposed Hong Kong CFS-specific input preview, compares estimated tokens, and writes ignored local reports under:
+
+`outputs/llm-classifier/input-preview/hong-kong-cfs/`
+
+Generated files:
+
+- `hong-kong-cfs-input-preview.json`
+- `hong-kong-cfs-input-preview.md`
+- `hong-kong-cfs-noise-report.json`
+- `hong-kong-cfs-token-comparison.json`
+
+Optional sample limit:
+
+```powershell
+$env:HONG_KONG_CFS_CLASSIFIER_INPUT_PREVIEW_LIMIT = "20"
+npm run preview:hong-kong-cfs-classifier-input
+Remove-Item Env:HONG_KONG_CFS_CLASSIFIER_INPUT_PREVIEW_LIMIT
+```
+
+Audit the preview wiring:
+
+```powershell
+npm run audit:hong-kong-cfs-classifier-input-preview
+```
+
+The preview samples allergen or undeclared allergen, pathogen or chemical contamination, foreign matter, expiry/batch/date, importer or retailer, sparse-identifier, image-backed, image-less, long description, and non-allergen food records when present. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.

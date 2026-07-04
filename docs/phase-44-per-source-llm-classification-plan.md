@@ -90,6 +90,13 @@ Phase 44E-3 adds the same gate for New Zealand Product Safety records:
 
 The New Zealand preview compares generic input with a source-specific consumer-product shape using `productIdentifiers`, `supplierName`, concise agency text, official categories, hazard/action fields, and explicit model/SKU/serial/barcode-style identifiers. It writes ignored reports under `outputs/llm-classifier/input-preview/new-zealand/` and does not call Gemini, classify records, or write canonical data.
 
+Phase 44E-4 adds the same gate for Hong Kong CFS food alerts:
+
+- `npm run preview:hong-kong-cfs-classifier-input`
+- `npm run audit:hong-kong-cfs-classifier-input-preview`
+
+The Hong Kong CFS preview compares generic input with a source-specific food alert shape using `productDescription`, `riskText`, `actionText`, importer/retailer/origin fields, pack/date/batch/barcode-style identifiers, and fixed `food-grocery` source hints. It samples allergen, contamination, foreign matter, identifier, image-backed, image-less, and non-allergen food cases when present. It writes ignored reports under `outputs/llm-classifier/input-preview/hong-kong-cfs/` and does not call Gemini, classify records, or write canonical data.
+
 ## Review Questions
 
 Phase 44 should answer:

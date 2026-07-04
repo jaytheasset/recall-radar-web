@@ -455,3 +455,14 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm the noise report checks raw HTML leakage, fallback strings, repeated strings, missing product identity, missing hazard evidence, missing action/remedy evidence, supplier/contact domination, and identifier over-extraction.
 - Confirm generated preview outputs are not staged or committed.
 - Confirm no Gemini/OpenAI calls, canonical data changes, source refreshes, runtime UI changes, backend, database, or translation were introduced.
+
+## Hong Kong CFS Classifier Input Preview
+
+- Confirm `npm run preview:hong-kong-cfs-classifier-input` writes ignored local reports under `outputs/llm-classifier/input-preview/hong-kong-cfs/`.
+- Confirm `npm run audit:hong-kong-cfs-classifier-input-preview` passes.
+- Confirm the preview includes 100 total Hong Kong CFS records and the requested sample count.
+- Confirm the preview includes allergen, contamination, and foreign matter cases when present.
+- Confirm generic and proposed input token estimates are reported.
+- Confirm the noise report checks raw HTML leakage, fallback strings, repeated strings, missing product identity, missing hazard/risk evidence, missing action evidence, importer/contact domination, and identifier over-extraction.
+- Confirm generated preview outputs are not staged or committed.
+- Confirm no Gemini/OpenAI calls, canonical data changes, source refreshes, runtime UI changes, backend, database, or translation were introduced.
