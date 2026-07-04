@@ -284,3 +284,5 @@ Phase 41 adds `docs/recall-taxonomy-v2.md` as the future category/navigation des
 ## Taxonomy V2 UI Preview Note
 
 Phase 44B adds `/dev/taxonomy-v2-preview` to review future product-family navigation and detail-page structure before public UI migration. Phase 44C locks all 15 Taxonomy V2 product families as the future public category list. Search remains first, product-family categories second, source/country browsing third, and issue/hazard tags secondary. This preview should not change the accepted homepage baseline or current public category routes.
+
+Phase 44D adds source-aware identifier guidance. Search and detail copy should treat barcode as optional and one of many possible identifiers. Use brand, product name, model, lot or batch code, date mark, pack size, certification number, recall number, alert number, and source-specific product details as consumer guidance without making the search UI text-heavy.

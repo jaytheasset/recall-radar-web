@@ -118,6 +118,66 @@ Optional or source-dependent fields:
 
 Optional arrays should be empty or omitted when the source does not expose reliable values.
 
+## Identifier V2 Model
+
+Barcode is optional. Official recall sources do not expose the same identifier fields, and many notices do not include a barcode at all. Future canonical records should store identifiers as a typed array, not as a barcode-only field.
+
+Recommended shape:
+
+```json
+{
+  "identifiers": [
+    {
+      "type": "gtin",
+      "label": "GTIN",
+      "value": "1234567890123",
+      "sourceField": "identification_produits",
+      "confidence": 1,
+      "display": true
+    }
+  ]
+}
+```
+
+Supported initial `RecallIdentifierTypeV2` values:
+
+- `barcode`
+- `gtin`
+- `upc`
+- `ean`
+- `model-number`
+- `item-number`
+- `serial-number`
+- `lot-code`
+- `batch-code`
+- `date-code`
+- `best-before-date`
+- `use-by-date`
+- `expiry-date`
+- `pack-size`
+- `certification-number`
+- `recall-number`
+- `alert-number`
+- `notice-id`
+- `sku`
+- `product-code`
+- `manufacturer-code`
+- `retailer`
+- `importer`
+- `distributor`
+- `origin-country`
+- `date-range`
+- `other`
+
+Rules:
+
+- Preserve official formatting where possible.
+- Use `sourceField` to record the raw field name when it is available.
+- Use `display: true` only for values that are suitable for consumer-facing detail pages.
+- Do not infer identifiers from generic text.
+- Search should eventually rank exact `identifiers.value` matches strongly across all identifier types.
+- Do not tell users to rely on barcode only; identifier availability varies by source.
+
 ## Fields Not Shown Directly To Users
 
 These fields are for validation, traceability, audits, or future admin/review tools:
@@ -147,6 +207,8 @@ Future search index input should include:
 - `remedy`
 - `affectedUnits`
 - `identifiers.value`
+- `identifiers.label`
+- `identifiers.type`
 - `source`
 - `sourceLabel`
 - `market`

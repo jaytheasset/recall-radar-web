@@ -1,5 +1,6 @@
 import type { SiteRecall } from './recall-data';
 import { categoryRoutes, siteRecalls } from './recall-data';
+import { getNoResultIdentifierHint } from './identifier-guidance.ts';
 import { getRecallSourceLabel, type CurrentCoverageSourceId } from './recall-sources';
 
 export type SourceLandingPageConfig = {
@@ -36,7 +37,7 @@ export type SourceLandingProductTypeFilter = {
 };
 
 const SOURCE_PAGE_NO_RESULT_COPY =
-  'No indexed notices match this search or product type filter in this source group. This does not mean the product is safe or recall-free. Try another brand, model, barcode, lot, ingredient, hazard, or keyword.';
+  getNoResultIdentifierHint();
 
 export const sourceLandingPages: SourceLandingPageConfig[] = [
   {
@@ -56,7 +57,7 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
       ctaLabel: 'Browse US recalls'
     },
     searchLabel: 'Search within United States notices',
-    searchPlaceholder: 'Search product, brand, model, UPC, lot, ingredient, or keyword',
+    searchPlaceholder: 'Search product, brand, model, lot, date, recall number, or barcode',
     noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
   },
   {
@@ -76,7 +77,7 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
       ctaLabel: 'Browse Canada recalls'
     },
     searchLabel: 'Search within Canada notices',
-    searchPlaceholder: 'Search product, brand, model, barcode, alert id, or keyword',
+    searchPlaceholder: 'Search product, brand, model, item detail, alert id, or keyword',
     noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
   },
   {
@@ -96,7 +97,7 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
       ctaLabel: 'Browse EU alerts'
     },
     searchLabel: 'Search within EU Safety Gate alerts',
-    searchPlaceholder: 'Search product, brand, model, barcode, risk, reference, or keyword',
+    searchPlaceholder: 'Search product, brand, model, batch, alert number, or barcode',
     noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
   },
   {
@@ -116,7 +117,7 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
       ctaLabel: 'Browse France recalls'
     },
     searchLabel: 'Search within France notices',
-    searchPlaceholder: 'Search product, brand, GTIN, lot, risk, reference, or keyword',
+    searchPlaceholder: 'Search product, brand, GTIN, lot, date, reference, or keyword',
     noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
   },
   {
@@ -156,7 +157,7 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
       ctaLabel: 'Browse Australia recalls'
     },
     searchLabel: 'Search within Australia notices',
-    searchPlaceholder: 'Search product, brand, model, barcode, supplier, hazard, or keyword',
+    searchPlaceholder: 'Search product, brand, model, batch, supplier, or keyword',
     noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
   },
   {

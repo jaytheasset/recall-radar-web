@@ -392,6 +392,8 @@ Phase 43 finalizes the future V2 schema plan without runtime migration.
 
 Future `NormalizedRecallV2` records require `classification` and do not require the old `category` field. The current runtime still uses legacy category-derived fields until a separate migration phase. Phase 44 should run a bounded Gemini per-source classification test into ignored `outputs/llm-classifier/per-source/` files only.
 
+Phase 44D adds type-only Identifier V2 planning and source-aware UI guidance. `identifiers` is a typed array in the future schema, barcode is optional, and identifier availability varies by official source. Current canonical data is not migrated; search/detail/category/source pages only receive concise guidance copy.
+
 ## LLM Environment Setup
 
 Phase 44A adds local-only environment handling for classifier CLI scripts.
@@ -415,3 +417,13 @@ Phase 44B adds `/dev/taxonomy-v2-preview` as a noindex development preview for f
 - Audit: `npm run audit:taxonomy-v2-ui-preview`
 
 The preview uses artificial examples only. Product family categories are the future primary public browse model; hazard types are secondary issue tags for results/details and optional later filtering. Phase 44C does not change canonical records, current public category pages, source pages, homepage category links, runtime filtering, or detail pages.
+
+## Source-Aware Identifier Guidance
+
+Phase 44D centralizes identifier guidance in `src/lib/identifier-guidance.ts` and audits it with `npm run audit:identifier-guidance`.
+
+- Barcode is optional and must not be described as required.
+- Source-specific guidance covers all active sources.
+- No-result copy reminds users that no indexed match is not a safety or recall-free confirmation.
+- Detail pages show a concise source-aware verification note.
+- Identifier V2 remains type-only planning; no canonical records or source outputs are changed.

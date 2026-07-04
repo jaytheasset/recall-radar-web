@@ -32,6 +32,8 @@ The classifier receives only normalized recall fields already collected from off
 }
 ```
 
+`identifiers` is source-dependent evidence. Barcode is optional and many official notices use other identifiers such as model numbers, lot or batch codes, date marks, pack sizes, certification numbers, recall numbers, alert numbers, importer/retailer details, or product descriptions. The classifier must not treat missing barcode data as evidence that a product is outside recall scope.
+
 ## Output Rules
 
 The classifier must:

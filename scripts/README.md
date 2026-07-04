@@ -815,3 +815,11 @@ npm run audit:taxonomy-v2-ui-preview
 ```
 
 This command validates the development-only Taxonomy V2 UI preview at `/dev/taxonomy-v2-preview`. It checks the locked 15-label public product-family list, `Need Review` display label, secondary issue-tag framing, and no canonical data migration. The preview uses artificial records from `data/samples/recall-taxonomy-v2-examples.json` and does not run LLM classification, source fetches, source normalizers, source merges, or canonical record migration.
+
+## Source-Aware Identifier Guidance Audit
+
+```powershell
+npm run audit:identifier-guidance
+```
+
+This command is static and non-network. It validates the identifier guidance helper, source-specific identifier copy for all active sources, no-result/search/detail guidance, typed Identifier V2 schema notes, and barcode-optional wording. It does not call an LLM, fetch sources, normalize records, merge data, change canonical processed files, or migrate runtime categories.

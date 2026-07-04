@@ -11,23 +11,42 @@ import type {
 
 export const RECALL_DATA_SCHEMA_VERSION = 'recall-data-schema-v2' as const;
 
+export type RecallIdentifierTypeV2 =
+  | 'barcode'
+  | 'gtin'
+  | 'upc'
+  | 'ean'
+  | 'model-number'
+  | 'item-number'
+  | 'serial-number'
+  | 'lot-code'
+  | 'batch-code'
+  | 'date-code'
+  | 'best-before-date'
+  | 'use-by-date'
+  | 'expiry-date'
+  | 'pack-size'
+  | 'certification-number'
+  | 'recall-number'
+  | 'alert-number'
+  | 'notice-id'
+  | 'sku'
+  | 'product-code'
+  | 'manufacturer-code'
+  | 'retailer'
+  | 'importer'
+  | 'distributor'
+  | 'origin-country'
+  | 'date-range'
+  | 'other';
+
 export type RecallIdentifierV2 = {
-  type:
-    | 'model'
-    | 'upc'
-    | 'gtin'
-    | 'ean'
-    | 'sku'
-    | 'lot'
-    | 'batch'
-    | 'serial'
-    | 'recall-number'
-    | 'date-code'
-    | 'manufacturer-code'
-    | 'other';
+  type: RecallIdentifierTypeV2;
   value: string;
   label?: string;
-  sourceField?: ClassificationEvidenceField | 'raw';
+  sourceField?: ClassificationEvidenceField | 'raw' | string;
+  confidence?: number;
+  display?: boolean;
 };
 
 export type RecallImageV2 = {

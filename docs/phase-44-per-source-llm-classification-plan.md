@@ -6,6 +6,8 @@ Phase 44A adds the local env loader, `.env.example`, env diagnostic, and Gemini 
 
 Phase 44C locks all 15 Taxonomy V2 product families as the future public category list. Gemini classification should preserve the enum values; public route migration remains deferred until classified outputs pass review. Hazard types should be treated as secondary issue tags, not primary public navigation.
 
+Phase 44D adds source-aware identifier guidance. The Gemini test should treat identifiers as optional source-dependent evidence. Do not assume barcode exists, and do not penalize records that use model, lot, batch, date mark, pack size, certification, recall number, alert number, importer, retailer, or distribution details instead.
+
 ## Provider
 
 - Preferred provider: Gemini

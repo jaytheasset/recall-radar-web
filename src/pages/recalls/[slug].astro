@@ -202,6 +202,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
               <ul class="verification-checklist">
                 {view.verificationChecklist.map((item) => <li>{item}</li>)}
               </ul>
+              <p class="verification-note">{view.identifierVerificationHint}</p>
               <p class="verification-note">{view.detailSafetyCopy}</p>
               {hasSparseIdentificationDetails ? <p class="verification-note">{view.sparseIdentificationCopy}</p> : null}
             </section>

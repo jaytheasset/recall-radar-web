@@ -18,12 +18,13 @@ import {
 import { getImageLoadingAttributes, getRecallImageForContext } from '../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../lib/recall-sources';
 import { getBalancedRecentRecalls } from '../lib/homepage-recent';
+import { IDENTIFIER_SEARCH_PLACEHOLDER } from '../lib/identifier-guidance';
 import { getSourceLandingPageCards } from '../lib/source-landing-pages';
 import '../styles/global.css';
 
 const title = 'Recall Radar | Global product recall search';
 const description =
-  'Recall Radar helps consumers search official product recall notices across markets by brand, product name, model number, UPC/barcode, lot code, ingredient, or keyword.';
+  'Recall Radar helps consumers search official product recall notices across markets by brand, product name, model number, barcode, lot or batch code, date mark, recall number, ingredient, or keyword.';
 const recentRecalls = getBalancedRecentRecalls(siteRecalls, { limit: 12 });
 const babyCount = getRecallsByCategory('baby-kids').length;
 const batteryCount = getRecallsByCategory('battery-electronics').length;
@@ -62,7 +63,7 @@ const productTypes = [
     icon: 'food',
     href: '/food-allergy-recalls',
     count: foodCount,
-    description: 'Foods, allergens, UPCs, and lots.'
+    description: 'Foods, allergens, lots, and dates.'
   },
   {
     label: 'Household Products',
@@ -141,18 +142,18 @@ const sourceCardDetails = {
         <div class="home-hero-copy">
           <h1>Search official recall notices across markets.</h1>
           <p class="lead">
-            Search by brand, product, model, barcode, lot code, ingredient, or keyword.
+            Search by brand, product, model, lot or batch code, date mark, recall number, barcode, ingredient, or keyword.
           </p>
         </div>
 
         <div class="home-search-panel" aria-label="Search product recall notices">
           <form class="home-search-module" action="/checker" method="get">
-            <label class="sr-only" for="home-recall-search">Brand, product, model, UPC, lot code, ingredient, or keyword</label>
+            <label class="sr-only" for="home-recall-search">Brand, product, model, barcode, lot, date, or recall number</label>
             <input
               id="home-recall-search"
               name="q"
               type="search"
-              placeholder="Product, brand, model, barcode, or lot code"
+              placeholder={IDENTIFIER_SEARCH_PLACEHOLDER}
             />
             <button class="btn btn-primary" type="submit">Check recalls</button>
           </form>

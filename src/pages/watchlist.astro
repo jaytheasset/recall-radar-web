@@ -164,6 +164,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
     <script id="watchlist-recall-data" type="application/json" is:inline set:html={watchlistRecallsJson}></script>
     <script>
       import { MATCH_LABELS, SEARCH_RESULTS_DISCLAIMER, getRecallIdentifierHint, searchRecalls } from '../lib/recall-search';
+      import { getNoResultIdentifierHint } from '../lib/identifier-guidance';
       import {
         getRecallActionLabel,
         getRecallDefaultActionFallback,
@@ -434,7 +435,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
           list.replaceChildren(...matches.map(createRecallPreview));
         } else {
           const empty = document.createElement('p');
-          empty.textContent = 'No clear match found for this saved item in the indexed notices right now.';
+          empty.textContent = getNoResultIdentifierHint();
           list.append(empty);
         }
 

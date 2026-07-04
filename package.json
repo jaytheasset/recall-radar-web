@@ -70,6 +70,7 @@
     "audit:recall-taxonomy-v2-design": "node --experimental-strip-types scripts/audit-recall-taxonomy-v2-design.ts",
     "audit:taxonomy-v2-ui-preview": "node --experimental-strip-types scripts/audit-taxonomy-v2-ui-preview.ts",
     "audit:recall-data-schema-v2-readiness": "node --experimental-strip-types scripts/audit-recall-data-schema-v2-readiness.ts",
+    "audit:identifier-guidance": "node --experimental-strip-types scripts/audit-identifier-guidance.ts",
     "debug:llm-classifier-env": "node --experimental-strip-types scripts/debug-llm-classifier-env.ts",
     "probe:gemini-classifier": "node --experimental-strip-types scripts/probe-gemini-classifier.ts",
     "classify:recalls:taxonomy-v2:dry-run": "node --experimental-strip-types scripts/classify-recalls-taxonomy-v2-dry-run.ts",

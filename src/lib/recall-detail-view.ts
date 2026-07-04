@@ -1,6 +1,7 @@
 import processedRecallData from '../../data/processed/recalls.json';
 import type { NormalizedRecall, ProcessedRecallFile, RecallImage } from '../data/recall-types';
 import type { SiteRecall } from './recall-data';
+import { getDetailVerificationIdentifierHint } from './identifier-guidance.ts';
 import { getDisplayImageCaption } from './recall-images';
 import {
   getOfficialSourceLabel,
@@ -47,6 +48,7 @@ export type RecallDetailView = {
   identificationDetails: DetailFact[];
   verificationIntro: string;
   verificationChecklist: string[];
+  identifierVerificationHint: string;
   sparseIdentificationCopy: string;
   detailSafetyCopy: string;
   consumerContact: string;
@@ -82,6 +84,7 @@ type SourceDetailView = Omit<
   | 'actionLabel'
   | 'verificationIntro'
   | 'verificationChecklist'
+  | 'identifierVerificationHint'
   | 'sparseIdentificationCopy'
   | 'detailSafetyCopy'
   | 'quantityLabel'
@@ -1153,6 +1156,7 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
     actionLabel: getRecallActionLabel(recall.source),
     verificationIntro: getRecallVerificationIntro(recall.source),
     verificationChecklist: getRecallVerificationChecklist(recall.source),
+    identifierVerificationHint: getDetailVerificationIdentifierHint(recall.source),
     sparseIdentificationCopy: getRecallSparseIdentificationCopy(recall.source),
     detailSafetyCopy:
       'Search matches and indexed notices are not safety confirmations. Verify affected models, lots, dates, distribution, and remedies with the official notice.',

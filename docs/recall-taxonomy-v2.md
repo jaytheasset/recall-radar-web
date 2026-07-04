@@ -72,6 +72,7 @@ Taxonomy V2 separates independent decisions:
 - `recallDomain`: broad regulatory or recall area.
 - `audience`: consumers who should pay special attention.
 - classification metadata: method, confidence, reason, evidence, model, and prompt version.
+- source-aware identifiers: optional typed identifier arrays in Data Schema V2. Barcode is only one possible identifier and may be missing.
 
 Do not add source-specific keyword exceptions as the long-term fix. The classifier should use source text and fixed enum choices.
 
@@ -342,6 +343,8 @@ Taxonomy v2 should make public routes clearer and less source-specific:
 ## 15. LLM Classifier Plan
 
 The classifier should run offline during data generation. It should be cheap, bounded, and deterministic enough for repeatable backfills.
+
+Classifier input may include identifiers, but source coverage varies. Do not assume a barcode exists. Treat model numbers, lot or batch codes, date marks, pack sizes, certification numbers, recall numbers, alert numbers, and source-specific product details as possible evidence when present.
 
 Classifier requirements:
 

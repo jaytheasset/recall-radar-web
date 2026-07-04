@@ -2,6 +2,7 @@
 import EuImageResourceHints from './EuImageResourceHints.astro';
 import { getSourceLandingProductTypeFilters, type SourceLandingPageConfig } from '../lib/source-landing-pages';
 import type { SiteRecall } from '../lib/recall-data';
+import { getGeneralIdentifierGuidance, getSourceIdentifierGuidance } from '../lib/identifier-guidance';
 import { sourcePageSearchTextFor } from '../lib/source-page-search';
 import { getRecallImageForContext } from '../lib/recall-images';
 import { getRecallSourceLabel, getRecallSourcePlaceholder } from '../lib/recall-sources';
@@ -15,6 +16,8 @@ type Props = {
 const { page, recalls } = Astro.props;
 const sourceLabels = page.sourceIds.map((source) => getRecallSourceLabel(source));
 const productTypeFilters = getSourceLandingProductTypeFilters(page);
+const identifierGuidance =
+  page.sourceIds.length === 1 ? getSourceIdentifierGuidance(page.sourceIds[0]) : getGeneralIdentifierGuidance();
 ---
 
 <html lang="en">
@@ -81,6 +84,7 @@ const productTypeFilters = getSourceLandingProductTypeFilters(page);
           <button class="btn btn-primary" type="submit">Search this source</button>
           <button class="btn btn-secondary" type="button" data-category-search-clear hidden>Clear</button>
         </form>
+        <p class="form-note search-guidance-note">{identifierGuidance}</p>
         <div class="category-search-status">
           <span class="status-pill" data-category-result-count>
             {recalls.length} of {recalls.length} indexed notice{recalls.length === 1 ? '' : 's'} shown

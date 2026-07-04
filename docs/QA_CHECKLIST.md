@@ -390,6 +390,8 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm `NormalizedRecallV2` requires `classification` and does not require old `category`.
 - Confirm current canonical `data/processed/recalls.json` remains unchanged.
 - Confirm no UI category migration, route migration, source refresh, LLM call, backend, database, or translation was introduced in Phase 43.
+- Confirm `identifiers` is documented as a typed array and barcode is optional.
+- Confirm future search planning ranks exact matches across all identifier types, not barcode only.
 
 ## LLM Environment Setup
 
@@ -410,3 +412,13 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm issue/hazard tags are described as secondary metadata, not primary public navigation.
 - Confirm `/dev/taxonomy-v2-preview` is not linked from the public homepage or primary navigation.
 - Confirm current category pages, source pages, checker, homepage, and detail pages still work unchanged.
+
+## Source-Aware Identifier Guidance
+
+- Confirm `npm run audit:identifier-guidance` passes.
+- Confirm homepage/checker search copy does not imply barcode is required.
+- Confirm checker, category pages, source pages, and watchlist no-result copy says no indexed match does not mean the product is safe or recall-free.
+- Confirm no-result copy suggests alternate identifiers such as model, barcode, lot or batch code, date mark, pack size, certification number, recall number, ingredient, or keyword.
+- Confirm detail pages show concise source-aware identifier verification guidance.
+- Confirm all active sources have source-specific identifier guidance.
+- Confirm no canonical data, source ids, source counts, source fetches, LLM calls, backend, database, or public category migration were introduced.

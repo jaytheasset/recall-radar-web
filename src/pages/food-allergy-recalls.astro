@@ -2,13 +2,14 @@
 import EuImageResourceHints from '../components/EuImageResourceHints.astro';
 import { getRecallsByCategory } from '../lib/recall-data';
 import { categorySearchTextFor } from '../lib/category-search';
+import { getNoResultIdentifierHint } from '../lib/identifier-guidance';
 import { getRecallImageForContext } from '../lib/recall-images';
 import { getRecallSourceLabel, getRecallSourcePlaceholder } from '../lib/recall-sources';
 import '../styles/global.css';
 
 const title = 'Food & Allergy Recalls | Recall Radar';
 const description =
-  'Browse food and allergy recall notices in Recall Radar, including undeclared allergens, packaged foods, UPCs, and lot codes.';
+  'Browse food and allergy recall notices in Recall Radar, including undeclared allergens, packaged foods, lot codes, date marks, and identifiers when listed.';
 const recalls = getRecallsByCategory('food-allergy').sort((a, b) => {
   if (a.source !== b.source) {
     return a.source === 'FDA' ? -1 : 1;
@@ -26,9 +27,8 @@ const ukFsaSourceLabel = getRecallSourceLabel('UK_FSA');
 const franceSourceLabel = getRecallSourceLabel('FR_RAPPELCONSO');
 const canadaSourceLabel = getRecallSourceLabel('CA_RECALLS');
 const cpscSourceLabel = getRecallSourceLabel('CPSC');
-const searchPlaceholder = 'Search food, brand, ingredient, allergen, lot code, or keyword';
-const noResultCopy =
-  'No indexed notices match this search in this product type. This does not mean the product is safe or recall-free. Try another brand, model, barcode, ingredient, allergen, or keyword.';
+const searchPlaceholder = 'Search food, brand, ingredient, allergen, lot, date, or keyword';
+const noResultCopy = getNoResultIdentifierHint();
 ---
 
 <html lang="en">
@@ -65,7 +65,7 @@ const noResultCopy =
           <span class="tag">{cpscRelevantRecalls.length} {cpscSourceLabel}</span>
         </div>
         <h1>Food & Allergy recalls</h1>
-        <p class="lead">Food, allergen, UPC, lot code, and packaged goods recall notices.</p>
+        <p class="lead">Food, allergen, lot, date mark, and packaged goods recall notices.</p>
       </section>
 
       <section class="section category-search-panel" data-category-search-root data-category-total={recalls.length}>

@@ -2,6 +2,7 @@
 import EuImageResourceHints from '../components/EuImageResourceHints.astro';
 import { getRecallsByCategory } from '../lib/recall-data';
 import { categorySearchTextFor } from '../lib/category-search';
+import { getNoResultIdentifierHint } from '../lib/identifier-guidance';
 import { getRecallImageForContext } from '../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../lib/recall-sources';
 import '../styles/global.css';
@@ -11,8 +12,7 @@ const description =
   'Browse baby and kids product recall notices in Recall Radar, including cribs, nursery products, toys, and child-focused notices.';
 const recalls = getRecallsByCategory('baby-kids');
 const searchPlaceholder = 'Search baby products, brand, model, or keyword';
-const noResultCopy =
-  'No indexed notices match this search in this product type. This does not mean the product is safe or recall-free. Try another brand, model, barcode, ingredient, allergen, or keyword.';
+const noResultCopy = getNoResultIdentifierHint();
 ---
 
 <html lang="en">

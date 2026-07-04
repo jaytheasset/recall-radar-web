@@ -5,6 +5,7 @@ import {
   tokenizeExpandedSearchTerms,
   tokenizeSearchQuery
 } from './multilingual-search.ts';
+import { getSourceIdentifierGuidance } from './identifier-guidance.ts';
 
 export type RecallMatchType = 'exact' | 'possible' | 'related' | 'none';
 export type RecallMatchReason =
@@ -46,7 +47,7 @@ export const SEARCH_RESULTS_DISCLAIMER =
 
 export const MATCH_REASON_LABELS: Record<RecallMatchReason, string> = {
   'recall-number': 'Matched by recall number',
-  identifier: 'Matched by UPC, lot, or code text',
+  identifier: 'Matched by identifier text',
   brand: 'Matched by brand/company',
   product: 'Matched by product name',
   ingredient: 'Matched by ingredient or allergen',
@@ -336,43 +337,7 @@ function sourceFields(recall: SiteRecall): string[] {
 }
 
 export function getRecallIdentifierHint(recall: Pick<SiteRecall, 'source'>): string {
-  if (recall.source === 'FDA') {
-    return 'Check UPC/barcode, lot or date code, ingredient, distribution, and official notice details.';
-  }
-
-  if (recall.source === 'FR_RAPPELCONSO') {
-    return 'Check GTIN/barcode, model, lot or date code, distribution, and official notice details.';
-  }
-
-  if (recall.source === 'CA_RECALLS') {
-    return 'Check UPC/barcode, model or item number, lot/date code, DIN/NPN if listed, and official notice details.';
-  }
-
-  if (recall.source === 'EU_SAFETY_GATE') {
-    return 'Check Safety Gate reference, barcode, model or batch, product photos, market details, and official alert.';
-  }
-
-  if (recall.source === 'UK_FSA') {
-    return 'Check FSA reference, product name, pack size, batch/date code, allergen details, and official notice.';
-  }
-
-  if (recall.source === 'AU_PRODUCT_SAFETY') {
-    return 'Check product name, brand, model, barcode, sale dates, supplier or trader details, and official notice.';
-  }
-
-  if (recall.source === 'HK_CFS') {
-    return 'Check product name, brand, batch, best-before/use-by date, importer or retailer details, and official notice.';
-  }
-
-  if (recall.source === 'FSANZ_FOOD_RECALLS') {
-    return 'Check product name, brand, date marking, batch, barcode, distribution, and official notice details.';
-  }
-
-  if (recall.source === 'CPSC') {
-    return 'Check model, UPC/barcode, date, product photos, and official notice details.';
-  }
-
-  return 'Check model, UPC/barcode, lot code, date, and official notice details.';
+  return getSourceIdentifierGuidance(recall.source);
 }
 
 function getMatchReason(query: string, recall: SiteRecall): RecallMatchReason {

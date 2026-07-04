@@ -267,6 +267,7 @@ Canonical/site URL status:
 - Confirm `data/processed/recalls-v2.json` is not created until a separate reviewed migration phase.
 - Confirm Phase 44 per-source outputs are planned for ignored `outputs/llm-classifier/per-source/` files only.
 - Confirm runtime category/search/filter pages still use the current schema until an explicit V2 migration branch.
+- Confirm Identifier V2 remains typed-array planning only, barcode is optional, and current canonical records are not migrated.
 
 ## O. LLM Environment Gate
 
@@ -284,3 +285,11 @@ Canonical/site URL status:
 - Confirm the approved public category list uses all 15 product-family labels, including `Need Review`.
 - Confirm issue/hazard tags remain secondary metadata and are not presented as the primary homepage navigation model.
 - Do not replace public category routes until product owner review is complete.
+
+## Q. Source-Aware Identifier Guidance Gate
+
+- Run `npm run audit:identifier-guidance`.
+- Confirm search/no-result/detail copy treats barcode as optional.
+- Confirm source-specific identifier guidance covers all active sources.
+- Confirm no copy says every recall has a barcode, barcode is required, or no barcode means no recall.
+- Confirm no source refresh, canonical data migration, LLM classification, backend, database, or category route migration was introduced.

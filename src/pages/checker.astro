@@ -19,12 +19,14 @@ import {
 } from '../lib/recall-data';
 import { getRecallImageForContext } from '../lib/recall-images';
 import { getSourceOptionsForCurrentCoverage } from '../lib/recall-sources';
+import { getIdentifierSearchHint, IDENTIFIER_SEARCH_PLACEHOLDER } from '../lib/identifier-guidance';
 import { getSourceLandingPageCards } from '../lib/source-landing-pages';
 import '../styles/global.css';
 
 const title = 'Product Recall Checker | Recall Radar';
 const description =
-  'Search product recalls by keyword, product, brand, model number, UPC/barcode, lot code, ingredient, allergen, or official source.';
+  'Search product recalls by keyword, product, brand, model number, barcode, lot or batch code, date mark, recall number, ingredient, allergen, or official source.';
+const identifierSearchHint = getIdentifierSearchHint();
 const featuredBrands = brandGroups.slice(0, 18);
 const checkerRecalls = siteRecalls.map((recall) => {
   const cardImage = getRecallImageForContext(recall, 'list');
@@ -117,7 +119,7 @@ const sourcePages = getSourceLandingPageCards();
       <section class="section">
         <p class="eyebrow">Product recall search</p>
         <h1>Search product recalls</h1>
-        <p class="lead">Search official recall notices by product, brand, model number, UPC/barcode, lot code, ingredient, allergen, or keyword.</p>
+        <p class="lead">Search official recall notices by product, brand, model number, lot or batch code, date mark, recall number, barcode, ingredient, allergen, or keyword.</p>
         <div class="meta-row data-source-row">
           <span class="status-pill">{dataSourceLabel}</span>
           <span class="tag">
@@ -153,7 +155,7 @@ const sourcePages = getSourceLandingPageCards();
                 id="recall-query"
                 name="q"
                 type="search"
-                placeholder="Search product, brand, model, UPC, lot code, ingredient, or keyword"
+                placeholder={IDENTIFIER_SEARCH_PLACEHOLDER}
                 autocomplete="off"
               />
             </label>
@@ -186,6 +188,7 @@ const sourcePages = getSourceLandingPageCards();
               </label>
             </div>
           </form>
+          <p class="form-note search-guidance-note">{identifierSearchHint}</p>
           <p id="save-search-status" class="form-note" hidden></p>
           <div class="example-searches" aria-label="Example searches">
             <span>Examples:</span>
@@ -262,6 +265,7 @@ const sourcePages = getSourceLandingPageCards();
     <script id="recall-search-data" type="application/json" is:inline set:html={checkerRecallsJson}></script>
     <script>
       import { MATCH_LABELS, SEARCH_RESULTS_DISCLAIMER, searchRecalls } from '../lib/recall-search';
+      import { getNoResultIdentifierHint } from '../lib/identifier-guidance';
       import {
         getRecallActionLabel,
         getRecallDefaultActionFallback,
@@ -637,21 +641,16 @@ const sourcePages = getSourceLandingPageCards();
         heading.textContent = 'No clear match found';
 
         const body = document.createElement('p');
-        body.textContent =
-          'We did not find a clear match in the indexed recall notices. This does not mean the product is safe or recall-free.';
-
-        const suggestion = document.createElement('p');
-        suggestion.className = 'no-result-suggestion';
-        suggestion.textContent =
-          'Try searching by brand name, model number, UPC/barcode, lot code, ingredient, allergen, or product type.';
+        body.textContent = getNoResultIdentifierHint();
 
         const suggestionList = document.createElement('ul');
         suggestionList.className = 'no-result-suggestions';
         [
           'Brand or company name',
           'Model number or item number',
-          'UPC/barcode',
-          'Lot or batch code',
+          'Barcode, UPC, GTIN, or EAN when listed',
+          'Lot, batch, or date mark',
+          'Pack size, certification number, or recall number',
           'Ingredient or allergen',
           'Product type'
         ].forEach((text) => {
@@ -660,7 +659,7 @@ const sourcePages = getSourceLandingPageCards();
           suggestionList.append(item);
         });
 
-        emptyState.append(heading, body, suggestion, suggestionList);
+        emptyState.append(heading, body, suggestionList);
         return emptyState;
       }
 
@@ -750,7 +749,7 @@ const sourcePages = getSourceLandingPageCards();
           summary.textContent =
             shouldShowBrowseResults
               ? `Showing indexed notices for ${describeFilters(state)}.`
-              : 'Search official recall notices by product, brand, model, UPC/barcode, lot code, ingredient, or keyword.';
+              : 'Search official recall notices by product, brand, model, lot or batch code, date mark, recall number, barcode, ingredient, or keyword.';
           list.replaceChildren(
             ...(shouldShowBrowseResults
               ? browseRecalls.length
