@@ -34,7 +34,8 @@ export function getRecallImageForContext(
     (recall.source === 'EU_SAFETY_GATE' ||
       recall.source === 'CA_RECALLS' ||
       recall.source === 'AU_PRODUCT_SAFETY' ||
-      recall.source === 'NZ_PRODUCT_SAFETY') &&
+      recall.source === 'NZ_PRODUCT_SAFETY' ||
+      recall.source === 'HK_CFS') &&
     (context === 'card' || context === 'list' || context === 'related');
   const fullUrl = recall.primaryImageUrl;
   const thumbnailUrl = recall.primaryImageThumbnailUrl;
@@ -86,7 +87,8 @@ export function getDetailHeroImageSources(
   const isProgressive =
     (recall.source === 'EU_SAFETY_GATE' ||
       recall.source === 'AU_PRODUCT_SAFETY' ||
-      recall.source === 'NZ_PRODUCT_SAFETY') &&
+      recall.source === 'NZ_PRODUCT_SAFETY' ||
+      recall.source === 'HK_CFS') &&
     Boolean(fullSrc && thumbnailSrc && fullSrc !== thumbnailSrc);
 
   if (isProgressive) {

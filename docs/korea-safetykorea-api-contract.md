@@ -7,7 +7,7 @@ Phase 36 prepares the SafetyKorea API contract for a future `KR_SAFETYKOREA` sou
 - Live source active: no
 - Korea records added: no
 - Canonical total after Phase 36: 901
-- Current canonical total after Phase 37: 1001
+- Current canonical total after Phase 38: 1101
 - Source filters changed: no
 - Prepared helper: `scripts/korea-safetykorea-api-contract.ts`
 - Fixture audit: `npm run audit:korea-safetykorea-contract`

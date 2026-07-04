@@ -6,7 +6,8 @@ export type SourceBackfillId =
   | 'EU_SAFETY_GATE'
   | 'UK_FSA'
   | 'AU_PRODUCT_SAFETY'
-  | 'NZ_PRODUCT_SAFETY';
+  | 'NZ_PRODUCT_SAFETY'
+  | 'HK_CFS';
 
 export type BackfillStatus = 'ready' | 'partial' | 'needs-investigation' | 'not-applicable';
 
@@ -349,6 +350,50 @@ export const sourceBackfillRegistry: SourceBackfillRegistryEntry[] = [
       'Full New Zealand backfill.',
       'Date-window strategy.',
       'New Zealand MPI food and NZTA vehicle sources.',
+      'Cross-source dedupe.'
+    ]
+  },
+  {
+    sourceId: 'HK_CFS',
+    outputKey: 'hong-kong-cfs',
+    label: 'Hong Kong - Centre for Food Safety',
+    currentCount: 100,
+    rawPath: 'data/raw/hong-kong-cfs-food-alerts.json',
+    processedPath: 'data/processed/hong-kong-cfs-food-alerts.json',
+    existingFetchScript: 'npm run fetch:hong-kong-cfs',
+    existingNormalizeScript: 'npm run normalize:hong-kong-cfs',
+    existingAuditScript: 'npm run audit:hong-kong-cfs',
+    existingUpdateScript: 'npm run update:hong-kong-cfs',
+    backfillStatus: 'partial',
+    suggestedBackfillMode: ['latest-pagination', 'detail-refresh', 'manual-source-specific'],
+    outputDir: 'data/backfill/hong-kong-cfs',
+    checkpointPath: 'data/backfill/hong-kong-cfs/checkpoints/hong-kong-cfs-backfill-checkpoint.json',
+    endpointOrInput: 'https://www.cfs.gov.hk/filemanager/foodalert/english/foodalert_datagovhk.xml',
+    currentFetchMode:
+      'Bounded latest-100 records from the official CFS DATA.GOV.HK XML feed plus annual HTML archive/detail pages.',
+    paginationStatus:
+      'The current spike follows official annual archive pages; a full historical backfill should chunk by year before canonical expansion.',
+    dateFilterStatus: 'Not implemented in current script; official annual archive pages provide year grouping.',
+    detailRefreshStatus: 'Implemented for the bounded latest 100 records during fetch.',
+    imageSupport: 'The bounded CFS food alert sample does not consistently expose official product image URLs.',
+    updateScriptBehavior: 'Fetches bounded source data, normalizes, merges canonical data, and runs the Hong Kong CFS audit.',
+    estimatedRisk: 'medium',
+    riskNotes: [
+      'The official XML feed only exposes the latest small set, so the 100-record spike also uses official HTML archive/detail pages.',
+      'Food alert detail fields vary by notice and may omit brand, barcode, or affected quantity.',
+      'Hong Kong CFS is food-alert coverage, not all Hong Kong consumer product recalls.'
+    ],
+    knownLimitations: [
+      'No full Hong Kong backfill.',
+      'No EMSD electrical or Customs consumer goods source ingestion.',
+      'No cross-source dedupe.'
+    ],
+    recommendedNextStep:
+      'Add a dry-run Hong Kong CFS backfill planner that chunks official annual archive pages before any canonical expansion.',
+    deferredWork: [
+      'Full Hong Kong CFS backfill.',
+      'Hong Kong EMSD electrical products source.',
+      'Hong Kong Customs consumer goods source.',
       'Cross-source dedupe.'
     ]
   }

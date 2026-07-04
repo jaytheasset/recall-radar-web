@@ -19,6 +19,7 @@ const requiredRoutes = [
   '/uk-food-recalls',
   '/australia-product-recalls',
   '/new-zealand-product-recalls',
+  '/hong-kong-food-recalls',
   '/brands/aldi',
   '/404',
   '/robots.txt',
@@ -29,7 +30,8 @@ const requiredRoutes = [
   '/recalls/abirdon-teething-toy-safety-gate-alert-eu-safety-gate-10099469',
   '/recalls/3d-trading-m-and-m-s-pipoca-popcorn-because-of-undeclared-allergens-uk-fsa-fsa-aa-20-2026',
   '/recalls/12-lcd-writing-tablet-au-product-safety-12-lcd-writing-tablet',
-  '/recalls/bath-toy-squishy-dollarama-nz-product-safety-bath-toy-squishy-and-music-instrument-toy'
+  '/recalls/bath-toy-squishy-dollarama-nz-product-safety-bath-toy-squishy-and-music-instrument-toy',
+  '/recalls/not-to-consume-a-kind-of-prepackaged-frozen-sardines-detected-with-hk-cfs-2026-619'
 ];
 
 function routeToDistPath(route: string): string {

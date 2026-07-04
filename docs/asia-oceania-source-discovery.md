@@ -4,7 +4,7 @@
 
 Phase 31 evaluated official Asia and Oceania recall source candidates for future Recall Radar ingestion. This was planning-only work and did not add records, activate source filters, create UI pages, refresh source data, or change the canonical processed data.
 
-Phase 33 later activated the bounded `AU_PRODUCT_SAFETY` source. Phase 37 later activated the bounded `NZ_PRODUCT_SAFETY` source. The remaining notes in this document are source-discovery context for future expansion, not the current active source list.
+Phase 33 later activated the bounded `AU_PRODUCT_SAFETY` source. Phase 37 later activated the bounded `NZ_PRODUCT_SAFETY` source. Phase 38 later activated the bounded `HK_CFS` source. The remaining notes in this document are source-discovery context for future expansion, not the current active source list.
 
 The current site remains limited to the active indexed sources already in `src/lib/recall-sources.ts`:
 
@@ -16,10 +16,11 @@ The current site remains limited to the active indexed sources already in `src/l
 - `UK_FSA`
 - `AU_PRODUCT_SAFETY`
 - `NZ_PRODUCT_SAFETY`
+- `HK_CFS`
 
 ## B. Current Coverage Gap
 
-Recall Radar now has bounded active Oceania coverage for Australia Product Safety and New Zealand Product Safety. The current global foundation covers the United States, France, Canada, the European Union, the United Kingdom, Australia, and New Zealand, but there are still no indexed official notices for Japan, South Korea, Singapore, Hong Kong, or Taiwan.
+Recall Radar now has bounded active Oceania coverage for Australia Product Safety and New Zealand Product Safety, plus bounded Hong Kong food/allergy coverage through CFS. The current global foundation covers the United States, France, Canada, the European Union, the United Kingdom, Australia, New Zealand, and Hong Kong, but there are still no indexed official notices for Japan, South Korea, Singapore, or Taiwan.
 
 The gap is mostly source-readiness work, not UI work. Before any country is exposed in filters or source pages, Recall Radar needs a source-specific connector, normalized output, source registry entry, audit script, count policy, detail-page field extraction, and a clear statement of coverage limits.
 
@@ -42,7 +43,7 @@ The gap is mostly source-readiness work, not UI work. Before any country is expo
 | Singapore | Singapore Food Agency newsroom recalls (`https://www.sfa.gov.sg/news-publications/newsroom`) | Singapore Food Agency | Food recalls | HTML media releases/search; API/RSS unknown | Medium; page scrape needed unless data endpoint discovered | Images often present in notices | Good product, importer, country of origin, best-before, allergen/hazard | English | Medium | 7 | Good English food source, but no confirmed machine feed. |
 | Singapore | Health Sciences Authority announcements (`https://www.hsa.gov.sg/announcements/`) | HSA | Therapeutic products, medical devices, health product recalls | HTML filtered announcements; API unknown | Medium | Media/attachments vary | Good batch/product fields on detail pages | English | Medium | Defer | Health-product scope requires category and disclaimer review. |
 | Singapore | Consumer Product Safety Office alerts (`https://www.consumerproductsafety.gov.sg/`) | CPSO | Consumer product safety alerts and recalls | Isomer/static HTML; API unknown | Medium-high; page paths/category pages need prototype | Images on detail pages likely | Good title/date/hazard; identifiers vary | English | Medium | 8 | Useful but likely HTML-only. |
-| Hong Kong | CFS Food Alerts / Allergy Alerts (`https://www.cfs.gov.hk/english/whatsnew/whatsnew_fa/whatsnew_fa.html`) | Centre for Food Safety | Food and allergy alerts | Official XML dataset on DATA.GOV.HK (`https://www.cfs.gov.hk/filemanager/foodalert/english/foodalert_datagovhk.xml`) | Good for latest XML; historical data availability needs check | Usually limited; detail pages may include text links | Moderate: subject, short description, official URL; detail fields vary | English/Traditional Chinese | Low-medium | 5b | Narrow but technically simple due official XML. |
+| Hong Kong | CFS Food Alerts / Allergy Alerts (`https://www.cfs.gov.hk/english/whatsnew/whatsnew_fa/whatsnew_fa.html`) | Centre for Food Safety | Food and allergy alerts | Official XML dataset on DATA.GOV.HK (`https://www.cfs.gov.hk/filemanager/foodalert/english/foodalert_datagovhk.xml`) plus official archive/detail pages | Partial bounded source is active for the latest 100 notices | Detail pages sometimes expose official images | Moderate: subject, product/company table fields, official URL; identifiers vary by notice | English/Traditional Chinese | Low-medium | Active bounded spike | Active as `HK_CFS`; full historical backfill remains deferred. |
 | Hong Kong | EMSD electrical products recalled/prohibited (`https://www.emsd.gov.hk/en/electricity_safety/electrical_products_recalled_prohibited/index.html`) | Electrical and Mechanical Services Department | Household electrical products | HTML page grouped by year; API unknown | Medium; single page may be parseable | Product and label photos appear | Strong for model, brand, supplier, hazard, date | English/Traditional Chinese | Medium | 9 | Good household/electrical fit; likely HTML parsing. |
 | Hong Kong | Customs consumer goods safety (`https://www.customs.gov.hk/en/service-enforcement-information/consumer-protection/goods-safety/index.html`) | Customs and Excise Department | Consumer goods safety alerts/enforcement | Press release HTML/search; API unknown | Low-medium | Unknown | Variable | English/Traditional Chinese | High | Defer | More enforcement-alert oriented than a structured recall source. |
 | Taiwan | TFDA food safety and consumer alerts (`https://www.fda.gov.tw/eng/` and `https://www.fda.gov.tw/tc/csmnewsContent.aspx`) | Taiwan Food and Drug Administration | Food/drug safety alerts; international food warning "traffic light" pages | HTML/news API possibility; specific recall feed not confirmed | Unknown | Attachments/images vary | Variable; local import status often present | Traditional Chinese/English summaries | High | 10 | Needs deeper API discovery before implementation. |
@@ -117,13 +118,13 @@ Risks:
 
 Singapore has English official sources but no confirmed easy feed in this pass. SFA food recall notices are detailed media releases and include product, importer, country of origin, best-before and allergen/hazard fields. HSA announcements include product recalls for therapeutic/health products. CPSO has consumer product alerts and recalls, but likely as static HTML.
 
-Hong Kong has one technically attractive source: CFS Food Alerts / Allergy Alerts has an official DATA.GOV.HK XML resource for English alerts. That makes it a good narrow food/allergy source candidate. EMSD electrical recalls are strong for household/electrical product details and images, but appear HTML-only. Customs consumer goods safety is useful authority context, but less structured as a recall feed.
+Hong Kong CFS Food Alerts / Allergy Alerts is now active as a bounded `HK_CFS` source using the official English XML resource plus official archive/detail pages. EMSD electrical recalls are still strong for household/electrical product details and images, but appear HTML-only. Customs consumer goods safety is useful authority context, but less structured as a recall feed.
 
 Taiwan has relevant official sources but needs deeper source discovery before implementation. TFDA publishes food/drug safety alert content and consumer "traffic light" warning pages, while BSMI's Commodity Safety Information site publishes consumer product recall details. BSMI is likely the best Taiwan product-safety candidate, but API/feed availability was not confirmed.
 
 Recommended next action:
 
-- Consider `HK_CFS` as a small low-risk XML food source after Australia/Korea.
+- Keep `HK_CFS` bounded until a separate reviewed full-backfill phase validates archive coverage and selector stability.
 - Keep Singapore and Taiwan candidates as follow-up source-specific discovery/prototype phases.
 
 Risks:
@@ -137,13 +138,12 @@ Risks:
 1. `AU_PRODUCT_SAFETY` - best next overall candidate. Official, English, consumer-product focused, RSS-supported, and close to existing CPSC/Canada consumer recall UX.
 2. `KR_SAFETYKOREA` - best next Asia candidate if API access can be confirmed. Strong official API signal and useful product identifiers.
 3. `KR_MFDS` - strong food recall source with official JSON/XML metadata and product photo URL fields.
-4. `HK_CFS` - narrow but promising official XML food/allergy feed.
-5. `NZ_MPI_FOOD` - official New Zealand food recalls, separate from `NZ_PRODUCT_SAFETY`.
-6. `AU_FSANZ` - official English food recall source, likely HTML/detail work.
-7. `JP_CAA` - broad coverage but high source-language and HTML-maintenance risk.
-8. `SG_SFA` - useful English food recall pages, but feed/API not confirmed.
-9. `HK_EMSD` - valuable electrical/household recall pages, likely HTML-only.
-10. `TW_BSMI` / `TW_TFDA` - relevant official sources, but require deeper access discovery.
+4. `NZ_MPI_FOOD` - official New Zealand food recalls, separate from `NZ_PRODUCT_SAFETY`.
+5. `AU_FSANZ` - official English food recall source, likely HTML/detail work.
+6. `JP_CAA` - broad coverage but high source-language and HTML-maintenance risk.
+7. `SG_SFA` - useful English food recall pages, but feed/API not confirmed.
+8. `HK_EMSD` - valuable electrical/household recall pages, likely HTML-only.
+9. `TW_BSMI` / `TW_TFDA` - relevant official sources, but require deeper access discovery.
 
 Best next source candidate:
 
@@ -166,13 +166,12 @@ Planning-only source id proposals:
 - `SG_SFA`
 - `SG_HSA`
 - `SG_CPSO`
-- `HK_CFS`
 - `HK_EMSD`
 - `HK_CUSTOMS`
 - `TW_TFDA`
 - `TW_BSMI`
 
-These ids are not active source ids and must not be added to `src/data/recall-types.ts`, `src/lib/recall-sources.ts`, source filters, or processed data until a future ingestion phase explicitly implements and validates one source. `AU_PRODUCT_SAFETY` and `NZ_PRODUCT_SAFETY` are already active bounded source ids and should be managed through their source-specific docs instead.
+These ids are not active source ids and must not be added to `src/data/recall-types.ts`, `src/lib/recall-sources.ts`, source filters, or processed data until a future ingestion phase explicitly implements and validates one source. `AU_PRODUCT_SAFETY`, `NZ_PRODUCT_SAFETY`, and `HK_CFS` are already active bounded source ids and should be managed through their source-specific docs instead.
 
 ## K. Known Risks
 
@@ -187,8 +186,8 @@ These ids are not active source ids and must not be added to `src/data/recall-ty
 
 ## L. Deferred Items
 
-- No Asia/Oceania records added.
-- No active source filters added.
+- No additional Asia/Oceania records beyond the active bounded Australia, New Zealand, and Hong Kong source spikes.
+- No additional active source filters beyond validated sources.
 - No source config activation.
 - No homepage/source page UI changes.
 - No country/source landing pages.

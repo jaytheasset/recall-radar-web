@@ -13,3 +13,4 @@ Files used by Recall Radar:
 - `gb.svg`
 - `au.svg`
 - `nz.svg`
+- `hk.svg`

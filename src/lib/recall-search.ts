@@ -360,6 +360,10 @@ export function getRecallIdentifierHint(recall: Pick<SiteRecall, 'source'>): str
     return 'Check product name, brand, model, barcode, sale dates, supplier or trader details, and official notice.';
   }
 
+  if (recall.source === 'HK_CFS') {
+    return 'Check product name, brand, batch, best-before/use-by date, importer or retailer details, and official notice.';
+  }
+
   if (recall.source === 'CPSC') {
     return 'Check model, UPC/barcode, date, product photos, and official notice details.';
   }

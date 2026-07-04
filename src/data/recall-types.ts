@@ -6,7 +6,8 @@ export type RecallSource =
   | 'EU_SAFETY_GATE'
   | 'UK_FSA'
   | 'AU_PRODUCT_SAFETY'
-  | 'NZ_PRODUCT_SAFETY';
+  | 'NZ_PRODUCT_SAFETY'
+  | 'HK_CFS';
 export type ProcessedRecallSource = RecallSource | 'MULTI';
 
 export type RecallImage = {

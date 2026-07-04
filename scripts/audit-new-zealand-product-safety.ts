@@ -68,7 +68,8 @@ const expectedSourceFilterValues = [
   'EU_SAFETY_GATE',
   'UK_FSA',
   'AU_PRODUCT_SAFETY',
-  'NZ_PRODUCT_SAFETY'
+  'NZ_PRODUCT_SAFETY',
+  'HK_CFS'
 ];
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const processedPath = resolve(projectRoot, 'data/processed/new-zealand-product-safety-recalls.json');
@@ -116,7 +117,8 @@ async function readCanonicalCounts(): Promise<SourceCounts> {
     EU_SAFETY_GATE: records.filter((record) => record.source === 'EU_SAFETY_GATE').length,
     UK_FSA: records.filter((record) => record.source === 'UK_FSA').length,
     AU_PRODUCT_SAFETY: records.filter((record) => record.source === 'AU_PRODUCT_SAFETY').length,
-    NZ_PRODUCT_SAFETY: records.filter((record) => record.source === 'NZ_PRODUCT_SAFETY').length
+    NZ_PRODUCT_SAFETY: records.filter((record) => record.source === 'NZ_PRODUCT_SAFETY').length,
+    HK_CFS: records.filter((record) => record.source === 'HK_CFS').length
   };
 }
 
@@ -332,7 +334,7 @@ function audit(records: NormalizedRecall[]): AuditSummary {
 
 function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sourceFilters: string[]): string[] {
   const expectedCounts: SourceCounts = {
-    total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 1001),
+    total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 1101),
     CPSC: expectedNumber('EXPECTED_CPSC_COUNT', 301),
     FDA: expectedNumber('EXPECTED_FDA_COUNT', 100),
     FR_RAPPELCONSO: expectedNumber('EXPECTED_RAPPELCONSO_COUNT', 100),
@@ -340,7 +342,8 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
     EU_SAFETY_GATE: expectedNumber('EXPECTED_EU_SAFETY_GATE_COUNT', 100),
     UK_FSA: expectedNumber('EXPECTED_UK_FSA_COUNT', 100),
     AU_PRODUCT_SAFETY: expectedNumber('EXPECTED_AU_PRODUCT_SAFETY_COUNT', 100),
-    NZ_PRODUCT_SAFETY: expectedNumber('EXPECTED_NZ_PRODUCT_SAFETY_COUNT', 100)
+    NZ_PRODUCT_SAFETY: expectedNumber('EXPECTED_NZ_PRODUCT_SAFETY_COUNT', 100),
+    HK_CFS: expectedNumber('EXPECTED_HK_CFS_COUNT', 100)
   };
   const severeMissingThreshold = Math.max(1, Math.floor(summary.total * 0.05));
 
@@ -371,6 +374,9 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
       : '',
     canonicalCounts.NZ_PRODUCT_SAFETY !== expectedCounts.NZ_PRODUCT_SAFETY
       ? `Canonical NZ_PRODUCT_SAFETY count ${canonicalCounts.NZ_PRODUCT_SAFETY} does not match expected ${expectedCounts.NZ_PRODUCT_SAFETY}.`
+      : '',
+    canonicalCounts.HK_CFS !== expectedCounts.HK_CFS
+      ? `HK_CFS count ${canonicalCounts.HK_CFS} does not match expected ${expectedCounts.HK_CFS}.`
       : '',
     summary.wrongSourceIds.length > 0 ? `Wrong source ids found in New Zealand file: ${summary.wrongSourceIds.length}.` : '',
     summary.duplicateIds.length > 0 ? `Duplicate ids found: ${summary.duplicateIds.length}.` : '',

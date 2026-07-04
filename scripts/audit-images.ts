@@ -42,7 +42,8 @@ const processedFiles = [
   'data/processed/canada-recalls.json',
   'data/processed/uk-fsa-alerts.json',
   'data/processed/australia-product-safety-recalls.json',
-  'data/processed/new-zealand-product-safety-recalls.json'
+  'data/processed/new-zealand-product-safety-recalls.json',
+  'data/processed/hong-kong-cfs-food-alerts.json'
 ];
 
 const runtimeEnv = (process as typeof process & { env?: Record<string, string | undefined> }).env ?? {};
@@ -241,6 +242,15 @@ function sourceSpecificImageIssue(source: string, rawUrl: string): string {
     }
   }
 
+  if (source === 'HK_CFS') {
+    try {
+      const url = new URL(rawUrl);
+      return url.hostname === 'www.cfs.gov.hk' ? '' : 'non-official-hong-kong-cfs-image-url';
+    } catch {
+      return 'non-official-hong-kong-cfs-image-url';
+    }
+  }
+
   return '';
 }
 
@@ -346,7 +356,9 @@ async function run(): Promise<void> {
               ? 'AU_PRODUCT_SAFETY'
               : file.includes('new-zealand-product-safety')
                 ? 'NZ_PRODUCT_SAFETY'
-              : 'UNKNOWN';
+                : file.includes('hong-kong-cfs')
+                  ? 'HK_CFS'
+                  : 'UNKNOWN';
 
     for (const record of records) {
       const source = sourceFor(record, fallbackSource);
@@ -497,6 +509,9 @@ async function run(): Promise<void> {
     }
     if (summary.source === 'NZ_PRODUCT_SAFETY' && summary.officialImageUrlIssues > 0) {
       failures.push(`NZ_PRODUCT_SAFETY image audit found ${summary.officialImageUrlIssues} non-official image URL issue(s).`);
+    }
+    if (summary.source === 'HK_CFS' && summary.officialImageUrlIssues > 0) {
+      failures.push(`HK_CFS image audit found ${summary.officialImageUrlIssues} non-official image URL issue(s).`);
     }
     return failures;
   });

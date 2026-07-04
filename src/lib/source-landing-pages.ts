@@ -114,6 +114,18 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
     searchLabel: 'Search within New Zealand notices',
     searchPlaceholder: 'Search product, brand, model, SKU, supplier, hazard, or keyword',
     noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
+  },
+  {
+    route: '/hong-kong-food-recalls',
+    title: 'Hong Kong Food Recalls | Recall Radar',
+    heading: 'Hong Kong Food Recalls',
+    eyebrow: 'Hong Kong',
+    description: 'Browse indexed Centre for Food Safety food alert and recall notices.',
+    metaDescription: 'Browse indexed Hong Kong Centre for Food Safety food alert and recall notices in Recall Radar.',
+    sourceIds: ['HK_CFS'],
+    searchLabel: 'Search within Hong Kong food alerts',
+    searchPlaceholder: 'Search food, brand, allergen, batch, best-before date, importer, retailer, or keyword',
+    noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
   }
 ];
 

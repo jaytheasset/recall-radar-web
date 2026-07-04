@@ -404,6 +404,10 @@ function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
     return 'general-consumer-product';
   }
 
+  if (record.source === 'HK_CFS') {
+    return 'food-allergy';
+  }
+
   if (
     textHasAny(text, [
       'baby',
@@ -511,7 +515,8 @@ function isOfficialRecallImageUrl(url: string): boolean {
     /^https:\/\/ec\.europa\.eu\/safety-gate-alerts\/public\/api\/notification\/(?:image|thumbnail)\//i.test(url)
     ||
     /^https:\/\/www\.productsafety\.gov\.au\/system\/files\/(?:styles\/[^/]+\/)?(?:public|private)\//i.test(url) ||
-    /^https:\/\/www\.productsafety\.govt\.nz\/assets\/uploads\//i.test(url)
+    /^https:\/\/www\.productsafety\.govt\.nz\/assets\/uploads\//i.test(url) ||
+    /^https:\/\/www\.cfs\.gov\.hk\//i.test(url)
   );
 }
 
@@ -561,7 +566,8 @@ function extractRecallImages(record: NormalizedRecall): RecallImage[] {
     record.source === 'CA_RECALLS' ||
     record.source === 'EU_SAFETY_GATE' ||
     record.source === 'AU_PRODUCT_SAFETY' ||
-    record.source === 'NZ_PRODUCT_SAFETY'
+    record.source === 'NZ_PRODUCT_SAFETY' ||
+    record.source === 'HK_CFS'
     ? uniqueImages(images)
     : [];
 }
@@ -672,6 +678,7 @@ export const processedAustraliaProductSafetyRecordCount = processedLocalRecalls.
 export const processedNewZealandProductSafetyRecordCount = processedLocalRecalls.filter(
   (recall) => recall.source === 'NZ_PRODUCT_SAFETY'
 ).length;
+export const processedHongKongCfsRecordCount = processedLocalRecalls.filter((recall) => recall.source === 'HK_CFS').length;
 export const usingProcessedCpscData = processedCpscRecordCount > 0;
 export const usingProcessedFdaData = processedFdaRecordCount > 0;
 export const usingProcessedFranceRappelConsoData = processedFranceRappelConsoRecordCount > 0;
@@ -680,6 +687,7 @@ export const usingProcessedEuSafetyGateData = processedEuSafetyGateRecordCount >
 export const usingProcessedUkFsaData = processedUkFsaRecordCount > 0;
 export const usingProcessedAustraliaProductSafetyData = processedAustraliaProductSafetyRecordCount > 0;
 export const usingProcessedNewZealandProductSafetyData = processedNewZealandProductSafetyRecordCount > 0;
+export const usingProcessedHongKongCfsData = processedHongKongCfsRecordCount > 0;
 export const processedActiveSourceCount = [
   usingProcessedCpscData,
   usingProcessedFdaData,
@@ -688,7 +696,8 @@ export const processedActiveSourceCount = [
   usingProcessedEuSafetyGateData,
   usingProcessedUkFsaData,
   usingProcessedAustraliaProductSafetyData,
-  usingProcessedNewZealandProductSafetyData
+  usingProcessedNewZealandProductSafetyData,
+  usingProcessedHongKongCfsData
 ].filter(Boolean).length;
 export const dataSourceLabel = usingProcessedLocalData
   ? `${processedActiveSourceCount} official source feed${processedActiveSourceCount === 1 ? '' : 's'}`

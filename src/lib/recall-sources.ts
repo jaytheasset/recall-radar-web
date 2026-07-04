@@ -7,6 +7,7 @@ export type RecallSourceId =
   | 'UK_FSA'
   | 'AU_PRODUCT_SAFETY'
   | 'NZ_PRODUCT_SAFETY'
+  | 'HK_CFS'
   | 'Mock';
 export type CurrentCoverageSourceId = Exclude<RecallSourceId, 'Mock'>;
 export type RecallSourceType = 'official-api' | 'sample';
@@ -395,6 +396,51 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     officialVerificationCopy:
       'Use the official notice to confirm affected products, identifiers, sale dates, suppliers, hazards, and consumer action.'
   },
+  HK_CFS: {
+    id: 'HK_CFS',
+    marketCode: 'HK',
+    marketLabel: 'Hong Kong',
+    agencyLabel: 'Centre for Food Safety',
+    sourceType: 'official-api',
+    displayLabel: 'Hong Kong · Centre for Food Safety',
+    noticeTypeLabel: 'Food alert',
+    productScopeLabel: 'Food alerts and allergy alerts',
+    identifierTypes: [
+      'batch number',
+      'lot code',
+      'best-before / use-by / expiry date',
+      'pack size',
+      'net weight',
+      'product name',
+      'brand/company',
+      'importer or retailer details'
+    ],
+    supportsImages: false,
+    supportsDistributionDetails: true,
+    rawPayloadNotes:
+      'Hong Kong Centre for Food Safety records are collected from the official English DATA.GOV.HK XML food-alert feed plus official CFS annual HTML archive and detail pages. Detail pages can include food product, product description, brand, origin, pack size, batch/date identifiers, reason for issuing alert, CFS action, trade advice, consumer advice, and further information links.',
+    officialSourceLabel: 'Source: Hong Kong · Centre for Food Safety',
+    placeholderLabel: 'Hong Kong CFS food alert',
+    reasonLabel: 'Reason',
+    actionLabel: 'Consumer action',
+    quantityLabel: 'Pack / batch details',
+    distributionLabel: 'Importer / retailer / origin',
+    defaultActionFallback: DEFAULT_ACTION_FALLBACK,
+    verificationIntro:
+      'Compare the details below with your food package, brand, batch, best-before, use-by or expiry date, importer, retailer, and official Centre for Food Safety notice. A matching search result does not confirm your exact product is included.',
+    verificationChecklist: [
+      'Product name and brand/company',
+      'Batch, lot, best-before, use-by, expiry, or manufacture date if listed',
+      'Pack size, net weight, or package description',
+      'Importer, retailer, distributor, or place of origin if listed',
+      'Allergen, contamination, or food-safety reason',
+      'Consumer action in the official notice'
+    ],
+    sparseIdentificationCopy:
+      'This indexed notice may not list every identifier in a structured field. Review the official CFS notice, package label, and batch or date code carefully.',
+    officialVerificationCopy:
+      'Use the official CFS notice to confirm affected products, dates, importer or retailer details, risks, and consumer instructions.'
+  },
   Mock: {
     id: 'Mock',
     marketCode: '',
@@ -438,7 +484,8 @@ const currentCoverageSources: CurrentCoverageSourceId[] = [
   'EU_SAFETY_GATE',
   'UK_FSA',
   'AU_PRODUCT_SAFETY',
-  'NZ_PRODUCT_SAFETY'
+  'NZ_PRODUCT_SAFETY',
+  'HK_CFS'
 ];
 
 function normalizeSourceId(source: string): RecallSourceId {
@@ -450,6 +497,7 @@ function normalizeSourceId(source: string): RecallSourceId {
     source === 'UK_FSA' ||
     source === 'AU_PRODUCT_SAFETY' ||
     source === 'NZ_PRODUCT_SAFETY' ||
+    source === 'HK_CFS' ||
     source === 'Mock'
     ? source
     : 'Mock';

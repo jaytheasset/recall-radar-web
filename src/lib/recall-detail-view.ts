@@ -686,6 +686,119 @@ function buildNewZealandProductSafetyView(recall: SiteRecall, raw: RawObject): S
   };
 }
 
+function hongKongCfsRows(raw: RawObject): RawObject[] {
+  const detail = rawObject(raw, 'detail');
+  return rawArray(detail, 'rows');
+}
+
+function hongKongCfsRowValue(raw: RawObject, label: string): string {
+  const target = label.toLowerCase();
+  const row = hongKongCfsRows(raw).find((item) => safeText(item.label).toLowerCase() === target);
+  return row ? safeText(row.value) : '';
+}
+
+function hongKongCfsProductPairs(raw: RawObject): Record<string, string> {
+  const row = hongKongCfsRows(raw).find((item) => safeText(item.label).toLowerCase() === 'product name and description');
+  const lines = Array.isArray(row?.lines) ? row.lines.map(safeText) : safeText(row?.value).split(/\s{2,}|;\s*/);
+  const pairs: Record<string, string> = {};
+
+  for (const line of lines) {
+    const match = line.match(/^([^:]{2,80}):\s*(.+)$/);
+    if (match) {
+      pairs[cleanText(match[1]).toLowerCase()] = cleanText(match[2]);
+    }
+  }
+
+  return pairs;
+}
+
+function hongKongCfsPairValues(pairs: Record<string, string>, keys: string[]): string[] {
+  return uniqueNonEmpty(keys.map((key) => pairs[key.toLowerCase()] ?? ''));
+}
+
+function buildHongKongCfsView(recall: SiteRecall, raw: RawObject): SourceDetailView {
+  const detail = rawObject(raw, 'detail');
+  const pairs = hongKongCfsProductPairs(raw);
+  const productDescription = hongKongCfsRowValue(raw, 'Product Name and Description');
+  const foodProduct = hongKongCfsRowValue(raw, 'Food Product');
+  const productName = firstNonEmpty([pairs['product name'], foodProduct, ...recall.productNames, recall.primaryProductName], 'Food product');
+  const brandName = firstNonEmpty(
+    [
+      pairs.brand,
+      pairs.importer,
+      pairs.retailer,
+      pairs.manufacturer,
+      pairs.distributor,
+      ...recall.displayBrandNames,
+      recall.primaryBrand
+    ],
+    'Brand or company not listed'
+  );
+  const officialTitle = firstNonEmpty([rawText(detail, 'title'), rawText(raw, 'title'), recall.title], recall.title);
+  const reason = firstNonEmpty(
+    [hongKongCfsRowValue(raw, 'Reason For Issuing Alert'), recall.reason ?? '', recall.hazard],
+    'Reason not listed.'
+  );
+  const consumerAdvice = hongKongCfsRowValue(raw, 'Advice to Consumers');
+  const cfsAction = hongKongCfsRowValue(raw, 'Action Taken by the Centre for Food Safety');
+  const tradeAdvice = hongKongCfsRowValue(raw, 'Advice to the Trade');
+  const action = firstNonEmpty([consumerAdvice, cfsAction, tradeAdvice, recall.remedy], getRecallDefaultActionFallback(recall.source));
+  const identifiers = uniqueNonEmpty([
+    ...hongKongCfsPairValues(pairs, [
+      'batch number',
+      'batch no.',
+      'lot number',
+      'barcode',
+      'best-before date',
+      'best before date',
+      'use-by date',
+      'expiry date',
+      'expiration date',
+      'manufacture date',
+      'pack size',
+      'net weight'
+    ]),
+    ...identifierDetails([officialTitle, productDescription, recall.description].join(' '))
+  ]);
+  const details: DetailFact[] = [];
+
+  addFact(details, 'Product', productName);
+  addFact(details, 'Brand or company', brandName);
+  addFact(details, 'Batch, lot, barcode, date, or pack details', identifiers);
+  addFact(details, 'Food product', foodProduct);
+  addFact(details, 'Place of origin', pairs['place of origin']);
+  addFact(details, 'Importer / retailer / distributor', hongKongCfsPairValues(pairs, ['importer', 'retailer', 'distributor']));
+  addFact(details, 'Source of information', hongKongCfsRowValue(raw, 'Source of Information'));
+
+  return {
+    displayTitle: displayTitleFor(productName, officialTitle),
+    officialTitle,
+    productName,
+    brandName,
+    recallDate: formatDate(hongKongCfsRowValue(raw, 'Issue Date') || rawText(raw, 'publishedDate') || recall.recallDate),
+    recallNumber: rawText(raw, 'id') || recall.recallNumber || '',
+    imageCaptions: imageCaptions(raw, recall),
+    reason,
+    action,
+    actionDetail: uniqueNonEmpty([consumerAdvice, cfsAction, tradeAdvice]).join(' '),
+    actionParagraphs: paragraphs(uniqueNonEmpty([consumerAdvice, cfsAction, tradeAdvice]).join(' ') || action),
+    description: firstNonEmpty([productDescription, recall.description, productName], productName),
+    identificationDetails: details,
+    consumerContact: hongKongCfsRowValue(raw, 'Further Information'),
+    soldAt: uniqueNonEmpty([
+      pairs.retailer ? `Retailer: ${pairs.retailer}` : '',
+      pairs.importer ? `Importer: ${pairs.importer}` : '',
+      pairs['place of origin'] ? `Place of origin: ${pairs['place of origin']}` : ''
+    ]),
+    incidents: [],
+    importer: uniqueNonEmpty([pairs.importer, pairs.retailer, pairs.distributor]),
+    manufacturer: uniqueNonEmpty([pairs.manufacturer, pairs.brand]),
+    manufacturedIn: uniqueNonEmpty([pairs['place of origin']]),
+    units: recall.affectedUnits || recall.productQuantity || '',
+    fdaDetails: details
+  };
+}
+
 function ukFsaTypeCodes(raw: RawObject): string[] {
   return uniqueNonEmpty(
     (Array.isArray(raw.type) ? raw.type : [raw.type])
@@ -963,7 +1076,9 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
                 ? buildAustraliaProductSafetyView(recall, raw)
                 : recall.source === 'NZ_PRODUCT_SAFETY'
                   ? buildNewZealandProductSafetyView(recall, raw)
-                  : buildCpscView(recall, raw);
+                  : recall.source === 'HK_CFS'
+                    ? buildHongKongCfsView(recall, raw)
+                    : buildCpscView(recall, raw);
   const productIntro = sourceSpecificView.productName
     ? `This recall involves ${sourceSpecificView.productName}`
     : 'This recall involves a recalled product';

@@ -8,6 +8,7 @@ import {
   processedEuSafetyGateRecordCount,
   processedFdaRecordCount,
   processedFranceRappelConsoRecordCount,
+  processedHongKongCfsRecordCount,
   processedLocalRecordCount,
   processedNewZealandProductSafetyRecordCount,
   processedUkFsaRecordCount,
@@ -35,7 +36,8 @@ const activeSourceCount = [
   processedEuSafetyGateRecordCount,
   processedUkFsaRecordCount,
   processedAustraliaProductSafetyRecordCount,
-  processedNewZealandProductSafetyRecordCount
+  processedNewZealandProductSafetyRecordCount,
+  processedHongKongCfsRecordCount
 ].filter((count) => count > 0).length;
 const countLine = `${processedLocalRecordCount} recall notices from ${activeSourceCount} official sources. Coverage is expanding and remains limited to sources currently included.`;
 const productTypes = [
@@ -125,6 +127,14 @@ const sourceCardDetails = {
     description: 'Product recalls from Product Safety New Zealand.',
     sourceLabel: 'Product Safety',
     cta: 'Browse New Zealand recalls'
+  },
+  '/hong-kong-food-recalls': {
+    flagSrc: '/flags/hk.svg',
+    flagAlt: 'Hong Kong flag',
+    title: 'Hong Kong',
+    description: 'Food alerts and allergy alerts from the Centre for Food Safety.',
+    sourceLabel: 'Centre for Food Safety',
+    cta: 'Browse Hong Kong food alerts'
   }
 } as const;
 ---

@@ -22,7 +22,8 @@ type SourceId =
   | 'EU_SAFETY_GATE'
   | 'UK_FSA'
   | 'AU_PRODUCT_SAFETY'
-  | 'NZ_PRODUCT_SAFETY';
+  | 'NZ_PRODUCT_SAFETY'
+  | 'HK_CFS';
 
 type ScenarioResult = {
   id: string;
@@ -85,7 +86,8 @@ const EXPECTED_SOURCE_COUNTS: Record<SourceId, number> = {
   EU_SAFETY_GATE: 100,
   UK_FSA: 100,
   AU_PRODUCT_SAFETY: 100,
-  NZ_PRODUCT_SAFETY: 100
+  NZ_PRODUCT_SAFETY: 100,
+  HK_CFS: 100
 };
 
 const SOURCE_CATEGORY_CHECKS: Array<{
@@ -151,6 +153,14 @@ const SOURCE_CATEGORY_CHECKS: Array<{
     category: 'baby-kids',
     query: 'toy',
     minMatches: 1
+  },
+  {
+    id: 'hong-kong-cfs-food-alert',
+    label: 'Hong Kong CFS food alert search',
+    sources: ['HK_CFS'],
+    category: 'food-allergy',
+    query: 'allergen',
+    minMatches: 1
   }
 ];
 
@@ -176,7 +186,7 @@ function textHasAny(text: string, terms: string[]): boolean {
 }
 
 function inferAuditCategory(record: NormalizedRecall): SiteRecallCategory {
-  if (record.source === 'FDA' || record.source === 'UK_FSA') {
+  if (record.source === 'FDA' || record.source === 'UK_FSA' || record.source === 'HK_CFS') {
     return 'food-allergy';
   }
 

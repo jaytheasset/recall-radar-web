@@ -12,6 +12,7 @@ Current rules:
 - The official UK FSA Food Alerts API endpoints are allowed only when a task asks for UK FSA refreshes.
 - The official Product Safety Australia recalls page is allowed only when a task asks for Australia Product Safety refreshes.
 - The official Product Safety New Zealand recalls page is allowed only when a task asks for New Zealand Product Safety refreshes.
+- The official Hong Kong Centre for Food Safety food alerts XML/archive/detail pages are allowed only when a task asks for Hong Kong CFS refreshes.
 - The official Korea SafetyKorea/data.go.kr endpoints are currently diagnostic-only through `npm run debug:korea-safetykorea-access`; do not add Korea records until official recall-record access is confirmed.
 - UI-only phases should use the existing local `data/processed/recalls.json` file and should not fetch unless a later task explicitly asks for fresh data.
 - Do not connect databases.
@@ -140,7 +141,7 @@ npm run data:merge
 npm run audit:rappelconso
 ```
 
-The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, Australia Product Safety, and New Zealand Product Safety records.
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, Australia Product Safety, New Zealand Product Safety, and Hong Kong CFS records.
 
 ## Canada Recalls and Safety Alerts Fetch
 
@@ -426,7 +427,7 @@ For the current 100-record Australia spike, commit the raw Australia file, proce
 
 Do not increase `AU_PRODUCT_SAFETY_LIMIT` above the current bounded 100-record spike without a separate source expansion or backfill phase. Keep FSANZ food and vehicle recalls as separate future source candidates instead of mixing them into `AU_PRODUCT_SAFETY`.
 
-The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, and Australia Product Safety records.
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, Australia Product Safety, New Zealand Product Safety, and Hong Kong CFS records.
 
 ## New Zealand Product Safety Fetch
 
@@ -501,7 +502,82 @@ For the current 100-record New Zealand spike, commit the raw New Zealand file, p
 
 Do not increase `NZ_PRODUCT_SAFETY_LIMIT` above the current bounded 100-record spike without a separate source expansion or backfill phase. Keep New Zealand MPI food recalls and NZTA vehicle recalls as separate future source candidates instead of mixing them into `NZ_PRODUCT_SAFETY`.
 
-The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, Australia Product Safety, and New Zealand Product Safety records.
+The canonical `data/processed/recalls.json` file is the local site source and can contain CPSC, FDA/openFDA, France RappelConso, Canada Recalls and Safety Alerts, EU Safety Gate, UK FSA Food Alerts, Australia Product Safety, New Zealand Product Safety, and Hong Kong CFS records.
+
+## Hong Kong CFS Food Alerts Fetch
+
+```powershell
+npm run fetch:hong-kong-cfs
+```
+
+This uses the official Hong Kong Centre for Food Safety food alerts sources:
+
+`https://www.cfs.gov.hk/filemanager/foodalert/english/foodalert_datagovhk.xml`
+
+and official archive/detail pages under:
+
+`https://www.cfs.gov.hk/english/whatsnew/whatsnew_fa/`
+
+Default behavior:
+
+- Checks the official XML feed and archive/detail pages.
+- Requests the bounded 100 most recent Hong Kong CFS food and allergy alerts.
+- Saves the bounded raw response wrapper to `data/raw/hong-kong-cfs-food-alerts.json`.
+- Saves normalized Hong Kong CFS records to `data/processed/hong-kong-cfs-food-alerts.json`.
+- Rebuilds the merged canonical file at `data/processed/recalls.json`.
+- Adds `fetchedAt` to the raw output.
+- Refuses to overwrite processed output when the official source returns zero records.
+- Uses official CFS image URLs when official detail images are available.
+
+Optional limit:
+
+```powershell
+npm run fetch:hong-kong-cfs -- --limit=50
+```
+
+The default Hong Kong CFS limit is 100. It can also be set with an environment variable:
+
+```powershell
+$env:HK_CFS_LIMIT = "100"
+npm run fetch:hong-kong-cfs
+Remove-Item Env:HK_CFS_LIMIT
+```
+
+To rebuild Hong Kong CFS processed data from the saved raw file:
+
+```powershell
+npm run normalize:hong-kong-cfs
+```
+
+To audit the current local Hong Kong CFS processed data without making network calls:
+
+```powershell
+npm run audit:hong-kong-cfs
+```
+
+The Hong Kong CFS audit checks the 100-record source count, canonical total, source filter values, wrong source ids, duplicate ids/slugs/source URLs, official notice URL shape, invalid dates, official image URL hosts, suspicious image candidates, required field coverage, food/allergy category mapping, identifier-like text coverage, and raw HTML leakage in visible normalized fields.
+
+To run the explicit Hong Kong CFS refresh workflow, including network fetch and local audit:
+
+```powershell
+npm run update:hong-kong-cfs
+```
+
+`update:hong-kong-cfs` runs `data:hong-kong-cfs:fetch`, `data:hong-kong-cfs:normalize`, `data:merge`, and `audit:hong-kong-cfs` in that order. The fetch step already writes raw, processed, and canonical files; the explicit normalize and merge steps make the final files reproducible from the saved raw payload before audit.
+
+For local-only validation from the existing raw file:
+
+```powershell
+npm run data:hong-kong-cfs:normalize
+npm run data:merge
+npm run audit:hong-kong-cfs
+```
+
+Do not wire Hong Kong CFS fetches into `npm run check`, `npm run build`, or UI tests.
+
+For the current 100-record Hong Kong CFS spike, commit the raw Hong Kong CFS file, processed Hong Kong CFS file, and merged canonical processed file together only after the Hong Kong CFS audit passes. Any future full Hong Kong CFS backfill should use ignored chunks and source-specific audit before canonical expansion.
+
+Do not increase `HK_CFS_LIMIT` above the current bounded 100-record spike without a separate source expansion or backfill phase. Keep Hong Kong EMSD electrical recalls separate from `HK_CFS`.
 
 ## Korea SafetyKorea Access Diagnostic
 
@@ -536,7 +612,7 @@ Do not add Korea fetch, normalize, live audit, merge, landing-page, or source-fi
 npm run audit:sources
 ```
 
-This is a local-only launch-readiness audit for the canonical merged file. It reads `data/processed/recalls.json`, checks the eight active source ids and expected counts, verifies the active source registry matches the canonical data, reports duplicate ids, reports sparse fields by source, and summarizes category distribution by source.
+This is a local-only launch-readiness audit for the canonical merged file. It reads `data/processed/recalls.json`, checks the nine active source ids and expected counts, verifies the active source registry matches the canonical data, reports duplicate ids, reports sparse fields by source, and summarizes category distribution by source.
 
 Expected current counts:
 
@@ -548,7 +624,8 @@ Expected current counts:
 - UK FSA Food Alerts: 100
 - Australia Product Safety: 100
 - New Zealand Product Safety: 100
-- Total: 1001
+- Hong Kong CFS: 100
+- Total: 1101
 
 ## Image Audit
 
@@ -577,11 +654,12 @@ This command is local-only. It runs:
 1. `npm run audit:sources`
 2. `npm run audit:australia-product-safety`
 3. `npm run audit:new-zealand-product-safety`
-4. `npm run audit:uk-fsa`
-5. `npm run audit:eu-safety-gate`
-6. `npm run audit:canada`
-7. `npm run audit:rappelconso`
-8. `npm run check`
-9. `npm run build`
+4. `npm run audit:hong-kong-cfs`
+5. `npm run audit:uk-fsa`
+6. `npm run audit:eu-safety-gate`
+7. `npm run audit:canada`
+8. `npm run audit:rappelconso`
+9. `npm run check`
+10. `npm run build`
 
 It does not run fetch, update, or data-refresh scripts. Use it before launch, staging deployment, or final merge to `main`.

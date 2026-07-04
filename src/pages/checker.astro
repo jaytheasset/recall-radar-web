@@ -10,6 +10,7 @@ import {
   processedEuSafetyGateRecordCount,
   processedFdaRecordCount,
   processedFranceRappelConsoRecordCount,
+  processedHongKongCfsRecordCount,
   processedLocalRecordCount,
   processedNewZealandProductSafetyRecordCount,
   processedUkFsaRecordCount,
@@ -132,6 +133,7 @@ const sourcePages = getSourceLandingPageCards();
               <span class="tag">{processedUkFsaRecordCount} UK FSA food alerts</span>
               <span class="tag">{processedAustraliaProductSafetyRecordCount} Australia Product Safety notices</span>
               <span class="tag">{processedNewZealandProductSafetyRecordCount} New Zealand Product Safety notices</span>
+              <span class="tag">{processedHongKongCfsRecordCount} Hong Kong CFS food alerts</span>
             </>
           ) : null}
         </div>
@@ -309,7 +311,8 @@ const sourcePages = getSourceLandingPageCards();
         | 'EU_SAFETY_GATE'
         | 'UK_FSA'
         | 'AU_PRODUCT_SAFETY'
-        | 'NZ_PRODUCT_SAFETY';
+        | 'NZ_PRODUCT_SAFETY'
+        | 'HK_CFS';
       type CategoryFilter =
         | 'all'
         | 'baby-kids'
@@ -337,7 +340,8 @@ const sourcePages = getSourceLandingPageCards();
         'EU_SAFETY_GATE',
         'UK_FSA',
         'AU_PRODUCT_SAFETY',
-        'NZ_PRODUCT_SAFETY'
+        'NZ_PRODUCT_SAFETY',
+        'HK_CFS'
       ];
       const categoryValues: CategoryFilter[] = [
         'all',

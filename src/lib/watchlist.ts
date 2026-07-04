@@ -9,7 +9,8 @@ export type WatchlistSourceFilter =
   | 'EU_SAFETY_GATE'
   | 'UK_FSA'
   | 'AU_PRODUCT_SAFETY'
-  | 'NZ_PRODUCT_SAFETY';
+  | 'NZ_PRODUCT_SAFETY'
+  | 'HK_CFS';
 export type WatchlistCategoryFilter =
   | 'all'
   | 'baby-kids'
