@@ -40,6 +40,7 @@
     "audit:images": "node --experimental-strip-types scripts/audit-images.ts",
     "audit:images:live": "cross-env IMAGE_LIVE_CHECK=1 node --experimental-strip-types scripts/audit-images.ts",
     "audit:image-performance": "node --experimental-strip-types scripts/audit-image-performance.ts",
+    "audit:homepage-recent": "node --experimental-strip-types scripts/audit-homepage-recent.ts",
     "audit:multilingual-search": "node --experimental-strip-types scripts/audit-multilingual-search.ts",
     "audit:static-routes": "node --experimental-strip-types scripts/audit-static-routes.ts",
     "validate:launch": "npm run audit:sources && npm run audit:uk-fsa && npm run audit:eu-safety-gate && npm run audit:canada && npm run audit:rappelconso && npm run check && npm run build && npm run audit:static-routes",

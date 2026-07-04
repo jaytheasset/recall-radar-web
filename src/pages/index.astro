@@ -13,13 +13,14 @@ import {
 } from '../lib/recall-data';
 import { getImageLoadingAttributes, getRecallImageForContext } from '../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../lib/recall-sources';
+import { getBalancedRecentRecalls } from '../lib/homepage-recent';
 import { getSourceLandingPageCards } from '../lib/source-landing-pages';
 import '../styles/global.css';
 
 const title = 'Recall Radar | Global product recall search';
 const description =
   'Recall Radar helps consumers search official product recall notices across markets by brand, product name, model number, UPC/barcode, lot code, ingredient, or keyword.';
-const latestRecalls = siteRecalls.slice(0, 6);
+const recentRecalls = getBalancedRecentRecalls(siteRecalls, { limit: 12 });
 const babyCount = getRecallsByCategory('baby-kids').length;
 const batteryCount = getRecallsByCategory('battery-electronics').length;
 const foodCount = getRecallsByCategory('food-allergy').length;
@@ -243,12 +244,13 @@ const sourceCardDetails = {
       <section class="section home-latest-section">
         <div class="section-header">
           <div>
-            <h2>Recently recalled products</h2>
+            <h2>Recent recall notices</h2>
+            <p class="section-note">Recent notices from official sources.</p>
           </div>
           <a class="btn btn-secondary" href="/checker">Search all notices</a>
         </div>
         <div class="product-grid">
-          {latestRecalls.map((recall, index) => {
+          {recentRecalls.map((recall, index) => {
             const image = getRecallImageForContext(recall, 'card');
             const imageAttrs = getImageLoadingAttributes('card', index);
 

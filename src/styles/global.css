@@ -720,6 +720,10 @@ button:disabled {
   align-items: stretch;
 }
 
+.home-latest-section .product-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .home-page .product-card {
   height: 100%;
   border: 0;
@@ -1775,6 +1779,10 @@ button:disabled {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .home-latest-section .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .recall-summary-card {
     position: static;
   }
@@ -1898,6 +1906,10 @@ button:disabled {
   }
 
   .home-page .category-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-latest-section .product-grid {
     grid-template-columns: 1fr;
   }
 
