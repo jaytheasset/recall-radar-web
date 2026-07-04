@@ -438,3 +438,14 @@ Phase 44E-1 adds a CPSC-only input preview before any live per-source classifica
 - Output folder: ignored `outputs/llm-classifier/input-preview/cpsc/`
 
 The preview compares the current generic classifier input with a proposed CPSC-specific input view, estimates tokens, checks prompt noise, and forces the Yamaha/UMAX/Bistro vehicle review case when present. It does not call Gemini or OpenAI, does not classify records, does not modify `data/raw` or `data/processed`, and does not change runtime UI.
+
+## FSANZ Classifier Input Preview
+
+Phase 44E-2 adds the same input-noise gate for FSANZ food recalls before any live per-source classification.
+
+- Guide: `docs/fsanz-classifier-input-preview.md`
+- Preview command: `npm run preview:fsanz-classifier-input`
+- Static audit: `npm run audit:fsanz-classifier-input-preview`
+- Output folder: ignored `outputs/llm-classifier/input-preview/fsanz/`
+
+The preview keeps allergen, pathogen or chemical contamination, foreign matter, date marking, pack-size, and batch/lot/barcode evidence source-specific before any live classifier run. It does not call Gemini or OpenAI, does not classify records, does not modify `data/raw` or `data/processed`, and does not change runtime UI.

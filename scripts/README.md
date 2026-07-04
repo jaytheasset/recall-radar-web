@@ -864,3 +864,36 @@ npm run audit:cpsc-classifier-input-preview
 ```
 
 The preview and audit do not call Gemini or OpenAI, do not classify records, do not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
+
+## FSANZ Classifier Input Preview
+
+```powershell
+npm run preview:fsanz-classifier-input
+```
+
+This command reads the current canonical processed recalls, filters FSANZ food recall records only, builds the current generic classifier input and a proposed FSANZ-specific input preview, compares estimated tokens, and writes ignored local reports under:
+
+`outputs/llm-classifier/input-preview/fsanz/`
+
+Generated files:
+
+- `fsanz-input-preview.json`
+- `fsanz-input-preview.md`
+- `fsanz-noise-report.json`
+- `fsanz-token-comparison.json`
+
+Optional sample limit:
+
+```powershell
+$env:FSANZ_CLASSIFIER_INPUT_PREVIEW_LIMIT = "20"
+npm run preview:fsanz-classifier-input
+Remove-Item Env:FSANZ_CLASSIFIER_INPUT_PREVIEW_LIMIT
+```
+
+Audit the preview wiring:
+
+```powershell
+npm run audit:fsanz-classifier-input-preview
+```
+
+The preview samples allergen, pathogen or chemical contamination, foreign matter, date marking, pack-size, and batch/lot/barcode evidence when present. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.

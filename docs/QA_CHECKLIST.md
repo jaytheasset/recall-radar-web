@@ -433,3 +433,14 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm the noise report checks raw HTML leakage, fallback strings, repeated strings, missing product identity, missing hazard text, missing remedy text, and identifier over-extraction.
 - Confirm generated preview outputs are not staged or committed.
 - Confirm no Gemini/OpenAI calls, canonical data changes, source refreshes, runtime UI changes, backend, database, or translation were introduced.
+
+## FSANZ Classifier Input Preview
+
+- Confirm `npm run preview:fsanz-classifier-input` writes ignored local reports under `outputs/llm-classifier/input-preview/fsanz/`.
+- Confirm `npm run audit:fsanz-classifier-input-preview` passes.
+- Confirm the preview includes 100 total FSANZ records and the requested sample count.
+- Confirm the preview includes allergen, contamination, and foreign matter cases when present.
+- Confirm generic and proposed input token estimates are reported.
+- Confirm the noise report checks raw HTML leakage, fallback strings, repeated strings, missing product identity, missing problem/hazard text, missing date marking, long availability/distribution prose, and identifier over-extraction.
+- Confirm generated preview outputs are not staged or committed.
+- Confirm no Gemini/OpenAI calls, canonical data changes, source refreshes, runtime UI changes, backend, database, or translation were introduced.

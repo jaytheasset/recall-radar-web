@@ -302,3 +302,12 @@ Canonical/site URL status:
 - Confirm generated preview outputs are not committed.
 - Confirm the preview includes the Yamaha/UMAX/Bistro vehicle review case when present.
 - Confirm no live LLM classification, source refresh, canonical data migration, UI migration, backend, database, or translation was introduced.
+
+## S. FSANZ Classifier Input Preview Gate
+
+- Run `npm run preview:fsanz-classifier-input`.
+- Run `npm run audit:fsanz-classifier-input-preview`.
+- Confirm generated FSANZ preview outputs stay under ignored `outputs/llm-classifier/input-preview/fsanz/`.
+- Confirm generated preview outputs are not committed.
+- Confirm allergen, contamination, and foreign matter cases are included when present.
+- Confirm no live LLM classification, source refresh, canonical data migration, UI migration, backend, database, or translation was introduced.

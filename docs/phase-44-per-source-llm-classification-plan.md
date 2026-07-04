@@ -76,6 +76,13 @@ Before live per-source Gemini classification, run source-specific input preview 
 
 The CPSC preview compares the current generic classifier input with a proposed CPSC-specific input shape and writes ignored reports under `outputs/llm-classifier/input-preview/cpsc/`. It does not call Gemini, does not classify records, and does not write canonical data.
 
+Phase 44E-2 adds the same gate for FSANZ food recalls:
+
+- `npm run preview:fsanz-classifier-input`
+- `npm run audit:fsanz-classifier-input-preview`
+
+The FSANZ preview compares generic input with a source-specific food recall shape using `problemText`, `foodSafetyHazardText`, `dateMarking`, pack-size and batch/lot/barcode evidence, and fixed `food-grocery` source hints. It also samples allergen, pathogen or chemical contamination, foreign matter, and non-allergen legacy `food-allergy` cases. It writes ignored reports under `outputs/llm-classifier/input-preview/fsanz/` and does not call Gemini, classify records, or write canonical data.
+
 ## Review Questions
 
 Phase 44 should answer:

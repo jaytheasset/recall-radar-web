@@ -8,6 +8,8 @@ Phase 44A adds `.env.local` loading for local classifier CLI scripts plus `npm r
 
 Phase 44E-1 adds a CPSC-only input preview before live per-source classification. See `docs/cpsc-classifier-input-preview.md`.
 
+Phase 44E-2 adds an FSANZ-only food recall input preview before live per-source classification. See `docs/fsanz-classifier-input-preview.md`.
+
 ## Purpose
 
 The dry run tests whether Recall Taxonomy V2 can classify the current indexed notices into the new taxonomy shape before any migration phase. It compares generated taxonomy fields with the existing legacy `category` field and highlights suspicious mismatches for manual review.
@@ -125,6 +127,15 @@ npm run audit:cpsc-classifier-input-preview
 ```
 
 Those commands write ignored preview reports only and do not call an LLM.
+
+For FSANZ food recall input-noise review, run:
+
+```powershell
+npm run preview:fsanz-classifier-input
+npm run audit:fsanz-classifier-input-preview
+```
+
+Those commands compare generic input with an FSANZ-specific food recall input shape, write ignored preview reports only, and do not call an LLM.
 
 ## Non-Goals
 
