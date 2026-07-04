@@ -897,3 +897,36 @@ npm run audit:fsanz-classifier-input-preview
 ```
 
 The preview samples allergen, pathogen or chemical contamination, foreign matter, date marking, pack-size, and batch/lot/barcode evidence when present. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
+
+## New Zealand Product Safety Classifier Input Preview
+
+```powershell
+npm run preview:new-zealand-classifier-input
+```
+
+This command reads the current canonical processed recalls, filters New Zealand Product Safety records only, builds the current generic classifier input and a proposed New Zealand-specific input preview, compares estimated tokens, and writes ignored local reports under:
+
+`outputs/llm-classifier/input-preview/new-zealand/`
+
+Generated files:
+
+- `new-zealand-input-preview.json`
+- `new-zealand-input-preview.md`
+- `new-zealand-noise-report.json`
+- `new-zealand-token-comparison.json`
+
+Optional sample limit:
+
+```powershell
+$env:NEW_ZEALAND_CLASSIFIER_INPUT_PREVIEW_LIMIT = "20"
+npm run preview:new-zealand-classifier-input
+Remove-Item Env:NEW_ZEALAND_CLASSIFIER_INPUT_PREVIEW_LIMIT
+```
+
+Audit the preview wiring:
+
+```powershell
+npm run audit:new-zealand-classifier-input-preview
+```
+
+The preview samples baby/kids, electronics/battery, household/furniture/appliance, mobility-like, identifier-rich, sparse-identifier, image-backed, image-less when present, long hazard/action, and ambiguous category records. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.

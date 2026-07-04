@@ -449,3 +449,14 @@ Phase 44E-2 adds the same input-noise gate for FSANZ food recalls before any liv
 - Output folder: ignored `outputs/llm-classifier/input-preview/fsanz/`
 
 The preview keeps allergen, pathogen or chemical contamination, foreign matter, date marking, pack-size, and batch/lot/barcode evidence source-specific before any live classifier run. It does not call Gemini or OpenAI, does not classify records, does not modify `data/raw` or `data/processed`, and does not change runtime UI.
+
+## New Zealand Product Safety Classifier Input Preview
+
+Phase 44E-3 adds the same input-noise gate for New Zealand Product Safety records before any live per-source classification.
+
+- Guide: `docs/new-zealand-classifier-input-preview.md`
+- Preview command: `npm run preview:new-zealand-classifier-input`
+- Static audit: `npm run audit:new-zealand-classifier-input-preview`
+- Output folder: ignored `outputs/llm-classifier/input-preview/new-zealand/`
+
+The preview keeps product identifiers, supplier names, official categories, hazard/action evidence, and model/SKU/serial/barcode-style identifiers source-specific while checking that supplier/contact boilerplate does not dominate the prompt. It does not call Gemini or OpenAI, does not classify records, does not modify `data/raw` or `data/processed`, and does not change runtime UI.

@@ -76,6 +76,8 @@
     "audit:cpsc-classifier-input-preview": "node --experimental-strip-types scripts/audit-cpsc-classifier-input-preview.ts",
     "preview:fsanz-classifier-input": "node --experimental-strip-types scripts/preview-fsanz-classifier-input.ts",
     "audit:fsanz-classifier-input-preview": "node --experimental-strip-types scripts/audit-fsanz-classifier-input-preview.ts",
+    "preview:new-zealand-classifier-input": "node --experimental-strip-types scripts/preview-new-zealand-classifier-input.ts",
+    "audit:new-zealand-classifier-input-preview": "node --experimental-strip-types scripts/audit-new-zealand-classifier-input-preview.ts",
     "debug:llm-classifier-env": "node --experimental-strip-types scripts/debug-llm-classifier-env.ts",
     "probe:gemini-classifier": "node --experimental-strip-types scripts/probe-gemini-classifier.ts",
     "classify:recalls:taxonomy-v2:dry-run": "node --experimental-strip-types scripts/classify-recalls-taxonomy-v2-dry-run.ts",

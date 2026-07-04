@@ -83,6 +83,13 @@ Phase 44E-2 adds the same gate for FSANZ food recalls:
 
 The FSANZ preview compares generic input with a source-specific food recall shape using `problemText`, `foodSafetyHazardText`, `dateMarking`, pack-size and batch/lot/barcode evidence, and fixed `food-grocery` source hints. It also samples allergen, pathogen or chemical contamination, foreign matter, and non-allergen legacy `food-allergy` cases. It writes ignored reports under `outputs/llm-classifier/input-preview/fsanz/` and does not call Gemini, classify records, or write canonical data.
 
+Phase 44E-3 adds the same gate for New Zealand Product Safety records:
+
+- `npm run preview:new-zealand-classifier-input`
+- `npm run audit:new-zealand-classifier-input-preview`
+
+The New Zealand preview compares generic input with a source-specific consumer-product shape using `productIdentifiers`, `supplierName`, concise agency text, official categories, hazard/action fields, and explicit model/SKU/serial/barcode-style identifiers. It writes ignored reports under `outputs/llm-classifier/input-preview/new-zealand/` and does not call Gemini, classify records, or write canonical data.
+
 ## Review Questions
 
 Phase 44 should answer:

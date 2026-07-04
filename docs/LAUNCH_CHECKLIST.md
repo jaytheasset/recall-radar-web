@@ -311,3 +311,12 @@ Canonical/site URL status:
 - Confirm generated preview outputs are not committed.
 - Confirm allergen, contamination, and foreign matter cases are included when present.
 - Confirm no live LLM classification, source refresh, canonical data migration, UI migration, backend, database, or translation was introduced.
+
+## T. New Zealand Product Safety Classifier Input Preview Gate
+
+- Run `npm run preview:new-zealand-classifier-input`.
+- Run `npm run audit:new-zealand-classifier-input-preview`.
+- Confirm generated New Zealand preview outputs stay under ignored `outputs/llm-classifier/input-preview/new-zealand/`.
+- Confirm generated preview outputs are not committed.
+- Confirm baby/kids or toy and electronics/battery cases are included when present.
+- Confirm no live LLM classification, source refresh, canonical data migration, UI migration, backend, database, or translation was introduced.

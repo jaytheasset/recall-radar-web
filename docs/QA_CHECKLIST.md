@@ -444,3 +444,14 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - Confirm the noise report checks raw HTML leakage, fallback strings, repeated strings, missing product identity, missing problem/hazard text, missing date marking, long availability/distribution prose, and identifier over-extraction.
 - Confirm generated preview outputs are not staged or committed.
 - Confirm no Gemini/OpenAI calls, canonical data changes, source refreshes, runtime UI changes, backend, database, or translation were introduced.
+
+## New Zealand Product Safety Classifier Input Preview
+
+- Confirm `npm run preview:new-zealand-classifier-input` writes ignored local reports under `outputs/llm-classifier/input-preview/new-zealand/`.
+- Confirm `npm run audit:new-zealand-classifier-input-preview` passes.
+- Confirm the preview includes 100 total New Zealand Product Safety records and the requested sample count.
+- Confirm the preview includes baby/kids or toy and electronics/battery cases when present.
+- Confirm generic and proposed input token estimates are reported.
+- Confirm the noise report checks raw HTML leakage, fallback strings, repeated strings, missing product identity, missing hazard evidence, missing action/remedy evidence, supplier/contact domination, and identifier over-extraction.
+- Confirm generated preview outputs are not staged or committed.
+- Confirm no Gemini/OpenAI calls, canonical data changes, source refreshes, runtime UI changes, backend, database, or translation were introduced.
