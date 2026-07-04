@@ -902,51 +902,25 @@ button:disabled {
   box-shadow: 0 30px 76px rgba(17, 24, 39, 0.15);
 }
 
-.source-marker {
-  display: inline-grid;
-  width: 54px;
-  height: 38px;
+.source-flag-wrap {
+  display: grid;
+  width: 58px;
+  aspect-ratio: 4 / 3;
   place-items: center;
   border: 1px solid rgba(17, 24, 39, 0.08);
   border-radius: 14px;
-  color: #101828;
-  font-size: 0.8rem;
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  background: #F8FAFC;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.72),
+    0 8px 18px rgba(17, 24, 39, 0.06);
+  overflow: hidden;
 }
 
-.source-marker-us {
-  background:
-    linear-gradient(180deg, rgba(180, 35, 24, 0.18) 0 16%, transparent 16% 32%, rgba(180, 35, 24, 0.18) 32% 48%, transparent 48% 64%, rgba(180, 35, 24, 0.18) 64% 80%, transparent 80%),
-    #F8FAFC;
-}
-
-.source-marker-canada {
-  background:
-    linear-gradient(90deg, rgba(180, 35, 24, 0.18) 0 26%, transparent 26% 74%, rgba(180, 35, 24, 0.18) 74%),
-    #F8FAFC;
-}
-
-.source-marker-eu {
-  background:
-    radial-gradient(circle at 28% 34%, rgba(251, 191, 36, 0.75) 0 2px, transparent 2.4px),
-    radial-gradient(circle at 50% 24%, rgba(251, 191, 36, 0.75) 0 2px, transparent 2.4px),
-    radial-gradient(circle at 72% 34%, rgba(251, 191, 36, 0.75) 0 2px, transparent 2.4px),
-    #EEF4FF;
-}
-
-.source-marker-france {
-  background:
-    linear-gradient(90deg, rgba(37, 99, 235, 0.18) 0 33%, transparent 33% 66%, rgba(180, 35, 24, 0.18) 66%),
-    #F8FAFC;
-}
-
-.source-marker-uk {
-  background:
-    linear-gradient(135deg, transparent 0 42%, rgba(37, 99, 235, 0.16) 42% 58%, transparent 58%),
-    linear-gradient(45deg, transparent 0 42%, rgba(180, 35, 24, 0.16) 42% 58%, transparent 58%),
-    #F8FAFC;
+.source-flag {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .home-page .source-country-card .category-card-body {

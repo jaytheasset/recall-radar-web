@@ -66,40 +66,40 @@ const productTypes = [
 const sourcePages = getSourceLandingPageCards();
 const sourceCardDetails = {
   '/us-product-recalls': {
-    marker: 'US',
-    markerClass: 'source-marker-us',
+    flagSrc: '/flags/us.svg',
+    flagAlt: 'United States flag',
     title: 'United States',
     description: 'Product recalls and food alerts from CPSC and FDA/openFDA.',
     sourceLabel: 'CPSC + FDA/openFDA',
     cta: 'Browse US recalls'
   },
   '/canada-product-recalls': {
-    marker: 'CA',
-    markerClass: 'source-marker-canada',
+    flagSrc: '/flags/ca.svg',
+    flagAlt: 'Canada flag',
     title: 'Canada',
     description: 'Product recalls and safety alerts from Health Canada.',
     sourceLabel: 'Recalls and Safety Alerts',
     cta: 'Browse Canada recalls'
   },
   '/eu-safety-gate-recalls': {
-    marker: 'EU',
-    markerClass: 'source-marker-eu',
+    flagSrc: '/flags/eu.svg',
+    flagAlt: 'European Union flag',
     title: 'European Union',
     description: 'Non-food product safety alerts from Safety Gate.',
     sourceLabel: 'Safety Gate',
     cta: 'Browse EU alerts'
   },
   '/france-product-recalls': {
-    marker: 'FR',
-    markerClass: 'source-marker-france',
+    flagSrc: '/flags/fr.svg',
+    flagAlt: 'France flag',
     title: 'France',
     description: 'Consumer product and food recalls from RappelConso.',
     sourceLabel: 'RappelConso',
     cta: 'Browse France recalls'
   },
   '/uk-food-recalls': {
-    marker: 'UK',
-    markerClass: 'source-marker-uk',
+    flagSrc: '/flags/gb.svg',
+    flagAlt: 'United Kingdom flag',
     title: 'United Kingdom',
     description: 'Food recalls and allergy alerts from the UK FSA.',
     sourceLabel: 'FSA Food Alerts',
@@ -224,7 +224,9 @@ const sourceCardDetails = {
 
             return (
             <a class="category-card source-country-card" href={page.route}>
-              <span class={`source-marker ${details.markerClass}`} aria-hidden="true">{details.marker}</span>
+              <span class="source-flag-wrap">
+                <img class="source-flag" src={details.flagSrc} alt={details.flagAlt} loading="lazy" decoding="async" />
+              </span>
               <span class="category-card-body">
                 <span class="source-card-kicker">{details.sourceLabel}</span>
                 <h3>{details.title}</h3>
