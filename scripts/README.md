@@ -823,3 +823,44 @@ npm run audit:identifier-guidance
 ```
 
 This command is static and non-network. It validates the identifier guidance helper, source-specific identifier copy for all active sources, no-result/search/detail guidance, typed Identifier V2 schema notes, and barcode-optional wording. It does not call an LLM, fetch sources, normalize records, merge data, change canonical processed files, or migrate runtime categories.
+
+The Phase 44E validation alias is:
+
+```powershell
+npm run audit:source-aware-identifiers
+```
+
+It runs the same source-aware identifier guidance audit.
+
+## CPSC Classifier Input Preview
+
+```powershell
+npm run preview:cpsc-classifier-input
+```
+
+This command reads the current canonical processed recalls, filters CPSC records only, builds the current generic classifier input and a proposed CPSC-specific input preview, compares estimated tokens, and writes ignored local reports under:
+
+`outputs/llm-classifier/input-preview/cpsc/`
+
+Generated files:
+
+- `cpsc-input-preview.json`
+- `cpsc-input-preview.md`
+- `cpsc-noise-report.json`
+- `cpsc-token-comparison.json`
+
+Optional sample limit:
+
+```powershell
+$env:CPSC_CLASSIFIER_INPUT_PREVIEW_LIMIT = "20"
+npm run preview:cpsc-classifier-input
+Remove-Item Env:CPSC_CLASSIFIER_INPUT_PREVIEW_LIMIT
+```
+
+Audit the preview wiring:
+
+```powershell
+npm run audit:cpsc-classifier-input-preview
+```
+
+The preview and audit do not call Gemini or OpenAI, do not classify records, do not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.

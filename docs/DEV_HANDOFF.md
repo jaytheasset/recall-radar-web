@@ -427,3 +427,14 @@ Phase 44D centralizes identifier guidance in `src/lib/identifier-guidance.ts` an
 - No-result copy reminds users that no indexed match is not a safety or recall-free confirmation.
 - Detail pages show a concise source-aware verification note.
 - Identifier V2 remains type-only planning; no canonical records or source outputs are changed.
+
+## CPSC Classifier Input Preview
+
+Phase 44E-1 adds a CPSC-only input preview before any live per-source classification.
+
+- Guide: `docs/cpsc-classifier-input-preview.md`
+- Preview command: `npm run preview:cpsc-classifier-input`
+- Static audit: `npm run audit:cpsc-classifier-input-preview`
+- Output folder: ignored `outputs/llm-classifier/input-preview/cpsc/`
+
+The preview compares the current generic classifier input with a proposed CPSC-specific input view, estimates tokens, checks prompt noise, and forces the Yamaha/UMAX/Bistro vehicle review case when present. It does not call Gemini or OpenAI, does not classify records, does not modify `data/raw` or `data/processed`, and does not change runtime UI.

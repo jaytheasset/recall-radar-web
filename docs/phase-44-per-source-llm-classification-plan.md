@@ -67,6 +67,15 @@ Generate:
 - Include image-backed and image-less examples when possible.
 - Include food, consumer product, vehicle-like, medical/health, chemical, and household examples when present.
 
+## Phase 44E Input Preview Prerequisite
+
+Before live per-source Gemini classification, run source-specific input preview tools. Phase 44E-1 starts with CPSC only:
+
+- `npm run preview:cpsc-classifier-input`
+- `npm run audit:cpsc-classifier-input-preview`
+
+The CPSC preview compares the current generic classifier input with a proposed CPSC-specific input shape and writes ignored reports under `outputs/llm-classifier/input-preview/cpsc/`. It does not call Gemini, does not classify records, and does not write canonical data.
+
 ## Review Questions
 
 Phase 44 should answer:

@@ -6,6 +6,8 @@ Phase 43 keeps this dry-run pipeline as a review tool and defines the future V2 
 
 Phase 44A adds `.env.local` loading for local classifier CLI scripts plus `npm run debug:llm-classifier-env` and `npm run probe:gemini-classifier`. See `docs/llm-env-setup.md`.
 
+Phase 44E-1 adds a CPSC-only input preview before live per-source classification. See `docs/cpsc-classifier-input-preview.md`.
+
 ## Purpose
 
 The dry run tests whether Recall Taxonomy V2 can classify the current indexed notices into the new taxonomy shape before any migration phase. It compares generated taxonomy fields with the existing legacy `category` field and highlights suspicious mismatches for manual review.
@@ -114,6 +116,15 @@ The audit checks:
 - sample selection includes the known suspicious Yamaha/Bistro vehicle edge case
 - generated local dry-run output validates against `RecallClassificationV2` when present
 - no committed API-key-like values are present in the classifier files
+
+For CPSC input-noise review, run:
+
+```powershell
+npm run preview:cpsc-classifier-input
+npm run audit:cpsc-classifier-input-preview
+```
+
+Those commands write ignored preview reports only and do not call an LLM.
 
 ## Non-Goals
 

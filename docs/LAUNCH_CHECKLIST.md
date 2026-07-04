@@ -293,3 +293,12 @@ Canonical/site URL status:
 - Confirm source-specific identifier guidance covers all active sources.
 - Confirm no copy says every recall has a barcode, barcode is required, or no barcode means no recall.
 - Confirm no source refresh, canonical data migration, LLM classification, backend, database, or category route migration was introduced.
+
+## R. CPSC Classifier Input Preview Gate
+
+- Run `npm run preview:cpsc-classifier-input`.
+- Run `npm run audit:cpsc-classifier-input-preview`.
+- Confirm generated CPSC preview outputs stay under ignored `outputs/llm-classifier/input-preview/cpsc/`.
+- Confirm generated preview outputs are not committed.
+- Confirm the preview includes the Yamaha/UMAX/Bistro vehicle review case when present.
+- Confirm no live LLM classification, source refresh, canonical data migration, UI migration, backend, database, or translation was introduced.
