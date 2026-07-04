@@ -807,3 +807,11 @@ npm run probe:gemini-classifier
 ```
 
 This command uses one artificial recall prompt to check Gemini connectivity and strict JSON validation when `GEMINI_API_KEY` is present. It does not use live recall records, does not write canonical data, and does not run per-source classification. If the key is missing, it prints setup guidance and exits without a live request.
+
+## Taxonomy V2 UI Preview Audit
+
+```powershell
+npm run audit:taxonomy-v2-ui-preview
+```
+
+This command validates the development-only Taxonomy V2 UI preview at `/dev/taxonomy-v2-preview`. The preview uses artificial records from `data/samples/recall-taxonomy-v2-examples.json` and does not run LLM classification, source fetches, source normalizers, source merges, or canonical record migration.

@@ -404,3 +404,14 @@ Phase 44A adds local-only environment handling for classifier CLI scripts.
 - Gemini probe: `npm run probe:gemini-classifier`
 
 The Gemini probe uses one artificial recall classification prompt and does not read source records, write canonical data, or run per-source classification. Full Phase 44 classification remains deferred.
+
+## Taxonomy V2 UI Preview
+
+Phase 44B adds `/dev/taxonomy-v2-preview` as a noindex development preview for future Taxonomy V2 menus, hazard filters, detail-page sections, and legacy category replacement planning.
+
+- Preview doc: `docs/taxonomy-v2-ui-preview.md`
+- Display helpers: `src/lib/taxonomy-v2-display.ts`
+- Preview data helper: `src/lib/taxonomy-v2-preview-data.ts`
+- Audit: `npm run audit:taxonomy-v2-ui-preview`
+
+The preview uses artificial examples only. It does not change canonical records, current public category pages, source pages, homepage category links, runtime filtering, or detail pages.

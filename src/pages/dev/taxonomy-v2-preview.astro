@@ -1,0 +1,550 @@
+---
+import {
+  getAudienceLabel,
+  getHazardTypeLabel,
+  getProductTypeLabel,
+  getRecallDomainLabel
+} from '../../lib/taxonomy-v2-display';
+import {
+  selectedHazardFilterPreview,
+  taxonomyV2LegacyReplacementMap,
+  taxonomyV2MenuPreview,
+  taxonomyV2PreviewRecords
+} from '../../lib/taxonomy-v2-preview-data';
+import '../../styles/global.css';
+
+const title = 'Development Preview: Taxonomy V2 UI Structure | Recall Radar';
+const description =
+  'Development-only preview of possible Recall Taxonomy V2 menus, hazard filters, detail sections, and legacy category replacements.';
+const detailPreviewRecord =
+  taxonomyV2PreviewRecords.find((record) => record.id === 'sample-yamaha-umax-bistro') ??
+  taxonomyV2PreviewRecords[0];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">Recall Radar</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/checker">Product Recall Checker</a>
+        <a href="/watchlist">Watchlist</a>
+        <a href="/baby-product-recalls">Baby & Kids</a>
+        <a href="/battery-recalls">Batteries & Electronics</a>
+        <a href="/food-allergy-recalls">Food & Allergy</a>
+      </nav>
+    </header>
+
+    <main class="page-shell taxonomy-preview-page">
+      <section class="preview-hero">
+        <p class="eyebrow">Development Preview</p>
+        <h1>Taxonomy V2 UI Structure</h1>
+        <p class="lead">
+          This private review page previews future product-family menus, hazard filters, and detail-page sections before
+          Gemini classification or any canonical record migration.
+        </p>
+        <div class="preview-warning">
+          Artificial examples only. Current public routes, current source pages, current category pages, and canonical
+          recall records are unchanged.
+        </div>
+      </section>
+
+      <section class="preview-section" aria-labelledby="future-menu-title">
+        <div class="preview-section-header">
+          <div>
+            <p class="eyebrow">Future menu preview</p>
+            <h2 id="future-menu-title">Top-level product families</h2>
+          </div>
+          <span class="preview-pill">Not active filters yet</span>
+        </div>
+        <div class="taxonomy-menu-grid">
+          {taxonomyV2MenuPreview.map((item) => (
+            <article class="taxonomy-family-card">
+              <div class="taxonomy-family-card-top">
+                <h3>{item.label}</h3>
+                <span>{item.productFamily}</span>
+              </div>
+              <p>{item.description}</p>
+              <dl class="preview-facts">
+                <div>
+                  <dt>Future route</dt>
+                  <dd><code>{item.href}</code></dd>
+                </div>
+                <div>
+                  <dt>Example product types</dt>
+                  <dd>{item.productTypes.slice(0, 4).map(getProductTypeLabel).join(', ')}</dd>
+                </div>
+                <div>
+                  <dt>Likely hazard filters</dt>
+                  <dd>{item.hazardFilters.slice(0, 4).map(getHazardTypeLabel).join(', ')}</dd>
+                </div>
+                <div>
+                  <dt>Artificial example count</dt>
+                  <dd>{item.sampleCount}</dd>
+                </div>
+              </dl>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="preview-section" aria-labelledby="hazard-filter-title">
+        <div class="preview-section-header">
+          <div>
+            <p class="eyebrow">Secondary filter preview</p>
+            <h2 id="hazard-filter-title">Hazard filters by family</h2>
+          </div>
+        </div>
+        <div class="hazard-preview-grid">
+          {selectedHazardFilterPreview.map((item) => (
+            <article class="hazard-preview-card">
+              <h3>{item.label}</h3>
+              <div class="chip-row">
+                <span class="preview-chip strong">All</span>
+                {item.productTypes.slice(0, 3).map((type) => <span class="preview-chip">{getProductTypeLabel(type)}</span>)}
+                {item.hazardFilters.map((hazard) => <span class="preview-chip danger">{getHazardTypeLabel(hazard)}</span>)}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="preview-section" aria-labelledby="detail-preview-title">
+        <div class="preview-section-header">
+          <div>
+            <p class="eyebrow">Future detail structure</p>
+            <h2 id="detail-preview-title">Example recall detail layout</h2>
+          </div>
+          <span class="preview-pill">Uses Yamaha UMAX Bistro fixture</span>
+        </div>
+        <article class="detail-preview-shell">
+          <div class="detail-preview-summary">
+            <p class="eyebrow">Recall Summary</p>
+            <h3>{detailPreviewRecord.input.title}</h3>
+            <p>
+              {detailPreviewRecord.input.productNames.join(', ')} from {detailPreviewRecord.input.brandNames.join(', ')}
+              is grouped as {detailPreviewRecord.familyLabel} for future browsing.
+            </p>
+            <div class="chip-row">
+              <span class="preview-chip">{detailPreviewRecord.familyLabel}</span>
+              <span class="preview-chip">{detailPreviewRecord.productTypeLabel}</span>
+              <span class="preview-chip danger">{detailPreviewRecord.hazardTypeLabel}</span>
+            </div>
+          </div>
+
+          <div class="detail-preview-grid">
+            <section>
+              <h4>Product Details</h4>
+              <p>{detailPreviewRecord.input.description}</p>
+              <ul>
+                <li>Product: {detailPreviewRecord.input.productNames.join(', ')}</li>
+                <li>Brand/company: {detailPreviewRecord.input.brandNames.join(', ')}</li>
+                <li>Identifiers: {detailPreviewRecord.input.identifiers.join(', ')}</li>
+              </ul>
+            </section>
+            <section>
+              <h4>Hazard & Risk</h4>
+              <p>{detailPreviewRecord.input.hazard}</p>
+            </section>
+            <section>
+              <h4>Remedy / What to Do</h4>
+              <p>{detailPreviewRecord.input.remedy}</p>
+            </section>
+            <section>
+              <h4>Affected Identifiers</h4>
+              <p>{detailPreviewRecord.input.identifiers.join(', ')}</p>
+            </section>
+            <section>
+              <h4>Images</h4>
+              <p>Future detail pages can keep product images near the summary while classification remains lower on the page.</p>
+            </section>
+            <section>
+              <h4>Source Notice</h4>
+              <p>Source: {detailPreviewRecord.input.source}</p>
+            </section>
+          </div>
+
+          <section class="classification-preview">
+            <h4>Classification</h4>
+            <p>
+              Development/review visibility only. Public launch may hide or minimize these internals after product owner
+              review.
+            </p>
+            <dl class="classification-grid">
+              <div>
+                <dt>Product family</dt>
+                <dd>{detailPreviewRecord.familyLabel}</dd>
+              </div>
+              <div>
+                <dt>Product type</dt>
+                <dd>{detailPreviewRecord.productTypeLabel}</dd>
+              </div>
+              <div>
+                <dt>Hazard type</dt>
+                <dd>{detailPreviewRecord.hazardTypeLabel}</dd>
+              </div>
+              <div>
+                <dt>Hazard tags</dt>
+                <dd>{detailPreviewRecord.expectedClassification.hazardTags.join(', ')}</dd>
+              </div>
+              <div>
+                <dt>Recall domain</dt>
+                <dd>{detailPreviewRecord.recallDomainLabel}</dd>
+              </div>
+              <div>
+                <dt>Audience</dt>
+                <dd>{detailPreviewRecord.audienceLabels.join(', ')}</dd>
+              </div>
+              <div>
+                <dt>Confidence</dt>
+                <dd>{detailPreviewRecord.expectedClassification.confidence}</dd>
+              </div>
+              <div>
+                <dt>Needs review</dt>
+                <dd>{detailPreviewRecord.expectedClassification.needsReview ? 'Yes' : 'No'}</dd>
+              </div>
+              <div>
+                <dt>Evidence fields</dt>
+                <dd>{detailPreviewRecord.expectedClassification.evidenceFields.join(', ')}</dd>
+              </div>
+              <div>
+                <dt>Reason</dt>
+                <dd>{detailPreviewRecord.expectedClassification.reason}</dd>
+              </div>
+            </dl>
+          </section>
+        </article>
+      </section>
+
+      <section class="preview-section" aria-labelledby="sample-records-title">
+        <div class="preview-section-header">
+          <div>
+            <p class="eyebrow">Artificial examples</p>
+            <h2 id="sample-records-title">Sample classified records</h2>
+          </div>
+        </div>
+        <div class="sample-record-grid">
+          {taxonomyV2PreviewRecords.map((record) => (
+            <article class="sample-record-card">
+              <p class="eyebrow">{record.input.source}</p>
+              <h3>{record.input.title}</h3>
+              <p>{record.input.hazard}</p>
+              <div class="chip-row">
+                <span class="preview-chip">{record.familyLabel}</span>
+                <span class="preview-chip">{record.productTypeLabel}</span>
+                <span class="preview-chip danger">{record.hazardTypeLabel}</span>
+                <span class="preview-chip">{getRecallDomainLabel(record.expectedClassification.recallDomain)}</span>
+                {record.expectedClassification.audience.map((audience) => (
+                  <span class="preview-chip muted">{getAudienceLabel(audience)}</span>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="preview-section" aria-labelledby="legacy-map-title">
+        <div class="preview-section-header">
+          <div>
+            <p class="eyebrow">Replacement planning</p>
+            <h2 id="legacy-map-title">Legacy Category Replacement Map</h2>
+          </div>
+        </div>
+        <div class="legacy-map">
+          {taxonomyV2LegacyReplacementMap.map((item) => (
+            <article class="legacy-map-card">
+              <div>
+                <p class="eyebrow">Current</p>
+                <h3>{item.current}</h3>
+              </div>
+              <div>
+                <p class="eyebrow">Future</p>
+                <p>{item.future.map((route) => <code>{route}</code>)}</p>
+              </div>
+              <p>{item.note}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="preview-section decision-section" aria-labelledby="decision-title">
+        <p class="eyebrow">Product owner review</p>
+        <h2 id="decision-title">Open decisions before classification</h2>
+        <ol>
+          <li>Are top-level category names acceptable?</li>
+          <li>Are there too many categories for homepage discovery?</li>
+          <li>Which categories should appear on the homepage first?</li>
+          <li>Should Vehicles & Mobility be a top-level public category?</li>
+          <li>Should Industrial & Workplace be public or hidden until enough records exist?</li>
+          <li>Should Classification remain dev-only?</li>
+          <li>Should Food & Grocery replace Food & Allergy publicly?</li>
+          <li>Should hazard filters appear as chips under each category?</li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      Development preview only. Search results and classification previews are not safety confirmations. Always verify
+      affected models, lots, dates, distribution, and remedies with the official notice.
+    </footer>
+
+    <style>
+      .taxonomy-preview-page {
+        max-width: 1180px;
+      }
+
+      .preview-hero,
+      .preview-section,
+      .detail-preview-shell {
+        background: #fff;
+        border: 1px solid #e3e7ee;
+        border-radius: 28px;
+        box-shadow: 0 18px 44px rgba(18, 24, 38, 0.08);
+      }
+
+      .preview-hero {
+        padding: clamp(1.5rem, 4vw, 3.5rem);
+      }
+
+      .preview-hero h1 {
+        max-width: 820px;
+        margin-bottom: 0.7rem;
+        font-size: clamp(2.2rem, 6vw, 5rem);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .preview-warning {
+        margin-top: 1.4rem;
+        padding: 1rem 1.1rem;
+        border-radius: 18px;
+        background: #f4f6f9;
+        color: #445066;
+        font-weight: 700;
+      }
+
+      .preview-section {
+        margin-top: 1.5rem;
+        padding: clamp(1.25rem, 3vw, 2rem);
+      }
+
+      .preview-section-header,
+      .taxonomy-family-card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .preview-section-header {
+        margin-bottom: 1.2rem;
+      }
+
+      .preview-section h2 {
+        margin: 0.1rem 0 0;
+      }
+
+      .preview-pill,
+      .preview-chip {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        border: 1px solid #dce2ec;
+        background: #f7f9fc;
+        color: #1b2535;
+        font-size: 0.78rem;
+        font-weight: 800;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      .preview-pill {
+        padding: 0.5rem 0.75rem;
+      }
+
+      .preview-chip {
+        padding: 0.42rem 0.62rem;
+      }
+
+      .preview-chip.strong {
+        background: #111827;
+        border-color: #111827;
+        color: #fff;
+      }
+
+      .preview-chip.danger {
+        border-color: #f1c8c8;
+        background: #fff2f2;
+        color: #9f1d1d;
+      }
+
+      .preview-chip.muted {
+        color: #526176;
+      }
+
+      .taxonomy-menu-grid,
+      .hazard-preview-grid,
+      .sample-record-grid,
+      .legacy-map,
+      .detail-preview-grid,
+      .classification-grid {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .taxonomy-menu-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .hazard-preview-grid,
+      .sample-record-grid,
+      .detail-preview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .classification-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .taxonomy-family-card,
+      .hazard-preview-card,
+      .sample-record-card,
+      .legacy-map-card,
+      .detail-preview-grid section,
+      .classification-preview {
+        min-width: 0;
+        border: 1px solid #e5e9f0;
+        border-radius: 22px;
+        background: #fff;
+        padding: 1rem;
+      }
+
+      .taxonomy-family-card {
+        box-shadow: 0 12px 28px rgba(18, 24, 38, 0.06);
+      }
+
+      .taxonomy-family-card h3,
+      .sample-record-card h3,
+      .legacy-map-card h3,
+      .detail-preview-summary h3 {
+        margin: 0;
+        letter-spacing: 0;
+      }
+
+      .taxonomy-family-card-top span {
+        color: #65728a;
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+
+      .preview-facts,
+      .classification-grid {
+        margin: 1rem 0 0;
+      }
+
+      .preview-facts div,
+      .classification-grid div {
+        min-width: 0;
+        padding: 0.75rem 0;
+        border-top: 1px solid #eef1f6;
+      }
+
+      .preview-facts dt,
+      .classification-grid dt {
+        margin-bottom: 0.25rem;
+        color: #6b778c;
+        font-size: 0.74rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .preview-facts dd,
+      .classification-grid dd {
+        margin: 0;
+        color: #1b2535;
+        overflow-wrap: anywhere;
+      }
+
+      code {
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+        margin-top: 0.8rem;
+      }
+
+      .detail-preview-shell {
+        padding: clamp(1rem, 3vw, 1.5rem);
+      }
+
+      .detail-preview-summary {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eef1f6;
+      }
+
+      .classification-preview {
+        margin-top: 1rem;
+      }
+
+      .legacy-map-card {
+        display: grid;
+        grid-template-columns: 0.85fr 1fr 1.35fr;
+        gap: 1rem;
+      }
+
+      .legacy-map-card p {
+        margin: 0;
+      }
+
+      .decision-section ol {
+        margin-bottom: 0;
+        color: #293548;
+      }
+
+      .decision-section li + li {
+        margin-top: 0.45rem;
+      }
+
+      @media (max-width: 880px) {
+        .taxonomy-menu-grid,
+        .hazard-preview-grid,
+        .sample-record-grid,
+        .detail-preview-grid,
+        .classification-grid,
+        .legacy-map-card {
+          grid-template-columns: 1fr;
+        }
+
+        .preview-section-header,
+        .taxonomy-family-card-top {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+
+      @media (max-width: 430px) {
+        .preview-hero,
+        .preview-section,
+        .detail-preview-shell {
+          border-radius: 20px;
+        }
+
+        .preview-chip,
+        .preview-pill {
+          white-space: normal;
+        }
+      }
+    </style>
+  </body>
+</html>

@@ -276,3 +276,9 @@ Canonical/site URL status:
 - Confirm API keys are masked in logs and never committed.
 - Confirm `.env.local`, `.env.*.local`, and `outputs/llm-classifier/` are ignored.
 - Do not run full per-source classification during environment setup.
+
+## P. Taxonomy V2 Preview Gate
+
+- Keep `/dev/taxonomy-v2-preview` noindex and unlinked from public discovery.
+- Run `npm run audit:taxonomy-v2-ui-preview` before any Taxonomy V2 classification or UI migration phase.
+- Do not replace public category routes until product owner review is complete.

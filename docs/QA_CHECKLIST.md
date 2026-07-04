@@ -400,3 +400,11 @@ USDA FSIS is not part of the current passing MVP. The local Phase 6 attempt retu
 - If `GEMINI_API_KEY` is present, confirm the probe validates one artificial recall response.
 - Confirm generated outputs under `outputs/llm-classifier/` are ignored and not committed.
 - Confirm no full per-source classification, canonical data migration, UI migration, source refresh, backend, database, or translation happened in Phase 44A.
+
+## Taxonomy V2 UI Preview
+
+- Confirm `npm run audit:taxonomy-v2-ui-preview` passes.
+- Open `/dev/taxonomy-v2-preview` and confirm it is clearly labeled Development Preview.
+- Confirm the page shows future product family cards, hazard filter chips, sample detail sections, sample classified records, and the legacy replacement map.
+- Confirm `/dev/taxonomy-v2-preview` is not linked from the public homepage or primary navigation.
+- Confirm current category pages, source pages, checker, homepage, and detail pages still work unchanged.
