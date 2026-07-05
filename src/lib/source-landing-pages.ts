@@ -1,5 +1,6 @@
 import type { SiteRecall } from './recall-data';
 import { categoryRoutes, siteRecalls } from './recall-data';
+import { recallMatchesTaxonomyCategory } from './taxonomy-v2-pages';
 import { getNoResultIdentifierHint } from './identifier-guidance.ts';
 import { getRecallSourceLabel, type CurrentCoverageSourceId } from './recall-sources';
 
@@ -254,7 +255,7 @@ export function getSourceLandingProductTypeFilters(page: SourceLandingPageConfig
   ];
 
   for (const route of categoryRoutes) {
-    const count = recalls.filter((recall) => recall.category === route.category).length;
+    const count = recalls.filter((recall) => recallMatchesTaxonomyCategory(recall, route.category)).length;
     if (count > 0) {
       filters.push({
         category: route.category,

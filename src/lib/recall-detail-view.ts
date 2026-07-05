@@ -38,6 +38,7 @@ export type RecallDetailView = {
   taxonomyProductTypeLabel: string;
   taxonomyHazardTypeLabel: string;
   taxonomyRecallDomainLabel: string;
+  taxonomyAudienceLabels: string[];
   taxonomyConfidence: number | undefined;
   taxonomyReason: string;
   productImages: RecallImage[];
@@ -87,6 +88,7 @@ type SourceDetailView = Omit<
   | 'taxonomyProductTypeLabel'
   | 'taxonomyHazardTypeLabel'
   | 'taxonomyRecallDomainLabel'
+  | 'taxonomyAudienceLabels'
   | 'taxonomyConfidence'
   | 'taxonomyReason'
   | 'productImages'
@@ -1165,6 +1167,7 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
     taxonomyProductTypeLabel: recall.taxonomyProductTypeLabel ?? '',
     taxonomyHazardTypeLabel: recall.taxonomyHazardTypeLabel ?? '',
     taxonomyRecallDomainLabel: recall.taxonomyRecallDomainLabel ?? '',
+    taxonomyAudienceLabels: recall.taxonomyAudienceLabels ?? [],
     taxonomyConfidence: recall.taxonomyConfidence,
     taxonomyReason: recall.taxonomyReason ?? '',
     productImages: recall.images,

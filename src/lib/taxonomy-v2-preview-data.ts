@@ -146,22 +146,22 @@ export const selectedHazardFilterPreview = taxonomyV2MenuPreview.filter((item) =
 
 export const taxonomyV2LegacyReplacementMap = [
   {
-    current: '/baby-product-recalls',
+    current: '/recalls/baby-kids',
     future: ['/recalls/baby-kids'],
     note: 'Baby and kids remains a family, with toys, nursery gear, child furniture, and child clothing separated by product type.'
   },
   {
-    current: '/battery-recalls',
+    current: '/recalls/electronics-batteries',
     future: ['/recalls/electronics-batteries'],
     note: 'Battery and electronics becomes a product family with Fire, Battery overheating, Burn, and Electric shock as secondary issue tags.'
   },
   {
-    current: '/food-allergy-recalls',
+    current: '/recalls/food-grocery',
     future: ['/recalls/food-grocery'],
     note: 'Food and allergy becomes Food & Grocery with Allergen, Pathogen contamination, Chemical contamination, Foreign matter, and Labeling issue as secondary issue tags.'
   },
   {
-    current: '/household-product-recalls',
+    current: '/recalls/home-appliances',
     future: [
       '/recalls/home-appliances',
       '/recalls/furniture-household',

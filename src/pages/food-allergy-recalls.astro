@@ -46,9 +46,9 @@ const noResultCopy = getNoResultIdentifierHint();
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
-        <a href="/baby-product-recalls">Baby & Kids</a>
-        <a href="/battery-recalls">Electronics & Batteries</a>
-        <a href="/food-allergy-recalls">Food & Grocery</a>
+        <a href="/recalls/baby-kids">Baby & Kids</a>
+        <a href="/recalls/electronics-batteries">Electronics & Batteries</a>
+        <a href="/recalls/food-grocery">Food & Grocery</a>
       </nav>
     </header>
 
@@ -56,7 +56,7 @@ const noResultCopy = getNoResultIdentifierHint();
       <section class="section">
         <p class="eyebrow">Food & Grocery</p>
         <div class="meta-row data-source-row">
-          <span class="badge-source">Product type</span>
+          <span class="badge-source">Product family</span>
           <span class="badge-date">{recalls.length} indexed notice{recalls.length === 1 ? '' : 's'}</span>
           <span class="tag">{fdaRecalls.length} {fdaSourceLabel}</span>
           <span class="tag">{ukFsaRecalls.length} {ukFsaSourceLabel}</span>
@@ -123,7 +123,7 @@ const noResultCopy = getNoResultIdentifierHint();
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No indexed notices are currently classified in this product type.</p>
+            <p>No indexed notices are currently classified in this product family.</p>
           </div>
         )}
       </section>

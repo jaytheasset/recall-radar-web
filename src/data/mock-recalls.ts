@@ -172,17 +172,17 @@ export const mockRecalls: MockRecall[] = [
 
 export const categoryRoutes = [
   {
-    href: '/baby-product-recalls',
+    href: '/recalls/baby-kids',
     label: 'Baby Product Recalls',
     category: 'baby-kids'
   },
   {
-    href: '/battery-recalls',
+    href: '/recalls/electronics-batteries',
     label: 'Battery & Electronics Recalls',
     category: 'battery-electronics'
   },
   {
-    href: '/food-allergy-recalls',
+    href: '/recalls/food-grocery',
     label: 'Food Allergy Recalls',
     category: 'food-allergy'
   }

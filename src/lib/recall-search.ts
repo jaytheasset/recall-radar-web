@@ -51,7 +51,7 @@ export const MATCH_REASON_LABELS: Record<RecallMatchReason, string> = {
   brand: 'Matched by brand/company',
   product: 'Matched by product name',
   ingredient: 'Matched by ingredient or allergen',
-  'product-type': 'Related by product type',
+  'product-type': 'Related by product family',
   hazard: 'Related by hazard or reason',
   source: 'Related by market/source',
   keyword: 'Matched by keyword'

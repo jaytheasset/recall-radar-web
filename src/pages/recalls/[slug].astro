@@ -1,5 +1,6 @@
 ---
 import EuImageResourceHints from '../../components/EuImageResourceHints.astro';
+import TaxonomyFamilyPage from '../../components/TaxonomyFamilyPage.astro';
 import { categoryRoutes, siteRecalls } from '../../lib/recall-data';
 import { buildRecallDetailView, recallSourceBadge } from '../../lib/recall-detail-view';
 import {
@@ -9,26 +10,47 @@ import {
   getRecallImageForContext
 } from '../../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../../lib/recall-sources';
+import {
+  getTaxonomyV2CategoryPages,
+  getTaxonomyV2CategoryRouteBySlug,
+  recallMatchesTaxonomyCategory
+} from '../../lib/taxonomy-v2-pages';
 import '../../styles/global.css';
 
 export function getStaticPaths() {
-  return siteRecalls.map((recall) => ({
-    params: { slug: recall.slug },
-    props: { recall }
-  }));
+  return [
+    ...siteRecalls.map((recall) => ({
+      params: { slug: recall.slug },
+      props: { pageKind: 'detail', recall }
+    })),
+    ...getTaxonomyV2CategoryPages(siteRecalls).map((taxonomyPage) => ({
+      params: { slug: taxonomyPage.slug },
+      props: { pageKind: 'taxonomy-family', taxonomyPage }
+    }))
+  ];
 }
 
-const { recall } = Astro.props;
+const taxonomyPage = Astro.props.pageKind === 'taxonomy-family' ? Astro.props.taxonomyPage : undefined;
+const taxonomyRoute = taxonomyPage ? getTaxonomyV2CategoryRouteBySlug(taxonomyPage.slug) : undefined;
+const taxonomyPageRecalls =
+  taxonomyPage && taxonomyRoute
+    ? siteRecalls.filter((siteRecall) => recallMatchesTaxonomyCategory(siteRecall, taxonomyRoute.category))
+    : [];
+const recall = (Astro.props.pageKind === 'detail' ? Astro.props.recall : siteRecalls[0])!;
 const view = buildRecallDetailView(recall, siteRecalls);
-const categoryRoute = categoryRoutes.find((route) => route.category === recall.category);
-const categoryFallbackPath = categoryRoute?.href ?? `/checker?category=${recall.category}`;
+const categoryRoute = categoryRoutes.find(
+  (route) => route.category === recall.taxonomyProductFamily || route.category === recall.category
+);
+const categoryFallbackPath = categoryRoute?.href ?? `/checker?category=${recall.taxonomyProductFamily ?? recall.category}`;
 const companyDetails = [
   { label: 'Importer', value: view.importer },
   { label: 'Manufacturer', value: view.manufacturer },
   { label: 'Manufactured in', value: view.manufacturedIn }
 ].filter((fact) => fact.value.length > 0);
-const title = `${view.displayTitle} | Recall Radar`;
-const description = `${view.displayTitle} with product photos, affected item details, reason for recall, consumer action, and official source link.`;
+const title = taxonomyPage ? `${taxonomyPage.label} Recalls | Recall Radar` : `${view.displayTitle} | Recall Radar`;
+const description = taxonomyPage
+  ? `Browse indexed ${taxonomyPage.label} recall notices by product family, issue tag, brand, model, barcode, lot, or keyword.`
+  : `${view.displayTitle} with product photos, affected item details, reason for recall, consumer action, and official source link.`;
 const fallbackImageLabel = getRecallSourcePlaceholder(recall.source);
 const hasSparseIdentificationDetails = view.identificationDetails.length < 4;
 const detailHeroImage = view.productImages[0];
@@ -63,7 +85,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <EuImageResourceHints />
-    {detailHeroPreloadAttrs ? <link rel="preload" as="image" {...detailHeroPreloadAttrs} /> : null}
+    {!taxonomyPage && detailHeroPreloadAttrs ? <link rel="preload" as="image" {...detailHeroPreloadAttrs} /> : null}
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -74,12 +96,15 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
-        <a href="/baby-product-recalls">Baby & Kids</a>
-        <a href="/battery-recalls">Electronics & Batteries</a>
-        <a href="/food-allergy-recalls">Food & Grocery</a>
+        <a href="/recalls/baby-kids">Baby & Kids</a>
+        <a href="/recalls/electronics-batteries">Electronics & Batteries</a>
+        <a href="/recalls/food-grocery">Food & Grocery</a>
       </nav>
     </header>
 
+    {taxonomyPage ? (
+      <TaxonomyFamilyPage page={taxonomyPage} recalls={taxonomyPageRecalls} />
+    ) : (
     <main class="page-shell detail-report-page">
       <section class="section detail-report-hero">
         <p class="eyebrow">Recall report</p>
@@ -157,7 +182,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         </article>
 
         <aside class="detail-card recall-summary-card compact-summary-card" aria-label="Recall summary">
-          <h2>Recall summary</h2>
+          <h2>Recall Summary</h2>
           <div class="summary-list">
             <div class="summary-item">
               <strong>Product family</strong>
@@ -171,16 +196,28 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
             ) : null}
             {view.taxonomyHazardTypeLabel ? (
               <div class="summary-item">
-                <strong>Issue type</strong>
+                <strong>Issue / hazard type</strong>
                 <p>{view.taxonomyHazardTypeLabel}</p>
               </div>
             ) : null}
+            {view.taxonomyRecallDomainLabel ? (
+              <div class="summary-item">
+                <strong>Recall domain</strong>
+                <p>{view.taxonomyRecallDomainLabel}</p>
+              </div>
+            ) : null}
+            {view.taxonomyAudienceLabels.length ? (
+              <div class="summary-item">
+                <strong>Audience</strong>
+                <p>{view.taxonomyAudienceLabels.join(', ')}</p>
+              </div>
+            ) : null}
             <div class="summary-item">
-              <strong>{view.reasonLabel}</strong>
+              <strong>Hazard & Risk</strong>
               <p>{view.reason}</p>
             </div>
             <div class="summary-item">
-              <strong>{view.actionLabel}</strong>
+              <strong>Remedy / What to Do</strong>
               <p>{view.action}</p>
             </div>
             <div class="summary-meta-row">
@@ -192,12 +229,6 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
                 <span>
                   <strong>{view.quantityLabel}</strong>
                   {view.units}
-                </span>
-              ) : null}
-              {typeof view.taxonomyConfidence === 'number' ? (
-                <span>
-                  <strong>Classification</strong>
-                  {Math.round(view.taxonomyConfidence * 100)}% confidence
                 </span>
               ) : null}
             </div>
@@ -214,8 +245,8 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         <article class="detail-card detail-section-card identification-guide-card">
           <div class="section-header">
             <div>
-              <p class="eyebrow">Check your product</p>
-              <h2>How to verify product details</h2>
+              <p class="eyebrow">Product Details</p>
+              <h2>Affected identifiers</h2>
               <p class="section-note">{view.verificationIntro}</p>
             </div>
           </div>
@@ -230,7 +261,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
               {hasSparseIdentificationDetails ? <p class="verification-note">{view.sparseIdentificationCopy}</p> : null}
             </section>
             <section class="verification-panel" aria-labelledby="details-found">
-              <h3 id="details-found">Details found in this notice</h3>
+              <h3 id="details-found">Identifiers found in this notice</h3>
               {view.identificationDetails.length ? (
                 <div class="detail-fact-grid">
                   {view.identificationDetails.map((fact) => (
@@ -259,8 +290,8 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
           <article class="detail-card detail-section-card">
             <div class="section-header">
               <div>
-                <p class="eyebrow">Action</p>
-                <h2>What to do next</h2>
+                <p class="eyebrow">Remedy / What to Do</p>
+                <h2>Recommended consumer action</h2>
               </div>
             </div>
             <div class="detail-prose">
@@ -346,7 +377,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
       <section class="section official-source-section">
         <article class="detail-card official-source-card">
           <div>
-            <p class="eyebrow">Official source</p>
+            <p class="eyebrow">Source Notice</p>
             <h2>Verify with the official notice</h2>
             <p>{view.officialVerificationCopy}</p>
             <p class="official-recall-number">{view.officialSourceLabel}</p>
@@ -358,6 +389,50 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
               View official notice
             </a>
           ) : null}
+        </article>
+      </section>
+
+      <section class="section">
+        <article class="detail-card detail-section-card">
+          <div class="section-header">
+            <div>
+              <p class="eyebrow">Classification</p>
+              <h2>Product classification</h2>
+              <p class="section-note">
+                Used for browsing and filtering Recall Radar results. Always verify affected models, dates, lots, and remedies with the official notice.
+              </p>
+            </div>
+          </div>
+          <div class="detail-fact-grid">
+            <div class="detail-fact">
+              <strong>Product family</strong>
+              <span>{view.taxonomyProductFamilyLabel}</span>
+            </div>
+            {view.taxonomyProductTypeLabel ? (
+              <div class="detail-fact">
+                <strong>Product type</strong>
+                <span>{view.taxonomyProductTypeLabel}</span>
+              </div>
+            ) : null}
+            {view.taxonomyHazardTypeLabel ? (
+              <div class="detail-fact">
+                <strong>Issue / hazard type</strong>
+                <span>{view.taxonomyHazardTypeLabel}</span>
+              </div>
+            ) : null}
+            {view.taxonomyRecallDomainLabel ? (
+              <div class="detail-fact">
+                <strong>Recall domain</strong>
+                <span>{view.taxonomyRecallDomainLabel}</span>
+              </div>
+            ) : null}
+            {view.taxonomyAudienceLabels.length ? (
+              <div class="detail-fact">
+                <strong>Audience</strong>
+                <span>{view.taxonomyAudienceLabels.join(', ')}</span>
+              </div>
+            ) : null}
+          </div>
         </article>
       </section>
 
@@ -418,7 +493,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
           <div>
             <p class="eyebrow">Related recalls</p>
             <h2>Similar indexed notices</h2>
-            <p class="section-note">Based on product type, hazard, or category.</p>
+            <p class="section-note">Based on product family, product type, and issue tags.</p>
           </div>
         </div>
         {view.relatedRecalls.length ? (
@@ -462,7 +537,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         ) : (
           <div class="notice-panel">
             <p>No similar indexed notices were found.</p>
-            <a class="btn btn-secondary" href={categoryFallbackPath}>Browse {view.categoryLabel} recalls</a>
+            <a class="btn btn-secondary" href={categoryFallbackPath}>Browse {view.taxonomyProductFamilyLabel} recalls</a>
           </div>
         )}
       </section>
@@ -478,6 +553,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         </div>
       </section>
     </main>
+    )}
 
     <footer class="page-footer">
       Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.

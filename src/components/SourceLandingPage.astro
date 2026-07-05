@@ -35,9 +35,9 @@ const identifierGuidance =
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
-        <a href="/baby-product-recalls">Baby & Kids</a>
-        <a href="/battery-recalls">Electronics & Batteries</a>
-        <a href="/food-allergy-recalls">Food & Grocery</a>
+        <a href="/recalls/baby-kids">Baby & Kids</a>
+        <a href="/recalls/electronics-batteries">Electronics & Batteries</a>
+        <a href="/recalls/food-grocery">Food & Grocery</a>
       </nav>
     </header>
 
@@ -56,7 +56,7 @@ const identifierGuidance =
       <section class="section source-filter-panel" aria-labelledby="source-product-type-filter">
         <div class="section-header">
           <div>
-            <h2 id="source-product-type-filter">Filter by product type</h2>
+            <h2 id="source-product-type-filter">Filter by product family</h2>
             <p class="section-note">Narrow this source group without leaving the page.</p>
           </div>
         </div>
@@ -115,7 +115,7 @@ const identifierGuidance =
                   class="product-card"
                   data-category-card
                   data-source-card
-                  data-card-category={recall.category}
+                  data-card-category={recall.taxonomyProductFamily || recall.category}
                   data-search-text={sourcePageSearchTextFor(recall)}
                 >
                   <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>

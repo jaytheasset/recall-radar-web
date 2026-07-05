@@ -86,7 +86,7 @@ const sourceOptions = [
   ...getSourceOptionsForCurrentCoverage()
 ];
 const categoryOptions = [
-  { value: 'all', label: 'All product types' },
+  { value: 'all', label: 'All product families' },
   { value: 'food-grocery', label: 'Food & Grocery' },
   { value: 'baby-kids', label: 'Baby & Kids' },
   { value: 'electronics-batteries', label: 'Electronics & Batteries' },
@@ -132,9 +132,9 @@ const sourcePages = getSourceLandingPageCards();
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
-        <a href="/baby-product-recalls">Baby & Kids</a>
-        <a href="/battery-recalls">Electronics & Batteries</a>
-        <a href="/food-allergy-recalls">Food & Grocery</a>
+        <a href="/recalls/baby-kids">Baby & Kids</a>
+        <a href="/recalls/electronics-batteries">Electronics & Batteries</a>
+        <a href="/recalls/food-grocery">Food & Grocery</a>
       </nav>
     </header>
 
@@ -192,7 +192,7 @@ const sourcePages = getSourceLandingPageCards();
                 </select>
               </label>
               <label>
-                Product type
+                Product family
                 <select id="category-filter" name="category">
                   {categoryOptions.map((option) => <option value={option.value}>{option.label}</option>)}
                 </select>
@@ -238,7 +238,7 @@ const sourcePages = getSourceLandingPageCards();
 
       <section class="section">
         <div class="section-header">
-          <h2>Browse by product type</h2>
+          <h2>Browse by product family</h2>
         </div>
         <div class="category-grid">
           {categoryRoutes.map((route) => (
@@ -392,7 +392,7 @@ const sourcePages = getSourceLandingPageCards();
         related: 'Related notices'
       };
       const categoryFilterLabels: Record<string, string> = {
-        all: 'all product types',
+        all: 'all product families',
         'food-grocery': 'Food & Grocery',
         'baby-kids': 'Baby & Kids',
         'electronics-batteries': 'Electronics & Batteries',
@@ -700,7 +700,7 @@ const sourcePages = getSourceLandingPageCards();
           'Lot, batch, or date mark',
           'Pack size, certification number, or recall number',
           'Ingredient or allergen',
-          'Product type'
+          'Product type or family'
         ].forEach((text) => {
           const item = document.createElement('li');
           item.textContent = text;

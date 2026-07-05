@@ -1,6 +1,7 @@
 ---
 import EuImageResourceHints from '../components/EuImageResourceHints.astro';
 import {
+  categoryRoutes,
   getRecallsByCategory,
   processedAustraliaProductSafetyRecordCount,
   processedCanadaRecordCount,
@@ -26,10 +27,6 @@ const title = 'Recall Radar | Global product recall search';
 const description =
   'Recall Radar helps consumers search official product recall notices across markets by brand, product name, model number, barcode, lot or batch code, date mark, recall number, ingredient, or keyword.';
 const recentRecalls = getBalancedRecentRecalls(siteRecalls, { limit: 12 });
-const babyCount = getRecallsByCategory('baby-kids').length;
-const batteryCount = getRecallsByCategory('battery-electronics').length;
-const foodCount = getRecallsByCategory('food-allergy').length;
-const householdCount = getRecallsByCategory('household-appliance').length;
 const activeSourceCount = [
   processedCpscRecordCount,
   processedFdaRecordCount,
@@ -43,36 +40,11 @@ const activeSourceCount = [
   processedFsanzFoodRecallRecordCount
 ].filter((count) => count > 0).length;
 const countLine = `${processedLocalRecordCount} recall notices from ${activeSourceCount} official sources. Coverage is expanding and remains limited to sources currently included.`;
-const productTypes = [
-  {
-    label: 'Baby & Kids',
-    icon: 'baby',
-    href: '/baby-product-recalls',
-    count: babyCount,
-    description: 'Nursery gear and kids products.'
-  },
-  {
-    label: 'Electronics & Batteries',
-    icon: 'battery',
-    href: '/battery-recalls',
-    count: batteryCount,
-    description: 'Devices, batteries, and chargers.'
-  },
-  {
-    label: 'Food & Grocery',
-    icon: 'food',
-    href: '/food-allergy-recalls',
-    count: foodCount,
-    description: 'Foods, allergens, lots, and dates.'
-  },
-  {
-    label: 'Home & Household',
-    icon: 'household',
-    href: '/household-product-recalls',
-    count: householdCount,
-    description: 'Appliances, furniture, and home products.'
-  }
-];
+const productTypes = categoryRoutes.map((route) => ({
+  ...route,
+  icon: route.category,
+  count: getRecallsByCategory(route.category).length
+}));
 const sourcePages = getSourceLandingPageCards();
 const sourceCardDetails = {
   '/us-product-recalls': {
@@ -131,9 +103,9 @@ const sourceCardDetails = {
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
-        <a href="/baby-product-recalls">Baby & Kids</a>
-        <a href="/battery-recalls">Electronics & Batteries</a>
-        <a href="/food-allergy-recalls">Food & Grocery</a>
+        <a href="/recalls/baby-kids">Baby & Kids</a>
+        <a href="/recalls/electronics-batteries">Electronics & Batteries</a>
+        <a href="/recalls/food-grocery">Food & Grocery</a>
       </nav>
     </header>
 
@@ -171,14 +143,14 @@ const sourceCardDetails = {
       <section class="section home-category-section">
         <div class="section-header">
           <div>
-            <h2>Browse recalls by product type</h2>
+            <h2>Browse recalls by product family</h2>
           </div>
         </div>
         <div class="category-grid">
           {productTypes.map((type) => (
             <a class="category-card home-product-type-card" href={type.href}>
               <span class="category-icon" aria-hidden="true">
-                {type.icon === 'baby' ? (
+                {type.icon === 'baby-kids' ? (
                   <svg viewBox="0 0 48 48" role="img">
                     <path d="M16 18h16" />
                     <path d="M18 18l-2 14h16l-2-14" />
@@ -187,25 +159,86 @@ const sourceCardDetails = {
                     <circle cx="18" cy="14" r="4" />
                     <circle cx="30" cy="14" r="4" />
                   </svg>
-                ) : type.icon === 'battery' ? (
+                ) : type.icon === 'electronics-batteries' ? (
                   <svg viewBox="0 0 48 48" role="img">
                     <rect x="9" y="17" width="26" height="16" rx="3" />
                     <path d="M35 22h4v6h-4" />
                     <path d="M23 19l-5 8h6l-3 7 8-10h-6l3-5z" />
                   </svg>
-                ) : type.icon === 'food' ? (
+                ) : type.icon === 'food-grocery' ? (
                   <svg viewBox="0 0 48 48" role="img">
                     <path d="M15 18c5-8 14-8 18 0" />
                     <path d="M12 22h24l-3 15H15z" />
                     <path d="M20 12c3 1 5 3 6 6" />
                     <path d="M29 11c-3 1-5 3-6 7" />
                   </svg>
+                ) : type.icon === 'home-appliances' ? (
+                  <svg viewBox="0 0 48 48" role="img">
+                    <rect x="14" y="9" width="20" height="30" rx="4" />
+                    <path d="M19 16h10" />
+                    <path d="M18 24h12" />
+                    <path d="M18 31h12" />
+                  </svg>
+                ) : type.icon === 'furniture-household' ? (
+                  <svg viewBox="0 0 48 48" role="img">
+                    <path d="M14 23h20v15H14z" />
+                    <path d="M18 23V12h12v11" />
+                    <path d="M14 30H9v8" />
+                    <path d="M34 30h5v8" />
+                  </svg>
+                ) : type.icon === 'vehicles-mobility' ? (
+                  <svg viewBox="0 0 48 48" role="img">
+                    <path d="M11 28h26l-4-9H17z" />
+                    <path d="M13 28v7h22v-7" />
+                    <circle cx="17" cy="36" r="3" />
+                    <circle cx="31" cy="36" r="3" />
+                  </svg>
+                ) : type.icon === 'sports-outdoor' ? (
+                  <svg viewBox="0 0 48 48" role="img">
+                    <circle cx="24" cy="24" r="15" />
+                    <path d="M12 24h24" />
+                    <path d="M24 9c5 5 7 10 7 15s-2 10-7 15" />
+                    <path d="M24 9c-5 5-7 10-7 15s2 10 7 15" />
+                  </svg>
+                ) : type.icon === 'tools-equipment' ? (
+                  <svg viewBox="0 0 48 48" role="img">
+                    <path d="M31 10l7 7-7 7-4-4-13 13-4-4 13-13z" />
+                    <path d="M16 34l-4 4" />
+                  </svg>
+                ) : type.icon === 'clothing-accessories' ? (
+                  <svg viewBox="0 0 48 48" role="img">
+                    <path d="M17 12l7 5 7-5 8 8-6 6v12H15V26l-6-6z" />
+                    <path d="M20 15c1 3 7 3 8 0" />
+                  </svg>
+                ) : type.icon === 'health-personal-care' ? (
+                  <svg viewBox="0 0 48 48" role="img">
+                    <path d="M21 10h6v11h11v6H27v11h-6V27H10v-6h11z" />
+                  </svg>
+                ) : type.icon === 'chemicals-cleaning' ? (
+                  <svg viewBox="0 0 48 48" role="img">
+                    <path d="M20 8h8" />
+                    <path d="M22 8v8l-8 14a7 7 0 0 0 6 10h8a7 7 0 0 0 6-10l-8-14V8" />
+                    <path d="M16 31h16" />
+                  </svg>
+                ) : type.icon === 'pet-products' ? (
+                  <svg viewBox="0 0 48 48" role="img">
+                    <circle cx="17" cy="17" r="4" />
+                    <circle cx="31" cy="17" r="4" />
+                    <circle cx="14" cy="28" r="4" />
+                    <circle cx="34" cy="28" r="4" />
+                    <path d="M19 35c2-5 8-5 10 0 2 4-1 7-5 7s-7-3-5-7z" />
+                  </svg>
+                ) : type.icon === 'industrial-workplace' ? (
+                  <svg viewBox="0 0 48 48" role="img">
+                    <path d="M12 37V21l8 6v-6l8 6v-6l8 6v10z" />
+                    <path d="M13 21l3-10h6l2 14" />
+                    <path d="M17 37v-5h6v5" />
+                  </svg>
                 ) : (
                   <svg viewBox="0 0 48 48" role="img">
-                    <path d="M10 24l14-12 14 12" />
-                    <path d="M14 22v15h20V22" />
-                    <path d="M20 37V27h8v10" />
-                    <path d="M31 16v-4h4v8" />
+                    <path d="M12 18l12-7 12 7v16l-12 7-12-7z" />
+                    <path d="M12 18l12 7 12-7" />
+                    <path d="M24 25v16" />
                   </svg>
                 )}
               </span>

@@ -13,6 +13,7 @@ import {
   getProductTypeLabel,
   getRecallDomainLabel
 } from './taxonomy-v2-display';
+import { recallMatchesTaxonomyCategory, taxonomyV2CategoryRoutes } from './taxonomy-v2-pages';
 
 export type SiteRecallCategory = RecallCategory | 'general-consumer-product';
 export type SiteRecallSource = NormalizedRecall['source'] | 'Mock';
@@ -97,32 +98,7 @@ export type BrandRecallGroup = {
   recalls: SiteRecall[];
 };
 
-export const categoryRoutes = [
-  {
-    href: '/baby-product-recalls',
-    label: 'Baby & Kids',
-    category: 'baby-kids',
-    description: 'Cribs, sleepers, toys, nursery gear, and child-focused notices.'
-  },
-  {
-    href: '/battery-recalls',
-    label: 'Electronics & Batteries',
-    category: 'battery-electronics',
-    description: 'Batteries, chargers, power banks, lithium-ion products, and electronics.'
-  },
-  {
-    href: '/food-allergy-recalls',
-    label: 'Food & Grocery',
-    category: 'food-allergy',
-    description: 'Food notices, undeclared allergens, packaged goods, UPCs, and lot codes.'
-  },
-  {
-    href: '/household-product-recalls',
-    label: 'Home & Household',
-    category: 'household-appliance',
-    description: 'Appliances, furniture, home goods, and household product notices.'
-  }
-] as const;
+export const categoryRoutes = taxonomyV2CategoryRoutes;
 
 export const categoryLabels: Record<SiteRecallCategory, string> = {
   'baby-kids': 'Baby and Kids',
@@ -832,8 +808,8 @@ export const siteRecalls = (usingProcessedLocalData ? processedLocalRecalls : fa
   sortByDateDescending
 );
 
-export function getRecallsByCategory(category: SiteRecallCategory): SiteRecall[] {
-  return siteRecalls.filter((recall) => recall.category === category);
+export function getRecallsByCategory(category: string): SiteRecall[] {
+  return siteRecalls.filter((recall) => recallMatchesTaxonomyCategory(recall, category));
 }
 
 export function getBrandGroups(recalls = siteRecalls): BrandRecallGroup[] {
