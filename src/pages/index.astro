@@ -39,7 +39,7 @@ const activeSourceCount = [
   processedHongKongCfsRecordCount,
   processedFsanzFoodRecallRecordCount
 ].filter((count) => count > 0).length;
-const countLine = `${processedLocalRecordCount} indexed items from ${activeSourceCount} official sources. Coverage reflects the current sources listed below.`;
+const countLine = `${processedLocalRecordCount} recalls from ${activeSourceCount} official agencies.`;
 const productFamilies = categoryRoutes.map((route) => ({
   ...route,
   icon: route.category,
@@ -102,8 +102,8 @@ const sourceCardDetails = {
       <a class="brand" href="/">Recall Radar</a>
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
-        <a href="/#browse-recalls">Browse Recalls</a>
-        <a href="/#official-sources">Sources</a>
+        <a href="/#browse-recalls">Product Types</a>
+        <a href="/#official-sources">Countries</a>
         <a href="/watchlist">Watchlist</a>
       </nav>
     </header>
@@ -111,7 +111,7 @@ const sourceCardDetails = {
     <main class="page-shell home-page">
       <section class="home-hero">
         <div class="home-hero-copy">
-          <h1>Search product recalls from official sources.</h1>
+          <h1>Check if a product has been recalled.</h1>
           <p class="lead">
             Search by brand, product, model, lot or batch code, date mark, recall number, barcode, ingredient, or keyword.
           </p>
@@ -142,7 +142,7 @@ const sourceCardDetails = {
       <section id="browse-recalls" class="section home-category-section">
         <div class="section-header">
           <div>
-            <h2>Browse recalls by product family</h2>
+            <h2>Product types</h2>
           </div>
         </div>
         <div class="category-grid">
@@ -252,7 +252,7 @@ const sourceCardDetails = {
       <section id="official-sources" class="section home-source-section">
         <div class="section-header">
           <div>
-            <h2>Browse by official source</h2>
+            <h2>Countries & agencies</h2>
           </div>
         </div>
         <div class="category-grid source-country-grid">
@@ -289,9 +289,8 @@ const sourceCardDetails = {
         <div class="section-header">
           <div>
             <h2>Latest recalls</h2>
-            <p class="section-note">Recent items from official sources.</p>
           </div>
-          <a class="btn btn-secondary" href="/checker">Search all notices</a>
+          <a class="btn btn-secondary" href="/checker">Search all recalls</a>
         </div>
         <div class="product-grid">
           {recentRecalls.map((recall, index) => {
