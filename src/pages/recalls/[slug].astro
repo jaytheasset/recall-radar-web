@@ -75,8 +75,8 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
         <a href="/baby-product-recalls">Baby & Kids</a>
-        <a href="/battery-recalls">Batteries & Electronics</a>
-        <a href="/food-allergy-recalls">Food & Allergy</a>
+        <a href="/battery-recalls">Electronics & Batteries</a>
+        <a href="/food-allergy-recalls">Food & Grocery</a>
       </nav>
     </header>
 
@@ -86,7 +86,8 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         <div class="meta-row data-source-row">
           <span class="badge-source">{view.sourceBadge}</span>
           <span class="badge-date">{view.recallDate}</span>
-          <span class="tag">{view.categoryLabel}</span>
+          <span class="tag">{view.taxonomyProductFamilyLabel}</span>
+          {view.taxonomyHazardTypeLabel ? <span class="tag">{view.taxonomyHazardTypeLabel}</span> : null}
         </div>
         <h1 class="detail-title">{view.displayTitle}</h1>
         <p class="lead detail-intro">{view.introSentence}</p>
@@ -159,6 +160,22 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
           <h2>Recall summary</h2>
           <div class="summary-list">
             <div class="summary-item">
+              <strong>Product family</strong>
+              <p>{view.taxonomyProductFamilyLabel}</p>
+            </div>
+            {view.taxonomyProductTypeLabel ? (
+              <div class="summary-item">
+                <strong>Product type</strong>
+                <p>{view.taxonomyProductTypeLabel}</p>
+              </div>
+            ) : null}
+            {view.taxonomyHazardTypeLabel ? (
+              <div class="summary-item">
+                <strong>Issue type</strong>
+                <p>{view.taxonomyHazardTypeLabel}</p>
+              </div>
+            ) : null}
+            <div class="summary-item">
               <strong>{view.reasonLabel}</strong>
               <p>{view.reason}</p>
             </div>
@@ -175,6 +192,12 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
                 <span>
                   <strong>{view.quantityLabel}</strong>
                   {view.units}
+                </span>
+              ) : null}
+              {typeof view.taxonomyConfidence === 'number' ? (
+                <span>
+                  <strong>Classification</strong>
+                  {Math.round(view.taxonomyConfidence * 100)}% confidence
                 </span>
               ) : null}
             </div>

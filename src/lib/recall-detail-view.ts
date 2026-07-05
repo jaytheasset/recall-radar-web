@@ -34,6 +34,12 @@ export type RecallDetailView = {
   recallDate: string;
   recallNumber: string;
   categoryLabel: string;
+  taxonomyProductFamilyLabel: string;
+  taxonomyProductTypeLabel: string;
+  taxonomyHazardTypeLabel: string;
+  taxonomyRecallDomainLabel: string;
+  taxonomyConfidence: number | undefined;
+  taxonomyReason: string;
   productImages: RecallImage[];
   imageCaptions: string[];
   primaryImageAlt: string;
@@ -77,6 +83,12 @@ type SourceDetailView = Omit<
   RecallDetailView,
   | 'sourceBadge'
   | 'categoryLabel'
+  | 'taxonomyProductFamilyLabel'
+  | 'taxonomyProductTypeLabel'
+  | 'taxonomyHazardTypeLabel'
+  | 'taxonomyRecallDomainLabel'
+  | 'taxonomyConfidence'
+  | 'taxonomyReason'
   | 'productImages'
   | 'primaryImageAlt'
   | 'introSentence'
@@ -1149,6 +1161,12 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
     ...sourceSpecificView,
     sourceBadge: getRecallSourceLabel(recall.source),
     categoryLabel: recall.categoryLabel,
+    taxonomyProductFamilyLabel: recall.taxonomyProductFamilyLabel ?? recall.categoryLabel,
+    taxonomyProductTypeLabel: recall.taxonomyProductTypeLabel ?? '',
+    taxonomyHazardTypeLabel: recall.taxonomyHazardTypeLabel ?? '',
+    taxonomyRecallDomainLabel: recall.taxonomyRecallDomainLabel ?? '',
+    taxonomyConfidence: recall.taxonomyConfidence,
+    taxonomyReason: recall.taxonomyReason ?? '',
     productImages: recall.images,
     primaryImageAlt: recall.primaryImageAlt || `${sourceSpecificView.productName} recall product image`,
     introSentence,

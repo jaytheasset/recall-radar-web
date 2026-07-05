@@ -47,6 +47,19 @@ const checkerRecalls = siteRecalls.map((recall) => {
   category: recall.category,
   rawCategory: recall.rawCategory,
   categoryLabel: recall.categoryLabel,
+  taxonomyProductFamily: recall.taxonomyProductFamily,
+  taxonomyProductFamilyLabel: recall.taxonomyProductFamilyLabel,
+  taxonomyProductType: recall.taxonomyProductType,
+  taxonomyProductTypeLabel: recall.taxonomyProductTypeLabel,
+  taxonomyHazardType: recall.taxonomyHazardType,
+  taxonomyHazardTypeLabel: recall.taxonomyHazardTypeLabel,
+  taxonomyHazardTags: recall.taxonomyHazardTags,
+  taxonomyRecallDomain: recall.taxonomyRecallDomain,
+  taxonomyRecallDomainLabel: recall.taxonomyRecallDomainLabel,
+  taxonomyAudienceLabels: recall.taxonomyAudienceLabels,
+  taxonomyConfidence: recall.taxonomyConfidence,
+  taxonomyNeedsReview: recall.taxonomyNeedsReview,
+  taxonomyReason: recall.taxonomyReason,
   hazard: recall.hazard,
   remedy: recall.remedy,
   recallDate: recall.recallDate,
@@ -74,12 +87,22 @@ const sourceOptions = [
 ];
 const categoryOptions = [
   { value: 'all', label: 'All product types' },
-  { value: 'baby-kids', label: 'Baby and kids' },
-  { value: 'battery-electronics', label: 'Battery and electronics' },
-  { value: 'food-allergy', label: 'Food and allergy' },
-  { value: 'household-appliance', label: 'Household Products' },
-  { value: 'food', label: 'Food' },
-  { value: 'general', label: 'General' }
+  { value: 'food-grocery', label: 'Food & Grocery' },
+  { value: 'baby-kids', label: 'Baby & Kids' },
+  { value: 'electronics-batteries', label: 'Electronics & Batteries' },
+  { value: 'home-appliances', label: 'Home Appliances' },
+  { value: 'furniture-household', label: 'Furniture & Household' },
+  { value: 'vehicles-mobility', label: 'Vehicles & Mobility' },
+  { value: 'sports-outdoor', label: 'Sports & Outdoor' },
+  { value: 'tools-equipment', label: 'Tools & Equipment' },
+  { value: 'clothing-accessories', label: 'Clothing & Accessories' },
+  { value: 'health-personal-care', label: 'Health & Personal Care' },
+  { value: 'chemicals-cleaning', label: 'Chemicals & Cleaning' },
+  { value: 'pet-products', label: 'Pet Products' },
+  { value: 'industrial-workplace', label: 'Industrial & Workplace' },
+  { value: 'other', label: 'Other' },
+  { value: 'unknown', label: 'Need Review' },
+  { value: 'general', label: 'Legacy general' }
 ];
 const sortOptions = [
   { value: 'best', label: 'Best match' },
@@ -110,8 +133,8 @@ const sourcePages = getSourceLandingPageCards();
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
         <a href="/baby-product-recalls">Baby & Kids</a>
-        <a href="/battery-recalls">Batteries & Electronics</a>
-        <a href="/food-allergy-recalls">Food & Allergy</a>
+        <a href="/battery-recalls">Electronics & Batteries</a>
+        <a href="/food-allergy-recalls">Food & Grocery</a>
       </nav>
     </header>
 
@@ -275,7 +298,7 @@ const sourcePages = getSourceLandingPageCards();
       } from '../lib/recall-sources';
       import { initImageFallbacks } from '../lib/image-fallback';
       import { initProgressiveCardImages } from '../lib/progressive-detail-image';
-      import { upsertWatchlistSearch } from '../lib/watchlist';
+      import { upsertWatchlistSearch, type WatchlistCategoryFilter } from '../lib/watchlist';
 
       initProgressiveCardImages();
       initImageFallbacks();
@@ -316,15 +339,9 @@ const sourcePages = getSourceLandingPageCards();
         | 'UK_FSA'
         | 'AU_PRODUCT_SAFETY'
         | 'NZ_PRODUCT_SAFETY'
-        | 'HK_CFS';
-      type CategoryFilter =
-        | 'all'
-        | 'baby-kids'
-        | 'battery-electronics'
-        | 'food-allergy'
-        | 'household-appliance'
-        | 'food'
-        | 'general';
+        | 'HK_CFS'
+        | 'FSANZ_FOOD_RECALLS';
+      type CategoryFilter = WatchlistCategoryFilter;
       type SortFilter = 'best' | 'newest' | 'oldest';
       type DateFilter = 'all' | '30' | '90';
       type SearchState = {
@@ -345,15 +362,26 @@ const sourcePages = getSourceLandingPageCards();
         'UK_FSA',
         'AU_PRODUCT_SAFETY',
         'NZ_PRODUCT_SAFETY',
-        'HK_CFS'
+        'HK_CFS',
+        'FSANZ_FOOD_RECALLS'
       ];
       const categoryValues: CategoryFilter[] = [
         'all',
+        'food-grocery',
         'baby-kids',
-        'battery-electronics',
-        'food-allergy',
-        'household-appliance',
-        'food',
+        'electronics-batteries',
+        'home-appliances',
+        'furniture-household',
+        'vehicles-mobility',
+        'sports-outdoor',
+        'tools-equipment',
+        'clothing-accessories',
+        'health-personal-care',
+        'chemicals-cleaning',
+        'pet-products',
+        'industrial-workplace',
+        'other',
+        'unknown',
         'general'
       ];
       const sortValues: SortFilter[] = ['best', 'newest', 'oldest'];
@@ -363,14 +391,24 @@ const sourcePages = getSourceLandingPageCards();
         possible: 'Possible matches',
         related: 'Related notices'
       };
-      const categoryFilterLabels: Record<CategoryFilter, string> = {
+      const categoryFilterLabels: Record<string, string> = {
         all: 'all product types',
-        'baby-kids': 'baby and kids',
-        'battery-electronics': 'battery and electronics',
-        'food-allergy': 'food and allergy',
-        'household-appliance': 'household products',
-        food: 'food',
-        general: 'general'
+        'food-grocery': 'Food & Grocery',
+        'baby-kids': 'Baby & Kids',
+        'electronics-batteries': 'Electronics & Batteries',
+        'home-appliances': 'Home Appliances',
+        'furniture-household': 'Furniture & Household',
+        'vehicles-mobility': 'Vehicles & Mobility',
+        'sports-outdoor': 'Sports & Outdoor',
+        'tools-equipment': 'Tools & Equipment',
+        'clothing-accessories': 'Clothing & Accessories',
+        'health-personal-care': 'Health & Personal Care',
+        'chemicals-cleaning': 'Chemicals & Cleaning',
+        'pet-products': 'Pet Products',
+        'industrial-workplace': 'Industrial & Workplace',
+        other: 'Other',
+        unknown: 'Need Review',
+        general: 'Legacy general'
       };
 
       function isOneOf<T extends string>(value: string | null, values: readonly T[], fallback: T): T {
@@ -384,18 +422,16 @@ const sourcePages = getSourceLandingPageCards();
 
         return siteRecalls.filter((recall) => {
           const sourceMatches = state.source === 'all' || recall.source === state.source;
+          const family = recall.taxonomyProductFamily ?? '';
           const categoryMatches =
             state.category === 'all' ||
-            (state.category === 'food' &&
-              (recall.rawCategory === 'food' ||
-                recall.rawCategory === 'alimentation' ||
-                recall.source === 'FDA' ||
-                recall.source === 'UK_FSA' ||
-                recall.source === 'FR_RAPPELCONSO' ||
-                recall.source === 'NZ_PRODUCT_SAFETY' ||
-                (recall.source === 'CA_RECALLS' && recall.category === 'food-allergy'))) ||
+            family === state.category ||
+            recall.category === state.category ||
             (state.category === 'general' && recall.category === 'general-consumer-product') ||
-            recall.category === state.category;
+            (state.category === 'food-grocery' && recall.category === 'food-allergy') ||
+            (state.category === 'electronics-batteries' && recall.category === 'battery-electronics') ||
+            (state.category === 'household-appliance' &&
+              ['home-appliances', 'furniture-household', 'chemicals-cleaning'].includes(family));
           const recallTime = Date.parse(recall.recallDate);
           const dateMatches = state.date === 'all' || (Number.isFinite(recallTime) && recallTime >= cutoff);
 
@@ -545,6 +581,14 @@ const sourcePages = getSourceLandingPageCards();
         return line;
       }
 
+      function taxonomyTextFor(recall: SearchItem['recall']): string {
+        return [
+          recall.taxonomyProductFamilyLabel,
+          recall.taxonomyProductTypeLabel,
+          recall.taxonomyHazardTypeLabel
+        ].filter(Boolean).join(' / ') || recall.categoryLabel;
+      }
+
       function createResultCard(item: SearchItem): HTMLElement {
         const { recall, match } = item;
         const article = document.createElement('article');
@@ -558,7 +602,8 @@ const sourcePages = getSourceLandingPageCards();
         meta.append(
           createTag(MATCH_LABELS[match], 'badge-danger'),
           createTag(recall.sourceLabel, 'badge-source'),
-          createTag(recall.categoryLabel),
+          createTag(recall.taxonomyProductFamilyLabel || recall.categoryLabel),
+          ...(recall.taxonomyHazardTypeLabel ? [createTag(recall.taxonomyHazardTypeLabel, 'badge-danger')] : []),
           createTag(recall.recallDate, 'badge-date')
         );
 
@@ -572,6 +617,7 @@ const sourcePages = getSourceLandingPageCards();
         const action = createCardLine(getRecallActionLabel(recall.source), actionTextFor(recall), 'result-card-line result-card-action');
         const product = createCardLine('Product', productTextFor(recall));
         const brand = createCardLine('Brand/company', brandTextFor(recall));
+        const taxonomy = createCardLine('Classification', taxonomyTextFor(recall), 'result-card-line taxonomy-card-line');
         const matchReason = createCardLine('Match reason', item.matchReasonLabel, 'result-card-line match-reason-line');
         const identifierHint = document.createElement('p');
         identifierHint.className = 'identifier-hint';
@@ -586,7 +632,7 @@ const sourcePages = getSourceLandingPageCards();
         details.textContent = 'View recall';
 
         links.append(details);
-        body.append(heading, reason, action, product, brand, matchReason, identifierHint, meta, links);
+        body.append(heading, reason, action, product, brand, taxonomy, matchReason, identifierHint, meta, links);
         article.append(createImageShell(recall), body);
 
         return article;
@@ -603,7 +649,8 @@ const sourcePages = getSourceLandingPageCards();
         meta.className = 'meta-row result-card-badges';
         meta.append(
           createTag(recall.sourceLabel, 'badge-source'),
-          createTag(recall.categoryLabel),
+          createTag(recall.taxonomyProductFamilyLabel || recall.categoryLabel),
+          ...(recall.taxonomyHazardTypeLabel ? [createTag(recall.taxonomyHazardTypeLabel, 'badge-danger')] : []),
           createTag(recall.recallDate, 'badge-date')
         );
 
@@ -617,6 +664,7 @@ const sourcePages = getSourceLandingPageCards();
         const action = createCardLine(getRecallActionLabel(recall.source), actionTextFor(recall), 'result-card-line result-card-action');
         const product = createCardLine('Product', productTextFor(recall));
         const brand = createCardLine('Brand/company', brandTextFor(recall));
+        const taxonomy = createCardLine('Classification', taxonomyTextFor(recall), 'result-card-line taxonomy-card-line');
 
         const links = document.createElement('div');
         links.className = 'link-row';
@@ -627,7 +675,7 @@ const sourcePages = getSourceLandingPageCards();
         details.textContent = 'View recall';
 
         links.append(details);
-        body.append(heading, reason, action, product, brand, meta, links);
+        body.append(heading, reason, action, product, brand, taxonomy, meta, links);
         article.append(createImageShell(recall), body);
 
         return article;

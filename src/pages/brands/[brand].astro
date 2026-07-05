@@ -38,8 +38,8 @@ const description = `Indexed recall notices linked to ${brand}, with related pro
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
         <a href="/baby-product-recalls">Baby & Kids</a>
-        <a href="/battery-recalls">Batteries & Electronics</a>
-        <a href="/food-allergy-recalls">Food & Allergy</a>
+        <a href="/battery-recalls">Electronics & Batteries</a>
+        <a href="/food-allergy-recalls">Food & Grocery</a>
       </nav>
     </header>
 
@@ -108,6 +108,8 @@ const description = `Indexed recall notices linked to ${brand}, with related pro
               <div class="card-body">
                 <div class="meta-row">
                   <span class="badge-source">{recall.sourceLabel}</span>
+                  <span class="tag">{recall.taxonomyProductFamilyLabel || recall.categoryLabel}</span>
+                  {recall.taxonomyHazardTypeLabel ? <span class="badge-danger">{recall.taxonomyHazardTypeLabel}</span> : null}
                   <span class="badge-date">{recall.recallDate}</span>
                 </div>
                 <h3><a href={recall.detailPath}>{recall.title}</a></h3>

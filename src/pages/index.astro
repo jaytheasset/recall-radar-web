@@ -52,25 +52,25 @@ const productTypes = [
     description: 'Nursery gear and kids products.'
   },
   {
-    label: 'Batteries & Electronics',
+    label: 'Electronics & Batteries',
     icon: 'battery',
     href: '/battery-recalls',
     count: batteryCount,
     description: 'Devices, batteries, and chargers.'
   },
   {
-    label: 'Food & Allergy',
+    label: 'Food & Grocery',
     icon: 'food',
     href: '/food-allergy-recalls',
     count: foodCount,
     description: 'Foods, allergens, lots, and dates.'
   },
   {
-    label: 'Household Products',
+    label: 'Home & Household',
     icon: 'household',
     href: '/household-product-recalls',
     count: householdCount,
-    description: 'Appliances and home products.'
+    description: 'Appliances, furniture, and home products.'
   }
 ];
 const sourcePages = getSourceLandingPageCards();
@@ -132,8 +132,8 @@ const sourceCardDetails = {
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
         <a href="/baby-product-recalls">Baby & Kids</a>
-        <a href="/battery-recalls">Batteries & Electronics</a>
-        <a href="/food-allergy-recalls">Food & Allergy</a>
+        <a href="/battery-recalls">Electronics & Batteries</a>
+        <a href="/food-allergy-recalls">Food & Grocery</a>
       </nav>
     </header>
 
@@ -295,6 +295,10 @@ const sourceCardDetails = {
                 <div class="home-card-meta">
                   <span>{recall.sourceLabel}</span>
                   <span>{recall.recallDate}</span>
+                </div>
+                <div class="home-card-meta home-taxonomy-meta">
+                  <span>{recall.taxonomyProductFamilyLabel || recall.categoryLabel}</span>
+                  {recall.taxonomyHazardTypeLabel ? <span>{recall.taxonomyHazardTypeLabel}</span> : null}
                 </div>
                 <h3><a href={recall.detailPath}>{recall.title}</a></h3>
                 <span class="home-card-hazard">{recall.hazard || recall.reason || 'Hazard or reason not listed in the official notice.'}</span>

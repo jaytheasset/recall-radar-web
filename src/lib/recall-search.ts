@@ -187,6 +187,15 @@ function relatedFields(recall: SiteRecall): string {
     recall.category,
     recall.rawCategory,
     recall.categoryLabel,
+    recall.taxonomyProductFamily ?? '',
+    recall.taxonomyProductFamilyLabel ?? '',
+    recall.taxonomyProductType ?? '',
+    recall.taxonomyProductTypeLabel ?? '',
+    recall.taxonomyHazardType ?? '',
+    recall.taxonomyHazardTypeLabel ?? '',
+    recall.taxonomyRecallDomain ?? '',
+    recall.taxonomyRecallDomainLabel ?? '',
+    recall.taxonomyReason ?? '',
     recall.hazard,
     recall.remedy,
     recall.reason ?? '',
@@ -198,7 +207,10 @@ function relatedFields(recall: SiteRecall): string {
     recall.affectedUnits,
     recall.source,
     recall.sourceUrl,
-    recall.sourceLabel
+    recall.sourceLabel,
+    ...(recall.taxonomyHazardTags ?? []),
+    ...(recall.taxonomyAudienceLabels ?? []),
+    ...(recall.taxonomyQualityFlags ?? [])
   ]);
 }
 
@@ -318,17 +330,29 @@ function ingredientFields(recall: SiteRecall): string[] {
 }
 
 function productTypeFields(recall: SiteRecall): string[] {
-  return [recall.category, recall.rawCategory, recall.categoryLabel];
+  return [
+    recall.category,
+    recall.rawCategory,
+    recall.categoryLabel,
+    recall.taxonomyProductFamily ?? '',
+    recall.taxonomyProductFamilyLabel ?? '',
+    recall.taxonomyProductType ?? '',
+    recall.taxonomyProductTypeLabel ?? ''
+  ];
 }
 
 function hazardFields(recall: SiteRecall): string[] {
   return [
+    recall.taxonomyHazardType ?? '',
+    recall.taxonomyHazardTypeLabel ?? '',
+    recall.taxonomyReason ?? '',
     recall.hazard,
     recall.remedy,
     recall.reason ?? '',
     recall.classification ?? '',
     recall.status ?? '',
-    recall.description
+    recall.description,
+    ...(recall.taxonomyHazardTags ?? [])
   ];
 }
 

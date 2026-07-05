@@ -15,6 +15,18 @@ export type RecallSearchTextRecord = {
   category: string;
   rawCategory: string;
   categoryLabel: string;
+  taxonomyProductFamily?: string;
+  taxonomyProductFamilyLabel?: string;
+  taxonomyProductType?: string;
+  taxonomyProductTypeLabel?: string;
+  taxonomyHazardType?: string;
+  taxonomyHazardTypeLabel?: string;
+  taxonomyHazardTags?: string[];
+  taxonomyRecallDomain?: string;
+  taxonomyRecallDomainLabel?: string;
+  taxonomyAudienceLabels?: string[];
+  taxonomyReason?: string;
+  taxonomyQualityFlags?: string[];
   hazard: string;
   remedy: string;
   affectedUnits: string;
@@ -135,6 +147,15 @@ export function buildRecallSearchText(record: RecallSearchTextRecord): string {
     record.category,
     record.rawCategory,
     record.categoryLabel,
+    record.taxonomyProductFamily ?? '',
+    record.taxonomyProductFamilyLabel ?? '',
+    record.taxonomyProductType ?? '',
+    record.taxonomyProductTypeLabel ?? '',
+    record.taxonomyHazardType ?? '',
+    record.taxonomyHazardTypeLabel ?? '',
+    record.taxonomyRecallDomain ?? '',
+    record.taxonomyRecallDomainLabel ?? '',
+    record.taxonomyReason ?? '',
     record.hazard,
     record.reason ?? '',
     record.remedy,
@@ -146,6 +167,9 @@ export function buildRecallSearchText(record: RecallSearchTextRecord): string {
     record.productQuantity ?? '',
     record.recallNumber ?? '',
     record.status ?? '',
+    ...(record.taxonomyHazardTags ?? []),
+    ...(record.taxonomyAudienceLabels ?? []),
+    ...(record.taxonomyQualityFlags ?? []),
     ...record.brandNames,
     ...record.displayBrandNames,
     ...record.productNames

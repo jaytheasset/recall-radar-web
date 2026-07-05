@@ -10,7 +10,8 @@ export type WatchlistSourceFilter =
   | 'UK_FSA'
   | 'AU_PRODUCT_SAFETY'
   | 'NZ_PRODUCT_SAFETY'
-  | 'HK_CFS';
+  | 'HK_CFS'
+  | 'FSANZ_FOOD_RECALLS';
 export type WatchlistCategoryFilter =
   | 'all'
   | 'baby-kids'
@@ -18,7 +19,21 @@ export type WatchlistCategoryFilter =
   | 'food-allergy'
   | 'household-appliance'
   | 'food'
-  | 'general';
+  | 'general'
+  | 'food-grocery'
+  | 'electronics-batteries'
+  | 'home-appliances'
+  | 'furniture-household'
+  | 'vehicles-mobility'
+  | 'sports-outdoor'
+  | 'tools-equipment'
+  | 'clothing-accessories'
+  | 'health-personal-care'
+  | 'chemicals-cleaning'
+  | 'pet-products'
+  | 'industrial-workplace'
+  | 'other'
+  | 'unknown';
 
 export type WatchlistSearchItem = {
   id: string;

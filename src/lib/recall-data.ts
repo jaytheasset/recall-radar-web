@@ -1,9 +1,18 @@
 import processedRecallData from '../../data/processed/recalls.json';
+import processedClassificationV2Data from '../../data/processed/recall-classifications-v2.json';
 import { mockRecalls, type MockRecall, type RecallCategory } from '../data/mock-recalls';
+import type { RecallClassificationV2 } from '../data/recall-taxonomy-v2';
 import type { NormalizedRecall, ProcessedRecallFile, RecallImage } from '../data/recall-types';
 import { normalizeBrandName } from './brand-normalize';
 import { getRecallSourceLabel } from './recall-sources';
 import { limitSlug, recallSlug } from './slug';
+import {
+  getAudienceLabel,
+  getHazardTypeLabel,
+  getProductFamilyLabel,
+  getProductTypeLabel,
+  getRecallDomainLabel
+} from './taxonomy-v2-display';
 
 export type SiteRecallCategory = RecallCategory | 'general-consumer-product';
 export type SiteRecallSource = NormalizedRecall['source'] | 'Mock';
@@ -24,6 +33,21 @@ export type SiteRecall = {
   category: SiteRecallCategory;
   rawCategory: string;
   categoryLabel: string;
+  taxonomyV2?: RecallClassificationV2;
+  taxonomyProductFamily?: string;
+  taxonomyProductFamilyLabel?: string;
+  taxonomyProductType?: string;
+  taxonomyProductTypeLabel?: string;
+  taxonomyHazardType?: string;
+  taxonomyHazardTypeLabel?: string;
+  taxonomyHazardTags?: string[];
+  taxonomyRecallDomain?: string;
+  taxonomyRecallDomainLabel?: string;
+  taxonomyAudienceLabels?: string[];
+  taxonomyConfidence?: number;
+  taxonomyNeedsReview?: boolean;
+  taxonomyReason?: string;
+  taxonomyQualityFlags?: string[];
   hazard: string;
   remedy: string;
   recallDate: string;
@@ -43,6 +67,28 @@ export type SiteRecall = {
   primaryImageAlt?: string;
 };
 
+type ProcessedClassificationV2Record = {
+  recordId: string;
+  source: string;
+  success?: boolean;
+  failed?: boolean;
+  errors?: string[];
+  qualityFlags?: string[];
+  classification?: RecallClassificationV2;
+};
+
+type ProcessedClassificationV2File = {
+  generatedAt?: string;
+  provider?: string;
+  model?: string;
+  promptVersion?: string;
+  taxonomyVersion?: string;
+  totalRecords?: number;
+  success?: number;
+  failed?: number;
+  records?: ProcessedClassificationV2Record[];
+};
+
 export type BrandRecallGroup = {
   brand: string;
   displayName: string;
@@ -60,19 +106,19 @@ export const categoryRoutes = [
   },
   {
     href: '/battery-recalls',
-    label: 'Batteries & Electronics',
+    label: 'Electronics & Batteries',
     category: 'battery-electronics',
     description: 'Batteries, chargers, power banks, lithium-ion products, and electronics.'
   },
   {
     href: '/food-allergy-recalls',
-    label: 'Food & Allergy',
+    label: 'Food & Grocery',
     category: 'food-allergy',
     description: 'Food notices, undeclared allergens, packaged goods, UPCs, and lot codes.'
   },
   {
     href: '/household-product-recalls',
-    label: 'Household Products',
+    label: 'Home & Household',
     category: 'household-appliance',
     description: 'Appliances, furniture, home goods, and household product notices.'
   }
@@ -82,11 +128,38 @@ export const categoryLabels: Record<SiteRecallCategory, string> = {
   'baby-kids': 'Baby and Kids',
   'battery-electronics': 'Battery and Electronics',
   'food-allergy': 'Food and Allergy',
-  'household-appliance': 'Household Products',
+  'household-appliance': 'Home & Household',
   'general-consumer-product': 'General Consumer Product'
 };
 
 const processedFile = processedRecallData as ProcessedRecallFile;
+const processedClassificationV2File = processedClassificationV2Data as ProcessedClassificationV2File;
+const processedClassificationV2ById = new Map<string, ProcessedClassificationV2Record>(
+  (Array.isArray(processedClassificationV2File.records) ? processedClassificationV2File.records : [])
+    .filter((record) => record.success && !record.failed && record.classification)
+    .map((record) => [record.recordId, record])
+);
+
+function categoryFromTaxonomyV2(classification: RecallClassificationV2 | undefined): SiteRecallCategory | undefined {
+  if (!classification) {
+    return undefined;
+  }
+
+  switch (classification.productFamily) {
+    case 'baby-kids':
+      return 'baby-kids';
+    case 'electronics-batteries':
+      return 'battery-electronics';
+    case 'food-grocery':
+      return 'food-allergy';
+    case 'home-appliances':
+    case 'furniture-household':
+    case 'chemicals-cleaning':
+      return 'household-appliance';
+    default:
+      return 'general-consumer-product';
+  }
+}
 
 function normalize(value: string): string {
   return value
@@ -604,7 +677,9 @@ function extractRecallImages(record: NormalizedRecall): RecallImage[] {
 }
 
 function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
-  const category = classifyRecall(record);
+  const taxonomyV2Record = processedClassificationV2ById.get(record.id);
+  const taxonomyV2 = taxonomyV2Record?.classification;
+  const category = categoryFromTaxonomyV2(taxonomyV2) ?? classifyRecall(record);
   const brandNames = uniqueNonEmpty(record.brandNames);
   const normalizedBrands = brandNames.map(normalizeBrandName);
   const displayBrandNames = uniqueNonEmpty(normalizedBrands.map((brand) => brand.displayName));
@@ -634,7 +709,22 @@ function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
     primaryProductName,
     category,
     rawCategory: record.category,
-    categoryLabel: categoryLabels[category],
+    categoryLabel: taxonomyV2 ? getProductFamilyLabel(taxonomyV2.productFamily) : categoryLabels[category],
+    taxonomyV2,
+    taxonomyProductFamily: taxonomyV2?.productFamily,
+    taxonomyProductFamilyLabel: taxonomyV2 ? getProductFamilyLabel(taxonomyV2.productFamily) : undefined,
+    taxonomyProductType: taxonomyV2?.productType,
+    taxonomyProductTypeLabel: taxonomyV2 ? getProductTypeLabel(taxonomyV2.productType) : undefined,
+    taxonomyHazardType: taxonomyV2?.hazardType,
+    taxonomyHazardTypeLabel: taxonomyV2 ? getHazardTypeLabel(taxonomyV2.hazardType) : undefined,
+    taxonomyHazardTags: taxonomyV2?.hazardTags ?? [],
+    taxonomyRecallDomain: taxonomyV2?.recallDomain,
+    taxonomyRecallDomainLabel: taxonomyV2 ? getRecallDomainLabel(taxonomyV2.recallDomain) : undefined,
+    taxonomyAudienceLabels: taxonomyV2?.audience.map(getAudienceLabel) ?? [],
+    taxonomyConfidence: taxonomyV2?.confidence,
+    taxonomyNeedsReview: taxonomyV2?.needsReview,
+    taxonomyReason: taxonomyV2?.reason,
+    taxonomyQualityFlags: taxonomyV2Record?.qualityFlags ?? [],
     hazard: record.hazard,
     remedy: record.remedy,
     recallDate: record.recallDate,

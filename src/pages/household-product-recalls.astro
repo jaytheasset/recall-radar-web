@@ -31,14 +31,14 @@ const noResultCopy = getNoResultIdentifierHint();
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
         <a href="/baby-product-recalls">Baby & Kids</a>
-        <a href="/battery-recalls">Batteries & Electronics</a>
-        <a href="/food-allergy-recalls">Food & Allergy</a>
+        <a href="/battery-recalls">Electronics & Batteries</a>
+        <a href="/food-allergy-recalls">Food & Grocery</a>
       </nav>
     </header>
 
     <main class="page-shell">
       <section class="section">
-        <p class="eyebrow">Household Products</p>
+        <p class="eyebrow">Home & Household</p>
         <div class="meta-row data-source-row">
           <span class="badge-source">Product type</span>
           <span class="badge-date">{recalls.length} indexed notice{recalls.length === 1 ? '' : 's'}</span>
@@ -50,7 +50,7 @@ const noResultCopy = getNoResultIdentifierHint();
       <section class="section category-search-panel" data-category-search-root data-category-total={recalls.length}>
         <form class="category-search-form" data-category-search-form>
           <label>
-            Search within Household Products
+            Search within Home & Household
             <input data-category-search-input type="search" placeholder={searchPlaceholder} autocomplete="off" />
           </label>
           <button class="btn btn-primary" type="submit">Search this type</button>
@@ -101,6 +101,8 @@ const noResultCopy = getNoResultIdentifierHint();
                 <div class="card-body">
                   <div class="meta-row">
                     <span class="badge-source">{recall.sourceLabel}</span>
+                    <span class="tag">{recall.taxonomyProductFamilyLabel || recall.categoryLabel}</span>
+                    {recall.taxonomyHazardTypeLabel ? <span class="badge-danger">{recall.taxonomyHazardTypeLabel}</span> : null}
                     <span class="badge-date">{recall.recallDate}</span>
                   </div>
                   <h3><a href={recall.detailPath}>{recall.title}</a></h3>

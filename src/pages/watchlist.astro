@@ -8,7 +8,10 @@ import {
   processedEuSafetyGateRecordCount,
   processedFdaRecordCount,
   processedFranceRappelConsoRecordCount,
+  processedFsanzFoodRecallRecordCount,
+  processedHongKongCfsRecordCount,
   processedLocalRecordCount,
+  processedNewZealandProductSafetyRecordCount,
   processedUkFsaRecordCount,
   siteRecalls,
   usingProcessedLocalData
@@ -38,6 +41,17 @@ const watchlistRecalls = siteRecalls.map((recall) => {
   category: recall.category,
   rawCategory: recall.rawCategory,
   categoryLabel: recall.categoryLabel,
+  taxonomyProductFamily: recall.taxonomyProductFamily,
+  taxonomyProductFamilyLabel: recall.taxonomyProductFamilyLabel,
+  taxonomyProductType: recall.taxonomyProductType,
+  taxonomyProductTypeLabel: recall.taxonomyProductTypeLabel,
+  taxonomyHazardType: recall.taxonomyHazardType,
+  taxonomyHazardTypeLabel: recall.taxonomyHazardTypeLabel,
+  taxonomyHazardTags: recall.taxonomyHazardTags,
+  taxonomyRecallDomain: recall.taxonomyRecallDomain,
+  taxonomyRecallDomainLabel: recall.taxonomyRecallDomainLabel,
+  taxonomyAudienceLabels: recall.taxonomyAudienceLabels,
+  taxonomyReason: recall.taxonomyReason,
   hazard: recall.hazard,
   remedy: recall.remedy,
   recallDate: recall.recallDate,
@@ -77,8 +91,8 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         <a href="/checker">Product Recall Checker</a>
         <a href="/watchlist">Watchlist</a>
         <a href="/baby-product-recalls">Baby & Kids</a>
-        <a href="/battery-recalls">Batteries & Electronics</a>
-        <a href="/food-allergy-recalls">Food & Allergy</a>
+        <a href="/battery-recalls">Electronics & Batteries</a>
+        <a href="/food-allergy-recalls">Food & Grocery</a>
       </nav>
     </header>
 
@@ -103,6 +117,9 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
               <span class="tag">{processedEuSafetyGateRecordCount} EU Safety Gate alerts</span>
               <span class="tag">{processedUkFsaRecordCount} UK FSA food alerts</span>
               <span class="tag">{processedAustraliaProductSafetyRecordCount} Australia Product Safety notices</span>
+              <span class="tag">{processedNewZealandProductSafetyRecordCount} New Zealand Product Safety notices</span>
+              <span class="tag">{processedHongKongCfsRecordCount} Hong Kong CFS food alerts</span>
+              <span class="tag">{processedFsanzFoodRecallRecordCount} FSANZ food recall notices</span>
             </>
           ) : null}
         </div>
@@ -213,15 +230,15 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       function filterRecallsForSearch(item: WatchlistSearchItem): typeof siteRecalls {
         return siteRecalls.filter((recall) => {
           const sourceMatches = item.source === 'all' || recall.source === item.source;
+          const family = recall.taxonomyProductFamily ?? '';
           const categoryMatches =
             item.category === 'all' ||
-            (item.category === 'food' &&
-              (recall.rawCategory === 'food' ||
-                recall.rawCategory === 'alimentation' ||
-                recall.source === 'FDA' ||
-                recall.source === 'UK_FSA' ||
-                recall.source === 'FR_RAPPELCONSO' ||
-                (recall.source === 'CA_RECALLS' && recall.category === 'food-allergy'))) ||
+            family === item.category ||
+            (item.category === 'food' && (family === 'food-grocery' || recall.category === 'food-allergy')) ||
+            (item.category === 'food-allergy' && family === 'food-grocery') ||
+            (item.category === 'battery-electronics' && family === 'electronics-batteries') ||
+            (item.category === 'household-appliance' &&
+              ['home-appliances', 'furniture-household', 'chemicals-cleaning'].includes(family)) ||
             (item.category === 'general' && recall.category === 'general-consumer-product') ||
             recall.category === item.category;
 
@@ -328,7 +345,8 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         }
         meta.append(
           createTag(recall.sourceLabel, 'badge-source'),
-          createTag(recall.categoryLabel),
+          createTag(recall.taxonomyProductFamilyLabel || recall.categoryLabel),
+          ...(recall.taxonomyHazardTypeLabel ? [createTag(recall.taxonomyHazardTypeLabel, 'badge-danger')] : []),
           createTag(recall.recallDate, 'badge-date')
         );
 
@@ -342,6 +360,13 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         const action = createCardLine(getRecallActionLabel(recall.source), actionTextFor(recall), 'result-card-line result-card-action');
         const product = createCardLine('Product', recall.primaryProductName);
         const brand = createCardLine('Brand/company', recall.primaryBrand);
+        const taxonomy = createCardLine(
+          'Classification',
+          [recall.taxonomyProductFamilyLabel, recall.taxonomyProductTypeLabel, recall.taxonomyHazardTypeLabel]
+            .filter(Boolean)
+            .join(' / ') || recall.categoryLabel,
+          'result-card-line taxonomy-card-line'
+        );
         const matchReason = item.matchReasonLabel
           ? createCardLine('Match reason', item.matchReasonLabel, 'result-card-line match-reason-line')
           : null;
@@ -360,6 +385,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
           action,
           product,
           brand,
+          taxonomy,
           ...(matchReason ? [matchReason] : []),
           identifierHint,
           meta,
