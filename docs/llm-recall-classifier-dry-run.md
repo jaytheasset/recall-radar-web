@@ -170,6 +170,15 @@ npm run audit:canada-classifier-input-preview
 
 Those commands compare generic input with a Canada-specific official source extraction input shape, write ignored preview reports only, and do not call an LLM. Canada source category, recall type, recall class, affected product rows, part numbers, and UPCs are evidence fields only; final product family, product type, hazard type, and audience remain LLM-owned.
 
+For RappelConso input-noise review, run:
+
+```powershell
+npm run preview:rappelconso-classifier-input
+npm run audit:rappelconso-classifier-input-preview
+```
+
+Those commands compare generic input with a France/RappelConso-specific official source extraction input shape, write ignored preview reports only, and do not call an LLM. RappelConso category, subcategory, recall nature, product identification, risk, reason, action, sale-period, and distribution fields are evidence fields only; final product family, product type, hazard type, and audience remain LLM-owned.
+
 ## Non-Goals
 
 This phase does not:

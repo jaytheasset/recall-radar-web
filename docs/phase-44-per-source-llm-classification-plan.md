@@ -104,6 +104,13 @@ Canada detail parsing adds the same gate for Canada recalls:
 
 The Canada preview compares generic input with a source-specific official extraction shape using `sourceRecallType`, `sourceCategory`, `sourceRecallClass`, summary product/issue/action fields, affected product table rows, part numbers, and UPCs. These source fields are evidence only. The parser does not fill `productFamily`, `productType`, `hazardType`, `audience`, or other final Taxonomy V2 fields. It writes ignored reports under `outputs/llm-classifier/input-preview/canada/` and does not call Gemini, classify records, or write canonical data.
 
+RappelConso adds the same gate for France recalls:
+
+- `npm run preview:rappelconso-classifier-input`
+- `npm run audit:rappelconso-classifier-input-preview`
+
+The RappelConso preview compares generic input with a source-specific official extraction shape using French source category, subcategory, recall nature, product identification values, risk/reason text, consumer action text, sale-period dates, and distribution fields. These source fields are evidence only. The parser does not fill `productFamily`, `productType`, `hazardType`, `audience`, or other final Taxonomy V2 fields. It writes ignored reports under `outputs/llm-classifier/input-preview/rappelconso/` and does not call Gemini, classify records, or write canonical data.
+
 ## Review Questions
 
 Phase 44 should answer:

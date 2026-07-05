@@ -77,6 +77,8 @@
     "audit:cpsc-classifier-input-preview": "node --experimental-strip-types scripts/audit-cpsc-classifier-input-preview.ts",
     "preview:canada-classifier-input": "node --experimental-strip-types scripts/preview-canada-classifier-input.ts",
     "audit:canada-classifier-input-preview": "node --experimental-strip-types scripts/audit-canada-classifier-input-preview.ts",
+    "preview:rappelconso-classifier-input": "node --experimental-strip-types scripts/preview-rappelconso-classifier-input.ts",
+    "audit:rappelconso-classifier-input-preview": "node --experimental-strip-types scripts/audit-rappelconso-classifier-input-preview.ts",
     "preview:fsanz-classifier-input": "node --experimental-strip-types scripts/preview-fsanz-classifier-input.ts",
     "audit:fsanz-classifier-input-preview": "node --experimental-strip-types scripts/audit-fsanz-classifier-input-preview.ts",
     "preview:new-zealand-classifier-input": "node --experimental-strip-types scripts/preview-new-zealand-classifier-input.ts",

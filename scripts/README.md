@@ -907,6 +907,39 @@ npm run audit:canada-classifier-input-preview
 
 The preview uses official Canada detail extraction fields such as source recall type, source category, recall class, summary product/issue/action, affected product table rows, part numbers, and UPCs. These are source evidence only. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
 
+## RappelConso Classifier Input Preview
+
+```powershell
+npm run preview:rappelconso-classifier-input
+```
+
+This command reads the current canonical processed recalls, filters France RappelConso records only, builds the current generic classifier input and a proposed RappelConso-specific official source extraction input, compares estimated tokens, and writes ignored local reports under:
+
+`outputs/llm-classifier/input-preview/rappelconso/`
+
+Generated files:
+
+- `rappelconso-input-preview.json`
+- `rappelconso-input-preview.md`
+- `rappelconso-noise-report.json`
+- `rappelconso-token-comparison.json`
+
+Optional sample limit:
+
+```powershell
+$env:RAPPELCONSO_CLASSIFIER_INPUT_PREVIEW_LIMIT = "20"
+npm run preview:rappelconso-classifier-input
+Remove-Item Env:RAPPELCONSO_CLASSIFIER_INPUT_PREVIEW_LIMIT
+```
+
+Audit the preview wiring:
+
+```powershell
+npm run audit:rappelconso-classifier-input-preview
+```
+
+The preview uses official RappelConso fields such as source category, source subcategory, recall nature, product identifiers, risk/reason text, consumer action text, sale-period dates, and distribution details. These are source evidence only. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
+
 ## FSANZ Classifier Input Preview
 
 ```powershell
