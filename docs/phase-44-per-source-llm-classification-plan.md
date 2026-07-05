@@ -146,6 +146,13 @@ After all ten source-specific input previews exist, run the combined QA gate bef
 
 The combined gate verifies every active source preview is present, every individual audit passes, generated outputs remain uncommitted, canonical counts remain unchanged, and every proposed input marks `sourceHints.classificationOwner = "llm"` while omitting final Taxonomy V2 fields.
 
+The next live-provider gate is the source-specific comparison dry run:
+
+- `npm run classify:recalls:taxonomy-v2:source-specific-dry-run`
+- `npm run audit:source-specific-classifier-dry-run`
+
+This compares `genericInput` against each source's `proposedInput` for one sample per active source. It writes ignored output only and does not persist V2 classifications.
+
 ## Review Questions
 
 Phase 44 should answer:

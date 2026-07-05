@@ -1192,3 +1192,20 @@ These commands run and audit the classifier input previews for all ten active so
 - FSANZ Food Recalls
 
 The combined audit confirms every proposed input keeps source evidence only, marks final classification ownership as `sourceHints.classificationOwner = "llm"`, omits final Taxonomy V2 fields, leaves generated preview outputs uncommitted, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`.
+
+## Source-Specific Classifier Dry Run
+
+```powershell
+npm run preview:all-classifier-inputs
+npm run audit:all-classifier-input-previews
+$env:RECALL_CLASSIFIER_PROVIDER = "gemini"
+$env:RECALL_CLASSIFIER_MODEL = "gemini-2.5-flash-lite"
+npm run classify:recalls:taxonomy-v2:source-specific-dry-run
+npm run audit:source-specific-classifier-dry-run
+Remove-Item Env:RECALL_CLASSIFIER_PROVIDER
+Remove-Item Env:RECALL_CLASSIFIER_MODEL
+```
+
+This compares the current `genericInput` and source-specific `proposedInput` for one sample from each active source. It calls the configured live classifier provider, writes ignored outputs under `outputs/llm-classifier/source-specific-dry-run/`, and does not write canonical data, fetch source data, normalize, merge, backfill, or migrate Taxonomy V2 values.
+
+If Gemini returns source-specific `evidenceFields` names, the dry run maps them to the closest allowed generic evidence enum for validation and records the repairs in the ignored output report.

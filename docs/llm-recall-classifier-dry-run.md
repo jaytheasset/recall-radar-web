@@ -217,6 +217,21 @@ npm run audit:australia-product-safety-classifier-input-preview
 
 Those commands compare generic input with an Australia/Product Safety-specific official source extraction input shape, write ignored preview reports only, and do not call an LLM. Product Safety Australia categories, product description, supplier, brand, defect, hazard, action, trader, sale-period, sold-where, manufacturer-country, recall number, and identifier fields are evidence only; final product family, product type, hazard type, and audience remain LLM-owned.
 
+After all source-specific input previews pass, compare live Gemini classifications from generic input versus proposed source-specific input:
+
+```powershell
+npm run preview:all-classifier-inputs
+npm run audit:all-classifier-input-previews
+$env:RECALL_CLASSIFIER_PROVIDER = "gemini"
+$env:RECALL_CLASSIFIER_MODEL = "gemini-2.5-flash-lite"
+npm run classify:recalls:taxonomy-v2:source-specific-dry-run
+npm run audit:source-specific-classifier-dry-run
+Remove-Item Env:RECALL_CLASSIFIER_PROVIDER
+Remove-Item Env:RECALL_CLASSIFIER_MODEL
+```
+
+This source-specific dry run writes ignored reports under `outputs/llm-classifier/source-specific-dry-run/`. It does not write final V2 values into canonical data.
+
 ## Non-Goals
 
 This phase does not:

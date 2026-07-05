@@ -15,7 +15,7 @@ function enumLine(label: string, values: readonly string[]): string {
   return `${label}: ${values.join(', ')}`;
 }
 
-export function buildRecallClassifierPrompt(input: RecallClassifierInput, model = ''): string {
+export function buildRecallClassifierPromptFromInput(input: unknown, model = '', inputLabel = 'Recall input'): string {
   const outputTemplate = {
     taxonomyVersion: RECALL_TAXONOMY_VERSION,
     method: 'llm',
@@ -49,6 +49,9 @@ export function buildRecallClassifierPrompt(input: RecallClassifierInput, model 
     'For vehicles, golf carts, off-road vehicles, or mobility products: productFamily must usually be vehicles-mobility.',
     'Use unknown when source text is insufficient. Set needsReview true when confidence is low.',
     'The reason must be one short sentence based only on the provided fields.',
+    'If the input contains source-specific field names, classify from those fields but map evidenceFields to the closest allowed generic evidence enum values.',
+    'Never output source-specific field names in evidenceFields. Examples: hazardText, riskText, riskDescription, issueText, reasonText, problemText, foodSafetyHazardText, defectText, sourceCategory, sourceCategories, sourceProductCategory, productDescription, affectedProducts, productDetails, importer, retailer, supplierName, actionText, consumerAdvice, measures, recallNumber must be mapped to the closest allowed generic evidenceFields value.',
+    'Evidence mapping examples: hazardText/riskText/problemText/issueText/reasonText -> hazard; actionText/consumerAdvice/measures -> remedy; productDescription/affectedProducts/productDetails -> productNames or description; supplierName/importer/retailer -> brandNames; sourceCategory/sourceCategories/sourceProductCategory -> rawSourceCategory; recallNumber/barcode/model/batch/date fields -> identifiers.',
     enumLine('productFamily', PRODUCT_FAMILY_VALUES),
     enumLine('productType', PRODUCT_TYPE_VALUES),
     enumLine('hazardType', HAZARD_TYPE_VALUES),
@@ -57,7 +60,11 @@ export function buildRecallClassifierPrompt(input: RecallClassifierInput, model 
     enumLine('evidenceFields', CLASSIFICATION_EVIDENCE_FIELD_VALUES),
     'Return JSON with exactly this shape:',
     JSON.stringify(outputTemplate, null, 2),
-    'Recall input:',
+    `${inputLabel}:`,
     JSON.stringify(input, null, 2)
   ].join('\n');
+}
+
+export function buildRecallClassifierPrompt(input: RecallClassifierInput, model = ''): string {
+  return buildRecallClassifierPromptFromInput(input, model);
 }
