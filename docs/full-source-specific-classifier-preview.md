@@ -58,3 +58,12 @@ It reports, but does not block on, quality review metrics such as:
 - evidence field alias repairs
 
 Review these outputs before any phase writes classification values to a database or canonical V2 classification block.
+
+The next local-only gate is the classification DB write preview:
+
+```bash
+npm run preview:classification-db-write
+npm run audit:classification-db-write-preview
+```
+
+That step shapes the ignored classifier results into future `classification_runs` and `recall_classifications` payloads without writing to a database or canonical data.

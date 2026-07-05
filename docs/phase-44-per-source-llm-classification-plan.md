@@ -160,6 +160,13 @@ After that comparison passes, run the full source-specific preview gate:
 
 This classifies the full current canonical recall set with source-specific inputs and writes ignored review outputs only. It is still not a database write, canonical data migration, or runtime UI migration.
 
+After the full preview passes, run the database write-shape preview gate:
+
+- `npm run preview:classification-db-write`
+- `npm run audit:classification-db-write-preview`
+
+This converts the ignored full preview into ignored `classification_runs` and `recall_classifications` payloads. It is still not a database connection, insert, canonical V2 JSON generation, or runtime migration.
+
 ## Review Questions
 
 Phase 44 should answer:

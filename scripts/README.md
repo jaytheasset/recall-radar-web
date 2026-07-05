@@ -1224,3 +1224,25 @@ Remove-Item Env:RECALL_CLASSIFIER_MODEL
 This classifies the full current canonical recall set with source-specific LLM input blocks. It writes ignored local outputs under `outputs/llm-classifier/full-source-specific-preview/` and does not write final Taxonomy V2 values to `data/raw`, `data/processed`, a database, or runtime UI.
 
 The audit blocks on incomplete runs, classifier failures, source count mismatches, duplicate result ids, committed generated outputs, or canonical data changes. It reports review metrics such as `needsReview`, low confidence, unknown product family/type/hazard values, source/domain mismatches, and evidence field alias repairs.
+
+## Classification DB Write Preview
+
+```powershell
+npm run preview:classification-db-write
+npm run audit:classification-db-write-preview
+```
+
+This command reads the ignored full source-specific classifier result and shapes it into ignored table-style payloads under:
+
+`outputs/llm-classifier/db-write-preview/`
+
+Generated files:
+
+- `classification-run.json`
+- `recall-classifications.json`
+- `classification-db-write-preview-summary.json`
+- `classification-db-write-preview.md`
+- `classification-db-write-preview-audit.json`
+- `classification-db-write-preview-audit.md`
+
+The preview targets future `classification_runs` and `recall_classifications` staging/review writes. It does not connect to a database, insert rows, write `data/processed/recalls-v2.json`, modify canonical processed data, call Gemini/OpenAI, or change runtime UI. The audit blocks on missing output, invalid Taxonomy V2 values, source/count mismatches, duplicate run/recall rows, tracked generated outputs, or `data/raw` / `data/processed` changes.
