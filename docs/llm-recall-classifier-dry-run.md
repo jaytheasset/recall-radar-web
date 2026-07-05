@@ -134,6 +134,15 @@ npm run audit:cpsc-classifier-input-preview
 
 Those commands write ignored preview reports only and do not call an LLM.
 
+For FDA/openFDA food enforcement input-noise review, run:
+
+```powershell
+npm run preview:fda-food-classifier-input
+npm run audit:fda-food-classifier-input-preview
+```
+
+Those commands compare generic input with an FDA-specific food enforcement input shape, write ignored preview reports only, and do not call an LLM. FDA product type, classification, status, recall number, event id, reason, code, quantity, and distribution fields are evidence fields only; final product family, product type, hazard type, and audience remain LLM-owned.
+
 For FSANZ food recall input-noise review, run:
 
 ```powershell

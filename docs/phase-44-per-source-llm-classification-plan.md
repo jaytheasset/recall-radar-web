@@ -76,6 +76,13 @@ Before live per-source Gemini classification, run source-specific input preview 
 
 The CPSC preview compares the current generic classifier input with a proposed CPSC-specific input shape and writes ignored reports under `outputs/llm-classifier/input-preview/cpsc/`. It does not call Gemini, does not classify records, and does not write canonical data.
 
+FDA/openFDA food enforcement adds the same gate for FDA food records:
+
+- `npm run preview:fda-food-classifier-input`
+- `npm run audit:fda-food-classifier-input-preview`
+
+The FDA preview compares generic input with a source-specific food enforcement shape using official product type, FDA classification, enforcement status, recall number, event id, reason text, code information, product quantity, and distribution fields. These source fields are evidence only. The parser does not fill `productFamily`, `productType`, `hazardType`, `audience`, or other final Taxonomy V2 fields. It writes ignored reports under `outputs/llm-classifier/input-preview/fda-food/` and does not call Gemini, classify records, or write canonical data.
+
 Phase 44E-2 adds the same gate for FSANZ food recalls:
 
 - `npm run preview:fsanz-classifier-input`

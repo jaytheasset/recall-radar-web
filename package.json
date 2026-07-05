@@ -75,6 +75,8 @@
     "audit:source-aware-identifiers": "npm run audit:identifier-guidance",
     "preview:cpsc-classifier-input": "node --experimental-strip-types scripts/preview-cpsc-classifier-input.ts",
     "audit:cpsc-classifier-input-preview": "node --experimental-strip-types scripts/audit-cpsc-classifier-input-preview.ts",
+    "preview:fda-food-classifier-input": "node --experimental-strip-types scripts/preview-fda-food-classifier-input.ts",
+    "audit:fda-food-classifier-input-preview": "node --experimental-strip-types scripts/audit-fda-food-classifier-input-preview.ts",
     "preview:canada-classifier-input": "node --experimental-strip-types scripts/preview-canada-classifier-input.ts",
     "audit:canada-classifier-input-preview": "node --experimental-strip-types scripts/audit-canada-classifier-input-preview.ts",
     "preview:rappelconso-classifier-input": "node --experimental-strip-types scripts/preview-rappelconso-classifier-input.ts",

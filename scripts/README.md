@@ -874,6 +874,39 @@ npm run audit:cpsc-classifier-input-preview
 
 The preview and audit do not call Gemini or OpenAI, do not classify records, do not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
 
+## FDA/openFDA Food Classifier Input Preview
+
+```powershell
+npm run preview:fda-food-classifier-input
+```
+
+This command reads the current canonical processed recalls, filters FDA/openFDA food enforcement records only, builds the current generic classifier input and a proposed FDA-specific official API extraction input, compares estimated tokens, and writes ignored local reports under:
+
+`outputs/llm-classifier/input-preview/fda-food/`
+
+Generated files:
+
+- `fda-food-input-preview.json`
+- `fda-food-input-preview.md`
+- `fda-food-noise-report.json`
+- `fda-food-token-comparison.json`
+
+Optional sample limit:
+
+```powershell
+$env:FDA_FOOD_CLASSIFIER_INPUT_PREVIEW_LIMIT = "20"
+npm run preview:fda-food-classifier-input
+Remove-Item Env:FDA_FOOD_CLASSIFIER_INPUT_PREVIEW_LIMIT
+```
+
+Audit the preview wiring:
+
+```powershell
+npm run audit:fda-food-classifier-input-preview
+```
+
+The preview uses official openFDA fields such as product type, FDA classification, status, voluntary/mandated value, firm notification method, product description, reason for recall, code info, product quantity, distribution, recall number, and event id. These are source evidence only. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
+
 ## Canada Classifier Input Preview
 
 ```powershell
