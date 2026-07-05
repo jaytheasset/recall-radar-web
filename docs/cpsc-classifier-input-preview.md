@@ -73,7 +73,13 @@ The preview proposes a CPSC-specific shape:
 - `identifiers`
 - `affectedUnits`
 - `sourceHints.source = CPSC`
+- `sourceHints.market = United States`
+- `sourceHints.officialSource = Consumer Product Safety Commission`
+- `sourceHints.sourceApi = SaferProducts recall API`
 - `sourceHints.domainHint = consumer-product`
+- `sourceHints.classificationOwner = llm`
+
+These are source evidence fields only. Product family, product type, hazard type, audience, and other final Taxonomy V2 values remain LLM-owned.
 
 ## Excluded Fields
 

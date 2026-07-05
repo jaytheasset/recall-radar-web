@@ -42,7 +42,11 @@ const suspiciousSearchGroups = [
 
 type SourceHints = {
   source: 'CPSC';
+  market: 'United States';
+  officialSource: 'Consumer Product Safety Commission';
+  sourceApi: 'SaferProducts recall API';
   domainHint: 'consumer-product';
+  classificationOwner: 'llm';
 };
 
 type CpscClassifierInputPreview = {
@@ -293,9 +297,9 @@ function extractCpscIdentifiers(record: NormalizedRecall): string[] {
 function buildCpscClassifierInputPreview(record: NormalizedRecall): CpscClassifierInputPreview {
   const raw = isObject(record.raw) ? record.raw : {};
   const sourceCategory = cleanText(record.category, 160);
-  const productDescription = cleanText(record.description, 500);
-  const hazardText = cleanText(record.hazard || record.reason || '', 500);
-  const remedyText = cleanText(record.remedy, 350);
+  const productDescription = cleanText(record.description, 420);
+  const hazardText = cleanText(record.hazard || record.reason || '', 420);
+  const remedyText = cleanText(record.remedy, 300);
   const affectedUnits = cleanText(record.affectedUnits, 160);
   const recallNumber = cleanText(record.recallNumber || raw.RecallNumber, 80);
 
@@ -305,7 +309,7 @@ function buildCpscClassifierInputPreview(record: NormalizedRecall): CpscClassifi
     sourceUrl: record.sourceUrl,
     recallDate: record.recallDate,
     title: cleanText(record.title, 240),
-    productNames: uniqueCleanList(record.productNames, 6),
+    productNames: uniqueCleanList(record.productNames, 5),
     brandNames: uniqueCleanList(record.brandNames, 4),
     ...(sourceCategory ? { sourceCategory } : {}),
     ...(productDescription ? { productDescription } : {}),
@@ -316,7 +320,11 @@ function buildCpscClassifierInputPreview(record: NormalizedRecall): CpscClassifi
     ...(affectedUnits ? { affectedUnits } : {}),
     sourceHints: {
       source: 'CPSC',
-      domainHint: 'consumer-product'
+      market: 'United States',
+      officialSource: 'Consumer Product Safety Commission',
+      sourceApi: 'SaferProducts recall API',
+      domainHint: 'consumer-product',
+      classificationOwner: 'llm'
     }
   };
 }
@@ -686,16 +694,16 @@ function markdownReport(payload: PreviewPayload): string {
     '## Recommended CPSC Input Field Map',
     '',
     '- `title`: official CPSC title, capped at 240 characters.',
-    '- `productNames`: up to 6 normalized product names from CPSC product records.',
+    '- `productNames`: up to 5 normalized product names from CPSC product records.',
     '- `brandNames`: up to 4 manufacturers, importers, or distributors.',
     '- `sourceCategory`: CPSC product type/category text when present.',
-    '- `productDescription`: CPSC description capped at 500 characters.',
-    '- `hazardText`: CPSC hazard text capped at 500 characters.',
-    '- `remedyText`: concise remedy/action text capped at 350 characters.',
+    '- `productDescription`: CPSC description capped at 420 characters.',
+    '- `hazardText`: CPSC hazard text capped at 420 characters.',
+    '- `remedyText`: concise remedy/action text capped at 300 characters.',
     '- `recallNumber`: official CPSC recall number.',
     '- `identifiers`: up to 12 explicit model, UPC, serial, lot, recall number, or similar source-derived values.',
     '- `affectedUnits`: short affected unit count when useful.',
-    '- `sourceHints`: fixed CPSC consumer-product hints.',
+    '- `sourceHints`: fixed United States/CPSC/source-domain provenance only. Final public taxonomy values remain LLM-owned.',
     '',
     '## Decision Checklist Before Gemini Classification',
     '',

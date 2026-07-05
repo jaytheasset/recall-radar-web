@@ -71,7 +71,20 @@ function outputSummary(blockers: string[], warnings: string[]): AuditResult['out
     yamahaBistroIncluded?: boolean;
     records?: Array<{
       genericInput?: unknown;
-      proposedInput?: unknown;
+      proposedInput?: {
+        source?: string;
+        sourceHints?: {
+          market?: string;
+          officialSource?: string;
+          sourceApi?: string;
+          domainHint?: string;
+          classificationOwner?: string;
+        };
+        productFamily?: unknown;
+        productType?: unknown;
+        hazardType?: unknown;
+        audience?: unknown;
+      };
       tokenComparison?: unknown;
       noise?: unknown;
     }>;
@@ -93,6 +106,16 @@ function outputSummary(blockers: string[], warnings: string[]): AuditResult['out
   for (const record of preview.records ?? []) {
     assert(Boolean(record.genericInput), 'Every preview record must include genericInput.', blockers);
     assert(Boolean(record.proposedInput), 'Every preview record must include proposedInput.', blockers);
+    assert(record.proposedInput?.source === 'CPSC', 'Every proposed input must keep CPSC source.', blockers);
+    assert(record.proposedInput?.sourceHints?.market === 'United States', 'Every proposed input must keep United States market hint.', blockers);
+    assert(record.proposedInput?.sourceHints?.officialSource === 'Consumer Product Safety Commission', 'Every proposed input must keep CPSC official source hint.', blockers);
+    assert(record.proposedInput?.sourceHints?.sourceApi === 'SaferProducts recall API', 'Every proposed input must keep CPSC API hint.', blockers);
+    assert(record.proposedInput?.sourceHints?.domainHint === 'consumer-product', 'Every proposed input must keep consumer-product domain hint.', blockers);
+    assert(record.proposedInput?.sourceHints?.classificationOwner === 'llm', 'Every proposed input must mark classificationOwner as llm.', blockers);
+    assert(!('productFamily' in (record.proposedInput ?? {})), 'Proposed input must not include productFamily.', blockers);
+    assert(!('productType' in (record.proposedInput ?? {})), 'Proposed input must not include productType.', blockers);
+    assert(!('hazardType' in (record.proposedInput ?? {})), 'Proposed input must not include hazardType.', blockers);
+    assert(!('audience' in (record.proposedInput ?? {})), 'Proposed input must not include audience.', blockers);
     assert(Boolean(record.tokenComparison), 'Every preview record must include tokenComparison.', blockers);
     assert(Boolean(record.noise), 'Every preview record must include noise findings.', blockers);
   }
@@ -140,7 +163,12 @@ function runAudit(): void {
 
   assert(preview.includes('buildRecallClassifierInput'), 'Preview must build the current generic classifier input.', blockers);
   assert(preview.includes('buildCpscClassifierInputPreview'), 'Preview must include buildCpscClassifierInputPreview.', blockers);
-  assert(preview.includes("source: 'CPSC'") && preview.includes("domainHint: 'consumer-product'"), 'Preview must include CPSC source hints.', blockers);
+  assert(preview.includes("source: 'CPSC'"), 'Preview must include CPSC source id.', blockers);
+  assert(preview.includes("market: 'United States'"), 'Preview must include United States market hint.', blockers);
+  assert(preview.includes("officialSource: 'Consumer Product Safety Commission'"), 'Preview must include CPSC official source hint.', blockers);
+  assert(preview.includes("sourceApi: 'SaferProducts recall API'"), 'Preview must include SaferProducts API hint.', blockers);
+  assert(preview.includes("domainHint: 'consumer-product'"), 'Preview must include consumer-product domain hint.', blockers);
+  assert(preview.includes("classificationOwner: 'llm'"), 'Preview must mark final classification owner as LLM.', blockers);
   assert(preview.includes('CPSC_CLASSIFIER_INPUT_PREVIEW_LIMIT'), 'Preview must support CPSC_CLASSIFIER_INPUT_PREVIEW_LIMIT.', blockers);
   assert(preview.includes('yamaha') && preview.includes('umax') && preview.includes('bistro'), 'Preview must include Yamaha/UMAX/Bistro sampling logic.', blockers);
   assert(preview.includes('genericEstimatedTokens') && preview.includes('proposedEstimatedTokens'), 'Preview must compare generic vs proposed token estimates.', blockers);
@@ -154,6 +182,7 @@ function runAudit(): void {
   assert(!preview.includes('mergeProcessedRecalls'), 'Preview must not merge canonical data.', blockers);
   assert(!preview.includes('writeNormalized') && !preview.includes('normalizeCpscRecords'), 'Preview must not normalize or write source data.', blockers);
   assert(!preview.includes('data/processed/recalls.json'), 'Preview should use readProcessedRecalls instead of writing canonical data paths.', blockers);
+  assert(!preview.includes('productFamily:') && !preview.includes('productType:') && !preview.includes('hazardType:') && !preview.includes('audience:'), 'Preview must not fill final taxonomy fields.', blockers);
 
   assert(docs.includes('outputs/llm-classifier/input-preview/cpsc/'), 'Docs must document the CPSC output directory.', blockers);
   assert(docs.includes('Yamaha') && docs.includes('Bistro'), 'Docs must explain how to inspect Yamaha/Bistro.', blockers);
