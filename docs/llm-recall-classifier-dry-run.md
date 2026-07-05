@@ -14,6 +14,8 @@ Phase 44E-3 adds a New Zealand Product Safety-only input preview before live per
 
 Phase 44E-4 adds a Hong Kong CFS-only food alert input preview before live per-source classification. See `docs/hong-kong-cfs-classifier-input-preview.md`.
 
+Australia Product Safety adds an Australia-only consumer product input preview before live per-source classification. See `docs/australia-product-safety-classifier-input-preview.md`.
+
 Canada detail parsing adds a Canada-only input preview before live per-source classification. See `docs/canada-classifier-input-preview.md`.
 
 ## Purpose
@@ -205,6 +207,15 @@ npm run audit:uk-fsa-classifier-input-preview
 ```
 
 Those commands compare generic input with a UK FSA-specific food alert input shape, write ignored preview reports only, and do not call an LLM. FSA alert type, status, product detail rows, allergen/pathogen/hazard labels, consumer advice, action text, batch/date details, and alert notation are evidence fields only; final product family, product type, hazard type, and audience remain LLM-owned.
+
+For Australia Product Safety input-noise review, run:
+
+```powershell
+npm run preview:australia-product-safety-classifier-input
+npm run audit:australia-product-safety-classifier-input-preview
+```
+
+Those commands compare generic input with an Australia/Product Safety-specific official source extraction input shape, write ignored preview reports only, and do not call an LLM. Product Safety Australia categories, product description, supplier, brand, defect, hazard, action, trader, sale-period, sold-where, manufacturer-country, recall number, and identifier fields are evidence only; final product family, product type, hazard type, and audience remain LLM-owned.
 
 ## Non-Goals
 

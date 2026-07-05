@@ -132,6 +132,13 @@ UK FSA adds the same gate for United Kingdom food alerts:
 
 The UK FSA preview compares generic input with a source-specific food alert shape using official alert type, status, product detail rows, allergen/pathogen/hazard labels, consumer advice, action text, batch/date details, related notice titles, and alert notation. These source fields are evidence only. The parser does not fill `productFamily`, `productType`, `hazardType`, `audience`, or other final Taxonomy V2 fields. It writes ignored reports under `outputs/llm-classifier/input-preview/uk-fsa/` and does not call Gemini, classify records, or write canonical data.
 
+Australia Product Safety adds the same gate for Australia consumer product recalls:
+
+- `npm run preview:australia-product-safety-classifier-input`
+- `npm run audit:australia-product-safety-classifier-input-preview`
+
+The Australia Product Safety preview compares generic input with a source-specific official extraction shape using Product Safety Australia categories, product description, supplier, brand, defect, hazard, consumer action, trader, sale-period, sold-where, manufacturer-country, recall number, and identifier evidence. These source fields are evidence only. The parser does not fill `productFamily`, `productType`, `hazardType`, `audience`, or other final Taxonomy V2 fields. It writes ignored reports under `outputs/llm-classifier/input-preview/australia-product-safety/` and does not call Gemini, classify records, or write canonical data.
+
 ## Review Questions
 
 Phase 44 should answer:

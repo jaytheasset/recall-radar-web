@@ -1039,6 +1039,39 @@ npm run audit:uk-fsa-classifier-input-preview
 
 The preview samples Allergy Alert, Product Recall Information Notice, Food Alert For Action, allergen, pathogen, foreign matter, batch/date, product detail row, related media, sparse identifier, and long risk/action records when present. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
 
+## Australia Product Safety Classifier Input Preview
+
+```powershell
+npm run preview:australia-product-safety-classifier-input
+```
+
+This command reads the current canonical processed recalls, filters Australia Product Safety records only, builds the current generic classifier input and a proposed Australia-specific input preview, compares estimated tokens, and writes ignored local reports under:
+
+`outputs/llm-classifier/input-preview/australia-product-safety/`
+
+Generated files:
+
+- `australia-product-safety-input-preview.json`
+- `australia-product-safety-input-preview.md`
+- `australia-product-safety-noise-report.json`
+- `australia-product-safety-token-comparison.json`
+
+Optional sample limit:
+
+```powershell
+$env:AUSTRALIA_PRODUCT_SAFETY_CLASSIFIER_INPUT_PREVIEW_LIMIT = "20"
+npm run preview:australia-product-safety-classifier-input
+Remove-Item Env:AUSTRALIA_PRODUCT_SAFETY_CLASSIFIER_INPUT_PREVIEW_LIMIT
+```
+
+Audit the preview wiring:
+
+```powershell
+npm run audit:australia-product-safety-classifier-input-preview
+```
+
+The preview samples baby/kids, button-battery/electronics, household, vehicle/accessory, tools/machinery, chemical, sports/clothing, identifier-rich, marketplace/trader, image-backed, sparse-identifier, and long hazard/action records when present. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
+
 ## FSANZ Classifier Input Preview
 
 ```powershell

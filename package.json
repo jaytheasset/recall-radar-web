@@ -85,6 +85,8 @@
     "audit:rappelconso-classifier-input-preview": "node --experimental-strip-types scripts/audit-rappelconso-classifier-input-preview.ts",
     "preview:uk-fsa-classifier-input": "node --experimental-strip-types scripts/preview-uk-fsa-classifier-input.ts",
     "audit:uk-fsa-classifier-input-preview": "node --experimental-strip-types scripts/audit-uk-fsa-classifier-input-preview.ts",
+    "preview:australia-product-safety-classifier-input": "node --experimental-strip-types scripts/preview-australia-product-safety-classifier-input.ts",
+    "audit:australia-product-safety-classifier-input-preview": "node --experimental-strip-types scripts/audit-australia-product-safety-classifier-input-preview.ts",
     "preview:fsanz-classifier-input": "node --experimental-strip-types scripts/preview-fsanz-classifier-input.ts",
     "audit:fsanz-classifier-input-preview": "node --experimental-strip-types scripts/audit-fsanz-classifier-input-preview.ts",
     "preview:new-zealand-classifier-input": "node --experimental-strip-types scripts/preview-new-zealand-classifier-input.ts",
