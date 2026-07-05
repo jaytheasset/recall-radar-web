@@ -5,6 +5,10 @@ This dry run compares two LLM inputs for the same sample records:
 - `genericInput`: the current common input shape shared by every source.
 - `proposedInput`: the source-specific input preview built from each official source's structure.
 
+Current prompt version: `recall-classifier-v2`.
+
+Prompt v2 treats parser fields and source categories as evidence only, hardens mixed-domain source handling, and adds clearer `confidence` / `needsReview` rules before any persistence step.
+
 Run all source-specific input previews first:
 
 ```powershell

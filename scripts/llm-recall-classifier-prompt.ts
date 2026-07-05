@@ -9,7 +9,7 @@ import {
 } from '../src/data/recall-taxonomy-v2.ts';
 import type { RecallClassifierInput } from './build-recall-classifier-input.ts';
 
-export const RECALL_CLASSIFIER_PROMPT_VERSION = 'recall-classifier-v1' as const;
+export const RECALL_CLASSIFIER_PROMPT_VERSION = 'recall-classifier-v2' as const;
 
 function enumLine(label: string, values: readonly string[]): string {
   return `${label}: ${values.join(', ')}`;
@@ -39,15 +39,26 @@ export function buildRecallClassifierPromptFromInput(input: unknown, model = '',
     'Classify only. Do not summarize, judge, advise, or make safety claims.',
     'Never assert product safety status or affected/not-affected status.',
     'Use only the enum values listed below. Never invent enum values.',
+    'Parser fields and source categories are evidence only. Do not copy source category text into final taxonomy fields.',
+    'Prefer evidence from title, product names, affected product rows, identifiers, hazard/risk text, remedy/action text, and official source category together.',
+    'If source evidence conflicts, choose the classification best supported by the concrete product and hazard text, not the broad source feed.',
     'Do not use recallDomain values as productFamily values.',
     'Do not use productType values as productFamily values. productFamily is the broad group; productType is the narrower item type.',
-    'For medical devices, diagnostics, assays, hospital equipment, or health products: productFamily must usually be health-personal-care and recallDomain must be medical-health.',
-    'For kitchenware, tableware, jars, bottles, or food containers that are not food contents: productFamily must usually be furniture-household and recallDomain must be consumer-product.',
-    'For beverages, packaged foods, or food contents: productFamily must be food-grocery.',
-    'For chemical products, cement, primer, cleaning products, or pesticides: productFamily must be chemicals-cleaning.',
-    'For lighting, laser pointers, appliances, chargers, batteries, or other electrical products: productFamily must usually be electronics-batteries.',
-    'For vehicles, golf carts, off-road vehicles, or mobility products: productFamily must usually be vehicles-mobility.',
-    'Use unknown when source text is insufficient. Set needsReview true when confidence is low.',
+    'For medical devices, diagnostics, assays, hospital equipment, implants, catheters, syringes, resuscitation systems, drugs, or health products: productFamily must usually be health-personal-care and recallDomain must be medical-health.',
+    'Do not classify a medical/health record as baby-kids only because the title contains infant, child, pediatric, or neonatal. Use baby-kids only when the recalled product is a consumer child product such as a toy, stroller, nursery item, child furniture, child clothing, school product, or baby care product.',
+    'For kitchenware, tableware, jars, bottles, food containers, cake decorations, or household items that are not food contents: productFamily must usually be furniture-household or chemicals-cleaning as appropriate, and recallDomain must usually be consumer-product.',
+    'For beverages, packaged foods, ingredients, supplements sold as food, infant formula, allergens, pathogens, foreign matter in food, or food date/lot recalls: productFamily must be food-grocery and recallDomain must be food.',
+    'For chemical products, cement, primer, solvents, cleaners, detergents, pesticides, or chemical exposure hazards: productFamily must be chemicals-cleaning.',
+    'For lighting, laser pointers, appliances, chargers, batteries, power banks, button-battery products, or other electrical products: productFamily must usually be electronics-batteries.',
+    'For passenger vehicles, golf carts, off-road vehicles, scooters, bicycles, trailers, mobility products, or vehicle accessories: productFamily must usually be vehicles-mobility.',
+    'For source feeds that mix domains, especially Canada, classify from the actual product and official category. Do not assume one feed means one product family.',
+    'Pick the closest specific productType only when the text clearly supports it. If productFamily is clear but no listed productType fits, use productType unknown instead of inventing a new value.',
+    'Pick one primary hazardType. Use regulatory-noncompliance for labeling, certification, or standard-compliance failures when no concrete injury mechanism is stated.',
+    'Use hazardType unknown only when the source does not state a usable hazard, risk, issue, defect, allergen, contaminant, or noncompliance reason.',
+    'Audience must be evidence-based. Use children, infants, allergy-sensitive-consumers, pet-owners, workers, vehicle-users, or other specific audiences only when product intent, affected consumers, or source warning supports it; otherwise use general.',
+    'Use unknown when source text is insufficient. Set needsReview true when productFamily is unknown, recallDomain is unknown, confidence is below 0.75, or key product/hazard evidence is missing.',
+    'Do not set needsReview true only because productType is unknown when productFamily, recallDomain, and hazardType are well supported.',
+    'Confidence guidance: 0.90-0.95 for explicit product and hazard evidence; 0.75-0.89 for good but incomplete evidence; below 0.75 for ambiguous, conflicting, or sparse evidence.',
     'The reason must be one short sentence based only on the provided fields.',
     'If the input contains source-specific field names, classify from those fields but map evidenceFields to the closest allowed generic evidence enum values.',
     'Never output source-specific field names in evidenceFields. Examples: hazardText, riskText, riskDescription, issueText, reasonText, problemText, foodSafetyHazardText, defectText, sourceCategory, sourceCategories, sourceProductCategory, productDescription, affectedProducts, productDetails, importer, retailer, supplierName, actionText, consumerAdvice, measures, recallNumber must be mapped to the closest allowed generic evidenceFields value.',

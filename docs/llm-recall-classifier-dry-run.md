@@ -62,7 +62,7 @@ These outputs are intentionally not committed.
 
 ## Prompt Contract
 
-Prompt version: `recall-classifier-v1`
+Prompt version: `recall-classifier-v2`
 
 The classifier must return strict JSON shaped as `RecallClassificationV2`:
 
@@ -82,6 +82,16 @@ The classifier must return strict JSON shaped as `RecallClassificationV2`:
 - `evidenceFields`
 
 Enum values come from `src/data/recall-taxonomy-v2.ts`. Unknown or low-evidence records should use `unknown` and set `needsReview: true`.
+
+Prompt v2 hardens source-specific classification rules:
+
+- Parser fields and source categories are evidence only, not final taxonomy values.
+- Medical devices, diagnostics, assays, hospital equipment, drugs, and health products should not become `baby-kids` only because a title contains infant, child, pediatric, or neonatal.
+- Food contents, allergens, pathogens, foreign matter in food, and date/lot food recalls should map to `food-grocery` and `food`.
+- Chemical products, cement, primer, solvents, cleaners, detergents, and pesticides should map to `chemicals-cleaning` when supported by source evidence.
+- Mixed-domain feeds such as Canada must be classified from actual product and official category evidence.
+- `productType: unknown` is allowed when the product family is clear but no listed product type fits.
+- `needsReview` should be true when product family or recall domain is unknown, confidence is below `0.75`, or key product/hazard evidence is missing.
 
 ## Sampling
 

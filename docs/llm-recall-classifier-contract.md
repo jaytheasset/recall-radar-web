@@ -50,6 +50,8 @@ The classifier must:
 10. Not make safety claims.
 11. Not assert product safety status or affected/not-affected status.
 12. Keep hazard classification separate from product classification.
+13. Treat parser fields and source categories as evidence only, never as final taxonomy values.
+14. Avoid medical/health to baby/kids false positives when words such as infant, child, pediatric, or neonatal appear in a medical-device context.
 
 ## Output JSON Shape
 
@@ -75,6 +77,7 @@ The classifier must choose from the enum values exported by `src/data/recall-tax
 
 - If the top-level family is uncertain, use `unknown`.
 - If the product family is known but type is not specific, use the family-specific `*-other` type.
+- If the product family is known but no listed product type fits, `productType: unknown` is allowed and should not automatically force review.
 - If the hazard is unclear, use `unknown`.
 - If the audience is unclear, use `general` or `unknown` rather than inventing a group.
 - `hazardTags` may contain short source-grounded terms, but they must not add facts that are absent from source fields.
@@ -89,7 +92,9 @@ Set `needsReview: true` when:
 - hazard text is missing or vague
 - the record is multilingual and the classifier cannot confidently map it
 - multiple product families are plausible
-- the classifier selected `unknown` or `other`
+- product family or recall domain is `unknown`
+- confidence is below `0.75`
+- the classifier selected `other` because multiple more specific options are plausible
 
 ## Sample Cases
 

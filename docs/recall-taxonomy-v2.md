@@ -269,7 +269,7 @@ This is the intended future breaking schema, not a runtime schema in Phase 41:
     "taxonomyVersion": "recall-taxonomy-v2",
     "method": "llm",
     "model": "cheap-classifier-model",
-    "promptVersion": "recall-classifier-v1",
+    "promptVersion": "recall-classifier-v2",
     "productFamily": "vehicles-mobility",
     "productType": "golf-cart-utility-vehicle",
     "hazardType": "injury",

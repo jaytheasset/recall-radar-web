@@ -374,7 +374,7 @@ Phase 42 adds an offline-first dry-run classifier pipeline for Recall Taxonomy V
 - Default provider: deterministic `mock`
 - Optional providers: `gemini` with `GEMINI_API_KEY`, or `openai` with `OPENAI_API_KEY`
 - Output folder: ignored `outputs/llm-classifier/`
-- Prompt version: `recall-classifier-v1`
+- Prompt version: `recall-classifier-v2`
 
 The dry run reads `data/processed/recalls.json`, builds short structured classifier inputs, validates strict JSON output against `RecallClassificationV2`, compares taxonomy v2 fields to the legacy `category`, and estimates token/cost projections. It does not write canonical taxonomy fields, does not modify `data/raw` or `data/processed`, does not change UI routes or filters, and does not run source refreshes.
 

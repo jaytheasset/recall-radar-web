@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { RECALL_CLASSIFIER_PROMPT_VERSION } from './llm-recall-classifier-prompt.ts';
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const expectedSources = [
@@ -83,6 +84,7 @@ function runAudit(): void {
     const output = readJson(outputPath) as {
       provider?: string;
       model?: string;
+      promptVersion?: string;
       sampleCount?: number;
       sources?: string[];
       success?: { generic?: number; sourceSpecific?: number };
@@ -94,6 +96,7 @@ function runAudit(): void {
       }>;
     };
     assert(output.provider === 'gemini' || output.provider === 'openai', 'Output provider must be a live provider.', blockers);
+    assert(output.promptVersion === RECALL_CLASSIFIER_PROMPT_VERSION, `Output promptVersion must be ${RECALL_CLASSIFIER_PROMPT_VERSION}.`, blockers);
     assert(output.sampleCount === expectedSources.length, `Output sampleCount must be ${expectedSources.length}.`, blockers);
     assert(Array.isArray(output.sources) && expectedSources.every((source) => output.sources?.includes(source)), 'Output must include all expected sources.', blockers);
     assert(output.success?.generic === expectedSources.length, 'All generic classifications must succeed.', blockers);

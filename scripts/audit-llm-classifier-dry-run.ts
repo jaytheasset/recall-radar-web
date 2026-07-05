@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { RECALL_TAXONOMY_VERSION } from '../src/data/recall-taxonomy-v2.ts';
+import { RECALL_CLASSIFIER_PROMPT_VERSION } from './llm-recall-classifier-prompt.ts';
 import { validateClassificationOutput } from './validate-recall-classification-output.ts';
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -98,7 +99,7 @@ async function auditDryRunOutput(blockers: string[], warnings: string[]): Promis
   let validClassifications = 0;
   let invalidClassifications = 0;
 
-  assert(payload.promptVersion === 'recall-classifier-v1', 'Dry-run output promptVersion must be recall-classifier-v1.', blockers);
+  assert(payload.promptVersion === RECALL_CLASSIFIER_PROMPT_VERSION, `Dry-run output promptVersion must be ${RECALL_CLASSIFIER_PROMPT_VERSION}.`, blockers);
   assert(typeof payload.sampleCount === 'number' && payload.sampleCount > 0, 'Dry-run output must include a positive sampleCount.', blockers);
   assert(results.length === payload.sampleCount, 'Dry-run output results length must match sampleCount.', blockers);
   assert(payload.failed === 0, 'Dry-run output must have zero failed classifications for audit pass.', blockers);
@@ -166,8 +167,12 @@ async function runAudit(): Promise<void> {
   assert(packageJson.scripts?.['classify:recalls:taxonomy-v2:dry-run']?.includes('classify-recalls-taxonomy-v2-dry-run.ts') ?? false, 'package.json is missing classify:recalls:taxonomy-v2:dry-run.', blockers);
   assert(packageJson.scripts?.['audit:llm-classifier-dry-run']?.includes('audit-llm-classifier-dry-run.ts') ?? false, 'package.json is missing audit:llm-classifier-dry-run.', blockers);
   assert(promptText.includes(RECALL_TAXONOMY_VERSION), 'Prompt must use the taxonomy v2 version constant.', blockers);
+  assert(promptText.includes('recall-classifier-v2'), 'Prompt must use recall-classifier-v2.', blockers);
   assert(promptText.includes('Return strict JSON only'), 'Prompt must require strict JSON only.', blockers);
   assert(promptText.includes('Never assert product safety status'), 'Prompt must block safety claims.', blockers);
+  assert(promptText.includes('Parser fields and source categories are evidence only'), 'Prompt must say parser/source fields are evidence only.', blockers);
+  assert(promptText.includes('Do not classify a medical/health record as baby-kids only because'), 'Prompt must guard medical/health records from baby-kids false positives.', blockers);
+  assert(promptText.includes('confidence is below 0.75'), 'Prompt must define the confidence review threshold.', blockers);
   assert(providerText.includes("provider === 'gemini'") && providerText.includes("provider === 'openai'") && providerText.includes("provider === 'mock'"), 'Provider abstraction must support mock, gemini, and openai modes.', blockers);
   assert(providerText.includes('GEMINI_API_KEY') && providerText.includes('OPENAI_API_KEY'), 'Live providers must be gated by env keys.', blockers);
   assert(providerText.includes('RECALL_CLASSIFIER_INPUT_USD_PER_1M') && providerText.includes('RECALL_CLASSIFIER_OUTPUT_USD_PER_1M'), 'Provider settings must support token pricing env variables.', blockers);
