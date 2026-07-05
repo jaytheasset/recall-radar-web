@@ -344,7 +344,7 @@ function countryOfOrigin(record: NormalizedRecall): string {
 }
 
 function countriesConcerned(record: NormalizedRecall): string[] {
-  return uniqueCleanList(arrayOf(rawPayload(record).reactingCountries).map((item) => countryValue(asObject(item).country ?? item)), 20, 120);
+  return uniqueCleanList(arrayOf(rawPayload(record).reactingCountries).map((item) => countryValue(asObject(item).country ?? item)), 12, 100);
 }
 
 function soldOnline(record: NormalizedRecall): string {
@@ -355,7 +355,7 @@ function brandNames(record: NormalizedRecall): string[] {
   return uniqueCleanList([
     ...arrayOf(rawProduct(record).brands).map((brand) => asObject(brand).brand ?? asObject(brand).name),
     ...record.brandNames
-  ], 8, 160);
+  ], 6, 140);
 }
 
 function productNames(record: NormalizedRecall): string[] {
@@ -366,11 +366,11 @@ function productNames(record: NormalizedRecall): string[] {
     product.name,
     product.nameSpecific,
     ...record.productNames.filter((name) => !/^\d{8,14}$/.test(name))
-  ], 8, 180);
+  ], 6, 160);
 }
 
 function riskTypes(record: NormalizedRecall): string[] {
-  return uniqueCleanList(arrayOf(rawRisk(record).riskType).map((riskType) => labelize(asObject(riskType).name ?? asObject(riskType).key)), 16, 140);
+  return uniqueCleanList(arrayOf(rawRisk(record).riskType).map((riskType) => labelize(asObject(riskType).name ?? asObject(riskType).key)), 8, 120);
 }
 
 function measures(record: NormalizedRecall): string[] {
@@ -384,14 +384,14 @@ function measures(record: NormalizedRecall): string[] {
       labelize(category.name ?? category.key),
       labelize(operator.name ?? operator.key)
     ], 3, 120).join(': ');
-  }), 12, 180);
+  }), 6, 140);
 }
 
 function onlineTraderIdentifiers(record: NormalizedRecall): string[] {
   return uniqueCleanList(arrayOf(rawPayload(record).onlineTraderProductIdentifierReference).filter(isObject).flatMap((item) => [
     item.uniqueProductIdentifier ? `${fieldText(item.onlineTrader, 80)} ${fieldText(item.uniqueProductIdentifier, 120)}` : '',
     item.onlineTrader
-  ]), 10, 160);
+  ]), 6, 140);
 }
 
 function identifierCandidates(record: NormalizedRecall): string[] {
@@ -413,7 +413,7 @@ function identifierCandidates(record: NormalizedRecall): string[] {
     ...(sourceText.match(/\b\d{8,14}\b/g) ?? [])
   ];
 
-  return uniqueCleanList([rawPayload(record).reference, record.recallNumber, ...matches], 24, 160);
+  return uniqueCleanList([rawPayload(record).reference, record.recallNumber, ...matches], 10, 120);
 }
 
 function hasImage(record: NormalizedRecall): boolean {
@@ -467,11 +467,11 @@ function buildEuSafetyGateClassifierInputPreview(record: NormalizedRecall): EuSa
     productNames: productNames(record),
     brandNames: brandNames(record),
     ...(cleanText(product.nameSpecific, 180) ? { nameSpecific: cleanText(product.nameSpecific, 180) } : {}),
-    ...(cleanText(productVersion.description, 420) ? { productDescription: cleanText(productVersion.description, 420) } : {}),
-    ...(cleanText(productVersion.packageDescription, 220) ? { packageDescription: cleanText(productVersion.packageDescription, 220) } : {}),
+    ...(cleanText(productVersion.description, 300) ? { productDescription: cleanText(productVersion.description, 300) } : {}),
+    ...(cleanText(productVersion.packageDescription, 140) ? { packageDescription: cleanText(productVersion.packageDescription, 140) } : {}),
     riskTypes: riskTypes(record),
-    ...(cleanText(riskVersion.riskDescription ?? record.hazard, 650) ? { riskDescription: cleanText(riskVersion.riskDescription ?? record.hazard, 650) } : {}),
-    ...(cleanText(riskVersion.legalProvision, 420) ? { legalProvision: cleanText(riskVersion.legalProvision, 420) } : {}),
+    ...(cleanText(riskVersion.riskDescription ?? record.hazard, 420) ? { riskDescription: cleanText(riskVersion.riskDescription ?? record.hazard, 420) } : {}),
+    ...(cleanText(riskVersion.legalProvision, 220) ? { legalProvision: cleanText(riskVersion.legalProvision, 220) } : {}),
     measures: measures(record),
     ...(cleanText(rawPayload(record).reference ?? record.recallNumber, 80) ? { recallNumber: cleanText(rawPayload(record).reference ?? record.recallNumber, 80) } : {}),
     identifiers: identifierCandidates(record),
