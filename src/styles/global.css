@@ -822,40 +822,40 @@ button:disabled {
 
 .home-page .home-category-section .category-grid {
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 14px;
+  gap: 10px;
 }
 
 .home-page .home-product-type-card {
   display: grid;
-  gap: 0.85rem;
+  gap: 0.62rem;
   align-content: start;
-  min-height: 148px;
+  min-height: 116px;
   border: 0;
-  border-radius: 22px;
-  padding: 1rem;
+  border-radius: 18px;
+  padding: 0.78rem;
   background: var(--surface);
-  box-shadow: 0 16px 42px rgba(17, 24, 39, 0.08);
+  box-shadow: 0 12px 30px rgba(17, 24, 39, 0.07);
 }
 
 .home-page .home-product-type-card:hover {
-  box-shadow: 0 24px 62px rgba(17, 24, 39, 0.13);
+  box-shadow: 0 18px 46px rgba(17, 24, 39, 0.11);
 }
 
 .home-page .category-icon {
   display: grid;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   place-items: center;
   border: 0;
-  border-radius: 16px;
+  border-radius: 13px;
   background: #F5F6F8;
   color: var(--black);
   box-shadow: inset 0 0 0 1px rgba(17, 24, 39, 0.06);
 }
 
 .home-page .category-icon svg {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
@@ -864,12 +864,12 @@ button:disabled {
 }
 
 .home-page .category-card-body {
-  gap: 0.3rem;
+  gap: 0.22rem;
   padding: 0;
 }
 
 .home-page .category-card h3 {
-  font-size: 0.98rem;
+  font-size: 0.88rem;
   letter-spacing: 0;
 }
 
@@ -886,33 +886,33 @@ button:disabled {
 }
 
 .home-page .source-country-grid {
-  grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(142px, 1fr));
+  gap: 10px;
 }
 
 .home-page .source-country-card {
   display: grid;
-  gap: 0.72rem;
+  gap: 0.56rem;
   align-content: start;
-  min-height: 208px;
+  min-height: 162px;
   border: 0;
-  border-radius: 22px;
-  padding: 0.95rem;
+  border-radius: 18px;
+  padding: 0.76rem;
   background: var(--surface);
-  box-shadow: 0 16px 42px rgba(17, 24, 39, 0.08);
+  box-shadow: 0 12px 30px rgba(17, 24, 39, 0.07);
 }
 
 .home-page .source-country-card:hover {
-  box-shadow: 0 24px 62px rgba(17, 24, 39, 0.13);
+  box-shadow: 0 18px 46px rgba(17, 24, 39, 0.11);
 }
 
 .source-flag-wrap {
   display: grid;
-  width: 46px;
+  width: 38px;
   aspect-ratio: 4 / 3;
   place-items: center;
   border: 1px solid rgba(17, 24, 39, 0.08);
-  border-radius: 14px;
+  border-radius: 11px;
   background: #F8FAFC;
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.72),
@@ -937,13 +937,13 @@ button:disabled {
 
 .home-page .source-country-card .category-card-body {
   align-content: start;
-  gap: 0.36rem;
+  gap: 0.28rem;
 }
 
 .source-card-kicker {
   display: block;
   color: var(--source);
-  font-size: 0.72rem;
+  font-size: 0.64rem;
   font-weight: 860;
   letter-spacing: 0.01em;
   line-height: 1.25;
@@ -953,7 +953,7 @@ button:disabled {
 .source-card-label-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.38rem;
+  gap: 0.28rem;
 }
 
 .source-card-pill {
@@ -961,12 +961,12 @@ button:disabled {
   align-items: center;
   width: fit-content;
   max-width: 100%;
-  min-height: 1.55rem;
+  min-height: 1.32rem;
   border-radius: 999px;
-  padding: 0.22rem 0.48rem;
+  padding: 0.16rem 0.38rem;
   background: #F2F4F7;
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 780;
   line-height: 1.15;
   overflow-wrap: anywhere;
