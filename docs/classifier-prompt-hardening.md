@@ -14,6 +14,8 @@ The full source-specific preview proved that Gemini can produce valid Taxonomy V
 - source-specific categories must not be copied as final taxonomy values
 - confidence and `needsReview` thresholds must be explicit
 - `productType: unknown` must be allowed when family/domain/hazard are clear but no listed product type fits
+- `consumer-product` must stay a recall domain, not a product family
+- ingestion-style model aliases must map back to allowed hazard enums such as `choking`, `injury`, or `burn`
 
 ## Prompt Version
 

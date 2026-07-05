@@ -216,6 +216,9 @@ function repairClassificationEnums(rawText: string): { rawText: string; repairs:
       'children': 'baby-kids',
       'childrens-products': 'baby-kids',
       'kids': 'baby-kids',
+      'consumer-product': 'other',
+      'consumer-products': 'other',
+      'general-consumer-product': 'other',
       'electrical-appliances': 'electronics-batteries',
       'electronics': 'electronics-batteries',
       'vehicles': 'vehicles-mobility',
@@ -257,6 +260,13 @@ function repairClassificationEnums(rawText: string): { rawText: string; repairs:
     hazardType: {
       'overheating': 'battery-overheat',
       'battery-overheating': 'battery-overheat',
+      'ingestion': 'choking',
+      'magnet-ingestion': 'choking',
+      'button-battery-ingestion': 'choking',
+      'button-battery-overheat': 'choking',
+      'internal-burn': 'burn',
+      'internal-burns': 'burn',
+      'internal-injury': 'injury',
       'electric-shock-risk': 'electric-shock',
       'chemical': 'contamination-chemical',
       'pathogen': 'contamination-pathogen'

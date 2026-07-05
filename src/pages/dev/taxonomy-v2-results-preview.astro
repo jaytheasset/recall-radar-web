@@ -1,0 +1,749 @@
+---
+// @ts-nocheck
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { getRecallSourceLabel } from '../../lib/recall-sources';
+import {
+  getAudienceLabel,
+  getHazardTypeLabel,
+  getProductFamilyLabel,
+  getProductTypeLabel,
+  getRecallDomainLabel
+} from '../../lib/taxonomy-v2-display';
+import '../../styles/global.css';
+
+type ProcessedRecall = {
+  id: string;
+  source: string;
+  title: string;
+  slug?: string;
+  category?: string;
+  recallDate?: string;
+  brandNames?: string[];
+  productNames?: string[];
+  hazard?: string;
+};
+
+type Classification = {
+  productFamily?: string;
+  productType?: string;
+  hazardType?: string;
+  hazardTags?: string[];
+  recallDomain?: string;
+  audience?: string[];
+  confidence?: number;
+  needsReview?: boolean;
+  reason?: string;
+  evidenceFields?: string[];
+};
+
+type ResultRecord = {
+  recordId: string;
+  source: string;
+  title: string;
+  recallDate?: string;
+  success?: boolean;
+  failed?: boolean;
+  errors?: string[];
+  enumRepairs?: Array<{ field: string; from: string; to: string }>;
+  evidenceFieldRepairs?: Array<{ from: string; to: string }>;
+  qualityFlags?: string[];
+  classification?: Classification;
+};
+
+type ClassifierResultsFile = {
+  generatedAt?: string;
+  provider?: string;
+  model?: string;
+  promptVersion?: string;
+  inputMode?: string;
+  totalRecords?: number;
+  selectedRecords?: number;
+  completedRecords?: number;
+  success?: number;
+  failed?: number;
+  needsReview?: number;
+  unknownProductFamily?: number;
+  unknownProductType?: number;
+  unknownHazardType?: number;
+  sourceCounts?: Record<string, number>;
+  familyDistribution?: Record<string, number>;
+  hazardDistribution?: Record<string, number>;
+  qualityFlagCounts?: Record<string, number>;
+  costEstimate?: {
+    estimatedCostUsd?: number;
+    totalInputTokens?: number;
+    totalOutputTokens?: number;
+  };
+  results?: ResultRecord[];
+};
+
+type PreviewRow = {
+  id: string;
+  source: string;
+  sourceLabel: string;
+  title: string;
+  recallDate: string;
+  detailPath: string;
+  legacyCategory: string;
+  brandNames: string[];
+  productNames: string[];
+  hazard: string;
+  productFamily: string;
+  productFamilyLabel: string;
+  productType: string;
+  productTypeLabel: string;
+  hazardType: string;
+  hazardTypeLabel: string;
+  hazardTags: string[];
+  recallDomain: string;
+  recallDomainLabel: string;
+  audienceLabels: string[];
+  confidence: number | null;
+  needsReview: boolean;
+  reason: string;
+  evidenceFields: string[];
+  qualityFlags: string[];
+  enumRepairs: string[];
+  evidenceRepairCount: number;
+  failed: boolean;
+  errors: string[];
+};
+
+const projectRoot = resolve(fileURLToPath(new URL('../../..', import.meta.url)));
+const resultsPath = resolve(
+  projectRoot,
+  'outputs/llm-classifier/full-source-specific-preview/full-source-specific-classifier-results.json'
+);
+const recallsPath = resolve(projectRoot, 'data/processed/recalls.json');
+
+function readJsonFile<T>(path: string): T | null {
+  if (!existsSync(path)) {
+    return null;
+  }
+  return JSON.parse(readFileSync(path, 'utf8')) as T;
+}
+
+function safeArray<T>(value: T[] | undefined): T[] {
+  return Array.isArray(value) ? value : [];
+}
+
+function truncate(value: string, max = 220): string {
+  const compact = value.replace(/\s+/g, ' ').trim();
+  return compact.length > max ? `${compact.slice(0, max - 1).trim()}...` : compact;
+}
+
+function safeJsonForHtml(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, '\\u003c');
+}
+
+const resultsFile = readJsonFile<ClassifierResultsFile>(resultsPath);
+const processedJson = readJsonFile<ProcessedRecall[] | { records?: ProcessedRecall[] }>(recallsPath);
+const processedRecords = Array.isArray(processedJson) ? processedJson : safeArray(processedJson?.records);
+const recordById = new Map(processedRecords.map((record) => [record.id, record]));
+
+const rows: PreviewRow[] = safeArray(resultsFile?.results).map((result) => {
+  const record = recordById.get(result.recordId);
+  const classification = result.classification ?? {};
+  const productFamily = classification.productFamily ?? 'unknown';
+  const productType = classification.productType ?? 'unknown';
+  const hazardType = classification.hazardType ?? 'unknown';
+  const recallDomain = classification.recallDomain ?? 'unknown';
+  const source = result.source ?? record?.source ?? 'unknown';
+
+  return {
+    id: result.recordId,
+    source,
+    sourceLabel: getRecallSourceLabel(source),
+    title: result.title || record?.title || result.recordId,
+    recallDate: result.recallDate || record?.recallDate || '',
+    detailPath: record?.slug ? `/recalls/${record.slug}` : '',
+    legacyCategory: record?.category || '',
+    brandNames: safeArray(record?.brandNames),
+    productNames: safeArray(record?.productNames),
+    hazard: truncate(record?.hazard ?? ''),
+    productFamily,
+    productFamilyLabel: getProductFamilyLabel(productFamily),
+    productType,
+    productTypeLabel: getProductTypeLabel(productType),
+    hazardType,
+    hazardTypeLabel: getHazardTypeLabel(hazardType),
+    hazardTags: safeArray(classification.hazardTags),
+    recallDomain,
+    recallDomainLabel: getRecallDomainLabel(recallDomain),
+    audienceLabels: safeArray(classification.audience).map(getAudienceLabel),
+    confidence: typeof classification.confidence === 'number' ? classification.confidence : null,
+    needsReview: Boolean(classification.needsReview),
+    reason: classification.reason ?? '',
+    evidenceFields: safeArray(classification.evidenceFields),
+    qualityFlags: safeArray(result.qualityFlags),
+    enumRepairs: safeArray(result.enumRepairs).map((repair) => `${repair.field}: ${repair.from} -> ${repair.to}`),
+    evidenceRepairCount: safeArray(result.evidenceFieldRepairs).length,
+    failed: Boolean(result.failed),
+    errors: safeArray(result.errors)
+  };
+});
+
+const sourceOptions = [...new Set(rows.map((row) => row.source))].sort().map((source) => ({
+  value: source,
+  label: getRecallSourceLabel(source)
+}));
+const productFamilyOptions = [...new Set(rows.map((row) => row.productFamily))]
+  .sort((a, b) => getProductFamilyLabel(a).localeCompare(getProductFamilyLabel(b)))
+  .map((value) => ({ value, label: getProductFamilyLabel(value) }));
+const hazardOptions = [...new Set(rows.map((row) => row.hazardType))]
+  .sort((a, b) => getHazardTypeLabel(a).localeCompare(getHazardTypeLabel(b)))
+  .map((value) => ({ value, label: getHazardTypeLabel(value) }));
+
+const statusCards = [
+  ['Total classified', resultsFile?.totalRecords ?? rows.length],
+  ['Success', resultsFile?.success ?? rows.filter((row) => !row.failed).length],
+  ['Failed', resultsFile?.failed ?? rows.filter((row) => row.failed).length],
+  ['Needs review', resultsFile?.needsReview ?? rows.filter((row) => row.needsReview).length],
+  ['Unknown product type', resultsFile?.unknownProductType ?? rows.filter((row) => row.productType === 'unknown').length],
+  ['Unknown hazard', resultsFile?.unknownHazardType ?? rows.filter((row) => row.hazardType === 'unknown').length]
+];
+
+const title = 'Development Preview: Taxonomy V2 Classification Results | Recall Radar';
+const description =
+  'Development-only preview of generated Recall Taxonomy V2 classifier results before database or canonical data migration.';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">Recall Radar</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/checker">Product Recall Checker</a>
+        <a href="/watchlist">Watchlist</a>
+        <a href="/dev/taxonomy-v2-preview">Taxonomy V2 Structure</a>
+      </nav>
+    </header>
+
+    <main class="taxonomy-results-shell">
+      <section class="taxonomy-results-hero">
+        <p class="eyebrow">Development Preview</p>
+        <h1>Taxonomy V2 classification results</h1>
+        <p class="lead">
+          Full generated classifier output for the current 1,201-record corpus. This page is for review only; no
+          canonical recall data, route behavior, or database rows have been migrated from these results.
+        </p>
+        <div class="taxonomy-results-warning">
+          Not canonical data. Review labels, evidence, and edge cases here before any DB write or public UI migration.
+        </div>
+      </section>
+
+      {!resultsFile && (
+        <section class="taxonomy-results-empty">
+          <h2>No classifier output found</h2>
+          <p>
+            Run <code>npm run classify:recalls:taxonomy-v2:full-source-specific-preview</code> and
+            <code> npm run preview:classification-db-write</code> to generate ignored local preview outputs.
+          </p>
+        </section>
+      )}
+
+      {resultsFile && (
+        <>
+          <section class="taxonomy-results-meta" aria-label="Classifier run metadata">
+            <div>
+              <span>Prompt</span>
+              <strong>{resultsFile.promptVersion ?? 'unknown'}</strong>
+            </div>
+            <div>
+              <span>Provider/model</span>
+              <strong>{resultsFile.provider ?? 'unknown'} / {resultsFile.model ?? 'unknown'}</strong>
+            </div>
+            <div>
+              <span>Generated</span>
+              <strong>{resultsFile.generatedAt ?? 'unknown'}</strong>
+            </div>
+            <div>
+              <span>Estimated cost</span>
+              <strong>
+                {typeof resultsFile.costEstimate?.estimatedCostUsd === 'number'
+                  ? `$${resultsFile.costEstimate.estimatedCostUsd.toFixed(4)}`
+                  : 'n/a'}
+              </strong>
+            </div>
+          </section>
+
+          <section class="taxonomy-status-grid" aria-label="Classifier result summary">
+            {statusCards.map(([label, value]) => (
+              <article>
+                <span>{label}</span>
+                <strong>{value}</strong>
+              </article>
+            ))}
+          </section>
+
+          <section class="taxonomy-results-panel" aria-labelledby="taxonomy-results-title">
+            <div class="taxonomy-results-panel-header">
+              <div>
+                <p class="eyebrow">Review table</p>
+                <h2 id="taxonomy-results-title">Classified records</h2>
+              </div>
+              <p id="taxonomy-result-count">{rows.length} records</p>
+            </div>
+
+            <form class="taxonomy-results-filters" id="taxonomy-results-filters">
+              <label>
+                Search
+                <input id="taxonomy-search" type="search" placeholder="Search title, brand, product, reason, or id" />
+              </label>
+              <label>
+                Source
+                <select id="taxonomy-source">
+                  <option value="">All sources</option>
+                  {sourceOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                </select>
+              </label>
+              <label>
+                Product family
+                <select id="taxonomy-family">
+                  <option value="">All families</option>
+                  {productFamilyOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                </select>
+              </label>
+              <label>
+                Hazard
+                <select id="taxonomy-hazard">
+                  <option value="">All hazards</option>
+                  {hazardOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                </select>
+              </label>
+              <label>
+                Review state
+                <select id="taxonomy-review">
+                  <option value="">All</option>
+                  <option value="needs-review">Needs review</option>
+                  <option value="unknown-product-type">Unknown product type</option>
+                  <option value="unknown-hazard">Unknown hazard</option>
+                  <option value="enum-repaired">Enum repaired</option>
+                  <option value="failed">Failed</option>
+                </select>
+              </label>
+            </form>
+
+            <div class="taxonomy-results-list" id="taxonomy-results-list" aria-live="polite"></div>
+          </section>
+        </>
+      )}
+    </main>
+
+    <script is:inline type="application/json" id="taxonomy-results-data" set:html={safeJsonForHtml(rows)}></script>
+    <script>
+      // @ts-nocheck
+      const dataNode = document.getElementById('taxonomy-results-data');
+      const rows = dataNode ? JSON.parse(dataNode.textContent || '[]') : [];
+      const form = document.getElementById('taxonomy-results-filters');
+      const list = document.getElementById('taxonomy-results-list');
+      const count = document.getElementById('taxonomy-result-count');
+      const searchInput = document.getElementById('taxonomy-search');
+      const sourceInput = document.getElementById('taxonomy-source');
+      const familyInput = document.getElementById('taxonomy-family');
+      const hazardInput = document.getElementById('taxonomy-hazard');
+      const reviewInput = document.getElementById('taxonomy-review');
+
+      function escapeHtml(value) {
+        return String(value ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function matchesReview(row, value) {
+        if (!value) return true;
+        if (value === 'needs-review') return row.needsReview;
+        if (value === 'unknown-product-type') return row.productType === 'unknown';
+        if (value === 'unknown-hazard') return row.hazardType === 'unknown';
+        if (value === 'enum-repaired') return row.enumRepairs.length > 0;
+        if (value === 'failed') return row.failed;
+        return true;
+      }
+
+      function rowText(row) {
+        return [
+          row.id,
+          row.source,
+          row.sourceLabel,
+          row.title,
+          row.legacyCategory,
+          row.brandNames.join(' '),
+          row.productNames.join(' '),
+          row.hazard,
+          row.productFamilyLabel,
+          row.productTypeLabel,
+          row.hazardTypeLabel,
+          row.recallDomainLabel,
+          row.reason,
+          row.qualityFlags.join(' ')
+        ]
+          .join(' ')
+          .toLowerCase();
+      }
+
+      function renderRow(row) {
+        const chips = [
+          row.productFamilyLabel,
+          row.productTypeLabel,
+          row.hazardTypeLabel,
+          row.recallDomainLabel,
+          ...row.audienceLabels
+        ].filter(Boolean);
+        const flags = [...row.qualityFlags, ...row.enumRepairs].filter(Boolean);
+        const detailLink = row.detailPath
+          ? `<a class="taxonomy-row-link" href="${escapeHtml(row.detailPath)}">Open detail</a>`
+          : '';
+        const confidence =
+          typeof row.confidence === 'number' ? `${Math.round(row.confidence * 100)}% confidence` : 'No confidence';
+
+        return `
+          <article class="taxonomy-result-card">
+            <div class="taxonomy-result-card-top">
+              <div>
+                <p>${escapeHtml(row.sourceLabel)}${row.recallDate ? ` · ${escapeHtml(row.recallDate)}` : ''}</p>
+                <h3>${escapeHtml(row.title)}</h3>
+              </div>
+              <span class="${row.needsReview || row.failed ? 'review-badge warn' : 'review-badge'}">
+                ${row.failed ? 'Failed' : row.needsReview ? 'Needs review' : 'Auto-accept candidate'}
+              </span>
+            </div>
+            <div class="taxonomy-chip-row">${chips.map((chip) => `<span>${escapeHtml(chip)}</span>`).join('')}</div>
+            <dl class="taxonomy-row-facts">
+              <div><dt>Legacy category</dt><dd>${escapeHtml(row.legacyCategory || 'n/a')}</dd></div>
+              <div><dt>Brand/product</dt><dd>${escapeHtml([...row.brandNames, ...row.productNames].slice(0, 4).join(' · ') || 'n/a')}</dd></div>
+              <div><dt>Reason</dt><dd>${escapeHtml(row.reason || 'n/a')}</dd></div>
+              <div><dt>Evidence fields</dt><dd>${escapeHtml(row.evidenceFields.join(', ') || 'n/a')}</dd></div>
+              <div><dt>Confidence</dt><dd>${escapeHtml(confidence)}</dd></div>
+              <div><dt>Record ID</dt><dd><code>${escapeHtml(row.id)}</code></dd></div>
+            </dl>
+            ${row.hazard ? `<p class="taxonomy-row-hazard">${escapeHtml(row.hazard)}</p>` : ''}
+            ${flags.length ? `<p class="taxonomy-row-flags">${escapeHtml(flags.join(' · '))}</p>` : ''}
+            ${row.errors.length ? `<p class="taxonomy-row-errors">${escapeHtml(row.errors.join(' · '))}</p>` : ''}
+            ${detailLink}
+          </article>
+        `;
+      }
+
+      function applyFilters() {
+        if (!list || !count) return;
+        const query = String(searchInput?.value || '').trim().toLowerCase();
+        const source = String(sourceInput?.value || '');
+        const family = String(familyInput?.value || '');
+        const hazard = String(hazardInput?.value || '');
+        const review = String(reviewInput?.value || '');
+        const filtered = rows.filter((row) => {
+          if (source && row.source !== source) return false;
+          if (family && row.productFamily !== family) return false;
+          if (hazard && row.hazardType !== hazard) return false;
+          if (!matchesReview(row, review)) return false;
+          if (query && !rowText(row).includes(query)) return false;
+          return true;
+        });
+
+        count.textContent = `${filtered.length} matching records`;
+        const visible = filtered.slice(0, 100);
+        list.innerHTML = visible.map(renderRow).join('');
+        if (filtered.length > visible.length) {
+          list.insertAdjacentHTML(
+            'beforeend',
+            `<p class="taxonomy-results-more">Showing first ${visible.length} of ${filtered.length}. Narrow the filters to inspect more.</p>`
+          );
+        }
+        if (filtered.length === 0) {
+          list.innerHTML = '<p class="taxonomy-results-more">No records match these preview filters.</p>';
+        }
+      }
+
+      form?.addEventListener('input', applyFilters);
+      applyFilters();
+    </script>
+
+    <style>
+      .taxonomy-results-shell {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 48px 20px 72px;
+      }
+
+      .taxonomy-results-hero {
+        max-width: 780px;
+      }
+
+      .taxonomy-results-hero h1 {
+        margin: 8px 0 14px;
+        font-size: clamp(2rem, 5vw, 4.4rem);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .taxonomy-results-warning,
+      .taxonomy-results-empty {
+        margin-top: 22px;
+        padding: 18px 20px;
+        border: 1px solid #e0c46b;
+        border-radius: 16px;
+        background: #fff7d8;
+        color: #342507;
+        box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+      }
+
+      .taxonomy-results-meta,
+      .taxonomy-status-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .taxonomy-status-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+
+      .taxonomy-results-meta div,
+      .taxonomy-status-grid article {
+        padding: 18px;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 18px 52px rgba(15, 23, 42, 0.08);
+      }
+
+      .taxonomy-results-meta span,
+      .taxonomy-status-grid span {
+        display: block;
+        color: #5b6575;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .taxonomy-results-meta strong,
+      .taxonomy-status-grid strong {
+        display: block;
+        margin-top: 8px;
+        color: #07111f;
+        font-size: 1.18rem;
+      }
+
+      .taxonomy-results-panel {
+        margin-top: 30px;
+        padding: 22px;
+        border-radius: 24px;
+        background: #fff;
+        box-shadow: 0 24px 72px rgba(15, 23, 42, 0.1);
+      }
+
+      .taxonomy-results-panel-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        align-items: flex-start;
+      }
+
+      .taxonomy-results-panel h2 {
+        margin: 4px 0 0;
+        font-size: 1.65rem;
+      }
+
+      #taxonomy-result-count {
+        margin: 0;
+        color: #5b6575;
+        font-weight: 700;
+      }
+
+      .taxonomy-results-filters {
+        display: grid;
+        grid-template-columns: minmax(220px, 1.5fr) repeat(4, minmax(150px, 1fr));
+        gap: 12px;
+        margin: 22px 0;
+      }
+
+      .taxonomy-results-filters label {
+        display: grid;
+        gap: 7px;
+        color: #273244;
+        font-size: 0.82rem;
+        font-weight: 800;
+      }
+
+      .taxonomy-results-filters input,
+      .taxonomy-results-filters select {
+        width: 100%;
+        min-width: 0;
+        border: 1px solid #d8dee8;
+        border-radius: 12px;
+        background: #f8fafc;
+        color: #07111f;
+        font: inherit;
+        padding: 12px 13px;
+      }
+
+      .taxonomy-results-list {
+        display: grid;
+        gap: 14px;
+      }
+
+      .taxonomy-result-card {
+        padding: 18px;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        background: #fbfdff;
+      }
+
+      .taxonomy-result-card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .taxonomy-result-card-top p {
+        margin: 0 0 6px;
+        color: #5b6575;
+        font-size: 0.84rem;
+        font-weight: 700;
+      }
+
+      .taxonomy-result-card h3 {
+        margin: 0;
+        max-width: 820px;
+        color: #07111f;
+        font-size: 1.12rem;
+        line-height: 1.25;
+      }
+
+      .review-badge,
+      .taxonomy-chip-row span {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        border-radius: 999px;
+        background: #e8f3ed;
+        color: #123d26;
+        font-size: 0.76rem;
+        font-weight: 800;
+        padding: 5px 10px;
+        white-space: nowrap;
+      }
+
+      .review-badge.warn {
+        background: #fee2e2;
+        color: #7f1d1d;
+      }
+
+      .taxonomy-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-top: 13px;
+      }
+
+      .taxonomy-chip-row span {
+        background: #eef2f7;
+        color: #273244;
+      }
+
+      .taxonomy-row-facts {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin: 16px 0 0;
+      }
+
+      .taxonomy-row-facts div {
+        min-width: 0;
+      }
+
+      .taxonomy-row-facts dt {
+        color: #64748b;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .taxonomy-row-facts dd {
+        margin: 5px 0 0;
+        color: #111827;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+      }
+
+      .taxonomy-row-hazard,
+      .taxonomy-row-flags,
+      .taxonomy-row-errors,
+      .taxonomy-results-more {
+        margin: 14px 0 0;
+        color: #475569;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .taxonomy-row-flags {
+        color: #7c2d12;
+        font-weight: 700;
+      }
+
+      .taxonomy-row-errors {
+        color: #991b1b;
+        font-weight: 700;
+      }
+
+      .taxonomy-row-link {
+        display: inline-flex;
+        margin-top: 14px;
+        color: #07111f;
+        font-weight: 800;
+      }
+
+      code {
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+
+      @media (max-width: 980px) {
+        .taxonomy-results-meta,
+        .taxonomy-status-grid,
+        .taxonomy-results-filters,
+        .taxonomy-row-facts {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        .taxonomy-results-shell {
+          padding: 32px 14px 56px;
+        }
+
+        .taxonomy-results-meta,
+        .taxonomy-status-grid,
+        .taxonomy-results-filters,
+        .taxonomy-row-facts {
+          grid-template-columns: 1fr;
+        }
+
+        .taxonomy-results-panel {
+          padding: 16px;
+          border-radius: 18px;
+        }
+
+        .taxonomy-results-panel-header,
+        .taxonomy-result-card-top {
+          display: grid;
+        }
+      }
+    </style>
+  </body>
+</html>

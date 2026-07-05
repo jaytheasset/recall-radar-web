@@ -70,6 +70,7 @@
     "audit:multilingual-search": "node --experimental-strip-types scripts/audit-multilingual-search.ts",
     "audit:recall-taxonomy-v2-design": "node --experimental-strip-types scripts/audit-recall-taxonomy-v2-design.ts",
     "audit:taxonomy-v2-ui-preview": "node --experimental-strip-types scripts/audit-taxonomy-v2-ui-preview.ts",
+    "audit:taxonomy-v2-results-preview": "node --experimental-strip-types scripts/audit-taxonomy-v2-results-preview.ts",
     "audit:recall-data-schema-v2-readiness": "node --experimental-strip-types scripts/audit-recall-data-schema-v2-readiness.ts",
     "audit:identifier-guidance": "node --experimental-strip-types scripts/audit-identifier-guidance.ts",
     "audit:source-aware-identifiers": "npm run audit:identifier-guidance",
