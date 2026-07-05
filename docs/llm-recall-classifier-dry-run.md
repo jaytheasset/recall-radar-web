@@ -188,6 +188,15 @@ npm run audit:rappelconso-classifier-input-preview
 
 Those commands compare generic input with a France/RappelConso-specific official source extraction input shape, write ignored preview reports only, and do not call an LLM. RappelConso category, subcategory, recall nature, product identification, risk, reason, action, sale-period, and distribution fields are evidence fields only; final product family, product type, hazard type, and audience remain LLM-owned.
 
+For UK FSA food alert input-noise review, run:
+
+```powershell
+npm run preview:uk-fsa-classifier-input
+npm run audit:uk-fsa-classifier-input-preview
+```
+
+Those commands compare generic input with a UK FSA-specific food alert input shape, write ignored preview reports only, and do not call an LLM. FSA alert type, status, product detail rows, allergen/pathogen/hazard labels, consumer advice, action text, batch/date details, and alert notation are evidence fields only; final product family, product type, hazard type, and audience remain LLM-owned.
+
 ## Non-Goals
 
 This phase does not:

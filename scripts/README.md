@@ -973,6 +973,39 @@ npm run audit:rappelconso-classifier-input-preview
 
 The preview uses official RappelConso fields such as source category, source subcategory, recall nature, product identifiers, risk/reason text, consumer action text, sale-period dates, and distribution details. These are source evidence only. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
 
+## UK FSA Classifier Input Preview
+
+```powershell
+npm run preview:uk-fsa-classifier-input
+```
+
+This command reads the current canonical processed recalls, filters UK FSA food alert records only, builds the current generic classifier input and a proposed UK FSA-specific input preview, compares estimated tokens, and writes ignored local reports under:
+
+`outputs/llm-classifier/input-preview/uk-fsa/`
+
+Generated files:
+
+- `uk-fsa-input-preview.json`
+- `uk-fsa-input-preview.md`
+- `uk-fsa-noise-report.json`
+- `uk-fsa-token-comparison.json`
+
+Optional sample limit:
+
+```powershell
+$env:UK_FSA_CLASSIFIER_INPUT_PREVIEW_LIMIT = "20"
+npm run preview:uk-fsa-classifier-input
+Remove-Item Env:UK_FSA_CLASSIFIER_INPUT_PREVIEW_LIMIT
+```
+
+Audit the preview wiring:
+
+```powershell
+npm run audit:uk-fsa-classifier-input-preview
+```
+
+The preview samples Allergy Alert, Product Recall Information Notice, Food Alert For Action, allergen, pathogen, foreign matter, batch/date, product detail row, related media, sparse identifier, and long risk/action records when present. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
+
 ## FSANZ Classifier Input Preview
 
 ```powershell

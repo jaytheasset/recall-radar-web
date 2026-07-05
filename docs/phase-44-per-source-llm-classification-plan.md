@@ -118,6 +118,13 @@ RappelConso adds the same gate for France recalls:
 
 The RappelConso preview compares generic input with a source-specific official extraction shape using French source category, subcategory, recall nature, product identification values, risk/reason text, consumer action text, sale-period dates, and distribution fields. These source fields are evidence only. The parser does not fill `productFamily`, `productType`, `hazardType`, `audience`, or other final Taxonomy V2 fields. It writes ignored reports under `outputs/llm-classifier/input-preview/rappelconso/` and does not call Gemini, classify records, or write canonical data.
 
+UK FSA adds the same gate for United Kingdom food alerts:
+
+- `npm run preview:uk-fsa-classifier-input`
+- `npm run audit:uk-fsa-classifier-input-preview`
+
+The UK FSA preview compares generic input with a source-specific food alert shape using official alert type, status, product detail rows, allergen/pathogen/hazard labels, consumer advice, action text, batch/date details, related notice titles, and alert notation. These source fields are evidence only. The parser does not fill `productFamily`, `productType`, `hazardType`, `audience`, or other final Taxonomy V2 fields. It writes ignored reports under `outputs/llm-classifier/input-preview/uk-fsa/` and does not call Gemini, classify records, or write canonical data.
+
 ## Review Questions
 
 Phase 44 should answer:
