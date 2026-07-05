@@ -57,8 +57,12 @@ type FsanzRawDetail = {
 
 type SourceHints = {
   source: 'FSANZ_FOOD_RECALLS';
+  market: 'Australia / New Zealand';
+  officialSource: 'Food Standards Australia New Zealand';
+  sourceApi: 'FSANZ food recall listing/detail pages';
   domainHint: 'food';
   expectedProductFamilyHint: 'food-grocery';
+  classificationOwner: 'llm';
 };
 
 type FsanzClassifierInputPreview = {
@@ -376,8 +380,12 @@ function buildFsanzClassifierInputPreview(record: NormalizedRecall): FsanzClassi
     identifiers: extractFsanzIdentifiers(record),
     sourceHints: {
       source: 'FSANZ_FOOD_RECALLS',
+      market: 'Australia / New Zealand',
+      officialSource: 'Food Standards Australia New Zealand',
+      sourceApi: 'FSANZ food recall listing/detail pages',
       domainHint: 'food',
-      expectedProductFamilyHint: 'food-grocery'
+      expectedProductFamilyHint: 'food-grocery',
+      classificationOwner: 'llm'
     }
   };
 }

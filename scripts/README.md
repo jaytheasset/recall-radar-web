@@ -1170,3 +1170,25 @@ npm run audit:hong-kong-cfs-classifier-input-preview
 ```
 
 The preview samples allergen or undeclared allergen, pathogen or chemical contamination, foreign matter, expiry/batch/date, importer or retailer, sparse-identifier, image-backed, image-less, long description, and non-allergen food records when present. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
+
+## All Source Classifier Input Preview QA
+
+```powershell
+npm run preview:all-classifier-inputs
+npm run audit:all-classifier-input-previews
+```
+
+These commands run and audit the classifier input previews for all ten active sources:
+
+- CPSC
+- FDA/openFDA
+- France RappelConso
+- Canada Recalls and Safety Alerts
+- EU Safety Gate
+- UK FSA Food Alerts
+- Australia Product Safety
+- New Zealand Product Safety
+- Hong Kong CFS
+- FSANZ Food Recalls
+
+The combined audit confirms every proposed input keeps source evidence only, marks final classification ownership as `sourceHints.classificationOwner = "llm"`, omits final Taxonomy V2 fields, leaves generated preview outputs uncommitted, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`.

@@ -45,7 +45,11 @@ Product Safety New Zealand detail pages expose product identifiers, supplier nam
 - `recallNumber`
 - `identifiers`
 - `sourceHints.source = NZ_PRODUCT_SAFETY`
+- `sourceHints.market = New Zealand`
+- `sourceHints.officialSource = Product Safety New Zealand`
+- `sourceHints.sourceApi = Product Safety New Zealand recalls listing/detail pages`
 - `sourceHints.domainHint = consumer-product`
+- `sourceHints.classificationOwner = llm`
 
 ## Excluded Fields
 

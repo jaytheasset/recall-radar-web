@@ -45,8 +45,12 @@ The current legacy category may label many FSANZ records as `food-allergy`, but 
 - `recallNumber`
 - `identifiers`
 - `sourceHints.source = FSANZ_FOOD_RECALLS`
+- `sourceHints.market = Australia / New Zealand`
+- `sourceHints.officialSource = Food Standards Australia New Zealand`
+- `sourceHints.sourceApi = FSANZ food recall listing/detail pages`
 - `sourceHints.domainHint = food`
 - `sourceHints.expectedProductFamilyHint = food-grocery`
+- `sourceHints.classificationOwner = llm`
 
 ## Food Hazard Review Buckets
 

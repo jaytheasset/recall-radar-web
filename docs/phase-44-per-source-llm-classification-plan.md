@@ -139,6 +139,13 @@ Australia Product Safety adds the same gate for Australia consumer product recal
 
 The Australia Product Safety preview compares generic input with a source-specific official extraction shape using Product Safety Australia categories, product description, supplier, brand, defect, hazard, consumer action, trader, sale-period, sold-where, manufacturer-country, recall number, and identifier evidence. These source fields are evidence only. The parser does not fill `productFamily`, `productType`, `hazardType`, `audience`, or other final Taxonomy V2 fields. It writes ignored reports under `outputs/llm-classifier/input-preview/australia-product-safety/` and does not call Gemini, classify records, or write canonical data.
 
+After all ten source-specific input previews exist, run the combined QA gate before any live Gemini classification:
+
+- `npm run preview:all-classifier-inputs`
+- `npm run audit:all-classifier-input-previews`
+
+The combined gate verifies every active source preview is present, every individual audit passes, generated outputs remain uncommitted, canonical counts remain unchanged, and every proposed input marks `sourceHints.classificationOwner = "llm"` while omitting final Taxonomy V2 fields.
+
 ## Review Questions
 
 Phase 44 should answer:

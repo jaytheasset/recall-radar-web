@@ -73,8 +73,12 @@ type HongKongCfsRaw = {
 
 type SourceHints = {
   source: 'HK_CFS';
+  market: 'Hong Kong';
+  officialSource: 'Centre for Food Safety';
+  sourceApi: 'Hong Kong CFS food alerts XML/detail pages';
   domainHint: 'food';
   expectedProductFamilyHint: 'food-grocery';
+  classificationOwner: 'llm';
 };
 
 type HongKongCfsClassifierInputPreview = {
@@ -510,8 +514,12 @@ function buildHongKongCfsClassifierInputPreview(record: NormalizedRecall): HongK
     identifiers: extractHongKongCfsIdentifiers(record),
     sourceHints: {
       source: 'HK_CFS',
+      market: 'Hong Kong',
+      officialSource: 'Centre for Food Safety',
+      sourceApi: 'Hong Kong CFS food alerts XML/detail pages',
       domainHint: 'food',
-      expectedProductFamilyHint: 'food-grocery'
+      expectedProductFamilyHint: 'food-grocery',
+      classificationOwner: 'llm'
     }
   };
 }

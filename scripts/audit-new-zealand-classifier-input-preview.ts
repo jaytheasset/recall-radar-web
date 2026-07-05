@@ -77,7 +77,20 @@ function outputSummary(blockers: string[], warnings: string[]): AuditResult['out
     householdCaseIncluded?: boolean;
     records?: Array<{
       genericInput?: unknown;
-      proposedInput?: { source?: string; sourceHints?: { domainHint?: string } };
+      proposedInput?: {
+        source?: string;
+        sourceHints?: {
+          market?: string;
+          officialSource?: string;
+          sourceApi?: string;
+          domainHint?: string;
+          classificationOwner?: string;
+        };
+        productFamily?: unknown;
+        productType?: unknown;
+        hazardType?: unknown;
+        audience?: unknown;
+      };
       tokenComparison?: unknown;
       noise?: unknown;
     }>;
@@ -104,7 +117,15 @@ function outputSummary(blockers: string[], warnings: string[]): AuditResult['out
     assert(Boolean(record.genericInput), 'Every preview record must include genericInput.', blockers);
     assert(Boolean(record.proposedInput), 'Every preview record must include proposedInput.', blockers);
     assert(record.proposedInput?.source === 'NZ_PRODUCT_SAFETY', 'Every proposed input must keep New Zealand source.', blockers);
+    assert(record.proposedInput?.sourceHints?.market === 'New Zealand', 'Every proposed input must keep New Zealand market hint.', blockers);
+    assert(record.proposedInput?.sourceHints?.officialSource === 'Product Safety New Zealand', 'Every proposed input must keep New Zealand official source hint.', blockers);
+    assert(record.proposedInput?.sourceHints?.sourceApi === 'Product Safety New Zealand recalls listing/detail pages', 'Every proposed input must keep New Zealand source access hint.', blockers);
     assert(record.proposedInput?.sourceHints?.domainHint === 'consumer-product', 'Every proposed input must keep consumer-product domain hint.', blockers);
+    assert(record.proposedInput?.sourceHints?.classificationOwner === 'llm', 'Every proposed input must mark classificationOwner as llm.', blockers);
+    assert(!('productFamily' in (record.proposedInput ?? {})), 'Proposed input must not include productFamily.', blockers);
+    assert(!('productType' in (record.proposedInput ?? {})), 'Proposed input must not include productType.', blockers);
+    assert(!('hazardType' in (record.proposedInput ?? {})), 'Proposed input must not include hazardType.', blockers);
+    assert(!('audience' in (record.proposedInput ?? {})), 'Proposed input must not include audience.', blockers);
     assert(Boolean(record.tokenComparison), 'Every preview record must include tokenComparison.', blockers);
     assert(Boolean(record.noise), 'Every preview record must include noise findings.', blockers);
   }
@@ -157,7 +178,11 @@ function runAudit(): void {
   assert(preview.includes('buildRecallClassifierInput'), 'Preview must build the current generic classifier input.', blockers);
   assert(preview.includes('buildNewZealandClassifierInputPreview'), 'Preview must include buildNewZealandClassifierInputPreview.', blockers);
   assert(preview.includes("source: 'NZ_PRODUCT_SAFETY'"), 'Preview must include New Zealand source id.', blockers);
+  assert(preview.includes("market: 'New Zealand'"), 'Preview must include New Zealand market hint.', blockers);
+  assert(preview.includes("officialSource: 'Product Safety New Zealand'"), 'Preview must include New Zealand official source hint.', blockers);
+  assert(preview.includes("sourceApi: 'Product Safety New Zealand recalls listing/detail pages'"), 'Preview must include New Zealand source access hint.', blockers);
   assert(preview.includes("domainHint: 'consumer-product'"), 'Preview must include New Zealand consumer-product domain hint.', blockers);
+  assert(preview.includes("classificationOwner: 'llm'"), 'Preview must mark final classification owner as LLM.', blockers);
   assert(preview.includes('NEW_ZEALAND_CLASSIFIER_INPUT_PREVIEW_LIMIT'), 'Preview must support NEW_ZEALAND_CLASSIFIER_INPUT_PREVIEW_LIMIT.', blockers);
   assert(preview.includes('productIdentifiers') && preview.includes('supplierName') && preview.includes('responsibleAgency'), 'Preview must include New Zealand source fields.', blockers);
   assert(preview.includes('toy') && preview.includes('baby') && preview.includes('battery'), 'Preview must include baby/toy and battery sampling terms.', blockers);
@@ -175,6 +200,7 @@ function runAudit(): void {
   assert(!preview.includes('mergeProcessedRecalls'), 'Preview must not merge canonical data.', blockers);
   assert(!preview.includes('writeNormalized') && !preview.includes('normalizeNewZealandProductSafetyRecords'), 'Preview must not normalize or write source data.', blockers);
   assert(!preview.includes('data/processed/recalls.json'), 'Preview should use readProcessedRecalls instead of writing canonical data paths.', blockers);
+  assert(!preview.includes('productFamily:') && !preview.includes('productType:') && !preview.includes('hazardType:') && !preview.includes('audience:'), 'Preview must not fill final taxonomy fields.', blockers);
 
   assert(docs.includes('outputs/llm-classifier/input-preview/new-zealand/'), 'Docs must document the New Zealand output directory.', blockers);
   assert(docs.includes('productIdentifiers') && docs.includes('supplierName'), 'Docs must explain New Zealand source fields.', blockers);

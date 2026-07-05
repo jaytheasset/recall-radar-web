@@ -52,8 +52,12 @@ Hong Kong CFS food alerts expose structured table rows for product description, 
 - `recallNumber`
 - `identifiers`
 - `sourceHints.source = HK_CFS`
+- `sourceHints.market = Hong Kong`
+- `sourceHints.officialSource = Centre for Food Safety`
+- `sourceHints.sourceApi = Hong Kong CFS food alerts XML/detail pages`
 - `sourceHints.domainHint = food`
 - `sourceHints.expectedProductFamilyHint = food-grocery`
+- `sourceHints.classificationOwner = llm`
 
 ## Excluded Fields
 

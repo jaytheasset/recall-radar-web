@@ -77,7 +77,21 @@ function outputSummary(blockers: string[], warnings: string[]): AuditResult['out
     foreignMatterCaseIncluded?: boolean;
     records?: Array<{
       genericInput?: unknown;
-      proposedInput?: { source?: string; sourceHints?: { domainHint?: string; expectedProductFamilyHint?: string } };
+      proposedInput?: {
+        source?: string;
+        sourceHints?: {
+          market?: string;
+          officialSource?: string;
+          sourceApi?: string;
+          domainHint?: string;
+          expectedProductFamilyHint?: string;
+          classificationOwner?: string;
+        };
+        productFamily?: unknown;
+        productType?: unknown;
+        hazardType?: unknown;
+        audience?: unknown;
+      };
       tokenComparison?: unknown;
       noise?: unknown;
     }>;
@@ -105,8 +119,16 @@ function outputSummary(blockers: string[], warnings: string[]): AuditResult['out
     assert(Boolean(record.genericInput), 'Every preview record must include genericInput.', blockers);
     assert(Boolean(record.proposedInput), 'Every preview record must include proposedInput.', blockers);
     assert(record.proposedInput?.source === 'HK_CFS', 'Every proposed input must keep Hong Kong CFS source.', blockers);
+    assert(record.proposedInput?.sourceHints?.market === 'Hong Kong', 'Every proposed input must keep Hong Kong market hint.', blockers);
+    assert(record.proposedInput?.sourceHints?.officialSource === 'Centre for Food Safety', 'Every proposed input must keep Hong Kong CFS official source hint.', blockers);
+    assert(record.proposedInput?.sourceHints?.sourceApi === 'Hong Kong CFS food alerts XML/detail pages', 'Every proposed input must keep Hong Kong CFS source access hint.', blockers);
     assert(record.proposedInput?.sourceHints?.domainHint === 'food', 'Every proposed input must keep food domain hint.', blockers);
     assert(record.proposedInput?.sourceHints?.expectedProductFamilyHint === 'food-grocery', 'Every proposed input must keep food-grocery expected family hint.', blockers);
+    assert(record.proposedInput?.sourceHints?.classificationOwner === 'llm', 'Every proposed input must mark classificationOwner as llm.', blockers);
+    assert(!('productFamily' in (record.proposedInput ?? {})), 'Proposed input must not include productFamily.', blockers);
+    assert(!('productType' in (record.proposedInput ?? {})), 'Proposed input must not include productType.', blockers);
+    assert(!('hazardType' in (record.proposedInput ?? {})), 'Proposed input must not include hazardType.', blockers);
+    assert(!('audience' in (record.proposedInput ?? {})), 'Proposed input must not include audience.', blockers);
     assert(Boolean(record.tokenComparison), 'Every preview record must include tokenComparison.', blockers);
     assert(Boolean(record.noise), 'Every preview record must include noise findings.', blockers);
   }
@@ -159,8 +181,12 @@ function runAudit(): void {
   assert(preview.includes('buildRecallClassifierInput'), 'Preview must build the current generic classifier input.', blockers);
   assert(preview.includes('buildHongKongCfsClassifierInputPreview'), 'Preview must include buildHongKongCfsClassifierInputPreview.', blockers);
   assert(preview.includes("source: 'HK_CFS'"), 'Preview must include Hong Kong CFS source id.', blockers);
+  assert(preview.includes("market: 'Hong Kong'"), 'Preview must include Hong Kong market hint.', blockers);
+  assert(preview.includes("officialSource: 'Centre for Food Safety'"), 'Preview must include Hong Kong CFS official source hint.', blockers);
+  assert(preview.includes("sourceApi: 'Hong Kong CFS food alerts XML/detail pages'"), 'Preview must include Hong Kong CFS source access hint.', blockers);
   assert(preview.includes("domainHint: 'food'"), 'Preview must include Hong Kong food domain hint.', blockers);
   assert(preview.includes("expectedProductFamilyHint: 'food-grocery'"), 'Preview must include food-grocery expected family hint.', blockers);
+  assert(preview.includes("classificationOwner: 'llm'"), 'Preview must mark final classification owner as LLM.', blockers);
   assert(preview.includes('HONG_KONG_CFS_CLASSIFIER_INPUT_PREVIEW_LIMIT'), 'Preview must support HONG_KONG_CFS_CLASSIFIER_INPUT_PREVIEW_LIMIT.', blockers);
   assert(preview.includes('productDescription') && preview.includes('riskText') && preview.includes('actionText'), 'Preview must include Hong Kong CFS product, risk, and action fields.', blockers);
   assert(preview.includes('origin') && preview.includes('importer') && preview.includes('retailer'), 'Preview must include origin/importer/retailer fields when useful.', blockers);
@@ -180,6 +206,7 @@ function runAudit(): void {
   assert(!preview.includes('mergeProcessedRecalls'), 'Preview must not merge canonical data.', blockers);
   assert(!preview.includes('writeNormalized') && !preview.includes('normalizeHongKongCfsRecords'), 'Preview must not normalize or write source data.', blockers);
   assert(!preview.includes('data/processed/recalls.json'), 'Preview should use readProcessedRecalls instead of writing canonical data paths.', blockers);
+  assert(!preview.includes('productFamily:') && !preview.includes('productType:') && !preview.includes('hazardType:') && !preview.includes('audience:'), 'Preview must not fill final taxonomy fields.', blockers);
 
   assert(docs.includes('outputs/llm-classifier/input-preview/hong-kong-cfs/'), 'Docs must document the Hong Kong CFS output directory.', blockers);
   assert(docs.includes('riskText') && docs.includes('importer') && docs.includes('retailer'), 'Docs must explain Hong Kong CFS source fields.', blockers);

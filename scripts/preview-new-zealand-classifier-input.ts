@@ -58,7 +58,11 @@ type NewZealandRawDetail = {
 
 type SourceHints = {
   source: 'NZ_PRODUCT_SAFETY';
+  market: 'New Zealand';
+  officialSource: 'Product Safety New Zealand';
+  sourceApi: 'Product Safety New Zealand recalls listing/detail pages';
   domainHint: 'consumer-product';
+  classificationOwner: 'llm';
 };
 
 type NewZealandClassifierInputPreview = {
@@ -358,7 +362,11 @@ function buildNewZealandClassifierInputPreview(record: NormalizedRecall): NewZea
     identifiers: extractNewZealandIdentifiers(record),
     sourceHints: {
       source: 'NZ_PRODUCT_SAFETY',
-      domainHint: 'consumer-product'
+      market: 'New Zealand',
+      officialSource: 'Product Safety New Zealand',
+      sourceApi: 'Product Safety New Zealand recalls listing/detail pages',
+      domainHint: 'consumer-product',
+      classificationOwner: 'llm'
     }
   };
 }

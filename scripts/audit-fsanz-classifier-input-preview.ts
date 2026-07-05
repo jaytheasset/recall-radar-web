@@ -77,7 +77,21 @@ function outputSummary(blockers: string[], warnings: string[]): AuditResult['out
     foreignMatterCaseIncluded?: boolean;
     records?: Array<{
       genericInput?: unknown;
-      proposedInput?: { source?: string; sourceHints?: { domainHint?: string; expectedProductFamilyHint?: string } };
+      proposedInput?: {
+        source?: string;
+        sourceHints?: {
+          market?: string;
+          officialSource?: string;
+          sourceApi?: string;
+          domainHint?: string;
+          expectedProductFamilyHint?: string;
+          classificationOwner?: string;
+        };
+        productFamily?: unknown;
+        productType?: unknown;
+        hazardType?: unknown;
+        audience?: unknown;
+      };
       tokenComparison?: unknown;
       noise?: unknown;
     }>;
@@ -105,8 +119,16 @@ function outputSummary(blockers: string[], warnings: string[]): AuditResult['out
     assert(Boolean(record.genericInput), 'Every preview record must include genericInput.', blockers);
     assert(Boolean(record.proposedInput), 'Every preview record must include proposedInput.', blockers);
     assert(record.proposedInput?.source === 'FSANZ_FOOD_RECALLS', 'Every proposed input must keep FSANZ source.', blockers);
+    assert(record.proposedInput?.sourceHints?.market === 'Australia / New Zealand', 'Every proposed input must keep FSANZ market hint.', blockers);
+    assert(record.proposedInput?.sourceHints?.officialSource === 'Food Standards Australia New Zealand', 'Every proposed input must keep FSANZ official source hint.', blockers);
+    assert(record.proposedInput?.sourceHints?.sourceApi === 'FSANZ food recall listing/detail pages', 'Every proposed input must keep FSANZ source access hint.', blockers);
     assert(record.proposedInput?.sourceHints?.domainHint === 'food', 'Every proposed input must keep FSANZ food domain hint.', blockers);
     assert(record.proposedInput?.sourceHints?.expectedProductFamilyHint === 'food-grocery', 'Every proposed input must keep food-grocery family hint.', blockers);
+    assert(record.proposedInput?.sourceHints?.classificationOwner === 'llm', 'Every proposed input must mark classificationOwner as llm.', blockers);
+    assert(!('productFamily' in (record.proposedInput ?? {})), 'Proposed input must not include productFamily.', blockers);
+    assert(!('productType' in (record.proposedInput ?? {})), 'Proposed input must not include productType.', blockers);
+    assert(!('hazardType' in (record.proposedInput ?? {})), 'Proposed input must not include hazardType.', blockers);
+    assert(!('audience' in (record.proposedInput ?? {})), 'Proposed input must not include audience.', blockers);
     assert(Boolean(record.tokenComparison), 'Every preview record must include tokenComparison.', blockers);
     assert(Boolean(record.noise), 'Every preview record must include noise findings.', blockers);
   }
@@ -159,8 +181,12 @@ function runAudit(): void {
   assert(preview.includes('buildRecallClassifierInput'), 'Preview must build the current generic classifier input.', blockers);
   assert(preview.includes('buildFsanzClassifierInputPreview'), 'Preview must include buildFsanzClassifierInputPreview.', blockers);
   assert(preview.includes("source: 'FSANZ_FOOD_RECALLS'"), 'Preview must include FSANZ source id.', blockers);
+  assert(preview.includes("market: 'Australia / New Zealand'"), 'Preview must include FSANZ market hint.', blockers);
+  assert(preview.includes("officialSource: 'Food Standards Australia New Zealand'"), 'Preview must include FSANZ official source hint.', blockers);
+  assert(preview.includes("sourceApi: 'FSANZ food recall listing/detail pages'"), 'Preview must include FSANZ source access hint.', blockers);
   assert(preview.includes("domainHint: 'food'"), 'Preview must include FSANZ food domain hint.', blockers);
   assert(preview.includes("expectedProductFamilyHint: 'food-grocery'"), 'Preview must include food-grocery expected family hint.', blockers);
+  assert(preview.includes("classificationOwner: 'llm'"), 'Preview must mark final classification owner as LLM.', blockers);
   assert(preview.includes('FSANZ_CLASSIFIER_INPUT_PREVIEW_LIMIT'), 'Preview must support FSANZ_CLASSIFIER_INPUT_PREVIEW_LIMIT.', blockers);
   assert(preview.includes('allergen') && preview.includes('undeclared') && preview.includes('milk'), 'Preview must include allergen sampling terms.', blockers);
   assert(preview.includes('contamination') && preview.includes('salmonella') && preview.includes('listeria') && preview.includes('e coli'), 'Preview must include pathogen/contamination sampling terms.', blockers);
@@ -177,6 +203,7 @@ function runAudit(): void {
   assert(!preview.includes('mergeProcessedRecalls'), 'Preview must not merge canonical data.', blockers);
   assert(!preview.includes('writeNormalized') && !preview.includes('normalizeFsanzFoodRecallRecords'), 'Preview must not normalize or write source data.', blockers);
   assert(!preview.includes('data/processed/recalls.json'), 'Preview should use readProcessedRecalls instead of writing canonical data paths.', blockers);
+  assert(!preview.includes('productFamily:') && !preview.includes('productType:') && !preview.includes('hazardType:') && !preview.includes('audience:'), 'Preview must not fill final taxonomy fields.', blockers);
 
   assert(docs.includes('outputs/llm-classifier/input-preview/fsanz/'), 'Docs must document the FSANZ output directory.', blockers);
   assert(docs.includes('allergen') && docs.includes('pathogen') && docs.includes('foreign matter'), 'Docs must explain FSANZ food hazard distinctions.', blockers);
