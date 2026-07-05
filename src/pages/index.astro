@@ -39,8 +39,8 @@ const activeSourceCount = [
   processedHongKongCfsRecordCount,
   processedFsanzFoodRecallRecordCount
 ].filter((count) => count > 0).length;
-const countLine = `${processedLocalRecordCount} recall notices from ${activeSourceCount} official sources. Coverage is expanding and remains limited to sources currently included.`;
-const productTypes = categoryRoutes.map((route) => ({
+const countLine = `${processedLocalRecordCount} recall notices from ${activeSourceCount} official sources. Coverage reflects the current sources listed below.`;
+const productFamilies = categoryRoutes.map((route) => ({
   ...route,
   icon: route.category,
   count: getRecallsByCategory(route.category).length
@@ -102,17 +102,16 @@ const sourceCardDetails = {
       <a class="brand" href="/">Recall Radar</a>
       <nav class="site-nav" aria-label="Primary">
         <a href="/checker">Product Recall Checker</a>
+        <a href="/#browse-recalls">Browse Recalls</a>
+        <a href="/#official-sources">Sources</a>
         <a href="/watchlist">Watchlist</a>
-        <a href="/recalls/baby-kids">Baby & Kids</a>
-        <a href="/recalls/electronics-batteries">Electronics & Batteries</a>
-        <a href="/recalls/food-grocery">Food & Grocery</a>
       </nav>
     </header>
 
     <main class="page-shell home-page">
       <section class="home-hero">
         <div class="home-hero-copy">
-          <h1>Search official recall notices across markets.</h1>
+          <h1>Search product recalls from official sources.</h1>
           <p class="lead">
             Search by brand, product, model, lot or batch code, date mark, recall number, barcode, ingredient, or keyword.
           </p>
@@ -140,14 +139,14 @@ const sourceCardDetails = {
         </div>
       </section>
 
-      <section class="section home-category-section">
+      <section id="browse-recalls" class="section home-category-section">
         <div class="section-header">
           <div>
             <h2>Browse recalls by product family</h2>
           </div>
         </div>
         <div class="category-grid">
-          {productTypes.map((type) => (
+          {productFamilies.map((type) => (
             <a class="category-card home-product-type-card" href={type.href}>
               <span class="category-icon" aria-hidden="true">
                 {type.icon === 'baby-kids' ? (
@@ -244,19 +243,18 @@ const sourceCardDetails = {
               </span>
               <span class="category-card-body">
                 <h3>{type.label}</h3>
-                <p>{type.description}</p>
                 <span class="category-count">{type.count} recall notice{type.count === 1 ? '' : 's'}</span>
-                <span class="btn btn-link">Browse category</span>
+                <span class="btn btn-link">View recalls <span aria-hidden="true">→</span></span>
               </span>
             </a>
           ))}
         </div>
       </section>
 
-      <section class="section home-source-section">
+      <section id="official-sources" class="section home-source-section">
         <div class="section-header">
           <div>
-            <h2>Browse by country or source</h2>
+            <h2>Browse by official source</h2>
           </div>
         </div>
         <div class="category-grid source-country-grid">
@@ -282,9 +280,8 @@ const sourceCardDetails = {
                   <span class="source-card-pill">{card.marketLabel}</span>
                   <span class="source-card-pill source-card-pill-domain">{card.domainLabel}</span>
                 </span>
-                <p>{card.description}</p>
                 <span class="category-count">{page.count} recall notice{page.count === 1 ? '' : 's'}</span>
-                <span class="btn btn-link">{card.ctaLabel}</span>
+                <span class="btn btn-link">{card.ctaLabel} <span aria-hidden="true">→</span></span>
               </span>
             </a>
             );
@@ -295,7 +292,7 @@ const sourceCardDetails = {
       <section class="section home-latest-section">
         <div class="section-header">
           <div>
-            <h2>Recent recall notices</h2>
+            <h2>Latest recall notices</h2>
             <p class="section-note">Recent notices from official sources.</p>
           </div>
           <a class="btn btn-secondary" href="/checker">Search all notices</a>

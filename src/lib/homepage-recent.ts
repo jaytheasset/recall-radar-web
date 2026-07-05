@@ -3,6 +3,7 @@ export type BalancedRecentRecallCandidate = {
   source: string;
   recallDate: string;
   category: string;
+  taxonomyProductFamily?: string;
   primaryImageUrl?: string;
   primaryImageThumbnailUrl?: string;
   images?: Array<{
@@ -16,6 +17,8 @@ type BalancedRecentOptions = {
   limit?: number;
   imageSourceCap?: number;
   imageSoftSourceCap?: number;
+  imageProductFamilyCap?: number;
+  imageSoftProductFamilyCap?: number;
 };
 
 function sortByDateDescending<T extends BalancedRecentRecallCandidate>(left: T, right: T): number {
@@ -66,12 +69,28 @@ function sourceCounts<T extends BalancedRecentRecallCandidate>(recalls: T[]): Ma
   return counts;
 }
 
+function productFamilyFor(recall: BalancedRecentRecallCandidate): string {
+  return recall.taxonomyProductFamily || recall.category || 'Uncategorized';
+}
+
+function productFamilyCounts<T extends BalancedRecentRecallCandidate>(recalls: T[]): Map<string, number> {
+  const counts = new Map<string, number>();
+
+  for (const recall of recalls) {
+    const family = productFamilyFor(recall);
+    counts.set(family, (counts.get(family) ?? 0) + 1);
+  }
+
+  return counts;
+}
+
 function fillFromCandidates<T extends BalancedRecentRecallCandidate>(
   selected: T[],
   selectedIds: Set<string>,
   candidates: T[],
   limit: number,
-  sourceCap?: number
+  sourceCap?: number,
+  productFamilyCap?: number
 ): void {
   for (const candidate of candidates) {
     if (selected.length >= limit) {
@@ -85,6 +104,13 @@ function fillFromCandidates<T extends BalancedRecentRecallCandidate>(
     if (sourceCap !== undefined) {
       const counts = sourceCounts(selected);
       if ((counts.get(candidate.source) ?? 0) >= sourceCap) {
+        continue;
+      }
+    }
+
+    if (productFamilyCap !== undefined) {
+      const counts = productFamilyCounts(selected);
+      if ((counts.get(productFamilyFor(candidate)) ?? 0) >= productFamilyCap) {
         continue;
       }
     }
@@ -105,14 +131,16 @@ export function getBalancedRecentRecalls<T extends BalancedRecentRecallCandidate
 
   const imageSourceCap = options.imageSourceCap ?? 3;
   const imageSoftSourceCap = options.imageSoftSourceCap ?? 5;
+  const imageProductFamilyCap = options.imageProductFamilyCap ?? 3;
+  const imageSoftProductFamilyCap = options.imageSoftProductFamilyCap ?? 5;
   const sorted = [...recalls].sort(sortByDateDescending);
   const imageBacked = sorted.filter(hasBalancedRecentImage);
   const imageLess = sorted.filter((recall) => !hasBalancedRecentImage(recall));
   const selected: T[] = [];
   const selectedIds = new Set<string>();
 
-  fillFromCandidates(selected, selectedIds, imageBacked, limit, imageSourceCap);
-  fillFromCandidates(selected, selectedIds, imageBacked, limit, imageSoftSourceCap);
+  fillFromCandidates(selected, selectedIds, imageBacked, limit, imageSourceCap, imageProductFamilyCap);
+  fillFromCandidates(selected, selectedIds, imageBacked, limit, imageSoftSourceCap, imageSoftProductFamilyCap);
   fillFromCandidates(selected, selectedIds, imageBacked, limit);
   fillFromCandidates(selected, selectedIds, imageLess, limit);
 
