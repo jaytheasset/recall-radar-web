@@ -232,8 +232,34 @@ function productKeywordSet(recall: SiteRecall): Set<string> {
 function relatedScore(currentRecall: SiteRecall, candidate: SiteRecall): number {
   let score = 0;
 
-  if (candidate.category === currentRecall.category) {
+  if (
+    currentRecall.taxonomyProductFamily &&
+    candidate.taxonomyProductFamily === currentRecall.taxonomyProductFamily
+  ) {
+    score += 34;
+  } else if (candidate.category === currentRecall.category) {
+    score += 18;
+  }
+
+  if (
+    currentRecall.taxonomyProductType &&
+    candidate.taxonomyProductType === currentRecall.taxonomyProductType
+  ) {
     score += 24;
+  }
+
+  if (
+    currentRecall.taxonomyHazardType &&
+    candidate.taxonomyHazardType === currentRecall.taxonomyHazardType
+  ) {
+    score += 22;
+  }
+
+  if (
+    currentRecall.taxonomyRecallDomain &&
+    candidate.taxonomyRecallDomain === currentRecall.taxonomyRecallDomain
+  ) {
+    score += 6;
   }
 
   score += Math.min(

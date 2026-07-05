@@ -2,7 +2,7 @@
 import EuImageResourceHints from '../../components/EuImageResourceHints.astro';
 import TaxonomyFamilyPage from '../../components/TaxonomyFamilyPage.astro';
 import { categoryRoutes, siteRecalls } from '../../lib/recall-data';
-import { buildRecallDetailView, recallSourceBadge } from '../../lib/recall-detail-view';
+import { buildRecallDetailView, recallSourceBadge, type DetailFact } from '../../lib/recall-detail-view';
 import {
   getDetailHeroImagePreloadAttributes,
   getDetailHeroImageSources,
@@ -47,6 +47,42 @@ const companyDetails = [
   { label: 'Manufacturer', value: view.manufacturer },
   { label: 'Manufactured in', value: view.manufacturedIn }
 ].filter((fact) => fact.value.length > 0);
+function hasFactValue(value: string | string[] | undefined): value is string | string[] {
+  return Array.isArray(value) ? value.length > 0 : Boolean(value?.trim());
+}
+function pageFact(label: string, value: string | string[] | undefined): DetailFact | undefined {
+  return hasFactValue(value) ? { label, value } : undefined;
+}
+const productIdentityFacts = [
+  pageFact('Product', view.productName),
+  pageFact('Brand / company', view.brandName),
+  pageFact(view.quantityLabel, view.units),
+  pageFact('Record ID', view.recallNumber || recall.id)
+].filter((fact): fact is DetailFact => Boolean(fact));
+const classificationFacts = [
+  pageFact('Product family', view.taxonomyProductFamilyLabel),
+  pageFact('Product type', view.taxonomyProductTypeLabel),
+  pageFact('Issue / hazard type', view.taxonomyHazardTypeLabel),
+  pageFact('Recall domain', view.taxonomyRecallDomainLabel),
+  pageFact('Audience', view.taxonomyAudienceLabels),
+  pageFact('Classification note', view.taxonomyReason)
+].filter((fact): fact is DetailFact => Boolean(fact));
+const riskActionFacts = [
+  pageFact('Risk / issue', view.reason),
+  pageFact('What to do', view.action),
+  pageFact('Incidents reported', view.incidents)
+].filter((fact): fact is DetailFact => Boolean(fact));
+const officialSourceFacts = [
+  pageFact('Source', view.sourceBadge),
+  pageFact('Recall date', view.recallDate),
+  pageFact('Product name', view.productName),
+  pageFact('Brand / company', view.brandName),
+  pageFact('Hazard / issue', view.reason),
+  pageFact('Remedy / action', view.action),
+  pageFact(view.quantityLabel, view.units),
+  pageFact('Recall number / record ID', view.recallNumber || recall.id),
+  ...view.fdaDetails.filter((fact) => ['Classification', 'Status'].includes(fact.label))
+].filter((fact): fact is DetailFact => Boolean(fact));
 const title = taxonomyPage ? `${taxonomyPage.label} Recalls | Recall Radar` : `${view.displayTitle} | Recall Radar`;
 const description = taxonomyPage
   ? `Browse indexed ${taxonomyPage.label} recall notices by product family, issue tag, brand, model, barcode, lot, or keyword.`
@@ -181,72 +217,116 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
           </div>
         </article>
 
-        <aside class="detail-card recall-summary-card compact-summary-card" aria-label="Recall summary">
-          <h2>Recall Summary</h2>
-          <div class="summary-list">
-            <div class="summary-item">
+        <aside class="detail-card recall-summary-card compact-summary-card v2-report-card" aria-label="Recall report summary">
+          <p class="eyebrow">Recall report</p>
+          <h2>{view.productName}</h2>
+          <p class="summary-brand">{view.brandName || 'Brand or company not listed'}</p>
+          <div class="v2-summary-stack">
+            <div>
               <strong>Product family</strong>
-              <p>{view.taxonomyProductFamilyLabel}</p>
+              <span>{view.taxonomyProductFamilyLabel}</span>
             </div>
             {view.taxonomyProductTypeLabel ? (
-              <div class="summary-item">
+              <div>
                 <strong>Product type</strong>
-                <p>{view.taxonomyProductTypeLabel}</p>
+                <span>{view.taxonomyProductTypeLabel}</span>
               </div>
             ) : null}
             {view.taxonomyHazardTypeLabel ? (
-              <div class="summary-item">
-                <strong>Issue / hazard type</strong>
-                <p>{view.taxonomyHazardTypeLabel}</p>
+              <div>
+                <strong>Issue</strong>
+                <span>{view.taxonomyHazardTypeLabel}</span>
               </div>
             ) : null}
-            {view.taxonomyRecallDomainLabel ? (
-              <div class="summary-item">
-                <strong>Recall domain</strong>
-                <p>{view.taxonomyRecallDomainLabel}</p>
-              </div>
-            ) : null}
-            {view.taxonomyAudienceLabels.length ? (
-              <div class="summary-item">
-                <strong>Audience</strong>
-                <p>{view.taxonomyAudienceLabels.join(', ')}</p>
-              </div>
-            ) : null}
-            <div class="summary-item">
-              <strong>Hazard & Risk</strong>
-              <p>{view.reason}</p>
+            <div>
+              <strong>Recall date</strong>
+              <span>{view.recallDate}</span>
             </div>
-            <div class="summary-item">
-              <strong>Remedy / What to Do</strong>
-              <p>{view.action}</p>
-            </div>
-            <div class="summary-meta-row">
-              <span>
-                <strong>Recall date</strong>
-                {view.recallDate}
-              </span>
-              {view.units ? (
-                <span>
-                  <strong>{view.quantityLabel}</strong>
-                  {view.units}
-                </span>
-              ) : null}
+            <div>
+              <strong>Source</strong>
+              <span>{view.sourceBadge}</span>
             </div>
           </div>
-          {view.officialSourceUrl ? (
-            <a class="source-link source-link-small" href={view.officialSourceUrl} target="_blank" rel="noopener noreferrer">
-              View official notice
-            </a>
-          ) : null}
+          <div class="summary-alert">
+            <strong>What to check first</strong>
+            <p>{view.reason}</p>
+          </div>
+          <div class="link-row">
+            <a class="btn btn-primary" href="#what-to-check">What to check</a>
+            {view.officialSourceUrl ? (
+              <a class="btn btn-secondary" href={view.officialSourceUrl} target="_blank" rel="noopener noreferrer">
+                Official notice
+              </a>
+            ) : null}
+          </div>
         </aside>
       </section>
 
+      <section class="section detail-v2-overview" aria-label="Structured recall overview">
+        <article class="detail-card detail-section-card v2-overview-card">
+          <p class="eyebrow">Product identity</p>
+          <h2>What product is involved</h2>
+          <div class="detail-fact-grid v2-fact-grid">
+            {productIdentityFacts.map((fact) => (
+              <div class="detail-fact">
+                <strong>{fact.label}</strong>
+                {Array.isArray(fact.value) ? (
+                  <ul>
+                    {fact.value.map((item) => <li>{item}</li>)}
+                  </ul>
+                ) : (
+                  <span>{fact.value}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article class="detail-card detail-section-card v2-overview-card v2-classification-card">
+          <p class="eyebrow">Taxonomy V2</p>
+          <h2>How Recall Radar classifies it</h2>
+          <div class="detail-fact-grid v2-fact-grid">
+            {classificationFacts.map((fact) => (
+              <div class="detail-fact">
+                <strong>{fact.label}</strong>
+                {Array.isArray(fact.value) ? (
+                  <ul>
+                    {fact.value.map((item) => <li>{item}</li>)}
+                  </ul>
+                ) : (
+                  <span>{fact.value}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article class="detail-card detail-section-card v2-overview-card v2-risk-card">
+          <p class="eyebrow">Recall risk</p>
+          <h2>Issue and action</h2>
+          <div class="detail-fact-grid v2-fact-grid">
+            {riskActionFacts.map((fact) => (
+              <div class="detail-fact">
+                <strong>{fact.label}</strong>
+                {Array.isArray(fact.value) ? (
+                  <ul>
+                    {fact.value.map((item) => <li>{item}</li>)}
+                  </ul>
+                ) : (
+                  <span>{fact.value}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </article>
+      </section>
+
       <section class="section">
-        <article class="detail-card detail-section-card identification-guide-card">
+        <article id="what-to-check" class="detail-card detail-section-card identification-guide-card">
           <div class="section-header">
             <div>
-              <p class="eyebrow">Product Details</p>
-              <h2>Affected identifiers</h2>
+              <p class="eyebrow">What to check</p>
+              <h2>Affected identifiers and product details</h2>
               <p class="section-note">{view.verificationIntro}</p>
             </div>
           </div>
@@ -376,63 +456,38 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
 
       <section class="section official-source-section">
         <article class="detail-card official-source-card">
-          <div>
-            <p class="eyebrow">Source Notice</p>
-            <h2>Verify with the official notice</h2>
-            <p>{view.officialVerificationCopy}</p>
-            <p class="official-recall-number">{view.officialSourceLabel}</p>
-            <p>{view.officialTitle}</p>
-            {view.recallNumber ? <p class="official-recall-number">Recall number: {view.recallNumber}</p> : null}
-          </div>
-          {view.officialSourceUrl ? (
-            <a class="source-link source-link-small" href={view.officialSourceUrl} target="_blank" rel="noopener noreferrer">
-              View official notice
-            </a>
-          ) : null}
-        </article>
-      </section>
-
-      <section class="section">
-        <article class="detail-card detail-section-card">
-          <div class="section-header">
+          <div class="official-source-card-header">
             <div>
-              <p class="eyebrow">Classification</p>
-              <h2>Product classification</h2>
-              <p class="section-note">
-                Used for browsing and filtering Recall Radar results. Always verify affected models, dates, lots, and remedies with the official notice.
-              </p>
+              <p class="eyebrow">Official source</p>
+              <h2>Verify against the source notice</h2>
+              <p>{view.officialVerificationCopy}</p>
+              <p class="official-recall-number">{view.officialSourceLabel}</p>
+              <p>{view.officialTitle}</p>
+              {view.recallNumber ? <p class="official-recall-number">Recall number: {view.recallNumber}</p> : null}
             </div>
-          </div>
-          <div class="detail-fact-grid">
-            <div class="detail-fact">
-              <strong>Product family</strong>
-              <span>{view.taxonomyProductFamilyLabel}</span>
-            </div>
-            {view.taxonomyProductTypeLabel ? (
-              <div class="detail-fact">
-                <strong>Product type</strong>
-                <span>{view.taxonomyProductTypeLabel}</span>
-              </div>
-            ) : null}
-            {view.taxonomyHazardTypeLabel ? (
-              <div class="detail-fact">
-                <strong>Issue / hazard type</strong>
-                <span>{view.taxonomyHazardTypeLabel}</span>
-              </div>
-            ) : null}
-            {view.taxonomyRecallDomainLabel ? (
-              <div class="detail-fact">
-                <strong>Recall domain</strong>
-                <span>{view.taxonomyRecallDomainLabel}</span>
-              </div>
-            ) : null}
-            {view.taxonomyAudienceLabels.length ? (
-              <div class="detail-fact">
-                <strong>Audience</strong>
-                <span>{view.taxonomyAudienceLabels.join(', ')}</span>
-              </div>
+            {view.officialSourceUrl ? (
+              <a class="source-link source-link-small" href={view.officialSourceUrl} target="_blank" rel="noopener noreferrer">
+                View official notice
+              </a>
             ) : null}
           </div>
+          <details class="source-fields-accordion">
+            <summary>Official source fields</summary>
+            <div class="detail-fact-grid">
+              {officialSourceFacts.map((fact) => (
+                <div class="detail-fact">
+                  <strong>{fact.label}</strong>
+                  {Array.isArray(fact.value) ? (
+                    <ul>
+                      {fact.value.map((item) => <li>{item}</li>)}
+                    </ul>
+                  ) : (
+                    <span>{fact.value}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </details>
         </article>
       </section>
 
