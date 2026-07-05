@@ -96,6 +96,8 @@ function classifyCanadaRecall(record: NormalizedRecall): string {
   const rawCategory = normalize(record.category);
   const raw = record.raw && typeof record.raw === 'object' ? (record.raw as Record<string, unknown>) : {};
   const organization = normalize(String(raw.Organization ?? ''));
+  const detail = raw.Detail && typeof raw.Detail === 'object' ? (raw.Detail as Record<string, unknown>) : {};
+  const recallType = normalize(String(detail.recallType ?? ''));
   const text = normalize(
     [
       record.title,
@@ -108,6 +110,29 @@ function classifyCanadaRecall(record: NormalizedRecall): string {
       ...record.brandNames
     ].join(' ')
   );
+
+  if (
+    organization === 'medical devices' ||
+    recallType.includes('health product') ||
+    hasAny(rawCategory, [
+      'medical',
+      'hospital',
+      'cardiovascular',
+      'neurology',
+      'orthopaedics',
+      'radiology',
+      'dental',
+      'gastroenterology',
+      'urology',
+      'anaesthesiology',
+      'ophthalmology',
+      'immunology',
+      'haematology',
+      'microbiology'
+    ])
+  ) {
+    return 'general-consumer-product';
+  }
 
   if (organization === 'cfia' || hasAny(text, ['food', 'allergen', 'allergy', 'undeclared', 'salmonella', 'listeria', 'milk', 'egg', 'wheat', 'sesame', 'pistachio'])) {
     return 'food-allergy';

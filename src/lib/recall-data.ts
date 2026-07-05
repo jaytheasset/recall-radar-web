@@ -178,6 +178,31 @@ function classifyRecall(record: NormalizedRecall): SiteRecallCategory {
     const rawCategory = normalize(record.category);
     const raw = isObject(record.raw) ? record.raw : {};
     const organization = normalize(safeText(raw.Organization));
+    const detail = isObject(raw.Detail) ? raw.Detail : {};
+    const recallType = normalize(safeText(detail.recallType));
+
+    if (
+      organization === 'medical devices' ||
+      recallType.includes('health product') ||
+      textHasAny(rawCategory, [
+        'medical',
+        'hospital',
+        'cardiovascular',
+        'neurology',
+        'orthopaedics',
+        'radiology',
+        'dental',
+        'gastroenterology',
+        'urology',
+        'anaesthesiology',
+        'ophthalmology',
+        'immunology',
+        'haematology',
+        'microbiology'
+      ])
+    ) {
+      return 'general-consumer-product';
+    }
 
     if (
       organization === 'cfia' ||

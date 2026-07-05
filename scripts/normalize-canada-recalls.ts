@@ -3,7 +3,11 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { NormalizedRecall, ProcessedRecallFile } from '../src/data/recall-types.ts';
 import { slugify } from '../src/lib/slug.ts';
-import { canadaImagesFromRawRecord } from './canada-detail-images.ts';
+import {
+  canadaImagesFromRawRecord,
+  type CanadaAffectedProduct,
+  type CanadaDetailPage
+} from './canada-detail-images.ts';
 import { canadaProcessedPath, canonicalProcessedPath, mergeProcessedRecalls } from './merge-recalls.ts';
 import { writeJsonAtomic } from './normalize-cpsc.ts';
 
@@ -20,6 +24,7 @@ export type CanadaRecallRaw = {
   'Last updated'?: unknown;
   Archived?: unknown;
   Images?: unknown;
+  Detail?: unknown;
 };
 
 type RawCanadaFile = {
@@ -63,6 +68,66 @@ function uniqueNonEmpty(values: string[]): string[] {
   return [...new Set(values.map((value) => value.trim()).filter(Boolean))];
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function canadaDetail(raw: CanadaRecallRaw): Partial<CanadaDetailPage> {
+  return isRecord(raw.Detail) ? (raw.Detail as Partial<CanadaDetailPage>) : {};
+}
+
+function detailSummaryValue(raw: CanadaRecallRaw, key: 'product' | 'issue' | 'action'): string {
+  const detail = canadaDetail(raw);
+  return isRecord(detail.summary) ? asString(detail.summary[key]) : '';
+}
+
+function detailAffectedProducts(raw: CanadaRecallRaw): CanadaAffectedProduct[] {
+  const detail = canadaDetail(raw);
+  return Array.isArray(detail.affectedProducts)
+    ? detail.affectedProducts
+        .filter((product): product is CanadaAffectedProduct => isRecord(product) && Boolean(asString(product.product)))
+        .map((product) => ({
+          product: asString(product.product),
+          ...(asString(product.partNumber) ? { partNumber: asString(product.partNumber) } : {}),
+          ...(asString(product.upc) ? { upc: asString(product.upc) } : {}),
+          fields: isRecord(product.fields)
+            ? Object.fromEntries(Object.entries(product.fields).map(([key, value]) => [key, asString(value)]).filter(([, value]) => value))
+            : {}
+        }))
+    : [];
+}
+
+function affectedProductNames(raw: CanadaRecallRaw): string[] {
+  return uniqueNonEmpty(detailAffectedProducts(raw).map((product) => product.product));
+}
+
+function affectedProductIdentifiers(raw: CanadaRecallRaw): string[] {
+  return uniqueNonEmpty(
+    detailAffectedProducts(raw).flatMap((product) => [
+      product.partNumber ? `Part Number ${product.partNumber}` : '',
+      product.upc ? `UPC ${product.upc}` : ''
+    ])
+  );
+}
+
+function affectedUnitsFor(raw: CanadaRecallRaw): string {
+  const products = detailAffectedProducts(raw);
+  if (products.length === 0) {
+    return '';
+  }
+
+  const partNumbers = uniqueNonEmpty(products.map((product) => product.partNumber ?? ''));
+  const upcs = uniqueNonEmpty(products.map((product) => product.upc ?? ''));
+  const partsPreview = partNumbers.slice(0, 8).join(', ');
+  const upcsPreview = upcs.slice(0, 8).join(', ');
+
+  return uniqueNonEmpty([
+    `${products.length} affected product table entries`,
+    partsPreview ? `Part numbers: ${partsPreview}${partNumbers.length > 8 ? ` and ${partNumbers.length - 8} more` : ''}` : '',
+    upcsPreview ? `UPCs: ${upcsPreview}${upcs.length > 8 ? ` and ${upcs.length - 8} more` : ''}` : ''
+  ]).join('; ');
+}
+
 function normalizeDate(value: unknown): string {
   const text = asString(value);
   if (!text) {
@@ -86,6 +151,8 @@ function truncateText(value: string, maxLength = 260): string {
 function extractBrands(raw: CanadaRecallRaw): string[] {
   const title = asString(raw.Title);
   const product = asString(raw.Product);
+  const detail = canadaDetail(raw);
+  const detailBrands = Array.isArray(detail.brandNames) ? detail.brandNames.map(asString) : [];
   const brandsFromTitle = [...title.matchAll(/([^,;:]+?)\s+brand\b/gi)].map((match) =>
     match[1]
       .replace(/^(certain|various|selected)\s+/i, '')
@@ -95,11 +162,27 @@ function extractBrands(raw: CanadaRecallRaw): string[] {
   const vehicleBrand = firstNonEmpty([title.match(/Transport Canada Recall\s*-\s*\d+\s*-\s*([A-Z0-9 -]+)/i)?.[1]]);
   const recalledByBrand = firstNonEmpty([product.match(/recalled by\s+([A-Z0-9 &.'-]+)/i)?.[1]]);
 
-  return uniqueNonEmpty([...brandsFromTitle, vehicleBrand, recalledByBrand]);
+  return uniqueNonEmpty([...detailBrands, ...brandsFromTitle, vehicleBrand, recalledByBrand]);
 }
 
 function extractIdentifierText(raw: CanadaRecallRaw): string[] {
-  const text = [raw.Title, raw.Product, raw.Issue, raw['What you should do'], raw.Category].map(asString).join(' ');
+  const affectedProducts = detailAffectedProducts(raw);
+  const affectedText = affectedProducts
+    .flatMap((product) => [product.product, product.partNumber ?? '', product.upc ?? '', ...Object.values(product.fields)])
+    .join(' ');
+  const text = [
+    raw.Title,
+    raw.Product,
+    raw.Issue,
+    raw['What you should do'],
+    raw.Category,
+    detailSummaryValue(raw, 'product'),
+    detailSummaryValue(raw, 'issue'),
+    detailSummaryValue(raw, 'action'),
+    affectedText
+  ]
+    .map(asString)
+    .join(' ');
   const patterns = [
     /\b(?:UPC|barcode)\s*[:#-]?\s*[0-9][0-9 -]{5,}\b/gi,
     /\b\d{8,14}\b/g,
@@ -109,7 +192,10 @@ function extractIdentifierText(raw: CanadaRecallRaw): string[] {
     /\b(?:DIN|NPN)\s*[:#-]?\s*[0-9]{5,}\b/gi
   ];
 
-  return uniqueNonEmpty(patterns.flatMap((pattern) => [...text.matchAll(pattern)].map((match) => match[0])));
+  return uniqueNonEmpty([
+    ...affectedProductIdentifiers(raw),
+    ...patterns.flatMap((pattern) => [...text.matchAll(pattern)].map((match) => match[0]))
+  ]);
 }
 
 function statusFor(raw: CanadaRecallRaw): string {
@@ -126,11 +212,16 @@ function statusFor(raw: CanadaRecallRaw): string {
 }
 
 function descriptionFor(raw: CanadaRecallRaw, identifiers: string[]): string {
+  const affectedProducts = detailAffectedProducts(raw);
   return uniqueNonEmpty([
     `Published by: ${asString(raw.Organization)}`,
     `Category: ${asString(raw.Category)}`,
     `Product: ${asString(raw.Product)}`,
+    detailSummaryValue(raw, 'product') ? `Summary product: ${detailSummaryValue(raw, 'product')}` : '',
     `Issue: ${asString(raw.Issue)}`,
+    detailSummaryValue(raw, 'issue') ? `Summary issue: ${detailSummaryValue(raw, 'issue')}` : '',
+    affectedProducts.length ? `Affected products table entries: ${affectedProducts.length}` : '',
+    asString(canadaDetail(raw).affectedProductsHeader),
     identifiers.length ? `Identifiers: ${identifiers.join(', ')}` : '',
     asString(raw['What you should do'])
   ]).join(' ');
@@ -168,13 +259,14 @@ export function normalizeCanadaRecallRecords(records: CanadaRecallRaw[]): Normal
       const sourceId = firstNonEmpty([raw.NID], slugify(firstNonEmpty([raw.Title], 'canada-recall')));
       const id = `ca-recalls-${sourceId}`;
       const title = truncateText(firstNonEmpty([raw.Title, raw.Product], 'Canada recall notice'), 160);
-      const productName = firstNonEmpty([raw.Product, raw.Title], title);
+      const productName = firstNonEmpty([detailSummaryValue(raw, 'product'), raw.Product, raw.Title], title);
+      const affectedNames = affectedProductNames(raw);
       const brands = extractBrands(raw);
       const identifiers = extractIdentifierText(raw);
-      const issue = firstNonEmpty([raw.Issue], 'Reason not listed.');
-      const action = asString(raw['What you should do']);
+      const issue = firstNonEmpty([detailSummaryValue(raw, 'issue'), raw.Issue], 'Reason not listed.');
+      const action = firstNonEmpty([detailSummaryValue(raw, 'action'), raw['What you should do']]);
       const category = firstNonEmpty([raw.Category, raw.Organization], 'Recall and safety alert');
-      const recallDate = normalizeDate(raw['Last updated']);
+      const recallDate = normalizeDate(firstNonEmpty([canadaDetail(raw).lastUpdated, raw['Last updated']]));
       const sourceUrl = asString(raw.URL);
       const images = canadaImagesFromRawRecord(raw, `${title} recall product image`);
       const primaryImage = images[0];
@@ -185,12 +277,12 @@ export function normalizeCanadaRecallRecords(records: CanadaRecallRaw[]): Normal
         sourceUrl,
         title,
         brandNames: brands,
-        productNames: uniqueNonEmpty([productName, ...identifiers]),
+        productNames: uniqueNonEmpty([productName, ...affectedNames]),
         category,
         hazard: issue,
         remedy: action,
         recallDate,
-        affectedUnits: '',
+        affectedUnits: affectedUnitsFor(raw),
         description: descriptionFor(raw, identifiers),
         slug: slugify(`${title}-${id}`),
         classification: asString(raw['Recall class']),

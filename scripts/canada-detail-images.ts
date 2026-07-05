@@ -9,6 +9,30 @@ export type CanadaDetailImage = RecallImage & {
   height?: number;
 };
 
+export type CanadaAffectedProduct = {
+  product: string;
+  partNumber?: string;
+  upc?: string;
+  fields: Record<string, string>;
+};
+
+export type CanadaDetailPage = {
+  sourceUrl: string;
+  recallType?: string;
+  title?: string;
+  lastUpdated?: string;
+  brandNames: string[];
+  summary: {
+    product?: string;
+    issue?: string;
+    action?: string;
+  };
+  affectedProductsHeader?: string;
+  affectedProductsCaption?: string;
+  affectedProducts: CanadaAffectedProduct[];
+  images: CanadaDetailImage[];
+};
+
 type ImageCandidate = {
   url: string;
   styleName: string;
@@ -23,6 +47,7 @@ export type CanadaDetailImageFetchResult = {
   status?: number;
   ok: boolean;
   images: CanadaDetailImage[];
+  detail?: CanadaDetailPage;
   error?: string;
 };
 
@@ -40,12 +65,37 @@ function asString(value: unknown): string {
 
 function decodeHtmlEntities(value: string): string {
   return value
+    .replace(/&nbsp;/gi, ' ')
     .replace(/&amp;/gi, '&')
     .replace(/&quot;/gi, '"')
     .replace(/&#039;/gi, "'")
     .replace(/&apos;/gi, "'")
     .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>');
+    .replace(/&gt;/gi, '>')
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex: string) => String.fromCharCode(Number.parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, decimal: string) => String.fromCharCode(Number.parseInt(decimal, 10)));
+}
+
+function stripHtml(value: string): string {
+  return decodeHtmlEntities(value)
+    .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/<\/(?:p|div|li|tr|td|th|h[1-6])>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\uFEFF/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function cleanText(value: string): string {
+  return stripHtml(value)
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function uniqueNonEmpty(values: string[]): string[] {
+  return [...new Set(values.map(cleanText).filter(Boolean))];
 }
 
 function cleanAltText(value: string): string {
@@ -145,6 +195,171 @@ function canonicalImageKey(url: string): string {
   } catch {
     return url;
   }
+}
+
+function extractTitle(mainHtml: string): string {
+  return cleanText(mainHtml.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? '');
+}
+
+function extractRecallType(mainHtml: string): string {
+  const beforeTitle = mainHtml.split(/<h1\b/i)[0] ?? mainHtml;
+  const candidates = [
+    ...beforeTitle.matchAll(/<div\b[^>]*id=["']wb-cont-nav["'][^>]*>([\s\S]*?)<\/div>/gi),
+    ...beforeTitle.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)
+  ].map((match) => cleanText(match[1]));
+  return candidates.find((candidate) => /recall|alert|advisory/i.test(candidate)) ?? '';
+}
+
+function extractLastUpdated(mainHtml: string): string {
+  const block =
+    mainHtml.match(/field--name-field-last-updated[\s\S]*?<\/div>\s*<\/div>/i)?.[0] ??
+    mainHtml.match(/Last updated[\s\S]{0,500}/i)?.[0] ??
+    '';
+  return (
+    block.match(/<time\b[^>]*datetime=["']([^"']+)["'][^>]*>/i)?.[1]?.slice(0, 10) ??
+    cleanText(block.match(/<time\b[^>]*>([\s\S]*?)<\/time>/i)?.[1] ?? '') ??
+    ''
+  );
+}
+
+function extractBrands(mainHtml: string): string[] {
+  const brandBlock = mainHtml.match(/<details\b[^>]*class=["'][^"']*\bar-brand-details\b[^"']*["'][\s\S]*?<\/details>/i)?.[0] ?? '';
+  return uniqueNonEmpty(
+    [...brandBlock.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)]
+      .map((match) => cleanText(match[1]))
+      .concat([...brandBlock.matchAll(/<div\b[^>]*class=["'][^"']*\bfield--item\b[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi)].map((match) => cleanText(match[1])))
+  );
+}
+
+function fieldValue(mainHtml: string, fieldName: string): string {
+  const directItem = mainHtml.match(
+    new RegExp(`<div\\b(?=[^>]*\\bfield--name-${fieldName}\\b)(?=[^>]*\\bfield--item\\b)[^>]*>([\\s\\S]*?)<\\/div>`, 'i')
+  )?.[1];
+  if (directItem) {
+    return cleanText(directItem);
+  }
+
+  const fieldIndex = mainHtml.search(new RegExp(`field--name-${fieldName}\\b`, 'i'));
+  if (fieldIndex < 0) {
+    return '';
+  }
+
+  const block = mainHtml.slice(fieldIndex, fieldIndex + 2500);
+  const itemMatches = [...block.matchAll(/<div\b[^>]*class=["'][^"']*\bfield--item\b[^"']*["'][^>]*>([\s\S]*?)<\/div>/gi)];
+  if (itemMatches.length > 0) {
+    return cleanText(itemMatches[0][1]);
+  }
+
+  return cleanText(block);
+}
+
+function selectSectionByClass(mainHtml: string, className: string): string {
+  return (
+    mainHtml.match(
+      new RegExp(`<section\\b(?=[^>]*\\b${className}\\b)[\\s\\S]*?(?=<section\\b|<footer\\b|<\\/main>)`, 'i')
+    )?.[0] ?? ''
+  );
+}
+
+function headerKey(value: string): string {
+  const normalized = cleanText(value)
+    .toLowerCase()
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+
+  if (normalized === 'product') {
+    return 'product';
+  }
+
+  if (normalized === 'part number' || normalized === 'part no' || normalized === 'item number') {
+    return 'partNumber';
+  }
+
+  if (normalized === 'upc' || normalized === 'barcode' || normalized === 'gtin') {
+    return 'upc';
+  }
+
+  return normalized.replace(/\s+([a-z0-9])/g, (_, letter: string) => letter.toUpperCase());
+}
+
+function extractTableCaption(tableHtml: string): string {
+  return cleanText(tableHtml.match(/<caption\b[^>]*>([\s\S]*?)<\/caption>/i)?.[1] ?? '');
+}
+
+function extractAffectedProducts(mainHtml: string): {
+  header: string;
+  caption: string;
+  products: CanadaAffectedProduct[];
+} {
+  const affectedSection = selectSectionByClass(mainHtml, 'ar-affected-products');
+  if (!affectedSection) {
+    return { header: '', caption: '', products: [] };
+  }
+
+  const header = fieldValue(affectedSection, 'field-affected-products-header');
+  const tableHtml = affectedSection.match(/<table\b[\s\S]*?<\/table>/i)?.[0] ?? '';
+  if (!tableHtml) {
+    return { header, caption: '', products: [] };
+  }
+
+  const headers = [...(tableHtml.match(/<thead\b[\s\S]*?<\/thead>/i)?.[0] ?? '').matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/gi)]
+    .map((match) => headerKey(match[1]))
+    .filter(Boolean);
+  const caption = extractTableCaption(tableHtml);
+  const rows = [...(tableHtml.match(/<tbody\b[\s\S]*?<\/tbody>/i)?.[0] ?? tableHtml).matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)];
+  const products: CanadaAffectedProduct[] = [];
+
+  for (const row of rows) {
+    const cells = [...row[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map((match) => cleanText(match[1]));
+    if (cells.length === 0 || cells.every((cell) => !cell)) {
+      continue;
+    }
+
+    const fields: Record<string, string> = {};
+    cells.forEach((cell, index) => {
+      const key = headers[index] ?? `column${index + 1}`;
+      if (key && cell) {
+        fields[key] = cell;
+      }
+    });
+
+    const product = fields.product ?? cells[0] ?? '';
+    if (!product) {
+      continue;
+    }
+
+    products.push({
+      product,
+      ...(fields.partNumber ? { partNumber: fields.partNumber } : {}),
+      ...(fields.upc ? { upc: fields.upc } : {}),
+      fields
+    });
+  }
+
+  return { header, caption, products };
+}
+
+export function extractCanadaDetailPage(html: string, pageUrl: string): CanadaDetailPage {
+  const mainHtml = selectMainContent(html);
+  const affectedProducts = extractAffectedProducts(mainHtml);
+
+  return {
+    sourceUrl: pageUrl,
+    ...(extractRecallType(mainHtml) ? { recallType: extractRecallType(mainHtml) } : {}),
+    ...(extractTitle(mainHtml) ? { title: extractTitle(mainHtml) } : {}),
+    ...(extractLastUpdated(mainHtml) ? { lastUpdated: extractLastUpdated(mainHtml) } : {}),
+    brandNames: extractBrands(mainHtml),
+    summary: {
+      ...(fieldValue(mainHtml, 'field-product') ? { product: fieldValue(mainHtml, 'field-product') } : {}),
+      ...(fieldValue(mainHtml, 'field-issue-type') ? { issue: fieldValue(mainHtml, 'field-issue-type') } : {}),
+      ...(fieldValue(mainHtml, 'field-action') ? { action: fieldValue(mainHtml, 'field-action') } : {})
+    },
+    ...(affectedProducts.header ? { affectedProductsHeader: affectedProducts.header } : {}),
+    ...(affectedProducts.caption ? { affectedProductsCaption: affectedProducts.caption } : {}),
+    affectedProducts: affectedProducts.products,
+    images: extractCanadaDetailImages(html, pageUrl)
+  };
 }
 
 function styleScore(candidate: ImageCandidate): number {
@@ -285,11 +500,13 @@ export async function fetchCanadaDetailImages(sourceUrl: string): Promise<Canada
       }
     });
     const html = await response.text();
+    const detail = response.ok ? extractCanadaDetailPage(html, sourceUrl) : undefined;
     return {
       sourceUrl,
       status: response.status,
       ok: response.ok,
-      images: response.ok ? extractCanadaDetailImages(html, sourceUrl) : [],
+      images: detail?.images ?? [],
+      ...(detail ? { detail } : {}),
       ...(response.ok ? {} : { error: `HTTP ${response.status} ${response.statusText}` })
     };
   } catch (error) {
@@ -319,8 +536,9 @@ export async function enrichCanadaRecordsWithDetailImages<T extends { URL?: unkn
       results[index] = result;
       enrichedRecords[index] = {
         ...record,
-        Images: result.images.length ? result.images : record.Images
-      };
+        Images: result.images.length ? result.images : record.Images,
+        ...(result.detail ? { Detail: result.detail } : {})
+      } as T;
     }
   }
 

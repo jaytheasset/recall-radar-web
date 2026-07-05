@@ -97,6 +97,13 @@ Phase 44E-4 adds the same gate for Hong Kong CFS food alerts:
 
 The Hong Kong CFS preview compares generic input with a source-specific food alert shape using `productDescription`, `riskText`, `actionText`, importer/retailer/origin fields, pack/date/batch/barcode-style identifiers, and fixed `food-grocery` source hints. It samples allergen, contamination, foreign matter, identifier, image-backed, image-less, and non-allergen food cases when present. It writes ignored reports under `outputs/llm-classifier/input-preview/hong-kong-cfs/` and does not call Gemini, classify records, or write canonical data.
 
+Canada detail parsing adds the same gate for Canada recalls:
+
+- `npm run preview:canada-classifier-input`
+- `npm run audit:canada-classifier-input-preview`
+
+The Canada preview compares generic input with a source-specific official extraction shape using `sourceRecallType`, `sourceCategory`, `sourceRecallClass`, summary product/issue/action fields, affected product table rows, part numbers, and UPCs. These source fields are evidence only. The parser does not fill `productFamily`, `productType`, `hazardType`, `audience`, or other final Taxonomy V2 fields. It writes ignored reports under `outputs/llm-classifier/input-preview/canada/` and does not call Gemini, classify records, or write canonical data.
+
 ## Review Questions
 
 Phase 44 should answer:

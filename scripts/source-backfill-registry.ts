@@ -174,22 +174,24 @@ export const sourceBackfillRegistry: SourceBackfillRegistryEntry[] = [
     currentFetchMode: 'Downloads official JSON feed, sorts by Last updated, and keeps bounded latest records.',
     paginationStatus: 'Not applicable to current full-feed JSON download; chunking should happen locally after download.',
     dateFilterStatus: 'Not implemented in current script; future pipeline can filter local feed by Last updated.',
-    detailRefreshStatus: 'Current fetch enriches bounded records by checking official detail pages for images.',
-    imageSupport: 'Some records can recover official detail-page images; selected feed itself is sparse.',
-    updateScriptBehavior: 'Fetches bounded source data, enriches detail images, normalizes, merges canonical data, and runs source audit.',
+    detailRefreshStatus:
+      'Current fetch enriches bounded records by checking official detail pages for images, summary fields, and supported affected-product tables.',
+    imageSupport: 'Some records can recover official detail-page images; selected feed itself does not expose stable image links.',
+    updateScriptBehavior:
+      'Fetches bounded source data, enriches official detail-page images and structured detail fields, normalizes, merges canonical data, and runs source audit.',
     estimatedRisk: 'high',
     riskNotes: [
       'Full feed includes many alert types, sparse fields, and broad categories.',
-      'Detail image enrichment can multiply network calls.',
+      'Detail-page enrichment can multiply network calls and may need selector drift monitoring.',
       'Some records are alerts or safety notices rather than strict recall notices.'
     ],
     knownLimitations: [
       'No source-specific dry-run/chunk/checkpoint pipeline.',
-      'No full affected-product table extraction.',
+      'Affected-product extraction depends on supported official detail-page table markup.',
       'Sparse structured brand, model, lot, and distribution fields.'
     ],
     recommendedNextStep: 'Add a Canada planning/backfill script that downloads the official feed once, filters/chunks locally, and makes detail refresh optional.',
-    deferredWork: ['Full Canada backfill.', 'French feed ingestion.', 'Detailed official notice extraction.']
+    deferredWork: ['Full Canada backfill.', 'French feed ingestion.', 'Broader detail-page selector coverage audit.']
   },
   {
     sourceId: 'EU_SAFETY_GATE',

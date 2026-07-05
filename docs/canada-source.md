@@ -157,9 +157,10 @@ Merge should be blocked or investigated if:
 
 Known current Canada limitations should not block by themselves:
 
-- No stable image links.
 - No structured distribution field in the current 100-record spike.
-- No structured UPC/model/lot values in the current 100-record spike.
+- The open-data feed itself does not expose stable image links or full affected-product tables.
+- Official detail pages can provide product images, summary fields, and affected-product table rows when the page uses supported markup.
+- Not every detail page exposes UPC, model, part number, lot, or affected-product table fields.
 - Some records lack structured brand/company or action text.
 
 ## Field Mapping
@@ -186,7 +187,7 @@ Recall Radar maps these into `NormalizedRecall` as follows:
 - `title`: `Title`
 - `recallDate`: `Last updated`
 - `category`: official `Category`
-- `productNames`: `Product`, with explicit identifiers if present in text
+- `productNames`: official product text from the feed or supported detail-page affected product rows
 - `brandNames`: obvious title patterns such as "`X` brand"; left empty when not obvious
 - `hazard` / `reason`: `Issue`
 - `remedy`: `What you should do`
@@ -196,9 +197,13 @@ Recall Radar maps these into `NormalizedRecall` as follows:
 - `status`: `Archived` mapped to active or archived status
 - `raw`: original Canada record
 
-## Category Mapping
+## Legacy UI Category Mapping
 
-Canada category mapping is conservative:
+Canada still has conservative legacy UI category mapping for the current static site. This mapping is not the source of truth for Taxonomy V2 and should not be treated as parser judgment.
+
+The parser stores official Canada source fields and affected-product evidence. Final product family, product type, hazard type, audience, and public taxonomy should be filled by the LLM classifier.
+
+Current legacy UI fallback mapping:
 
 - CFIA records and food/allergen/microbial terms map to `food-allergy`
 - Baby, child, infant, toy, nursery, and kids terms map to `baby-kids`
@@ -212,7 +217,7 @@ No new category pages were added in Phase 8.
 
 The selected open-data JSON feed is summary-oriented. It does not consistently expose structured UPC/barcode, lot, model, DIN, NPN, distribution, or affected-product table fields.
 
-The normalizer only extracts identifier-like text when it is explicit in the summary fields. It does not invent missing identifiers.
+The detail-page enrichment can extract supported affected-product table values such as product, part number, and UPC when they exist on the official notice page. The normalizer only extracts identifier-like text when it is explicit in the source feed or parsed official detail page. It does not invent missing identifiers.
 
 ## Audit
 
@@ -295,12 +300,12 @@ What changed in Phase 8.1:
 ## Known Limitations
 
 - Canada records may include English and/or French text depending on source data.
-- The selected English JSON feed does not expose full affected-product tables.
+- The selected English JSON feed does not expose full affected-product tables; supported official detail pages can be parsed during an explicit Canada refresh.
 - Not all records have UPC/barcode.
 - Not all records have model, lot, or date fields.
 - Some records are safety alerts or notifications rather than strict recall notices.
 - Some records may lack structured brand/company or action text.
-- The selected feed does not include stable image links, so `supportsImages` is false.
+- The selected feed does not include stable image links; image support depends on official detail-page enrichment.
 - Structured distribution details may be limited; the selected feed does not expose a dedicated distribution field.
 - Brand/company is inferred only when obvious from the title.
 - No cross-source dedupe exists yet.
@@ -311,8 +316,7 @@ What changed in Phase 8.1:
 
 - Full Canada backfill
 - French feed ingestion
-- Detailed official notice page extraction
-- Structured affected products table parsing
+- Broader detail-page selector coverage audit
 - Cross-source dedupe
 - Vehicle-specific category support
 - Health-product-specific category support

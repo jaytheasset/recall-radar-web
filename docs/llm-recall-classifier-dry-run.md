@@ -14,6 +14,8 @@ Phase 44E-3 adds a New Zealand Product Safety-only input preview before live per
 
 Phase 44E-4 adds a Hong Kong CFS-only food alert input preview before live per-source classification. See `docs/hong-kong-cfs-classifier-input-preview.md`.
 
+Canada detail parsing adds a Canada-only input preview before live per-source classification. See `docs/canada-classifier-input-preview.md`.
+
 ## Purpose
 
 The dry run tests whether Recall Taxonomy V2 can classify the current indexed notices into the new taxonomy shape before any migration phase. It compares generated taxonomy fields with the existing legacy `category` field and highlights suspicious mismatches for manual review.
@@ -158,6 +160,15 @@ npm run audit:hong-kong-cfs-classifier-input-preview
 ```
 
 Those commands compare generic input with a Hong Kong CFS-specific food alert input shape, write ignored preview reports only, and do not call an LLM.
+
+For Canada Recalls input-noise review, run:
+
+```powershell
+npm run preview:canada-classifier-input
+npm run audit:canada-classifier-input-preview
+```
+
+Those commands compare generic input with a Canada-specific official source extraction input shape, write ignored preview reports only, and do not call an LLM. Canada source category, recall type, recall class, affected product rows, part numbers, and UPCs are evidence fields only; final product family, product type, hazard type, and audience remain LLM-owned.
 
 ## Non-Goals
 

@@ -158,6 +158,7 @@ Default behavior:
 
 - Downloads the official open-data JSON feed.
 - Sorts records by `Last updated` newest first.
+- Enriches bounded records from official detail pages with product images and structured detail fields when available.
 - Saves only the bounded 100-record spike to `data/raw/canada-recalls.json`.
 - Saves normalized Canada records to `data/processed/canada-recalls.json`.
 - Rebuilds the merged canonical file at `data/processed/recalls.json`.
@@ -191,6 +192,14 @@ npm run audit:canada
 ```
 
 The Canada audit reports source counts, duplicate ids, slug collisions, missing required fields, category distribution, official URL shape, image availability, UPC/barcode-like text, model/item-number-like text, lot/batch/code/date-like text, distribution detail availability, and suspicious category mappings.
+
+To audit the Canada detail-page parser against the IPEX sample notice with images and an affected-products table:
+
+```powershell
+npm run audit:canada-detail-parser
+```
+
+This live parser audit does not write raw, processed, or canonical data files.
 
 To run the explicit Canada refresh workflow, including network fetch and local audit:
 
@@ -864,6 +873,39 @@ npm run audit:cpsc-classifier-input-preview
 ```
 
 The preview and audit do not call Gemini or OpenAI, do not classify records, do not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
+
+## Canada Classifier Input Preview
+
+```powershell
+npm run preview:canada-classifier-input
+```
+
+This command reads the current canonical processed recalls, filters Canada records only, builds the current generic classifier input and a proposed Canada-specific official source extraction input, compares estimated tokens, and writes ignored local reports under:
+
+`outputs/llm-classifier/input-preview/canada/`
+
+Generated files:
+
+- `canada-input-preview.json`
+- `canada-input-preview.md`
+- `canada-noise-report.json`
+- `canada-token-comparison.json`
+
+Optional sample limit:
+
+```powershell
+$env:CANADA_CLASSIFIER_INPUT_PREVIEW_LIMIT = "20"
+npm run preview:canada-classifier-input
+Remove-Item Env:CANADA_CLASSIFIER_INPUT_PREVIEW_LIMIT
+```
+
+Audit the preview wiring:
+
+```powershell
+npm run audit:canada-classifier-input-preview
+```
+
+The preview uses official Canada detail extraction fields such as source recall type, source category, recall class, summary product/issue/action, affected product table rows, part numbers, and UPCs. These are source evidence only. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
 
 ## FSANZ Classifier Input Preview
 
