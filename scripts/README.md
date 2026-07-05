@@ -940,6 +940,39 @@ npm run audit:canada-classifier-input-preview
 
 The preview uses official Canada detail extraction fields such as source recall type, source category, recall class, summary product/issue/action, affected product table rows, part numbers, and UPCs. These are source evidence only. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
 
+## EU Safety Gate Classifier Input Preview
+
+```powershell
+npm run preview:eu-safety-gate-classifier-input
+```
+
+This command reads the current canonical processed recalls, filters EU Safety Gate records only, builds the current generic classifier input and a proposed EU Safety Gate-specific official source extraction input, compares estimated tokens, and writes ignored local reports under:
+
+`outputs/llm-classifier/input-preview/eu-safety-gate/`
+
+Generated files:
+
+- `eu-safety-gate-input-preview.json`
+- `eu-safety-gate-input-preview.md`
+- `eu-safety-gate-noise-report.json`
+- `eu-safety-gate-token-comparison.json`
+
+Optional sample limit:
+
+```powershell
+$env:EU_SAFETY_GATE_CLASSIFIER_INPUT_PREVIEW_LIMIT = "20"
+npm run preview:eu-safety-gate-classifier-input
+Remove-Item Env:EU_SAFETY_GATE_CLASSIFIER_INPUT_PREVIEW_LIMIT
+```
+
+Audit the preview wiring:
+
+```powershell
+npm run audit:eu-safety-gate-classifier-input-preview
+```
+
+The preview uses official EU Safety Gate fields such as source product category, notification type, notifying country, country of origin, risk type, risk description, legal provision, official measures, sold-online flag, barcode/model/batch identifiers, and source reference. These are source evidence only. It does not call Gemini or OpenAI, does not classify records, and does not fetch, normalize, merge, backfill, or modify `data/raw` or `data/processed`. Keep generated preview outputs uncommitted.
+
 ## RappelConso Classifier Input Preview
 
 ```powershell

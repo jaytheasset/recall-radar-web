@@ -111,6 +111,13 @@ Canada detail parsing adds the same gate for Canada recalls:
 
 The Canada preview compares generic input with a source-specific official extraction shape using `sourceRecallType`, `sourceCategory`, `sourceRecallClass`, summary product/issue/action fields, affected product table rows, part numbers, and UPCs. These source fields are evidence only. The parser does not fill `productFamily`, `productType`, `hazardType`, `audience`, or other final Taxonomy V2 fields. It writes ignored reports under `outputs/llm-classifier/input-preview/canada/` and does not call Gemini, classify records, or write canonical data.
 
+EU Safety Gate adds the same gate for European Union Safety Gate alerts:
+
+- `npm run preview:eu-safety-gate-classifier-input`
+- `npm run audit:eu-safety-gate-classifier-input-preview`
+
+The EU Safety Gate preview compares generic input with a source-specific official extraction shape using Safety Gate product category, notification type, notifying country, country of origin, countries concerned, risk types, risk description, legal provision, official measures, sold-online flag, barcode/model/batch identifiers, online trader identifiers, and source reference. These source fields are evidence only. The parser does not fill `productFamily`, `productType`, `hazardType`, `audience`, or other final Taxonomy V2 fields. It writes ignored reports under `outputs/llm-classifier/input-preview/eu-safety-gate/` and does not call Gemini, classify records, or write canonical data.
+
 RappelConso adds the same gate for France recalls:
 
 - `npm run preview:rappelconso-classifier-input`

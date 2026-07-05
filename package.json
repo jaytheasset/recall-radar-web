@@ -79,6 +79,8 @@
     "audit:fda-food-classifier-input-preview": "node --experimental-strip-types scripts/audit-fda-food-classifier-input-preview.ts",
     "preview:canada-classifier-input": "node --experimental-strip-types scripts/preview-canada-classifier-input.ts",
     "audit:canada-classifier-input-preview": "node --experimental-strip-types scripts/audit-canada-classifier-input-preview.ts",
+    "preview:eu-safety-gate-classifier-input": "node --experimental-strip-types scripts/preview-eu-safety-gate-classifier-input.ts",
+    "audit:eu-safety-gate-classifier-input-preview": "node --experimental-strip-types scripts/audit-eu-safety-gate-classifier-input-preview.ts",
     "preview:rappelconso-classifier-input": "node --experimental-strip-types scripts/preview-rappelconso-classifier-input.ts",
     "audit:rappelconso-classifier-input-preview": "node --experimental-strip-types scripts/audit-rappelconso-classifier-input-preview.ts",
     "preview:uk-fsa-classifier-input": "node --experimental-strip-types scripts/preview-uk-fsa-classifier-input.ts",
