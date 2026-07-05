@@ -153,6 +153,13 @@ The next live-provider gate is the source-specific comparison dry run:
 
 This compares `genericInput` against each source's `proposedInput` for one sample per active source. It writes ignored output only and does not persist V2 classifications.
 
+After that comparison passes, run the full source-specific preview gate:
+
+- `npm run classify:recalls:taxonomy-v2:full-source-specific-preview`
+- `npm run audit:full-source-specific-classifier-preview`
+
+This classifies the full current canonical recall set with source-specific inputs and writes ignored review outputs only. It is still not a database write, canonical data migration, or runtime UI migration.
+
 ## Review Questions
 
 Phase 44 should answer:

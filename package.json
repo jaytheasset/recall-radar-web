@@ -100,6 +100,8 @@
     "classify:recalls:taxonomy-v2:dry-run": "node --experimental-strip-types scripts/classify-recalls-taxonomy-v2-dry-run.ts",
     "classify:recalls:taxonomy-v2:source-specific-dry-run": "node --experimental-strip-types scripts/classify-source-specific-taxonomy-v2-dry-run.ts",
     "audit:source-specific-classifier-dry-run": "node --experimental-strip-types scripts/audit-source-specific-classifier-dry-run.ts",
+    "classify:recalls:taxonomy-v2:full-source-specific-preview": "node --experimental-strip-types scripts/classify-full-source-specific-taxonomy-v2-preview.ts",
+    "audit:full-source-specific-classifier-preview": "node --experimental-strip-types scripts/audit-full-source-specific-classifier-preview.ts",
     "audit:llm-classifier-dry-run": "node --experimental-strip-types scripts/audit-llm-classifier-dry-run.ts",
     "audit:static-routes": "node --experimental-strip-types scripts/audit-static-routes.ts",
     "validate:launch": "npm run audit:sources && npm run audit:fsanz-food-recalls && npm run audit:hong-kong-cfs && npm run audit:new-zealand-product-safety && npm run audit:australia-product-safety && npm run audit:uk-fsa && npm run audit:eu-safety-gate && npm run audit:canada && npm run audit:rappelconso && npm run check && npm run build && npm run audit:static-routes",

@@ -1209,3 +1209,18 @@ Remove-Item Env:RECALL_CLASSIFIER_MODEL
 This compares the current `genericInput` and source-specific `proposedInput` for one sample from each active source. It calls the configured live classifier provider, writes ignored outputs under `outputs/llm-classifier/source-specific-dry-run/`, and does not write canonical data, fetch source data, normalize, merge, backfill, or migrate Taxonomy V2 values.
 
 If Gemini returns source-specific `evidenceFields` names, the dry run maps them to the closest allowed generic evidence enum for validation and records the repairs in the ignored output report.
+
+## Full Source-Specific Classifier Preview
+
+```powershell
+$env:RECALL_CLASSIFIER_PROVIDER = "gemini"
+$env:RECALL_CLASSIFIER_MODEL = "gemini-2.5-flash-lite"
+npm run classify:recalls:taxonomy-v2:full-source-specific-preview
+npm run audit:full-source-specific-classifier-preview
+Remove-Item Env:RECALL_CLASSIFIER_PROVIDER
+Remove-Item Env:RECALL_CLASSIFIER_MODEL
+```
+
+This classifies the full current canonical recall set with source-specific LLM input blocks. It writes ignored local outputs under `outputs/llm-classifier/full-source-specific-preview/` and does not write final Taxonomy V2 values to `data/raw`, `data/processed`, a database, or runtime UI.
+
+The audit blocks on incomplete runs, classifier failures, source count mismatches, duplicate result ids, committed generated outputs, or canonical data changes. It reports review metrics such as `needsReview`, low confidence, unknown product family/type/hazard values, source/domain mismatches, and evidence field alias repairs.
