@@ -73,6 +73,7 @@ const checkerRecalls = siteRecalls.map((recall) => {
   taxonomyConfidence: recall.taxonomyConfidence,
   taxonomyNeedsReview: recall.taxonomyNeedsReview,
   taxonomyReason: recall.taxonomyReason,
+  taxonomyQualityFlags: recall.taxonomyQualityFlags,
   hazard: recall.hazard,
   remedy: cleanRecallDisplayText(recall.remedy),
   recallDate: recall.recallDate,
@@ -417,6 +418,11 @@ const sourceCardDetails = {
     <script>
       import { MATCH_LABELS, SEARCH_RESULTS_DISCLAIMER, searchRecalls } from '../lib/recall-search';
       import { getNoResultIdentifierHint } from '../lib/identifier-guidance';
+      import {
+        TAXONOMY_REVIEW_LABEL,
+        TAXONOMY_REVIEW_NOTICE,
+        needsTaxonomyReview
+      } from '../lib/taxonomy-review';
       import {
         getRecallActionLabel,
         getRecallDefaultActionFallback,
@@ -853,6 +859,17 @@ const sourceCardDetails = {
         ].filter(Boolean).join(' / ') || recall.categoryLabel;
       }
 
+      function createTaxonomyReviewNote(recall: BrowseRecall): HTMLElement | null {
+        if (!needsTaxonomyReview(recall)) {
+          return null;
+        }
+
+        const note = document.createElement('p');
+        note.className = 'taxonomy-review-note';
+        note.textContent = TAXONOMY_REVIEW_NOTICE;
+        return note;
+      }
+
       function createResultCard(item: SearchItem): HTMLElement {
         const { recall, match } = item;
         const article = document.createElement('article');
@@ -869,6 +886,7 @@ const sourceCardDetails = {
           createTag(recall.sourceLabel, 'badge-source'),
           createTag(recall.taxonomyProductFamilyLabel || recall.categoryLabel),
           ...(recall.taxonomyHazardTypeLabel ? [createTag(recall.taxonomyHazardTypeLabel, 'badge-danger')] : []),
+          ...(needsTaxonomyReview(recall) ? [createTag(TAXONOMY_REVIEW_LABEL, 'badge-review')] : []),
           createTag(recall.recallDate, 'badge-date')
         );
 
@@ -883,6 +901,7 @@ const sourceCardDetails = {
         const product = createCardLine('Product', productTextFor(recall));
         const brand = createCardLine('Brand/company', brandTextFor(recall));
         const taxonomy = createCardLine('Classification', taxonomyTextFor(recall), 'result-card-line taxonomy-card-line');
+        const taxonomyReviewNote = createTaxonomyReviewNote(recall);
         const matchReason = createCardLine(
           'Why shown',
           item.evidenceLabels.length ? item.evidenceLabels.join(' / ') : item.matchReasonLabel,
@@ -901,7 +920,11 @@ const sourceCardDetails = {
         details.textContent = 'View recall';
 
         links.append(details);
-        body.append(heading, reason, action, product, brand, taxonomy, matchReason, identifierHint, meta, links);
+        body.append(heading, reason, action, product, brand, taxonomy);
+        if (taxonomyReviewNote) {
+          body.append(taxonomyReviewNote);
+        }
+        body.append(matchReason, identifierHint, meta, links);
         article.append(createImageShell(recall), body);
 
         return article;
@@ -920,6 +943,7 @@ const sourceCardDetails = {
           createTag(recall.sourceLabel, 'badge-source'),
           createTag(recall.taxonomyProductFamilyLabel || recall.categoryLabel),
           ...(recall.taxonomyHazardTypeLabel ? [createTag(recall.taxonomyHazardTypeLabel, 'badge-danger')] : []),
+          ...(needsTaxonomyReview(recall) ? [createTag(TAXONOMY_REVIEW_LABEL, 'badge-review')] : []),
           createTag(recall.recallDate, 'badge-date')
         );
 
@@ -934,6 +958,7 @@ const sourceCardDetails = {
         const product = createCardLine('Product', productTextFor(recall));
         const brand = createCardLine('Brand/company', brandTextFor(recall));
         const taxonomy = createCardLine('Classification', taxonomyTextFor(recall), 'result-card-line taxonomy-card-line');
+        const taxonomyReviewNote = createTaxonomyReviewNote(recall);
 
         const links = document.createElement('div');
         links.className = 'link-row';
@@ -944,7 +969,11 @@ const sourceCardDetails = {
         details.textContent = 'View recall';
 
         links.append(details);
-        body.append(heading, reason, action, product, brand, taxonomy, meta, links);
+        body.append(heading, reason, action, product, brand, taxonomy);
+        if (taxonomyReviewNote) {
+          body.append(taxonomyReviewNote);
+        }
+        body.append(meta, links);
         article.append(createImageShell(recall), body);
 
         return article;

@@ -21,6 +21,7 @@ import {
   getTaxonomyV2CategoryRouteBySlug,
   recallMatchesTaxonomyCategory
 } from '../../lib/taxonomy-v2-pages';
+import { TAXONOMY_REVIEW_LABEL, TAXONOMY_REVIEW_NOTICE, needsTaxonomyReview } from '../../lib/taxonomy-review';
 import '../../styles/global.css';
 
 export function getStaticPaths() {
@@ -44,6 +45,7 @@ const taxonomyPageRecalls =
     : [];
 const recall = (Astro.props.pageKind === 'detail' ? Astro.props.recall : siteRecalls[0])!;
 const view = buildRecallDetailView(recall, siteRecalls);
+const taxonomyNeedsReview = needsTaxonomyReview(recall);
 const categoryRoute = categoryRoutes.find(
   (route) => route.category === recall.taxonomyProductFamily || route.category === recall.category
 );
@@ -133,6 +135,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
           <span class="badge-date">{view.recallDate}</span>
           <span class="tag">{view.taxonomyProductFamilyLabel}</span>
           {view.taxonomyHazardTypeLabel ? <span class="tag">{view.taxonomyHazardTypeLabel}</span> : null}
+          {taxonomyNeedsReview ? <span class="badge-review">{TAXONOMY_REVIEW_LABEL}</span> : null}
         </div>
         <h1 class="detail-title">{view.displayTitle}</h1>
         <p class="lead detail-intro">{view.introSentence}</p>
@@ -231,6 +234,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
               <span>{view.sourceBadge}</span>
             </div>
           </div>
+          {taxonomyNeedsReview ? <p class="taxonomy-review-note">{TAXONOMY_REVIEW_NOTICE}</p> : null}
           <div class="summary-alert">
             <strong>Risk / issue</strong>
             <p>{view.reason}</p>

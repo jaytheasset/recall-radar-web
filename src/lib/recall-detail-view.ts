@@ -40,7 +40,9 @@ export type RecallDetailView = {
   taxonomyRecallDomainLabel: string;
   taxonomyAudienceLabels: string[];
   taxonomyConfidence: number | undefined;
+  taxonomyNeedsReview: boolean;
   taxonomyReason: string;
+  taxonomyQualityFlags: string[];
   productImages: RecallImage[];
   imageCaptions: string[];
   primaryImageAlt: string;
@@ -90,7 +92,9 @@ type SourceDetailView = Omit<
   | 'taxonomyRecallDomainLabel'
   | 'taxonomyAudienceLabels'
   | 'taxonomyConfidence'
+  | 'taxonomyNeedsReview'
   | 'taxonomyReason'
+  | 'taxonomyQualityFlags'
   | 'productImages'
   | 'primaryImageAlt'
   | 'introSentence'
@@ -1169,7 +1173,9 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
     taxonomyRecallDomainLabel: recall.taxonomyRecallDomainLabel ?? '',
     taxonomyAudienceLabels: recall.taxonomyAudienceLabels ?? [],
     taxonomyConfidence: recall.taxonomyConfidence,
+    taxonomyNeedsReview: Boolean(recall.taxonomyNeedsReview),
     taxonomyReason: recall.taxonomyReason ?? '',
+    taxonomyQualityFlags: recall.taxonomyQualityFlags ?? [],
     productImages: recall.images,
     primaryImageAlt: recall.primaryImageAlt || `${sourceSpecificView.productName} recall product image`,
     introSentence,
