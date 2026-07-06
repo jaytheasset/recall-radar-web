@@ -1,0 +1,117 @@
+---
+import SiteHeader from '../components/SiteHeader.astro';
+import { getSourceLandingPageCards } from '../lib/source-landing-pages';
+import { processedLocalRecordCount } from '../lib/recall-data';
+import '../styles/global.css';
+
+const title = 'Countries | Recall Radar';
+const description = 'Browse official recall notices by country and source in Recall Radar.';
+const sourcePages = getSourceLandingPageCards();
+const countrySourceRoutes = [
+  '/us-product-recalls',
+  '/canada-product-recalls',
+  '/eu-safety-gate-recalls',
+  '/uk-food-recalls',
+  '/australia-product-recalls',
+  '/new-zealand-product-recalls',
+  '/hong-kong-food-recalls',
+  '/france-product-recalls',
+  '/australia-new-zealand-food-recalls'
+];
+const countrySources = countrySourceRoutes
+  .map((route) => sourcePages.find((page) => page.route === route))
+  .filter((page): page is (typeof sourcePages)[number] => Boolean(page));
+const sourceCardDetails = {
+  '/us-product-recalls': {
+    flagSrc: '/flags/us.svg',
+    flagAlt: 'United States flag'
+  },
+  '/canada-product-recalls': {
+    flagSrc: '/flags/ca.svg',
+    flagAlt: 'Canada flag'
+  },
+  '/eu-safety-gate-recalls': {
+    flagSrc: '/flags/eu.svg',
+    flagAlt: 'European Union flag'
+  },
+  '/uk-food-recalls': {
+    flagSrc: '/flags/gb.svg',
+    flagAlt: 'United Kingdom flag'
+  },
+  '/australia-product-recalls': {
+    flagSrc: '/flags/au.svg',
+    flagAlt: 'Australia flag'
+  },
+  '/new-zealand-product-recalls': {
+    flagSrc: '/flags/nz.svg',
+    flagAlt: 'New Zealand flag'
+  },
+  '/hong-kong-food-recalls': {
+    flagSrc: '/flags/hk.svg',
+    flagAlt: 'Hong Kong flag'
+  },
+  '/france-product-recalls': {
+    flagSrc: '/flags/fr.svg',
+    flagAlt: 'France flag'
+  },
+  '/australia-new-zealand-food-recalls': {
+    flagSrcs: [
+      { src: '/flags/au.svg', alt: 'Australia flag' },
+      { src: '/flags/nz.svg', alt: 'New Zealand flag' }
+    ]
+  }
+} as const;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <SiteHeader />
+
+    <main class="page-shell directory-page">
+      <section class="directory-hero">
+        <p class="eyebrow">Countries</p>
+        <h1>Browse recalls by country</h1>
+        <p class="lead">Choose a country or official source to review matching recall notices from the {processedLocalRecordCount} notices currently searchable in Recall Radar.</p>
+      </section>
+
+      <section class="section">
+        <div class="category-grid directory-source-grid">
+          {countrySources.map((page) => {
+            const details = sourceCardDetails[page.route as keyof typeof sourceCardDetails];
+            const card = page.card;
+
+            return (
+              <a class="category-card source-country-card" href={page.route}>
+                <span class:list={['source-flag-wrap', 'flagSrcs' in details && 'source-flag-wrap-pair']}>
+                  {'flagSrcs' in details ? (
+                    details.flagSrcs.map((flag) => (
+                      <img class="source-flag source-flag-pair" src={flag.src} alt={flag.alt} loading="lazy" decoding="async" />
+                    ))
+                  ) : (
+                    <img class="source-flag" src={details.flagSrc} alt={details.flagAlt} loading="lazy" decoding="async" />
+                  )}
+                </span>
+                <span class="category-card-body">
+                  <h3>{card.title}</h3>
+                  <span class="source-card-kicker">{card.agencyLabel}</span>
+                </span>
+                <span class="source-card-count">{page.count} recalls</span>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
+    </footer>
+  </body>
+</html>

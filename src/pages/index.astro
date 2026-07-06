@@ -240,6 +240,11 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
           </button>
         </div>
         <div class="home-carousel" data-home-carousel>
+          <button class="home-carousel-button home-carousel-button-prev" type="button" aria-label="Scroll product types left" data-home-carousel-prev>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+          </button>
           <div class="home-carousel-viewport" data-home-carousel-viewport>
             <div class="category-grid home-carousel-track home-product-type-track" data-home-product-types>
               {productFamilies.map((type) => (
@@ -262,7 +267,9 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
             </div>
           </div>
           <button class="home-carousel-button" type="button" aria-label="Scroll product types" data-home-carousel-next>
-            <span aria-hidden="true">&rsaquo;</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M8.25 4.5 15.75 12l-7.5 7.5" />
+            </svg>
           </button>
         </div>
       </section>
@@ -272,9 +279,14 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
           <div>
             <h2>Countries</h2>
           </div>
-          <a class="section-link" href="/#official-sources">View all sources <span aria-hidden="true">&rsaquo;</span></a>
+          <a class="section-link" href="/countries">View all sources <span aria-hidden="true">&rsaquo;</span></a>
         </div>
         <div class="home-carousel" data-home-carousel>
+          <button class="home-carousel-button home-carousel-button-prev" type="button" aria-label="Scroll sources left" data-home-carousel-prev>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+          </button>
           <div class="home-carousel-viewport" data-home-carousel-viewport>
             <div class="category-grid source-country-grid home-carousel-track">
               {homepageSourcePages.map((page) => {
@@ -303,7 +315,9 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
             </div>
           </div>
           <button class="home-carousel-button" type="button" aria-label="Scroll sources" data-home-carousel-next>
-            <span aria-hidden="true">&rsaquo;</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M8.25 4.5 15.75 12l-7.5 7.5" />
+            </svg>
           </button>
         </div>
       </section>
@@ -378,27 +392,59 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
 
       document.querySelectorAll('[data-home-carousel]').forEach((carousel) => {
         const viewport = carousel.querySelector('[data-home-carousel-viewport]');
+        const prevButton = carousel.querySelector('[data-home-carousel-prev]');
         const nextButton = carousel.querySelector('[data-home-carousel-next]');
         const track = carousel.querySelector('.home-carousel-track');
 
-        if (!(viewport instanceof HTMLElement) || !(nextButton instanceof HTMLButtonElement) || !(track instanceof HTMLElement)) {
+        if (
+          !(viewport instanceof HTMLElement) ||
+          !(prevButton instanceof HTMLButtonElement) ||
+          !(nextButton instanceof HTMLButtonElement) ||
+          !(track instanceof HTMLElement)
+        ) {
           return;
         }
 
-        nextButton.addEventListener('click', () => {
+        const getScrollMetrics = () => {
           const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
           const firstCard = track.firstElementChild;
           const cardWidth = firstCard instanceof HTMLElement ? firstCard.getBoundingClientRect().width : 0;
           const gapValue = Number.parseFloat(window.getComputedStyle(track).columnGap || window.getComputedStyle(track).gap || '0');
-          const step = Math.max(cardWidth + (Number.isFinite(gapValue) ? gapValue : 0), viewport.clientWidth * 0.72);
-          const isAtEnd = viewport.scrollLeft >= maxScrollLeft - 8;
-          const nextLeft = Math.min(maxScrollLeft, viewport.scrollLeft + step);
+          const singleStep = cardWidth + (Number.isFinite(gapValue) ? gapValue : 0);
+          const pageStep = Math.max(singleStep * 3, viewport.clientWidth - 48);
+
+          return { maxScrollLeft, pageStep };
+        };
+
+        const updateButtons = () => {
+          const { maxScrollLeft } = getScrollMetrics();
+          const left = viewport.scrollLeft;
+
+          prevButton.disabled = left <= 4;
+          nextButton.disabled = left >= maxScrollLeft - 4;
+        };
+
+        prevButton.addEventListener('click', () => {
+          const { pageStep } = getScrollMetrics();
 
           viewport.scrollTo({
-            left: isAtEnd ? 0 : nextLeft,
+            left: Math.max(0, viewport.scrollLeft - pageStep),
             behavior: 'smooth'
           });
         });
+
+        nextButton.addEventListener('click', () => {
+          const { maxScrollLeft, pageStep } = getScrollMetrics();
+
+          viewport.scrollTo({
+            left: Math.min(maxScrollLeft, viewport.scrollLeft + pageStep),
+            behavior: 'smooth'
+          });
+        });
+
+        viewport.addEventListener('scroll', () => window.requestAnimationFrame(updateButtons));
+        window.addEventListener('resize', updateButtons);
+        updateButtons();
       });
 
       const productTypeSection = document.querySelector('#browse-recalls');

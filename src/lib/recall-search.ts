@@ -32,6 +32,9 @@ export type RecallSearchItem = {
   matchReason: RecallMatchReason;
   matchReasonLabel: string;
   matchedFieldType: RecallMatchReason;
+  score: number;
+  searchPriorityLabel: string;
+  evidenceLabels: string[];
   identifierHint: string;
 };
 
@@ -55,6 +58,36 @@ export const MATCH_REASON_LABELS: Record<RecallMatchReason, string> = {
   hazard: 'Related by hazard or reason',
   source: 'Related by market/source',
   keyword: 'Matched by keyword'
+};
+
+const MATCH_BASE_SCORES: Record<Exclude<RecallMatchType, 'none'>, number> = {
+  exact: 1000,
+  possible: 620,
+  related: 260
+};
+
+const MATCH_REASON_SCORES: Record<RecallMatchReason, number> = {
+  'recall-number': 360,
+  identifier: 330,
+  brand: 260,
+  product: 250,
+  ingredient: 230,
+  'product-type': 150,
+  hazard: 140,
+  source: 70,
+  keyword: 40
+};
+
+const EVIDENCE_LABELS: Record<RecallMatchReason, string> = {
+  'recall-number': 'Recall number',
+  identifier: 'Model, lot, barcode, or identifier',
+  brand: 'Brand or company',
+  product: 'Product name',
+  ingredient: 'Ingredient or allergen',
+  'product-type': 'Product type',
+  hazard: 'Issue or hazard',
+  source: 'Country or source',
+  keyword: 'Keyword'
 };
 
 const IDENTIFIER_TERMS = [
@@ -360,6 +393,84 @@ function sourceFields(recall: SiteRecall): string[] {
   return [recall.source, recall.sourceLabel, recall.sourceUrl];
 }
 
+function scoreTextMatch(normalizedQuery: string, queryTokens: string[], values: string[], weight: number): number {
+  const text = searchableText(values);
+  if (!text) {
+    return 0;
+  }
+
+  if (text.includes(normalizedQuery)) {
+    return weight;
+  }
+
+  const matchedTokens = tokenMatchCount(queryTokens, text);
+  if (matchedTokens === 0) {
+    return 0;
+  }
+
+  return Math.min(weight, Math.round((matchedTokens / Math.max(1, queryTokens.length)) * weight));
+}
+
+function getEvidenceLabels(query: string, recall: SiteRecall, primaryReason: RecallMatchReason): string[] {
+  const normalizedQuery = normalize(query);
+  const queryTokens = tokensFor(query);
+  const evidence = new Set<string>([EVIDENCE_LABELS[primaryReason]]);
+
+  if (scoreTextMatch(normalizedQuery, queryTokens, brandFields(recall), 1) > 0) {
+    evidence.add(EVIDENCE_LABELS.brand);
+  }
+  if (scoreTextMatch(normalizedQuery, queryTokens, productFields(recall), 1) > 0) {
+    evidence.add(EVIDENCE_LABELS.product);
+  }
+  if (scoreTextMatch(normalizedQuery, queryTokens, identifierFields(recall), 1) > 0) {
+    evidence.add(EVIDENCE_LABELS.identifier);
+  }
+  if (scoreTextMatch(normalizedQuery, queryTokens, productTypeFields(recall), 1) > 0) {
+    evidence.add(EVIDENCE_LABELS['product-type']);
+  }
+  if (scoreTextMatch(normalizedQuery, queryTokens, hazardFields(recall), 1) > 0) {
+    evidence.add(EVIDENCE_LABELS.hazard);
+  }
+
+  return [...evidence].slice(0, 4);
+}
+
+function getSearchPriorityLabel(score: number): string {
+  if (score >= 1250) {
+    return 'Best candidate';
+  }
+  if (score >= 900) {
+    return 'Strong candidate';
+  }
+  if (score >= 620) {
+    return 'Possible candidate';
+  }
+  return 'Related context';
+}
+
+function getMatchScore(query: string, recall: SiteRecall, match: Exclude<RecallMatchType, 'none'>, reason: RecallMatchReason): number {
+  const normalizedQuery = normalize(query);
+  const queryTokens = tokensFor(query);
+  let score = MATCH_BASE_SCORES[match] + MATCH_REASON_SCORES[reason];
+
+  score += scoreTextMatch(normalizedQuery, queryTokens, [recall.id, recall.recallNumber ?? ''], 180);
+  score += scoreTextMatch(normalizedQuery, queryTokens, brandFields(recall), 120);
+  score += scoreTextMatch(normalizedQuery, queryTokens, productFields(recall), 120);
+  score += scoreTextMatch(normalizedQuery, queryTokens, identifierFields(recall), 110);
+  score += scoreTextMatch(normalizedQuery, queryTokens, productTypeFields(recall), 70);
+  score += scoreTextMatch(normalizedQuery, queryTokens, hazardFields(recall), 60);
+
+  if (reason === 'ingredient' && hasAllergenQuery(normalizedQuery, queryTokens)) {
+    score += 80;
+  }
+
+  if (recall.taxonomyProductFamily && recall.taxonomyHazardType) {
+    score += 25;
+  }
+
+  return score;
+}
+
 export function getRecallIdentifierHint(recall: Pick<SiteRecall, 'source'>): string {
   return getSourceIdentifierGuidance(recall.source);
 }
@@ -471,12 +582,17 @@ function matchOrder(match: RecallMatchType): number {
 }
 
 function compareRecalls(
-  a: { recall: SiteRecall; match: RecallMatchType },
-  b: { recall: SiteRecall; match: RecallMatchType }
+  a: { recall: SiteRecall; match: RecallMatchType; score?: number },
+  b: { recall: SiteRecall; match: RecallMatchType; score?: number }
 ): number {
   const matchDifference = matchOrder(a.match) - matchOrder(b.match);
   if (matchDifference !== 0) {
     return matchDifference;
+  }
+
+  const scoreDifference = (b.score ?? 0) - (a.score ?? 0);
+  if (scoreDifference !== 0) {
+    return scoreDifference;
   }
 
   return b.recall.recallDate.localeCompare(a.recall.recallDate);
@@ -487,12 +603,16 @@ export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearc
     .map((recall) => {
       const match = getRecallMatch(query, recall);
       const matchReason = getMatchReason(query, recall);
+      const score = match === 'none' ? 0 : getMatchScore(query, recall, match, matchReason);
       return {
         recall,
         match,
         matchReason,
         matchReasonLabel: MATCH_REASON_LABELS[matchReason],
         matchedFieldType: matchReason,
+        score,
+        searchPriorityLabel: getSearchPriorityLabel(score),
+        evidenceLabels: getEvidenceLabels(query, recall, matchReason),
         identifierHint: getRecallIdentifierHint(recall)
       };
     })

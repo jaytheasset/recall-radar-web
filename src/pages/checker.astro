@@ -2,6 +2,8 @@
 import SiteHeader from '../components/SiteHeader.astro';
 import EuImageResourceHints from '../components/EuImageResourceHints.astro';
 import {
+  brandGroups,
+  categoryRoutes,
   processedAustraliaProductSafetyRecordCount,
   processedCanadaRecordCount,
   processedCpscRecordCount,
@@ -19,6 +21,7 @@ import { getRecallImageForContext } from '../lib/recall-images';
 import { cleanRecallDisplayText } from '../lib/recall-display-text';
 import { getSourceOptionsForCurrentCoverage } from '../lib/recall-sources';
 import { IDENTIFIER_SEARCH_PLACEHOLDER } from '../lib/identifier-guidance';
+import { getSourceLandingPageCards } from '../lib/source-landing-pages';
 import '../styles/global.css';
 
 const title = 'Product Recall Checker | Recall Radar';
@@ -37,6 +40,7 @@ const activeSourceCount = [
   processedFsanzFoodRecallRecordCount
 ].filter((count) => count > 0).length;
 const checkerCountLine = `Search ${processedLocalRecordCount} recall notices from ${activeSourceCount} official sources.`;
+const featuredBrands = brandGroups.slice(0, 18);
 const checkerRecalls = siteRecalls.map((recall) => {
   const cardImage = getRecallImageForContext(recall, 'list');
 
@@ -123,6 +127,112 @@ const dateOptions = [
   { value: '30', label: 'Last 30 days' },
   { value: '90', label: 'Last 90 days' }
 ];
+const hazardOptionMap = new Map<string, { label: string; count: number }>();
+for (const recall of siteRecalls) {
+  if (!recall.taxonomyHazardType || !recall.taxonomyHazardTypeLabel) {
+    continue;
+  }
+
+  const existing = hazardOptionMap.get(recall.taxonomyHazardType);
+  hazardOptionMap.set(recall.taxonomyHazardType, {
+    label: recall.taxonomyHazardTypeLabel,
+    count: (existing?.count ?? 0) + 1
+  });
+}
+const hazardOptions = [
+  { value: 'all', label: 'All issues' },
+  ...[...hazardOptionMap.entries()]
+    .sort((a, b) => b[1].count - a[1].count || a[1].label.localeCompare(b[1].label))
+    .map(([value, option]) => ({ value, label: option.label }))
+];
+const sourcePages = getSourceLandingPageCards();
+const productFamilyOrder = [
+  'food-grocery',
+  'baby-kids',
+  'electronics-batteries',
+  'home-appliances',
+  'furniture-household',
+  'vehicles-mobility',
+  'sports-outdoor',
+  'tools-equipment',
+  'clothing-accessories',
+  'health-personal-care',
+  'chemicals-cleaning',
+  'pet-products',
+  'industrial-workplace',
+  'other',
+  'need-review'
+];
+const productFamilyRoutes = [
+  ...productFamilyOrder
+    .map((category) => categoryRoutes.find((route) => route.category === category))
+    .filter((route): route is (typeof categoryRoutes)[number] => Boolean(route)),
+  ...categoryRoutes.filter((route) => !productFamilyOrder.includes(route.category))
+];
+const productFamilyIconSvg: Record<string, string> = {
+  'baby-kids': '<path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.3.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 1 1-14 0"/><path d="M9 6.3a3 3 0 1 1 6 0"/>',
+  'chemicals-cleaning': '<path d="M9 2h6"/><path d="M10 2v6l-5.5 9.5A3 3 0 0 0 7.1 22h9.8a3 3 0 0 0 2.6-4.5L14 8V2"/><path d="M7.5 16h9"/>',
+  'clothing-accessories': '<path d="M16 3 12 5 8 3 4 6l3 4v11h10V10l3-4-4-3Z"/><path d="M8 3c.4 2 1.8 3 4 3s3.6-1 4-3"/>',
+  'electronics-batteries': '<path d="M7 7h9a3 3 0 0 1 0 6h-1"/><path d="M17 11h1a2 2 0 0 1 0 4h-3"/><path d="M9 5 6 12h4l-2 7 7-10h-4l2-4H9Z"/>',
+  'food-grocery': '<path d="M4 10h16l-2 9H6l-2-9Z"/><path d="M8 10l2-5"/><path d="m16 10-2-5"/><path d="M9 14h6"/>',
+  'furniture-household': '<path d="M5 11h14a2 2 0 0 1 2 2v5H3v-5a2 2 0 0 1 2-2Z"/><path d="M6 11V8a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v3"/><path d="M5 18v2"/><path d="M19 18v2"/>',
+  'health-personal-care': '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/><path d="M8 12h2l1-2 2 4 1-2h2"/>',
+  'home-appliances': '<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M10 7h4"/><path d="M10 17h4"/>',
+  'industrial-workplace': '<path d="M3 21h18"/><path d="M5 21V9l5 3V9l5 3V6l4 2v13"/><path d="M8 17h1"/><path d="M12 17h1"/><path d="M16 17h1"/>',
+  other: '<path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7Z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/>',
+  'pet-products': '<path d="M11 20c-2 0-5-1.5-5-4 0-1.6 1.3-3 3-3 1.1 0 2 .6 3 1.8C13 13.6 13.9 13 15 13c1.7 0 3 1.4 3 3 0 2.5-3 4-5 4h-2Z"/><circle cx="6" cy="8" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="9.5" cy="5" r="2"/><circle cx="14.5" cy="5" r="2"/>',
+  'sports-outdoor': '<path d="m6 14 8-8"/><path d="m4 12 8 8"/><path d="m12 4 8 8"/><path d="m14 18 4-4"/><path d="M3 21 21 3"/>',
+  'tools-equipment': '<path d="M14.7 6.3a4 4 0 0 0-5.5 5.5L3 18v3h3l6.2-6.2a4 4 0 0 0 5.5-5.5l-3 3-3-3 3-3Z"/>',
+  'vehicles-mobility': '<path d="M5 17h14l-1-5a3 3 0 0 0-3-2H9a3 3 0 0 0-3 2l-1 5Z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/><path d="M8 10V7h5l3 3"/>',
+  'need-review': '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>'
+};
+const checkerSourceRoutes = [
+  '/us-product-recalls',
+  '/canada-product-recalls',
+  '/eu-safety-gate-recalls',
+  '/uk-food-recalls',
+  '/australia-product-recalls',
+  '/new-zealand-product-recalls',
+  '/hong-kong-food-recalls',
+  '/france-product-recalls'
+];
+const checkerSourcePages = checkerSourceRoutes
+  .map((route) => sourcePages.find((page) => page.route === route))
+  .filter((page): page is (typeof sourcePages)[number] => Boolean(page));
+const sourceCardDetails = {
+  '/us-product-recalls': {
+    flagSrc: '/flags/us.svg',
+    flagAlt: 'United States flag'
+  },
+  '/canada-product-recalls': {
+    flagSrc: '/flags/ca.svg',
+    flagAlt: 'Canada flag'
+  },
+  '/eu-safety-gate-recalls': {
+    flagSrc: '/flags/eu.svg',
+    flagAlt: 'European Union flag'
+  },
+  '/uk-food-recalls': {
+    flagSrc: '/flags/gb.svg',
+    flagAlt: 'United Kingdom flag'
+  },
+  '/australia-product-recalls': {
+    flagSrc: '/flags/au.svg',
+    flagAlt: 'Australia flag'
+  },
+  '/new-zealand-product-recalls': {
+    flagSrc: '/flags/nz.svg',
+    flagAlt: 'New Zealand flag'
+  },
+  '/hong-kong-food-recalls': {
+    flagSrc: '/flags/hk.svg',
+    flagAlt: 'Hong Kong flag'
+  },
+  '/france-product-recalls': {
+    flagSrc: '/flags/fr.svg',
+    flagAlt: 'France flag'
+  }
+} as const;
 ---
 
 <html lang="en">
@@ -175,6 +285,12 @@ const dateOptions = [
                   </select>
                 </label>
                 <label>
+                  Issue or hazard
+                  <select id="hazard-filter" name="hazard">
+                    {hazardOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                  </select>
+                </label>
+                <label>
                   Date
                   <select id="date-filter" name="date">
                     {dateOptions.map((option) => <option value={option.value}>{option.label}</option>)}
@@ -199,11 +315,11 @@ const dateOptions = [
           <p class="disclaimer-copy">
             Results are possible matches. Always check the official notice.
           </p>
-          <p class="checker-browse-hint">
+          <p class="checker-browse-hint" hidden>
             Browse instead:
-            <a href="/#browse-recalls">Product types</a>
+            <a href="/product-types">Product types</a>
             <span aria-hidden="true">·</span>
-            <a href="/#official-sources">Countries</a>
+            <a href="/countries">Countries</a>
           </p>
           <button id="save-search-watchlist" class="save-search-link" type="button" hidden>Save this search</button>
           <p id="save-search-status" class="form-note" hidden></p>
@@ -211,13 +327,85 @@ const dateOptions = [
             <div class="meta-row">
               <span id="result-match" class="status-pill">No clear match</span>
               <span id="result-count" class="tag">0 recalls</span>
-              <span id="result-filter-summary" class="tag">All markets</span>
+            <span id="result-filter-summary" class="tag">All markets</span>
             </div>
             <p id="result-summary"></p>
+            <div id="result-refine" class="result-refine" hidden></div>
             <div id="result-list" class="result-list"></div>
             <p id="result-disclaimer"></p>
           </div>
         </section>
+      </section>
+
+      <section class="section checker-browse-section">
+        <div class="section-header">
+          <div>
+            <h2>Product types</h2>
+          </div>
+          <a class="section-link" href="/product-types">View all product types <span aria-hidden="true">&rsaquo;</span></a>
+        </div>
+        <div class="category-grid checker-browse-grid checker-product-type-grid">
+          {productFamilyRoutes.map((category) => (
+            <a class="category-card home-product-type-card" href={category.href}>
+              <span class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <Fragment set:html={productFamilyIconSvg[category.category] ?? productFamilyIconSvg.other} />
+                </svg>
+              </span>
+              <span class="category-card-body">
+                <h3>{category.label}</h3>
+                <span class="home-card-link">View recalls <span aria-hidden="true">&rarr;</span></span>
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="section checker-browse-section">
+        <div class="section-header">
+          <div>
+            <h2>Countries</h2>
+          </div>
+          <a class="section-link" href="/countries">View all sources <span aria-hidden="true">&rsaquo;</span></a>
+        </div>
+        <div class="category-grid checker-browse-grid checker-source-grid">
+          {checkerSourcePages.map((page) => {
+            const details = sourceCardDetails[page.route as keyof typeof sourceCardDetails];
+            const card = page.card;
+
+            return (
+              <a class="category-card source-country-card" href={page.route}>
+                <span class="source-flag-wrap">
+                  <img class="source-flag" src={details.flagSrc} alt={details.flagAlt} loading="lazy" decoding="async" />
+                </span>
+                <span class="category-card-body">
+                  <h3>{card.title}</h3>
+                  <span class="source-card-kicker">{card.agencyLabel}</span>
+                </span>
+                <span class="source-card-count">{page.count} recalls</span>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+
+      <section class="section checker-browse-section">
+        <div class="section-header">
+          <div>
+            <h2>Brand watch pages</h2>
+          </div>
+        </div>
+        <div class="category-grid checker-brand-grid">
+          {featuredBrands.map((brand) => (
+            <a class="category-card checker-brand-card" href={`/brands/${brand.slug}`}>
+              <span>
+                <h3>{brand.displayName}</h3>
+                <span class="source-card-kicker">{brand.recalls.length} recalls</span>
+              </span>
+              <span class="home-card-link">View brand <span aria-hidden="true">&rarr;</span></span>
+            </a>
+          ))}
+        </div>
       </section>
     </main>
 
@@ -251,6 +439,7 @@ const dateOptions = [
       const input = document.querySelector<HTMLInputElement>('#recall-query');
       const sourceFilter = document.querySelector<HTMLSelectElement>('#source-filter');
       const categoryFilter = document.querySelector<HTMLSelectElement>('#category-filter');
+      const hazardFilter = document.querySelector<HTMLSelectElement>('#hazard-filter');
       const sortFilter = document.querySelector<HTMLSelectElement>('#sort-filter');
       const dateFilter = document.querySelector<HTMLSelectElement>('#date-filter');
       const advancedFilters = document.querySelector<HTMLDetailsElement>('#advanced-filters');
@@ -261,6 +450,7 @@ const dateOptions = [
       const countLabel = document.querySelector<HTMLElement>('#result-count');
       const filterSummary = document.querySelector<HTMLElement>('#result-filter-summary');
       const summary = document.querySelector<HTMLElement>('#result-summary');
+      const refine = document.querySelector<HTMLElement>('#result-refine');
       const disclaimer = document.querySelector<HTMLElement>('#result-disclaimer');
       const list = document.querySelector<HTMLElement>('#result-list');
 
@@ -283,12 +473,14 @@ const dateOptions = [
         | 'HK_CFS'
         | 'FSANZ_FOOD_RECALLS';
       type CategoryFilter = WatchlistCategoryFilter;
+      type HazardFilter = string;
       type SortFilter = 'best' | 'newest' | 'oldest';
       type DateFilter = 'all' | '30' | '90';
       type SearchState = {
         query: string;
         source: SourceFilter;
         category: CategoryFilter;
+        hazard: HazardFilter;
         sort: SortFilter;
         date: DateFilter;
       };
@@ -325,6 +517,9 @@ const dateOptions = [
         'unknown',
         'general'
       ];
+      const hazardValues: HazardFilter[] = hazardFilter
+        ? [...hazardFilter.options].map((option) => option.value)
+        : ['all'];
       const sortValues: SortFilter[] = ['best', 'newest', 'oldest'];
       const dateValues: DateFilter[] = ['all', '30', '90'];
       const groupTitles = {
@@ -351,6 +546,9 @@ const dateOptions = [
         unknown: 'Need Review',
         general: 'Legacy general'
       };
+      const hazardFilterLabels: Record<string, string> = hazardFilter
+        ? Object.fromEntries([...hazardFilter.options].map((option) => [option.value, option.label]))
+        : { all: 'all issues' };
 
       function isOneOf<T extends string>(value: string | null, values: readonly T[], fallback: T): T {
         return value && values.includes(value as T) ? (value as T) : fallback;
@@ -364,6 +562,7 @@ const dateOptions = [
         return siteRecalls.filter((recall) => {
           const sourceMatches = state.source === 'all' || recall.source === state.source;
           const family = recall.taxonomyProductFamily ?? '';
+          const hazardMatches = state.hazard === 'all' || recall.taxonomyHazardType === state.hazard;
           const categoryMatches =
             state.category === 'all' ||
             family === state.category ||
@@ -376,7 +575,7 @@ const dateOptions = [
           const recallTime = Date.parse(recall.recallDate);
           const dateMatches = state.date === 'all' || (Number.isFinite(recallTime) && recallTime >= cutoff);
 
-          return sourceMatches && categoryMatches && dateMatches;
+          return sourceMatches && categoryMatches && hazardMatches && dateMatches;
         });
       }
 
@@ -385,6 +584,7 @@ const dateOptions = [
           query: input?.value.trim() ?? '',
           source: isOneOf(sourceFilter?.value ?? null, sourceValues, 'all'),
           category: isOneOf(categoryFilter?.value ?? null, categoryValues, 'all'),
+          hazard: isOneOf(hazardFilter?.value ?? null, hazardValues, 'all'),
           sort: isOneOf(sortFilter?.value ?? null, sortValues, 'best'),
           date: isOneOf(dateFilter?.value ?? null, dateValues, 'all')
         };
@@ -396,6 +596,7 @@ const dateOptions = [
           query: params.get('q')?.trim() ?? '',
           source: isOneOf(params.get('source'), sourceValues, 'all'),
           category: isOneOf(params.get('category'), categoryValues, 'all'),
+          hazard: isOneOf(params.get('hazard'), hazardValues, 'all'),
           sort: isOneOf(params.get('sort'), sortValues, 'best'),
           date: isOneOf(params.get('date'), dateValues, 'all')
         };
@@ -408,6 +609,9 @@ const dateOptions = [
         }
         if (categoryFilter) {
           categoryFilter.value = state.category;
+        }
+        if (hazardFilter) {
+          hazardFilter.value = state.hazard;
         }
         if (sortFilter) {
           sortFilter.value = state.sort;
@@ -426,6 +630,7 @@ const dateOptions = [
         state.query ? params.set('q', state.query) : params.delete('q');
         state.source === 'all' ? params.delete('source') : params.set('source', state.source);
         state.category === 'all' ? params.delete('category') : params.set('category', state.category);
+        state.hazard === 'all' ? params.delete('hazard') : params.set('hazard', state.hazard);
         state.sort === 'best' ? params.delete('sort') : params.set('sort', state.sort);
         state.date === 'all' ? params.delete('date') : params.set('date', state.date);
 
@@ -437,6 +642,7 @@ const dateOptions = [
           state.query ||
             state.source !== 'all' ||
             state.category !== 'all' ||
+            state.hazard !== 'all' ||
             state.sort !== 'best' ||
             state.date !== 'all'
         );
@@ -447,6 +653,123 @@ const dateOptions = [
         tag.className = className;
         tag.textContent = text;
         return tag;
+      }
+
+      function incrementSuggestion(
+        map: Map<string, { label: string; count: number }>,
+        value: string | undefined,
+        label: string | undefined
+      ): void {
+        if (!value || !label || value === 'all') {
+          return;
+        }
+
+        const existing = map.get(value);
+        map.set(value, {
+          label,
+          count: (existing?.count ?? 0) + 1
+        });
+      }
+
+      function topSuggestions(map: Map<string, { label: string; count: number }>, limit = 3) {
+        return [...map.entries()]
+          .sort((a, b) => b[1].count - a[1].count || a[1].label.localeCompare(b[1].label))
+          .slice(0, limit)
+          .map(([value, suggestion]) => ({ value, ...suggestion }));
+      }
+
+      function createRefineChip(label: string, count: number, onClick: () => void): HTMLButtonElement {
+        const button = document.createElement('button');
+        button.className = 'refine-chip';
+        button.type = 'button';
+        const text = document.createElement('span');
+        text.textContent = label;
+        const badge = document.createElement('strong');
+        badge.textContent = String(count);
+        button.append(text, badge);
+        button.addEventListener('click', onClick);
+        return button;
+      }
+
+      function renderRefineChips(items: SearchItem[], state: SearchState): void {
+        if (!refine) {
+          return;
+        }
+
+        const sourceSuggestions = new Map<string, { label: string; count: number }>();
+        const categorySuggestions = new Map<string, { label: string; count: number }>();
+        const hazardSuggestions = new Map<string, { label: string; count: number }>();
+
+        items.forEach(({ recall }) => {
+          incrementSuggestion(sourceSuggestions, recall.source, recall.sourceLabel);
+          incrementSuggestion(categorySuggestions, recall.taxonomyProductFamily, recall.taxonomyProductFamilyLabel);
+          incrementSuggestion(hazardSuggestions, recall.taxonomyHazardType, recall.taxonomyHazardTypeLabel);
+        });
+
+        const chips: HTMLButtonElement[] = [];
+
+        if (state.source === 'all') {
+          topSuggestions(sourceSuggestions, 2).forEach((suggestion) => {
+            if (!sourceValues.includes(suggestion.value as SourceFilter)) {
+              return;
+            }
+            chips.push(createRefineChip(suggestion.label, suggestion.count, () => {
+              if (sourceFilter) {
+                sourceFilter.value = suggestion.value;
+              }
+              if (advancedFilters) {
+                advancedFilters.open = true;
+              }
+              updateSearch();
+            }));
+          });
+        }
+
+        if (state.category === 'all') {
+          topSuggestions(categorySuggestions, 2).forEach((suggestion) => {
+            if (!categoryValues.includes(suggestion.value as CategoryFilter)) {
+              return;
+            }
+            chips.push(createRefineChip(suggestion.label, suggestion.count, () => {
+              if (categoryFilter) {
+                categoryFilter.value = suggestion.value;
+              }
+              if (advancedFilters) {
+                advancedFilters.open = true;
+              }
+              updateSearch();
+            }));
+          });
+        }
+
+        if (state.hazard === 'all') {
+          topSuggestions(hazardSuggestions, 3).forEach((suggestion) => {
+            if (!hazardValues.includes(suggestion.value)) {
+              return;
+            }
+            chips.push(createRefineChip(suggestion.label, suggestion.count, () => {
+              if (hazardFilter) {
+                hazardFilter.value = suggestion.value;
+              }
+              if (advancedFilters) {
+                advancedFilters.open = true;
+              }
+              updateSearch();
+            }));
+          });
+        }
+
+        if (!chips.length) {
+          refine.hidden = true;
+          refine.replaceChildren();
+          return;
+        }
+
+        const label = document.createElement('span');
+        label.className = 'refine-label';
+        label.textContent = 'Narrow results';
+        refine.replaceChildren(label, ...chips);
+        refine.hidden = false;
       }
 
       function createImageShell(recall: BrowseRecall): HTMLElement {
@@ -542,6 +865,7 @@ const dateOptions = [
         meta.className = 'meta-row result-card-badges';
         meta.append(
           createTag(MATCH_LABELS[match], 'badge-danger'),
+          createTag(item.searchPriorityLabel, 'badge-score'),
           createTag(recall.sourceLabel, 'badge-source'),
           createTag(recall.taxonomyProductFamilyLabel || recall.categoryLabel),
           ...(recall.taxonomyHazardTypeLabel ? [createTag(recall.taxonomyHazardTypeLabel, 'badge-danger')] : []),
@@ -559,7 +883,11 @@ const dateOptions = [
         const product = createCardLine('Product', productTextFor(recall));
         const brand = createCardLine('Brand/company', brandTextFor(recall));
         const taxonomy = createCardLine('Classification', taxonomyTextFor(recall), 'result-card-line taxonomy-card-line');
-        const matchReason = createCardLine('Match reason', item.matchReasonLabel, 'result-card-line match-reason-line');
+        const matchReason = createCardLine(
+          'Why shown',
+          item.evidenceLabels.length ? item.evidenceLabels.join(' / ') : item.matchReasonLabel,
+          'result-card-line match-reason-line'
+        );
         const identifierHint = document.createElement('p');
         identifierHint.className = 'identifier-hint';
         identifierHint.textContent = item.identifierHint;
@@ -708,6 +1036,7 @@ const dateOptions = [
         const parts = [
           state.source === 'all' ? 'All countries and sources' : getRecallSourceLabel(state.source),
           categoryFilterLabels[state.category],
+          hazardFilterLabels[state.hazard] ?? 'all issues',
           state.date === 'all' ? 'all time' : `last ${state.date} days`,
           state.sort === 'best' ? 'best match' : state.sort === 'newest' ? 'newest first' : 'oldest first'
         ];
@@ -729,9 +1058,13 @@ const dateOptions = [
         }
 
         if (!state.query) {
+          if (refine) {
+            refine.hidden = true;
+            refine.replaceChildren();
+          }
           const browseRecalls = sortBrowseRecalls(filteredRecalls, state.sort);
           const shouldShowBrowseResults =
-            state.source !== 'all' || state.category !== 'all' || state.date !== 'all';
+            state.source !== 'all' || state.category !== 'all' || state.hazard !== 'all' || state.date !== 'all';
 
           panel.dataset.match = 'none';
           matchLabel.textContent = shouldShowBrowseResults ? 'Filtered notices' : 'Recall notices';
@@ -762,10 +1095,16 @@ const dateOptions = [
           result.match === 'none' ? 'No clear match found.' : `Possible recall matches for "${state.query}".`;
 
         if (result.match === 'none') {
+          if (refine) {
+            refine.hidden = true;
+            refine.replaceChildren();
+          }
           list.replaceChildren(createNoResultState());
           initProgressiveCardImages();
           return;
         }
+
+        renderRefineChips(sortedItems, state);
 
         if (state.sort === 'best') {
           const groupedResults = (['exact', 'possible', 'related'] as const)
@@ -815,7 +1154,7 @@ const dateOptions = [
         updateSearch();
       });
 
-      [sourceFilter, categoryFilter, sortFilter, dateFilter].forEach((filter) => {
+      [sourceFilter, categoryFilter, hazardFilter, sortFilter, dateFilter].forEach((filter) => {
         filter?.addEventListener('change', updateSearch);
       });
       saveSearchButton?.addEventListener('click', saveCurrentSearch);
@@ -825,6 +1164,7 @@ const dateOptions = [
         advancedFilters &&
         (initialState.source !== 'all' ||
           initialState.category !== 'all' ||
+          initialState.hazard !== 'all' ||
           initialState.date !== 'all' ||
           initialState.sort !== 'best')
       ) {

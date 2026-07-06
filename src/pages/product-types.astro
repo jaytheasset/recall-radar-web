@@ -1,0 +1,96 @@
+---
+import SiteHeader from '../components/SiteHeader.astro';
+import { categoryRoutes, getRecallsByCategory, processedLocalRecordCount } from '../lib/recall-data';
+import '../styles/global.css';
+
+const title = 'Product Types | Recall Radar';
+const description = 'Browse official recall notices by product type, including food, baby products, electronics, appliances, vehicles, tools, and more.';
+const productFamilyOrder = [
+  'food-grocery',
+  'baby-kids',
+  'electronics-batteries',
+  'home-appliances',
+  'furniture-household',
+  'vehicles-mobility',
+  'sports-outdoor',
+  'tools-equipment',
+  'clothing-accessories',
+  'health-personal-care',
+  'chemicals-cleaning',
+  'pet-products',
+  'industrial-workplace',
+  'other',
+  'need-review'
+];
+const productFamilyRoutes = [
+  ...productFamilyOrder
+    .map((category) => categoryRoutes.find((route) => route.category === category))
+    .filter((route): route is (typeof categoryRoutes)[number] => Boolean(route)),
+  ...categoryRoutes.filter((route) => !productFamilyOrder.includes(route.category))
+];
+const productFamilyIconSvg: Record<string, string> = {
+  'baby-kids': '<path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.3.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 1 1-14 0"/><path d="M9 6.3a3 3 0 1 1 6 0"/>',
+  'electronics-batteries': '<path d="M15 7h1a2 2 0 0 1 2 2v1h1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2h-2"/><path d="M8 7H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h1"/><path d="m11 7-3 5h4l-3 5"/>',
+  'food-grocery': '<path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M5 11l4-7"/>',
+  'home-appliances': '<path d="M5 6a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6Z"/><path d="M5 10h14"/><path d="M15 7v.01"/><path d="M15 13v.01"/>',
+  'furniture-household': '<path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"/><path d="M3 11v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6"/><path d="M5 19v2"/><path d="M19 19v2"/><path d="M5 11a2 2 0 0 1 4 0v2h6v-2a2 2 0 0 1 4 0"/>',
+  'vehicles-mobility': '<path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3C13.3 7.3 12.7 7 12 7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/>',
+  'sports-outdoor': '<path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/>',
+  'clothing-accessories': '<path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 1 .84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.14a1 1 0 0 0 1-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>',
+  'tools-equipment': '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z"/>',
+  'health-personal-care': '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/>',
+  'chemicals-cleaning': '<path d="M10 2v7.31"/><path d="M14 9.3V2"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.58 16h12.85"/>',
+  'pet-products': '<path d="M17 10c.7-.7 1.5-1 2.5-1A3.5 3.5 0 0 1 23 12.5c0 1-.3 1.8-1 2.5l-7 7H7l7-7c.7-.7 1.5-1 2.5-1"/><path d="m6 8 2-2"/><path d="m8 6 2-2"/><path d="m2 12 2-2"/><path d="m4 10 2-2"/>',
+  'industrial-workplace': '<path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/>',
+  other: '<path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>',
+  'need-review': '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>'
+};
+const productTypes = productFamilyRoutes.map((route) => ({
+  ...route,
+  count: getRecallsByCategory(route.category).length
+}));
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <SiteHeader />
+
+    <main class="page-shell directory-page">
+      <section class="directory-hero">
+        <p class="eyebrow">Product types</p>
+        <h1>Find recalls by product type</h1>
+        <p class="lead">Browse {processedLocalRecordCount} official recall notices by the kind of product involved.</p>
+      </section>
+
+      <section class="section">
+        <div class="category-grid directory-product-type-grid">
+          {productTypes.map((type) => (
+            <a class="category-card home-product-type-card" href={type.href}>
+              <span class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <Fragment set:html={productFamilyIconSvg[type.category] ?? productFamilyIconSvg.other} />
+                </svg>
+              </span>
+              <span class="category-card-body">
+                <h3>{type.label}</h3>
+                <span class="category-count">{type.count} recalls</span>
+                <span class="home-card-link">View recalls <span aria-hidden="true">&rarr;</span></span>
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
+    </footer>
+  </body>
+</html>

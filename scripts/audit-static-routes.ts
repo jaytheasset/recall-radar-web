@@ -8,6 +8,8 @@ const requiredRoutes = [
   '/',
   '/checker',
   '/watchlist',
+  '/product-types',
+  '/countries',
   '/baby-product-recalls',
   '/battery-recalls',
   '/food-allergy-recalls',
