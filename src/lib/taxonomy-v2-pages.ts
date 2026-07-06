@@ -6,6 +6,7 @@ import {
   getProductTypeLabel,
   TAXONOMY_V2_PUBLIC_CATEGORY_ORDER
 } from './taxonomy-v2-display';
+import { needsTaxonomyReview } from './taxonomy-review';
 
 export type TaxonomyV2CategoryRoute = {
   href: string;
@@ -116,6 +117,10 @@ export function getTaxonomyV2CategoryHref(productFamily: string): string {
 }
 
 export function recallMatchesTaxonomyCategory(recall: SiteRecall, category: string): boolean {
+  if (category === 'unknown') {
+    return needsTaxonomyReview(recall);
+  }
+
   return recall.taxonomyProductFamily === category || recall.category === category;
 }
 

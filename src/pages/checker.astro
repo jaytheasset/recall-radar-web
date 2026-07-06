@@ -573,6 +573,7 @@ const sourceCardDetails = {
             state.category === 'all' ||
             family === state.category ||
             recall.category === state.category ||
+            (state.category === 'unknown' && needsTaxonomyReview(recall)) ||
             (state.category === 'general' && recall.category === 'general-consumer-product') ||
             (state.category === 'food-grocery' && recall.category === 'food-allergy') ||
             (state.category === 'electronics-batteries' && recall.category === 'battery-electronics') ||
