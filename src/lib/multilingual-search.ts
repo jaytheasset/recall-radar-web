@@ -106,7 +106,7 @@ export function expandSearchQuery(query: string): string[] {
   }
 
   for (const group of SEARCH_ALIAS_GROUPS) {
-    if (group.id === 'recall-alert' && hasNoiseStopWord) {
+    if ((group.id === 'recall-alert' || group.id === 'identifiers') && hasNoiseStopWord) {
       continue;
     }
 

@@ -1,6 +1,9 @@
 export type MultilingualScenarioGroup =
   | 'Korean'
   | 'Japanese'
+  | 'Chinese'
+  | 'Spanish'
+  | 'German'
   | 'English controls'
   | 'French/source terms'
   | 'mixed-language'
@@ -145,6 +148,49 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     query: '\u304A\u3082\u3061\u3083',
     minMatches: 1,
     expectedAliases: ['toy']
+  },
+  {
+    id: 'zh-power-bank',
+    group: 'Chinese',
+    query: '\u5145\u7535\u5B9D',
+    minMatches: 1,
+    expectedAliases: ['power bank', 'portable charger']
+  },
+  {
+    id: 'zh-allergen',
+    group: 'Chinese',
+    query: '\u8FC7\u654F\u539F',
+    minMatches: 1,
+    expectedAliases: ['allergen', 'undeclared']
+  },
+  {
+    id: 'zh-barcode',
+    group: 'Chinese',
+    query: '\u6761\u5F62\u7801',
+    minMatches: 1,
+    expectedAliases: ['barcode', 'upc']
+  },
+  {
+    id: 'es-charger',
+    group: 'Spanish',
+    query: 'cargador',
+    minMatches: 1,
+    expectedAliases: ['charger', 'adapter']
+  },
+  {
+    id: 'es-allergen',
+    group: 'Spanish',
+    query: 'alergeno',
+    minMatches: 1,
+    expectedAliases: ['allergen', 'undeclared']
+  },
+  {
+    id: 'de-smoke-detector',
+    group: 'German',
+    query: 'rauchmelder',
+    minMatches: 1,
+    expectedAliases: ['smoke detector', 'smoke alarm'],
+    rankingTerms: ['smoke detector', 'carbon monoxide']
   },
   {
     id: 'en-power-bank',

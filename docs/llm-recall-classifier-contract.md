@@ -12,6 +12,8 @@ Phase 43 defines where this classification will live in future records: `Normali
 - It must not require a database.
 - It must not add user-facing AI summaries.
 - It must not rewrite official source facts.
+- V2 product family, product type, hazard type, recall domain, and audience are classifier-owned by default. Parser outputs are evidence only.
+- Ambiguous records should keep the best enum-backed classification the model can justify, set `needsReview: true`, and explain the warning in `reason`.
 
 ## Input Fields
 
