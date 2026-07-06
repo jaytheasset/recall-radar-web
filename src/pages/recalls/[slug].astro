@@ -53,24 +53,54 @@ function hasFactValue(value: string | string[] | undefined): value is string | s
 function pageFact(label: string, value: string | string[] | undefined): DetailFact | undefined {
   return hasFactValue(value) ? { label, value } : undefined;
 }
+function uniqueText(values: string[]): string[] {
+  return [...new Set(values.map((value) => value.replace(/\s+/g, ' ').trim()).filter(Boolean))];
+}
+function isUsefulDisplayValue(value: string | undefined): value is string {
+  const text = value?.trim() ?? '';
+  return Boolean(text) && !/^unknown\b/i.test(text) && !/^need review\b/i.test(text);
+}
+function simplifyActionText(value: string): string {
+  return value
+    .replace(/\s+(?:via|by)\s+email\s+[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, '')
+    .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, '')
+    .replace(/\b(?:call|phone|tel)\s*:?\s*[+()0-9][0-9 ()+-]{6,}[0-9]\b/gi, '')
+    .replace(/\b(?:email|visit|web)\s*:?\s*/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+function isContactOnlyAction(value: string): boolean {
+  const text = value.replace(/\s+/g, ' ').trim();
+  return /^Contact\s+[^.]+\.?$/i.test(text) || /^(?:Call|Email|Visit|Web)\b/i.test(text);
+}
+function actionDisplayItems(values: string[]): string[] {
+  return uniqueText(values.map(simplifyActionText)).filter((value) => value && !isContactOnlyAction(value));
+}
+function actionContactItems(values: string[]): string[] {
+  const text = values.join(' ');
+  const emails = [...text.matchAll(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi)].map((match) => `Email: ${match[0]}`);
+  const phones = [...text.matchAll(/\b(?:call|phone|tel)\s*:?\s*([+()0-9][0-9 ()+-]{6,}[0-9])\b/gi)].map(
+    (match) => `Phone: ${match[1].trim()}`
+  );
+  const links = [...text.matchAll(/\b(?:https?:\/\/[^\s)]+|www\.[^\s)]+)/gi)].map((match) => `Website: ${match[0]}`);
+  return uniqueText([...emails, ...phones, ...links]);
+}
+const displayProductTypeLabel = isUsefulDisplayValue(view.taxonomyProductTypeLabel) ? view.taxonomyProductTypeLabel : '';
+const displayAudienceLabels = view.taxonomyAudienceLabels.filter(isUsefulDisplayValue);
+const displayActionItems = actionDisplayItems(view.actionParagraphs.length ? view.actionParagraphs : [view.action]);
+const displayContactItems = actionContactItems([view.action, view.consumerContact]);
 const productIdentityFacts = [
   pageFact('Product', view.productName),
   pageFact('Brand / company', view.brandName),
   pageFact(view.quantityLabel, view.units),
   pageFact('Record ID', view.recallNumber || recall.id)
 ].filter((fact): fact is DetailFact => Boolean(fact));
-const classificationFacts = [
+const categoryFacts = [
   pageFact('Product family', view.taxonomyProductFamilyLabel),
-  pageFact('Product type', view.taxonomyProductTypeLabel),
+  pageFact('Product type', displayProductTypeLabel),
   pageFact('Issue / hazard type', view.taxonomyHazardTypeLabel),
   pageFact('Recall domain', view.taxonomyRecallDomainLabel),
-  pageFact('Audience', view.taxonomyAudienceLabels),
-  pageFact('Classification note', view.taxonomyReason)
-].filter((fact): fact is DetailFact => Boolean(fact));
-const riskActionFacts = [
-  pageFact('Risk / issue', view.reason),
-  pageFact('What to do', view.action),
-  pageFact('Incidents reported', view.incidents)
+  pageFact('Audience', displayAudienceLabels)
 ].filter((fact): fact is DetailFact => Boolean(fact));
 const officialSourceFacts = [
   pageFact('Source', view.sourceBadge),
@@ -225,10 +255,10 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
               <strong>Product family</strong>
               <span>{view.taxonomyProductFamilyLabel}</span>
             </div>
-            {view.taxonomyProductTypeLabel ? (
+            {displayProductTypeLabel ? (
               <div>
                 <strong>Product type</strong>
-                <span>{view.taxonomyProductTypeLabel}</span>
+                <span>{displayProductTypeLabel}</span>
               </div>
             ) : null}
             {view.taxonomyHazardTypeLabel ? (
@@ -247,9 +277,15 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
             </div>
           </div>
           <div class="summary-alert">
-            <strong>What to check first</strong>
+            <strong>Risk / issue</strong>
             <p>{view.reason}</p>
           </div>
+          {displayActionItems.length ? (
+            <div class="summary-action">
+              <strong>What to do</strong>
+              <p>{displayActionItems[0]}</p>
+            </div>
+          ) : null}
           <div class="link-row">
             <a class="btn btn-primary" href="#what-to-check">What to check</a>
             {view.officialSourceUrl ? (
@@ -261,61 +297,63 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         </aside>
       </section>
 
-      <section class="section detail-v2-overview" aria-label="Structured recall overview">
-        <article class="detail-card detail-section-card v2-overview-card">
-          <p class="eyebrow">Product identity</p>
-          <h2>What product is involved</h2>
-          <div class="detail-fact-grid v2-fact-grid">
-            {productIdentityFacts.map((fact) => (
-              <div class="detail-fact">
-                <strong>{fact.label}</strong>
-                {Array.isArray(fact.value) ? (
-                  <ul>
-                    {fact.value.map((item) => <li>{item}</li>)}
-                  </ul>
-                ) : (
-                  <span>{fact.value}</span>
-                )}
-              </div>
-            ))}
+      <section class="section detail-priority-section" aria-label="Recall key details">
+        <article class="detail-card detail-section-card detail-priority-card">
+          <div class="section-header">
+            <div>
+              <p class="eyebrow">Key details</p>
+              <h2>What to know first</h2>
+            </div>
           </div>
-        </article>
-
-        <article class="detail-card detail-section-card v2-overview-card v2-classification-card">
-          <p class="eyebrow">Taxonomy V2</p>
-          <h2>How Recall Radar classifies it</h2>
-          <div class="detail-fact-grid v2-fact-grid">
-            {classificationFacts.map((fact) => (
-              <div class="detail-fact">
-                <strong>{fact.label}</strong>
-                {Array.isArray(fact.value) ? (
-                  <ul>
-                    {fact.value.map((item) => <li>{item}</li>)}
-                  </ul>
-                ) : (
-                  <span>{fact.value}</span>
-                )}
+          <div class="detail-priority-grid">
+            <section class="detail-priority-panel detail-priority-risk" aria-labelledby="priority-risk">
+              <h3 id="priority-risk">Risk / issue</h3>
+              <p>{view.reason}</p>
+            </section>
+            {displayActionItems.length ? (
+              <section class="detail-priority-panel detail-priority-action" aria-labelledby="priority-action">
+                <h3 id="priority-action">What to do</h3>
+                <ul class="detail-action-list compact">
+                  {displayActionItems.slice(0, 3).map((item) => <li>{item}</li>)}
+                </ul>
+              </section>
+            ) : null}
+            <section class="detail-priority-panel" aria-labelledby="priority-product">
+              <h3 id="priority-product">Product to compare</h3>
+              <div class="detail-fact-grid compact-fact-grid">
+                {productIdentityFacts.map((fact) => (
+                  <div class="detail-fact">
+                    <strong>{fact.label}</strong>
+                    {Array.isArray(fact.value) ? (
+                      <ul>
+                        {fact.value.map((item) => <li>{item}</li>)}
+                      </ul>
+                    ) : (
+                      <span>{fact.value}</span>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </article>
-
-        <article class="detail-card detail-section-card v2-overview-card v2-risk-card">
-          <p class="eyebrow">Recall risk</p>
-          <h2>Issue and action</h2>
-          <div class="detail-fact-grid v2-fact-grid">
-            {riskActionFacts.map((fact) => (
-              <div class="detail-fact">
-                <strong>{fact.label}</strong>
-                {Array.isArray(fact.value) ? (
-                  <ul>
-                    {fact.value.map((item) => <li>{item}</li>)}
-                  </ul>
-                ) : (
-                  <span>{fact.value}</span>
-                )}
-              </div>
-            ))}
+            </section>
+            {categoryFacts.length ? (
+              <section class="detail-priority-panel" aria-labelledby="priority-category">
+                <h3 id="priority-category">Product category</h3>
+                <div class="detail-fact-grid compact-fact-grid">
+                  {categoryFacts.map((fact) => (
+                    <div class="detail-fact">
+                      <strong>{fact.label}</strong>
+                      {Array.isArray(fact.value) ? (
+                        <ul>
+                          {fact.value.map((item) => <li>{item}</li>)}
+                        </ul>
+                      ) : (
+                        <span>{fact.value}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : null}
           </div>
         </article>
       </section>
@@ -364,7 +402,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         </article>
       </section>
 
-      {view.actionParagraphs.length ? (
+      {displayActionItems.length ? (
         <section class="section">
           <article class="detail-card detail-section-card">
             <div class="section-header">
@@ -373,14 +411,16 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
                 <h2>Recommended consumer action</h2>
               </div>
             </div>
-            <div class="detail-prose">
-              {view.actionParagraphs.map((paragraph) => <p>{paragraph}</p>)}
-            </div>
-            {view.consumerContact ? (
+            <ul class="detail-action-list">
+              {displayActionItems.map((paragraph) => <li>{paragraph}</li>)}
+            </ul>
+            {displayContactItems.length || view.consumerContact ? (
               <div class="detail-fact-grid detail-action-facts">
                 <div class="detail-fact">
                   <strong>Consumer contact</strong>
-                  <span>{view.consumerContact}</span>
+                  <ul>
+                    {uniqueText([...displayContactItems, view.consumerContact]).map((item) => <li>{item}</li>)}
+                  </ul>
                 </div>
               </div>
             ) : null}
