@@ -1,5 +1,6 @@
 ---
 // @ts-nocheck
+import SiteHeader from '../../components/SiteHeader.astro';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -220,14 +221,7 @@ const description =
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="/">Recall Radar</a>
-      <nav class="site-nav" aria-label="Primary">
-        <a href="/checker">Product Recall Checker</a>
-        <a href="/watchlist">Watchlist</a>
-        <a href="/dev/taxonomy-v2-preview">Taxonomy V2 Structure</a>
-      </nav>
-    </header>
+    <SiteHeader />
 
     <main class="taxonomy-results-shell">
       <section class="taxonomy-results-hero">

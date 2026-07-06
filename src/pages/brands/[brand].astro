@@ -1,4 +1,5 @@
 ---
+import SiteHeader from '../../components/SiteHeader.astro';
 import EuImageResourceHints from '../../components/EuImageResourceHints.astro';
 import { brandGroups } from '../../lib/recall-data';
 import { getRecallImageForContext } from '../../lib/recall-images';
@@ -32,15 +33,7 @@ const description = `Indexed recall notices linked to ${brand}, with related pro
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="/">Recall Radar</a>
-      <nav class="site-nav" aria-label="Primary">
-        <a href="/checker">Product Recall Checker</a>
-        <a href="/#browse-recalls">Browse Recalls</a>
-        <a href="/#official-sources">Sources</a>
-        <a href="/watchlist">Watchlist</a>
-      </nav>
-    </header>
+    <SiteHeader />
 
     <main class="page-shell">
       <section class="section">

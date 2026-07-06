@@ -1,4 +1,5 @@
 ---
+import SiteHeader from '../../components/SiteHeader.astro';
 import {
   getAudienceLabel,
   getHazardTypeLabel,
@@ -31,15 +32,7 @@ const detailPreviewRecord =
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="/">Recall Radar</a>
-      <nav class="site-nav" aria-label="Primary">
-        <a href="/checker">Product Recall Checker</a>
-        <a href="/#browse-recalls">Browse Recalls</a>
-        <a href="/#official-sources">Sources</a>
-        <a href="/watchlist">Watchlist</a>
-      </nav>
-    </header>
+    <SiteHeader />
 
     <main class="page-shell taxonomy-preview-page">
       <section class="preview-hero">

@@ -1,34 +1,42 @@
 ---
+import SiteHeader from '../components/SiteHeader.astro';
 import EuImageResourceHints from '../components/EuImageResourceHints.astro';
 import {
-  brandGroups,
-  categoryRoutes,
-  dataSourceLabel,
   processedAustraliaProductSafetyRecordCount,
   processedCanadaRecordCount,
   processedCpscRecordCount,
   processedEuSafetyGateRecordCount,
   processedFdaRecordCount,
+  processedFsanzFoodRecallRecordCount,
   processedFranceRappelConsoRecordCount,
   processedHongKongCfsRecordCount,
   processedLocalRecordCount,
   processedNewZealandProductSafetyRecordCount,
   processedUkFsaRecordCount,
-  siteRecalls,
-  usingProcessedLocalData
+  siteRecalls
 } from '../lib/recall-data';
 import { getRecallImageForContext } from '../lib/recall-images';
 import { cleanRecallDisplayText } from '../lib/recall-display-text';
 import { getSourceOptionsForCurrentCoverage } from '../lib/recall-sources';
-import { getIdentifierSearchHint, IDENTIFIER_SEARCH_PLACEHOLDER } from '../lib/identifier-guidance';
-import { getSourceLandingPageCards } from '../lib/source-landing-pages';
+import { IDENTIFIER_SEARCH_PLACEHOLDER } from '../lib/identifier-guidance';
 import '../styles/global.css';
 
 const title = 'Product Recall Checker | Recall Radar';
 const description =
   'Search product recalls by keyword, product, brand, model number, barcode, lot or batch code, date mark, recall number, ingredient, allergen, or official source.';
-const identifierSearchHint = getIdentifierSearchHint();
-const featuredBrands = brandGroups.slice(0, 18);
+const activeSourceCount = [
+  processedCpscRecordCount,
+  processedFdaRecordCount,
+  processedFranceRappelConsoRecordCount,
+  processedCanadaRecordCount,
+  processedEuSafetyGateRecordCount,
+  processedUkFsaRecordCount,
+  processedAustraliaProductSafetyRecordCount,
+  processedNewZealandProductSafetyRecordCount,
+  processedHongKongCfsRecordCount,
+  processedFsanzFoodRecallRecordCount
+].filter((count) => count > 0).length;
+const checkerCountLine = `Search ${processedLocalRecordCount} recall notices from ${activeSourceCount} official sources.`;
 const checkerRecalls = siteRecalls.map((recall) => {
   const cardImage = getRecallImageForContext(recall, 'list');
 
@@ -83,11 +91,11 @@ const checkerRecalls = siteRecalls.map((recall) => {
 });
 const checkerRecallsJson = JSON.stringify(checkerRecalls);
 const sourceOptions = [
-  { value: 'all', label: 'All markets' },
+  { value: 'all', label: 'All countries and sources' },
   ...getSourceOptionsForCurrentCoverage()
 ];
 const categoryOptions = [
-  { value: 'all', label: 'All product families' },
+  { value: 'all', label: 'All product types' },
   { value: 'food-grocery', label: 'Food & Grocery' },
   { value: 'baby-kids', label: 'Baby & Kids' },
   { value: 'electronics-batteries', label: 'Electronics & Batteries' },
@@ -115,7 +123,6 @@ const dateOptions = [
   { value: '30', label: 'Last 30 days' },
   { value: '90', label: 'Last 90 days' }
 ];
-const sourcePages = getSourceLandingPageCards();
 ---
 
 <html lang="en">
@@ -128,52 +135,21 @@ const sourcePages = getSourceLandingPageCards();
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="/">Recall Radar</a>
-      <nav class="site-nav" aria-label="Primary">
-        <a href="/checker">Product Recall Checker</a>
-        <a href="/#browse-recalls">Browse Recalls</a>
-        <a href="/#official-sources">Sources</a>
-        <a href="/watchlist">Watchlist</a>
-      </nav>
-    </header>
+    <SiteHeader />
 
-    <main class="page-shell">
+    <main class="page-shell checker-page">
       <section class="section">
-        <p class="eyebrow">Product recall search</p>
-        <h1>Search product recalls</h1>
-        <p class="lead">Search official recall notices by product, brand, model number, lot or batch code, date mark, recall number, barcode, ingredient, allergen, or keyword.</p>
-        <div class="meta-row data-source-row">
-          <span class="status-pill">{dataSourceLabel}</span>
-          <span class="tag">
-            {usingProcessedLocalData ? `${processedLocalRecordCount} indexed notices` : 'Sample notices'}
-          </span>
-          {usingProcessedLocalData ? (
-            <>
-              <span class="tag">{processedCpscRecordCount} consumer product notices</span>
-              <span class="tag">{processedFdaRecordCount} food enforcement notices</span>
-              <span class="tag">{processedFranceRappelConsoRecordCount} France RappelConso notices</span>
-              <span class="tag">{processedCanadaRecordCount} Canada recall and safety alert notices</span>
-              <span class="tag">{processedEuSafetyGateRecordCount} EU Safety Gate alerts</span>
-              <span class="tag">{processedUkFsaRecordCount} UK FSA food alerts</span>
-              <span class="tag">{processedAustraliaProductSafetyRecordCount} Australia Product Safety notices</span>
-              <span class="tag">{processedNewZealandProductSafetyRecordCount} New Zealand Product Safety notices</span>
-              <span class="tag">{processedHongKongCfsRecordCount} Hong Kong CFS food alerts</span>
-            </>
-          ) : null}
+        <div class="checker-hero">
+          <h1>Search recalls</h1>
+          <p class="lead">Search by product, brand, model, barcode, lot, date, ingredient, or recall number.</p>
+          <p class="checker-count-line">{checkerCountLine}</p>
         </div>
 
         <section class="search-board" aria-labelledby="checker-form-title">
-          <div class="section-header">
-            <div>
-              <p class="eyebrow">Search</p>
-              <h2 id="checker-form-title">Check a product, brand, code, or ingredient</h2>
-            </div>
-            <span class="badge-source">Official-source notices</span>
-          </div>
+          <h2 id="checker-form-title" class="sr-only">Recall search</h2>
           <form id="recall-search-form" class="search-form checker-search-form">
             <label class="search-query-field">
-              Search term
+              <span class="sr-only">Search term</span>
               <input
                 id="recall-query"
                 name="q"
@@ -182,47 +158,55 @@ const sourcePages = getSourceLandingPageCards();
                 autocomplete="off"
               />
             </label>
-            <button class="btn btn-primary" type="submit">Check recalls</button>
-            <button id="save-search-watchlist" class="btn btn-secondary" type="button">Save this search</button>
-            <div class="filter-grid" aria-label="Recall search filters">
-              <label>
-                Market / source
-                <select id="source-filter" name="source">
-                  {sourceOptions.map((option) => <option value={option.value}>{option.label}</option>)}
-                </select>
-              </label>
-              <label>
-                Product family
-                <select id="category-filter" name="category">
-                  {categoryOptions.map((option) => <option value={option.value}>{option.label}</option>)}
-                </select>
-              </label>
-              <label>
-                Sort
-                <select id="sort-filter" name="sort">
-                  {sortOptions.map((option) => <option value={option.value}>{option.label}</option>)}
-                </select>
-              </label>
-              <label>
-                Notice date
-                <select id="date-filter" name="date">
-                  {dateOptions.map((option) => <option value={option.value}>{option.label}</option>)}
-                </select>
-              </label>
-            </div>
+            <button class="btn btn-primary" type="submit">Search</button>
+            <details id="advanced-filters" class="advanced-filters">
+              <summary>More filters</summary>
+              <div class="filter-grid" aria-label="Recall search filters">
+                <label>
+                  Country or source
+                  <select id="source-filter" name="source">
+                    {sourceOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                  </select>
+                </label>
+                <label>
+                  Product type
+                  <select id="category-filter" name="category">
+                    {categoryOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                  </select>
+                </label>
+                <label>
+                  Date
+                  <select id="date-filter" name="date">
+                    {dateOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                  </select>
+                </label>
+                <label>
+                  Sort
+                  <select id="sort-filter" name="sort">
+                    {sortOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                  </select>
+                </label>
+              </div>
+            </details>
           </form>
-          <p class="form-note search-guidance-note">{identifierSearchHint}</p>
-          <p id="save-search-status" class="form-note" hidden></p>
           <div class="example-searches" aria-label="Example searches">
             <span>Examples:</span>
             <a class="tag" href="/checker?q=baby%20sleeper">baby sleeper</a>
             <a class="tag" href="/checker?q=power%20bank">power bank</a>
-            <a class="tag" href="/checker?q=pistachio&source=FDA">pistachio in FDA</a>
-            <a class="tag" href="/checker?q=smoke%20detector&source=CPSC">smoke detector in CPSC</a>
+            <a class="tag" href="/checker?q=pistachio">pistachio</a>
+            <a class="tag" href="/checker?q=smoke%20detector">smoke detector</a>
           </div>
           <p class="disclaimer-copy">
-            Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
+            Results are possible matches. Always check the official notice.
           </p>
+          <p class="checker-browse-hint">
+            Browse instead:
+            <a href="/#browse-recalls">Product types</a>
+            <span aria-hidden="true">·</span>
+            <a href="/#official-sources">Countries</a>
+          </p>
+          <button id="save-search-watchlist" class="save-search-link" type="button" hidden>Save this search</button>
+          <p id="save-search-status" class="form-note" hidden></p>
           <div id="search-results" class="notice-panel result-panel" hidden>
             <div class="meta-row">
               <span id="result-match" class="status-pill">No clear match</span>
@@ -234,50 +218,6 @@ const sourcePages = getSourceLandingPageCards();
             <p id="result-disclaimer"></p>
           </div>
         </section>
-      </section>
-
-      <section class="section">
-        <div class="section-header">
-          <h2>Browse by product family</h2>
-        </div>
-        <div class="category-grid">
-          {categoryRoutes.map((route) => (
-            <a class="category-card" href={route.href}>
-              <span class="category-visual" aria-hidden="true"><span>{route.label.charAt(0)}</span></span>
-              <span class="category-card-body">
-                <h3>{route.label}</h3>
-                <p>{route.description}</p>
-              </span>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="section-header">
-          <h2>Browse by country or source</h2>
-        </div>
-        <div class="category-grid source-country-grid">
-          {sourcePages.map((page) => (
-            <a class="category-card source-country-card" href={page.route}>
-              <span class="category-card-body">
-                <h3>{page.eyebrow}</h3>
-                <p>{page.description}</p>
-                <span class="category-count">{page.count} indexed notice{page.count === 1 ? '' : 's'}</span>
-                <span class="source-card-labels">{page.sourceLabels.join(' + ')}</span>
-              </span>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="section-header">
-          <h2>Brand watch pages</h2>
-        </div>
-        <div class="tag-row">
-          {featuredBrands.map((group) => <a class="tag" href={`/brands/${group.slug}`}>{group.brand}</a>)}
-        </div>
       </section>
     </main>
 
@@ -313,6 +253,7 @@ const sourcePages = getSourceLandingPageCards();
       const categoryFilter = document.querySelector<HTMLSelectElement>('#category-filter');
       const sortFilter = document.querySelector<HTMLSelectElement>('#sort-filter');
       const dateFilter = document.querySelector<HTMLSelectElement>('#date-filter');
+      const advancedFilters = document.querySelector<HTMLDetailsElement>('#advanced-filters');
       const saveSearchButton = document.querySelector<HTMLButtonElement>('#save-search-watchlist');
       const saveSearchStatus = document.querySelector<HTMLElement>('#save-search-status');
       const panel = document.querySelector<HTMLElement>('#search-results');
@@ -392,7 +333,7 @@ const sourcePages = getSourceLandingPageCards();
         related: 'Related notices'
       };
       const categoryFilterLabels: Record<string, string> = {
-        all: 'all product families',
+        all: 'all product types',
         'food-grocery': 'Food & Grocery',
         'baby-kids': 'Baby & Kids',
         'electronics-batteries': 'Electronics & Batteries',
@@ -553,7 +494,7 @@ const sourcePages = getSourceLandingPageCards();
       }
 
       function reasonTextFor(recall: SearchItem['recall']): string {
-        return recall.hazard || recall.reason || 'Not listed in the indexed notice.';
+        return recall.hazard || recall.reason || 'Not listed in the recall notice.';
       }
 
       function actionTextFor(recall: SearchItem['recall']): string {
@@ -765,7 +706,7 @@ const sourcePages = getSourceLandingPageCards();
 
       function describeFilters(state: SearchState): string {
         const parts = [
-          state.source === 'all' ? 'All markets' : getRecallSourceLabel(state.source),
+          state.source === 'all' ? 'All countries and sources' : getRecallSourceLabel(state.source),
           categoryFilterLabels[state.category],
           state.date === 'all' ? 'all time' : `last ${state.date} days`,
           state.sort === 'best' ? 'best match' : state.sort === 'newest' ? 'newest first' : 'oldest first'
@@ -783,6 +724,9 @@ const sourcePages = getSourceLandingPageCards();
         panel.hidden = false;
         filterSummary.textContent = describeFilters(state);
         disclaimer.textContent = SEARCH_RESULTS_DISCLAIMER;
+        if (saveSearchButton) {
+          saveSearchButton.hidden = !state.query;
+        }
 
         if (!state.query) {
           const browseRecalls = sortBrowseRecalls(filteredRecalls, state.sort);
@@ -790,18 +734,18 @@ const sourcePages = getSourceLandingPageCards();
             state.source !== 'all' || state.category !== 'all' || state.date !== 'all';
 
           panel.dataset.match = 'none';
-          matchLabel.textContent = shouldShowBrowseResults ? 'Filtered notices' : 'Indexed notices';
-          countLabel.textContent = `${browseRecalls.length} indexed notice${
+          matchLabel.textContent = shouldShowBrowseResults ? 'Filtered notices' : 'Recall notices';
+          countLabel.textContent = `${browseRecalls.length} recall notice${
             browseRecalls.length === 1 ? '' : 's'
           }`;
           summary.textContent =
             shouldShowBrowseResults
-              ? `Showing indexed notices for ${describeFilters(state)}.`
-              : 'Search official recall notices by product, brand, model, lot or batch code, date mark, recall number, barcode, ingredient, or keyword.';
+              ? `Showing recall notices for ${describeFilters(state)}.`
+              : 'Search by product, brand, model, barcode, lot, date, ingredient, or recall number.';
           list.replaceChildren(
             ...(shouldShowBrowseResults
               ? browseRecalls.length
-                ? [createBrowseGroup('Filtered indexed notices', browseRecalls)]
+                ? [createBrowseGroup('Matching recall notices', browseRecalls)]
                 : [createNoResultState()]
               : [])
           );
@@ -877,6 +821,15 @@ const sourcePages = getSourceLandingPageCards();
       saveSearchButton?.addEventListener('click', saveCurrentSearch);
 
       const initialState = writeStateFromUrl();
+      if (
+        advancedFilters &&
+        (initialState.source !== 'all' ||
+          initialState.category !== 'all' ||
+          initialState.date !== 'all' ||
+          initialState.sort !== 'best')
+      ) {
+        advancedFilters.open = true;
+      }
       if (hasActiveState(initialState)) {
         renderSearch(initialState);
       }

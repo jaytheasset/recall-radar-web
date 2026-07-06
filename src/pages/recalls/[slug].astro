@@ -1,4 +1,5 @@
 ---
+import SiteHeader from '../../components/SiteHeader.astro';
 import EuImageResourceHints from '../../components/EuImageResourceHints.astro';
 import TaxonomyFamilyPage from '../../components/TaxonomyFamilyPage.astro';
 import { categoryRoutes, siteRecalls } from '../../lib/recall-data';
@@ -119,15 +120,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="/">Recall Radar</a>
-      <nav class="site-nav" aria-label="Primary">
-        <a href="/checker">Product Recall Checker</a>
-        <a href="/#browse-recalls">Browse Recalls</a>
-        <a href="/#official-sources">Sources</a>
-        <a href="/watchlist">Watchlist</a>
-      </nav>
-    </header>
+    <SiteHeader />
 
     {taxonomyPage ? (
       <TaxonomyFamilyPage page={taxonomyPage} recalls={taxonomyPageRecalls} />
@@ -270,6 +263,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
               <p class="section-note">
                 Compare these fields with your product label, packaging, receipt, and the official notice.
               </p>
+              <p class="section-note">{view.identifierVerificationHint}</p>
             </div>
           </div>
           {view.identificationDetails.length ? (

@@ -4,10 +4,10 @@ export const GENERAL_IDENTIFIER_GUIDANCE =
   'Not every recall notice includes a barcode. Try a brand, product name, model number, lot or batch code, date mark, pack size, certification number, recall number, or another identifier from the product or packaging.';
 
 export const IDENTIFIER_SEARCH_PLACEHOLDER =
-  'Search by brand, product, model, barcode, lot, date, or recall number';
+  'Enter a product, brand, model, barcode, lot, or recall number';
 
 export const NO_RESULT_IDENTIFIER_HINT =
-  'No indexed notices match this search. This does not mean the product is safe or recall-free. Identifier names vary by source, so try another brand, model, barcode, lot or batch code, date mark, pack size, certification number, recall number, ingredient, or keyword.';
+  'No recall notices match this search. This does not mean the product is safe or recall-free. Identifier names vary by source, so try another brand, model, barcode, lot or batch code, date mark, pack size, certification number, recall number, ingredient, or keyword.';
 
 const DEFAULT_SOURCE_IDENTIFIER_GUIDANCE =
   'Identifier details vary by official source. Try brand, product name, model, lot, batch, date, pack size, certification number, or recall number.';

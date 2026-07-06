@@ -1,4 +1,5 @@
 ---
+import SiteHeader from '../components/SiteHeader.astro';
 import EuImageResourceHints from '../components/EuImageResourceHints.astro';
 import {
   categoryRoutes,
@@ -19,14 +20,13 @@ import {
 import { getImageLoadingAttributes, getRecallImageForContext } from '../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../lib/recall-sources';
 import { getBalancedRecentRecalls } from '../lib/homepage-recent';
-import { IDENTIFIER_SEARCH_PLACEHOLDER } from '../lib/identifier-guidance';
 import { getSourceLandingPageCards } from '../lib/source-landing-pages';
 import '../styles/global.css';
 
 const title = 'Recall Radar | Global product recall search';
 const description =
   'Recall Radar helps consumers search official recall information across markets by brand, product name, model number, barcode, lot or batch code, date mark, recall number, ingredient, or keyword.';
-const recentRecalls = getBalancedRecentRecalls(siteRecalls, { limit: 12 });
+const recentRecalls = getBalancedRecentRecalls(siteRecalls, { limit: 4 });
 const activeSourceCount = [
   processedCpscRecordCount,
   processedFdaRecordCount,
@@ -39,11 +39,28 @@ const activeSourceCount = [
   processedHongKongCfsRecordCount,
   processedFsanzFoodRecallRecordCount
 ].filter((count) => count > 0).length;
-const countLine = `${processedLocalRecordCount} recalls across ${activeSourceCount} sources.`;
-const productFamilies = categoryRoutes.map((route) => ({
+const countLine = `${processedLocalRecordCount} recalls from ${activeSourceCount} official sources.`;
+const homepageProductFamilyOrder = [
+  'food-grocery',
+  'baby-kids',
+  'electronics-batteries',
+  'home-appliances',
+  'furniture-household',
+  'vehicles-mobility',
+  'sports-outdoor',
+  'tools-equipment'
+];
+const orderedProductFamilyRoutes = [
+  ...homepageProductFamilyOrder
+    .map((category) => categoryRoutes.find((route) => route.category === category))
+    .filter((route): route is (typeof categoryRoutes)[number] => Boolean(route)),
+  ...categoryRoutes.filter((route) => !homepageProductFamilyOrder.includes(route.category))
+];
+const productFamilies = orderedProductFamilyRoutes.map((route, index) => ({
   ...route,
   icon: route.category,
-  count: getRecallsByCategory(route.category).length
+  count: getRecallsByCategory(route.category).length,
+  isInitiallyVisible: index < homepageProductFamilyOrder.length
 }));
 const productFamilyIconSvg: Record<string, string> = {
   'baby-kids': '<path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.3.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 1 1-14 0"/><path d="M9 6.3a3 3 0 1 1 6 0"/>',
@@ -63,6 +80,19 @@ const productFamilyIconSvg: Record<string, string> = {
   'need-review': '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>'
 };
 const sourcePages = getSourceLandingPageCards();
+const homepageSourceRoutes = [
+  '/us-product-recalls',
+  '/canada-product-recalls',
+  '/eu-safety-gate-recalls',
+  '/uk-food-recalls',
+  '/australia-product-recalls',
+  '/new-zealand-product-recalls',
+  '/hong-kong-food-recalls',
+  '/france-product-recalls'
+];
+const homepageSourcePages = homepageSourceRoutes
+  .map((route) => sourcePages.find((page) => page.route === route))
+  .filter((page): page is (typeof sourcePages)[number] => Boolean(page));
 const sourceCardDetails = {
   '/us-product-recalls': {
     flagSrc: '/flags/us.svg',
@@ -103,6 +133,18 @@ const sourceCardDetails = {
     ]
   }
 } as const;
+
+function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
+  if (recall.taxonomyHazardTypeLabel) {
+    return recall.taxonomyHazardTypeLabel;
+  }
+
+  if (recall.taxonomyProductFamily === 'food-grocery' || recall.source === 'FDA' || recall.source === 'UK_FSA' || recall.source === 'HK_CFS') {
+    return 'Food alert';
+  }
+
+  return 'Safety hazard';
+}
 ---
 
 <html lang="en">
@@ -115,43 +157,70 @@ const sourceCardDetails = {
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="/">Recall Radar</a>
-      <nav class="site-nav" aria-label="Primary">
-        <a href="/checker">Product Recall Checker</a>
-        <a href="/#browse-recalls">Product Types</a>
-        <a href="/#official-sources">Countries</a>
-        <a href="/watchlist">Watchlist</a>
-      </nav>
-    </header>
+    <SiteHeader />
 
     <main class="page-shell home-page">
       <section class="home-hero">
-        <div class="home-hero-copy">
-          <h1>Is a recalled product still in your home?</h1>
-          <p class="lead">
-            Search official recall notices by product, brand, model, barcode, lot code, ingredient, or recall number.
-          </p>
+        <div class="home-hero-intro">
+          <div class="home-hero-copy">
+            <h1>
+              <span>Stay informed.</span>
+              <span>Shop and live with confidence.</span>
+            </h1>
+            <p class="lead">
+              Search official recall notices from trusted sources around the world.
+            </p>
+          </div>
+
+          <div class="home-hero-visual" aria-hidden="true">
+            <div class="home-illustration-card home-illustration-shield">
+              <svg viewBox="0 0 160 180" focusable="false">
+                <path d="M80 13c18 17 43 24 62 27v52c0 36-24 63-62 76-38-13-62-40-62-76V40c19-3 44-10 62-27Z" />
+                <path d="m51 90 21 21 42-52" />
+              </svg>
+            </div>
+            <div class="home-illustration-card home-illustration-bag">
+              <span></span>
+            </div>
+            <div class="home-illustration-card home-illustration-plant">
+              <span></span>
+            </div>
+          </div>
         </div>
 
         <div class="home-search-panel" aria-label="Search product recalls">
           <form class="home-search-module" action="/checker" method="get">
             <label class="sr-only" for="home-recall-search">Brand, product, model, barcode, lot, date, or recall number</label>
+            <span class="home-search-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m16.5 16.5 4 4" />
+              </svg>
+            </span>
             <input
               id="home-recall-search"
               name="q"
               type="search"
-              placeholder={IDENTIFIER_SEARCH_PLACEHOLDER}
+              placeholder="Search by brand, product, model, barcode, lot code, or recall number"
             />
-            <button class="btn btn-primary" type="submit">Check recalls</button>
+            <button class="btn btn-primary" type="submit">Search recalls</button>
           </form>
           <div class="home-example-links" aria-label="Example searches">
-            <span>Try</span>
+            <span>Try:</span>
             <a href="/checker?q=baby%20sleeper">baby sleeper</a>
             <a href="/checker?q=power%20bank">power bank</a>
             <a href="/checker?q=pistachio&source=FDA">pistachio</a>
             <a href="/checker?q=smoke%20detector&source=CPSC">smoke detector</a>
+            <a href="/checker?q=bike%20helmet">bike helmet</a>
           </div>
+          <p class="home-trust-line">
+            <span class="home-trust-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" focusable="false">
+                <path d="M6.4 10.8 3.5 7.9l-1 1 3.9 3.9 7.1-8.5-1.1-.9-6 7.4Z" />
+              </svg>
+            </span>
+            Official recalls. Trusted sources. Global coverage.
+          </p>
           <p class="data-count-line">{countLine}</p>
         </div>
       </section>
@@ -161,20 +230,40 @@ const sourceCardDetails = {
           <div>
             <h2>Product types</h2>
           </div>
+          <button
+            class="section-link home-expand-button"
+            type="button"
+            data-home-expand="product-types"
+            aria-expanded="false"
+          >
+            View all product types <span aria-hidden="true">&rsaquo;</span>
+          </button>
         </div>
-        <div class="category-grid">
-          {productFamilies.map((type) => (
-            <a class="category-card home-product-type-card" href={type.href}>
-              <span class="category-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false">
-                  <Fragment set:html={productFamilyIconSvg[type.icon] ?? productFamilyIconSvg.other} />
-                </svg>
-              </span>
-              <span class="category-card-body">
-                <h3>{type.label}</h3>
-              </span>
-            </a>
-          ))}
+        <div class="home-carousel" data-home-carousel>
+          <div class="home-carousel-viewport" data-home-carousel-viewport>
+            <div class="category-grid home-carousel-track home-product-type-track" data-home-product-types>
+              {productFamilies.map((type) => (
+                <a
+                  class="category-card home-product-type-card"
+                  href={type.href}
+                  data-product-type-extra={!type.isInitiallyVisible ? 'true' : undefined}
+                >
+                  <span class="category-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                      <Fragment set:html={productFamilyIconSvg[type.icon] ?? productFamilyIconSvg.other} />
+                    </svg>
+                  </span>
+                  <span class="category-card-body">
+                    <h3>{type.label}</h3>
+                    <span class="home-card-link">View recalls <span aria-hidden="true">&rarr;</span></span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+          <button class="home-carousel-button" type="button" aria-label="Scroll product types" data-home-carousel-next>
+            <span aria-hidden="true">&rsaquo;</span>
+          </button>
         </div>
       </section>
 
@@ -183,34 +272,39 @@ const sourceCardDetails = {
           <div>
             <h2>Countries</h2>
           </div>
+          <a class="section-link" href="/#official-sources">View all sources <span aria-hidden="true">&rsaquo;</span></a>
         </div>
-        <div class="category-grid source-country-grid">
-          {sourcePages.map((page) => {
-            const details = sourceCardDetails[page.route as keyof typeof sourceCardDetails];
-            const card = page.card;
+        <div class="home-carousel" data-home-carousel>
+          <div class="home-carousel-viewport" data-home-carousel-viewport>
+            <div class="category-grid source-country-grid home-carousel-track">
+              {homepageSourcePages.map((page) => {
+                const details = sourceCardDetails[page.route as keyof typeof sourceCardDetails];
+                const card = page.card;
 
-            return (
-            <a class="category-card source-country-card" href={page.route}>
-              <span class:list={['source-flag-wrap', 'flagSrcs' in details && 'source-flag-wrap-pair']}>
-                {'flagSrcs' in details ? (
-                  details.flagSrcs.map((flag) => (
-                    <img class="source-flag source-flag-pair" src={flag.src} alt={flag.alt} loading="lazy" decoding="async" />
-                  ))
-                ) : (
-                  <img class="source-flag" src={details.flagSrc} alt={details.flagAlt} loading="lazy" decoding="async" />
-                )}
-              </span>
-              <span class="category-card-body">
-                <span class="source-card-kicker">{card.agencyLabel}</span>
-                <h3>{card.title}</h3>
-                <span class="source-card-label-row" aria-label={`${card.marketLabel}; ${card.domainLabel}`}>
-                  <span class="source-card-pill">{card.marketLabel}</span>
-                  <span class="source-card-pill source-card-pill-domain">{card.domainLabel}</span>
-                </span>
-              </span>
-            </a>
-            );
-          })}
+                return (
+                <a class="category-card source-country-card" href={page.route}>
+                  <span class:list={['source-flag-wrap', 'flagSrcs' in details && 'source-flag-wrap-pair']}>
+                    {'flagSrcs' in details ? (
+                      details.flagSrcs.map((flag) => (
+                        <img class="source-flag source-flag-pair" src={flag.src} alt={flag.alt} loading="lazy" decoding="async" />
+                      ))
+                    ) : (
+                      <img class="source-flag" src={details.flagSrc} alt={details.flagAlt} loading="lazy" decoding="async" />
+                    )}
+                  </span>
+                  <span class="category-card-body">
+                    <h3>{card.title}</h3>
+                    <span class="source-card-kicker">{card.agencyLabel}</span>
+                  </span>
+                  <span class="source-card-count">{page.count} recalls</span>
+                </a>
+                );
+              })}
+            </div>
+          </div>
+          <button class="home-carousel-button" type="button" aria-label="Scroll sources" data-home-carousel-next>
+            <span aria-hidden="true">&rsaquo;</span>
+          </button>
         </div>
       </section>
 
@@ -219,15 +313,15 @@ const sourceCardDetails = {
           <div>
             <h2>Latest recalls</h2>
           </div>
-          <a class="btn btn-secondary" href="/checker">Search all recalls</a>
+          <a class="section-link" href="/checker">View all recalls <span aria-hidden="true">&rsaquo;</span></a>
         </div>
-        <div class="product-grid">
+        <div class="product-grid home-latest-grid">
           {recentRecalls.map((recall, index) => {
             const image = getRecallImageForContext(recall, 'card');
             const imageAttrs = getImageLoadingAttributes('card', index);
 
             return (
-            <article class="home-recall-card product-card">
+            <article class="home-recall-card home-latest-card product-card">
               <a class="home-card-image image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
                 {image.url ? (
                   <>
@@ -246,17 +340,12 @@ const sourceCardDetails = {
                 )}
               </a>
               <div class="card-body">
+                <span class="home-issue-badge">{getHomeIssueBadge(recall)}</span>
+                <h3><a href={recall.detailPath}>{recall.title}</a></h3>
                 <div class="home-card-meta">
                   <span>{recall.sourceLabel}</span>
                   <span>{recall.recallDate}</span>
                 </div>
-                <div class="home-card-meta home-taxonomy-meta">
-                  <span>{recall.taxonomyProductFamilyLabel || recall.categoryLabel}</span>
-                  {recall.taxonomyHazardTypeLabel ? <span>{recall.taxonomyHazardTypeLabel}</span> : null}
-                </div>
-                <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-                <span class="home-card-hazard">{recall.hazard || recall.reason || 'Hazard or reason not listed in the official notice.'}</span>
-                <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
               </div>
             </article>
             );
@@ -286,6 +375,54 @@ const sourceCardDetails = {
 
       initProgressiveCardImages();
       initImageFallbacks();
+
+      document.querySelectorAll('[data-home-carousel]').forEach((carousel) => {
+        const viewport = carousel.querySelector('[data-home-carousel-viewport]');
+        const nextButton = carousel.querySelector('[data-home-carousel-next]');
+        const track = carousel.querySelector('.home-carousel-track');
+
+        if (!(viewport instanceof HTMLElement) || !(nextButton instanceof HTMLButtonElement) || !(track instanceof HTMLElement)) {
+          return;
+        }
+
+        nextButton.addEventListener('click', () => {
+          const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+          const firstCard = track.firstElementChild;
+          const cardWidth = firstCard instanceof HTMLElement ? firstCard.getBoundingClientRect().width : 0;
+          const gapValue = Number.parseFloat(window.getComputedStyle(track).columnGap || window.getComputedStyle(track).gap || '0');
+          const step = Math.max(cardWidth + (Number.isFinite(gapValue) ? gapValue : 0), viewport.clientWidth * 0.72);
+          const isAtEnd = viewport.scrollLeft >= maxScrollLeft - 8;
+          const nextLeft = Math.min(maxScrollLeft, viewport.scrollLeft + step);
+
+          viewport.scrollTo({
+            left: isAtEnd ? 0 : nextLeft,
+            behavior: 'smooth'
+          });
+        });
+      });
+
+      const productTypeSection = document.querySelector('#browse-recalls');
+      const productTypeButton = document.querySelector('[data-home-expand="product-types"]');
+      const extraProductTypeCards = document.querySelectorAll('[data-product-type-extra="true"]');
+
+      if (productTypeSection && productTypeButton instanceof HTMLButtonElement) {
+        productTypeButton.addEventListener('click', () => {
+          const willExpand = productTypeButton.getAttribute('aria-expanded') !== 'true';
+
+          extraProductTypeCards.forEach((card) => {
+            if (card instanceof HTMLElement) {
+              card.hidden = !willExpand;
+            }
+          });
+
+          productTypeSection.classList.toggle('is-expanded', willExpand);
+          productTypeButton.setAttribute('aria-expanded', String(willExpand));
+          productTypeSection.querySelector('[data-home-carousel-viewport]')?.scrollTo({ left: 0, behavior: 'smooth' });
+          productTypeButton.innerHTML = willExpand
+            ? 'Show fewer product types <span aria-hidden="true">&rsaquo;</span>'
+            : 'View all product types <span aria-hidden="true">&rsaquo;</span>';
+        });
+      }
     </script>
   </body>
 </html>
