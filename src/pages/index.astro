@@ -39,7 +39,7 @@ const activeSourceCount = [
   processedHongKongCfsRecordCount,
   processedFsanzFoodRecallRecordCount
 ].filter((count) => count > 0).length;
-const countLine = `${processedLocalRecordCount} recalls from ${activeSourceCount} official agencies.`;
+const countLine = `${processedLocalRecordCount} recalls across ${activeSourceCount} sources.`;
 const productFamilies = categoryRoutes.map((route) => ({
   ...route,
   icon: route.category,
@@ -181,7 +181,7 @@ const sourceCardDetails = {
       <section id="official-sources" class="section home-source-section">
         <div class="section-header">
           <div>
-            <h2>Countries & agencies</h2>
+            <h2>Countries</h2>
           </div>
         </div>
         <div class="category-grid source-country-grid">
