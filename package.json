@@ -106,6 +106,8 @@
     "audit:full-source-specific-classifier-preview": "node --experimental-strip-types scripts/audit-full-source-specific-classifier-preview.ts",
     "preview:classification-db-write": "node --experimental-strip-types scripts/build-classification-db-write-preview.ts",
     "audit:classification-db-write-preview": "node --experimental-strip-types scripts/audit-classification-db-write-preview.ts",
+    "apply:classification-results-v2": "node --experimental-strip-types scripts/apply-classification-results-v2.ts",
+    "audit:classification-results-v2": "node --experimental-strip-types scripts/audit-classification-results-v2.ts",
     "audit:llm-classifier-dry-run": "node --experimental-strip-types scripts/audit-llm-classifier-dry-run.ts",
     "audit:static-routes": "node --experimental-strip-types scripts/audit-static-routes.ts",
     "validate:launch": "npm run audit:sources && npm run audit:fsanz-food-recalls && npm run audit:hong-kong-cfs && npm run audit:new-zealand-product-safety && npm run audit:australia-product-safety && npm run audit:uk-fsa && npm run audit:eu-safety-gate && npm run audit:canada && npm run audit:rappelconso && npm run audit:search-aliases && npm run check && npm run build && npm run audit:static-routes",

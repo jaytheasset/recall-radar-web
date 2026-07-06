@@ -1246,3 +1246,14 @@ Generated files:
 - `classification-db-write-preview-audit.md`
 
 The preview targets future `classification_runs` and `recall_classifications` staging/review writes. It does not connect to a database, insert rows, write `data/processed/recalls-v2.json`, modify canonical processed data, call Gemini/OpenAI, or change runtime UI. The audit blocks on missing output, invalid Taxonomy V2 values, source/count mismatches, duplicate run/recall rows, tracked generated outputs, or `data/raw` / `data/processed` changes.
+
+## Classification Results V2 Apply
+
+```powershell
+npm run apply:classification-results-v2
+npm run audit:classification-results-v2
+```
+
+The apply command converts `outputs/llm-classifier/full-source-specific-preview/full-source-specific-classifier-results.json` into `data/processed/recall-classifications-v2.json`, which is the runtime Taxonomy V2 classification file. It does not call Gemini/OpenAI, fetch, normalize, merge, or backfill. It validates canonical ids, counts, source counts, failed rows, and Taxonomy V2 enum values before writing, and writes only if the file contents differ.
+
+The audit command validates the saved runtime classification file against `data/processed/recalls.json` and writes ignored audit files under `outputs/llm-classifier/classification-results-v2-audit/`.

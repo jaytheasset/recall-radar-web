@@ -471,3 +471,11 @@ Phase 44E-4 adds the same input-noise gate for Hong Kong CFS food alerts before 
 - Output folder: ignored `outputs/llm-classifier/input-preview/hong-kong-cfs/`
 
 The preview keeps product description, risk/action evidence, importer, retailer, origin, pack/date/batch/barcode-style identifiers, and fixed food-domain source hints while checking that government footer, hotline, and press-release boilerplate do not dominate the prompt. It does not call Gemini or OpenAI, does not classify records, does not modify `data/raw` or `data/processed`, and does not change runtime UI.
+
+## Classification Results V2 Apply Pipeline
+
+The runtime Taxonomy V2 classification file is `data/processed/recall-classifications-v2.json`.
+
+Use `npm run apply:classification-results-v2` to turn the ignored full source-specific classifier preview output into that runtime file, then run `npm run audit:classification-results-v2`.
+
+The apply step does not call Gemini/OpenAI, fetch sources, normalize, merge, or backfill. It validates canonical recall ids, source counts, failed rows, and Taxonomy V2 enum values before writing. It writes only when the generated classification file differs.
