@@ -479,3 +479,5 @@ The runtime Taxonomy V2 classification file is `data/processed/recall-classifica
 Use `npm run apply:classification-results-v2` to turn the ignored full source-specific classifier preview output into that runtime file, then run `npm run audit:classification-results-v2`.
 
 The apply step does not call Gemini/OpenAI, fetch sources, normalize, merge, or backfill. It validates canonical recall ids, source counts, failed rows, and Taxonomy V2 enum values before writing. It writes only when the generated classification file differs.
+
+Runtime UI reads the classification file through `src/lib/classification-results-v2.ts`, and `src/lib/recall-data.ts` joins each classification to its canonical recall by `recordId`. Use `npm run audit:classification-results-v2-runtime` to verify every visible recall has V2 product family, product type, hazard, review, and quality-flag metadata attached.

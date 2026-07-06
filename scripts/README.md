@@ -1252,8 +1252,11 @@ The preview targets future `classification_runs` and `recall_classifications` st
 ```powershell
 npm run apply:classification-results-v2
 npm run audit:classification-results-v2
+npm run audit:classification-results-v2-runtime
 ```
 
 The apply command converts `outputs/llm-classifier/full-source-specific-preview/full-source-specific-classifier-results.json` into `data/processed/recall-classifications-v2.json`, which is the runtime Taxonomy V2 classification file. It does not call Gemini/OpenAI, fetch, normalize, merge, or backfill. It validates canonical ids, counts, source counts, failed rows, and Taxonomy V2 enum values before writing, and writes only if the file contents differ.
 
 The audit command validates the saved runtime classification file against `data/processed/recalls.json` and writes ignored audit files under `outputs/llm-classifier/classification-results-v2-audit/`.
+
+The runtime audit validates that `src/lib/recall-data.ts` has attached V2 classification metadata to all visible site recalls.

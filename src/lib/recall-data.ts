@@ -1,9 +1,12 @@
 import processedRecallData from '../../data/processed/recalls.json';
-import processedClassificationV2Data from '../../data/processed/recall-classifications-v2.json';
 import { mockRecalls, type MockRecall, type RecallCategory } from '../data/mock-recalls';
 import type { RecallClassificationV2 } from '../data/recall-taxonomy-v2';
 import type { NormalizedRecall, ProcessedRecallFile, RecallImage } from '../data/recall-types';
 import { normalizeBrandName } from './brand-normalize';
+import {
+  classificationV2RuntimeStats,
+  getClassificationV2Result
+} from './classification-results-v2';
 import { getRecallSourceLabel } from './recall-sources';
 import { limitSlug, recallSlug } from './slug';
 import {
@@ -68,28 +71,6 @@ export type SiteRecall = {
   primaryImageAlt?: string;
 };
 
-type ProcessedClassificationV2Record = {
-  recordId: string;
-  source: string;
-  success?: boolean;
-  failed?: boolean;
-  errors?: string[];
-  qualityFlags?: string[];
-  classification?: RecallClassificationV2;
-};
-
-type ProcessedClassificationV2File = {
-  generatedAt?: string;
-  provider?: string;
-  model?: string;
-  promptVersion?: string;
-  taxonomyVersion?: string;
-  totalRecords?: number;
-  success?: number;
-  failed?: number;
-  records?: ProcessedClassificationV2Record[];
-};
-
 export type BrandRecallGroup = {
   brand: string;
   displayName: string;
@@ -109,12 +90,6 @@ export const categoryLabels: Record<SiteRecallCategory, string> = {
 };
 
 const processedFile = processedRecallData as ProcessedRecallFile;
-const processedClassificationV2File = processedClassificationV2Data as ProcessedClassificationV2File;
-const processedClassificationV2ById = new Map<string, ProcessedClassificationV2Record>(
-  (Array.isArray(processedClassificationV2File.records) ? processedClassificationV2File.records : [])
-    .filter((record) => record.success && !record.failed && record.classification)
-    .map((record) => [record.recordId, record])
-);
 
 function categoryFromTaxonomyV2(classification: RecallClassificationV2 | undefined): SiteRecallCategory | undefined {
   if (!classification) {
@@ -653,7 +628,7 @@ function extractRecallImages(record: NormalizedRecall): RecallImage[] {
 }
 
 function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
-  const taxonomyV2Record = processedClassificationV2ById.get(record.id);
+  const taxonomyV2Record = getClassificationV2Result(record.id);
   const taxonomyV2 = taxonomyV2Record?.classification;
   const category = categoryFromTaxonomyV2(taxonomyV2) ?? classifyRecall(record);
   const brandNames = uniqueNonEmpty(record.brandNames);
@@ -801,6 +776,9 @@ export const processedActiveSourceCount = [
   usingProcessedHongKongCfsData,
   usingProcessedFsanzFoodRecallData
 ].filter(Boolean).length;
+export const processedClassificationV2RecordCount = classificationV2RuntimeStats.classifiedRecordCount;
+export const processedClassificationV2CoverageComplete =
+  processedClassificationV2RecordCount === processedLocalRecordCount && processedLocalRecordCount > 0;
 export const dataSourceLabel = usingProcessedLocalData
   ? `${processedActiveSourceCount} official source feed${processedActiveSourceCount === 1 ? '' : 's'}`
   : getRecallSourceLabel('Mock');
