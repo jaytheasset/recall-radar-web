@@ -1699,6 +1699,40 @@ button:disabled {
   padding: clamp(1rem, 2.5vw, 1.35rem);
 }
 
+.detail-secondary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.9rem, 2vw, 1.1rem);
+  align-items: stretch;
+}
+
+.detail-secondary-grid.single-secondary-card {
+  grid-template-columns: minmax(0, min(680px, 100%));
+}
+
+.detail-compact-info-card {
+  align-content: start;
+  gap: 0.8rem;
+  min-height: 0;
+  padding: clamp(1rem, 2vw, 1.15rem);
+}
+
+.detail-compact-info-card .section-header {
+  align-items: start;
+}
+
+.detail-compact-info-card h2 {
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+}
+
+.detail-compact-info-card .detail-fact-grid {
+  grid-template-columns: 1fr;
+}
+
+.detail-compact-info-card .detail-fact {
+  padding: 0.85rem;
+}
+
 .identification-guide-card {
   gap: 1.15rem;
 }
@@ -1894,6 +1928,7 @@ button:disabled {
 @media (max-width: 980px) {
   .hero,
   .detail-grid,
+  .detail-secondary-grid,
   .watchlist-layout,
   .signup-panel {
     grid-template-columns: 1fr;

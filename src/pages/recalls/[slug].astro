@@ -294,45 +294,52 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         </article>
       </section>
 
-      {displayContactItems.length ? (
-        <section class="section">
-          <article class="detail-card detail-section-card">
-            <div class="section-header">
-              <div>
-                <p class="eyebrow">Contact</p>
-                <h2>Consumer contact</h2>
-              </div>
-            </div>
-            <div class="detail-fact-grid detail-action-facts">
-              <div class="detail-fact">
-                <strong>Contact details listed in the notice</strong>
-                <ul>
-                  {displayContactItems.map((item) => <li>{item}</li>)}
-                </ul>
-              </div>
-            </div>
-          </article>
-        </section>
-      ) : null}
+      {displayContactItems.length || view.soldAt.length ? (
+        <section class="section detail-secondary-section" aria-label="Contact and purchase details">
+          <div
+            class:list={[
+              'detail-secondary-grid',
+              (!displayContactItems.length || !view.soldAt.length) && 'single-secondary-card'
+            ]}
+          >
+            {displayContactItems.length ? (
+              <article class="detail-card detail-section-card detail-compact-info-card">
+                <div class="section-header">
+                  <div>
+                    <p class="eyebrow">Contact</p>
+                    <h2>Consumer contact</h2>
+                  </div>
+                </div>
+                <div class="detail-fact-grid detail-action-facts">
+                  <div class="detail-fact">
+                    <strong>Contact details listed in the notice</strong>
+                    <ul>
+                      {displayContactItems.map((item) => <li>{item}</li>)}
+                    </ul>
+                  </div>
+                </div>
+              </article>
+            ) : null}
 
-      {view.soldAt.length ? (
-        <section class="section">
-          <article class="detail-card detail-section-card">
-            <div class="section-header">
-              <div>
-                <p class="eyebrow">Purchase details</p>
-                <h2>Where it was sold</h2>
-              </div>
-            </div>
-            <div class="detail-fact-grid">
-              <div class="detail-fact">
-                <strong>{view.distributionLabel}</strong>
-                <ul>
-                  {view.soldAt.map((item) => <li>{item}</li>)}
-                </ul>
-              </div>
-            </div>
-          </article>
+            {view.soldAt.length ? (
+              <article class="detail-card detail-section-card detail-compact-info-card">
+                <div class="section-header">
+                  <div>
+                    <p class="eyebrow">Purchase details</p>
+                    <h2>Where it was sold</h2>
+                  </div>
+                </div>
+                <div class="detail-fact-grid">
+                  <div class="detail-fact">
+                    <strong>{view.distributionLabel}</strong>
+                    <ul>
+                      {view.soldAt.map((item) => <li>{item}</li>)}
+                    </ul>
+                  </div>
+                </div>
+              </article>
+            ) : null}
+          </div>
         </section>
       ) : null}
 
