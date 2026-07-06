@@ -852,12 +852,44 @@ const sourceCardDetails = {
         return line;
       }
 
-      function taxonomyTextFor(recall: SearchItem['recall']): string {
-        return [
-          recall.taxonomyProductFamilyLabel,
-          recall.taxonomyProductTypeLabel,
-          recall.taxonomyHazardTypeLabel
-        ].filter(Boolean).join(' / ') || recall.categoryLabel;
+      function compactList(values: Array<string | undefined>, limit = 2): string {
+        return values.filter((value): value is string => Boolean(value?.trim())).slice(0, limit).join(', ');
+      }
+
+      function createTaxonomyFacts(recall: BrowseRecall): HTMLElement {
+        const facts = [
+          {
+            label: 'Product type',
+            value: recall.taxonomyProductTypeLabel || recall.taxonomyProductFamilyLabel || recall.categoryLabel
+          },
+          {
+            label: 'Issue',
+            value: recall.taxonomyHazardTypeLabel || reasonTextFor(recall)
+          },
+          {
+            label: 'Who to check for',
+            value: compactList(recall.taxonomyAudienceLabels ?? [])
+          },
+          {
+            label: 'Recall domain',
+            value: recall.taxonomyRecallDomainLabel
+          }
+        ].filter((fact): fact is { label: string; value: string } => Boolean(fact.value));
+
+        const wrapper = document.createElement('dl');
+        wrapper.className = 'result-taxonomy-facts';
+
+        facts.slice(0, 4).forEach((fact) => {
+          const item = document.createElement('div');
+          const term = document.createElement('dt');
+          const description = document.createElement('dd');
+          term.textContent = fact.label;
+          description.textContent = fact.value;
+          item.append(term, description);
+          wrapper.append(item);
+        });
+
+        return wrapper;
       }
 
       function createTaxonomyReviewNote(recall: BrowseRecall): HTMLElement | null {
@@ -901,7 +933,7 @@ const sourceCardDetails = {
         const action = createCardLine(getRecallActionLabel(recall.source), actionTextFor(recall), 'result-card-line result-card-action');
         const product = createCardLine('Product', productTextFor(recall));
         const brand = createCardLine('Brand/company', brandTextFor(recall));
-        const taxonomy = createCardLine('Classification', taxonomyTextFor(recall), 'result-card-line taxonomy-card-line');
+        const taxonomy = createTaxonomyFacts(recall);
         const taxonomyReviewNote = createTaxonomyReviewNote(recall);
         const matchReason = createCardLine(
           'Why shown',
@@ -921,7 +953,7 @@ const sourceCardDetails = {
         details.textContent = 'View recall';
 
         links.append(details);
-        body.append(heading, reason, action, product, brand, taxonomy);
+        body.append(heading, taxonomy, reason, action, product, brand);
         if (taxonomyReviewNote) {
           body.append(taxonomyReviewNote);
         }
@@ -958,7 +990,7 @@ const sourceCardDetails = {
         const action = createCardLine(getRecallActionLabel(recall.source), actionTextFor(recall), 'result-card-line result-card-action');
         const product = createCardLine('Product', productTextFor(recall));
         const brand = createCardLine('Brand/company', brandTextFor(recall));
-        const taxonomy = createCardLine('Classification', taxonomyTextFor(recall), 'result-card-line taxonomy-card-line');
+        const taxonomy = createTaxonomyFacts(recall);
         const taxonomyReviewNote = createTaxonomyReviewNote(recall);
 
         const links = document.createElement('div');
@@ -970,7 +1002,7 @@ const sourceCardDetails = {
         details.textContent = 'View recall';
 
         links.append(details);
-        body.append(heading, reason, action, product, brand, taxonomy);
+        body.append(heading, taxonomy, reason, action, product, brand);
         if (taxonomyReviewNote) {
           body.append(taxonomyReviewNote);
         }
