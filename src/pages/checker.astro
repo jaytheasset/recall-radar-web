@@ -18,6 +18,7 @@ import {
   usingProcessedLocalData
 } from '../lib/recall-data';
 import { getRecallImageForContext } from '../lib/recall-images';
+import { cleanRecallDisplayText } from '../lib/recall-display-text';
 import { getSourceOptionsForCurrentCoverage } from '../lib/recall-sources';
 import { getIdentifierSearchHint, IDENTIFIER_SEARCH_PLACEHOLDER } from '../lib/identifier-guidance';
 import { getSourceLandingPageCards } from '../lib/source-landing-pages';
@@ -61,10 +62,10 @@ const checkerRecalls = siteRecalls.map((recall) => {
   taxonomyNeedsReview: recall.taxonomyNeedsReview,
   taxonomyReason: recall.taxonomyReason,
   hazard: recall.hazard,
-  remedy: recall.remedy,
+  remedy: cleanRecallDisplayText(recall.remedy),
   recallDate: recall.recallDate,
   affectedUnits: recall.affectedUnits,
-  description: recall.description,
+  description: cleanRecallDisplayText(recall.description),
   slug: recall.slug,
   detailPath: recall.detailPath,
   classification: recall.classification,

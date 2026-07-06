@@ -17,6 +17,7 @@ import {
   usingProcessedLocalData
 } from '../lib/recall-data';
 import { getRecallImageForContext } from '../lib/recall-images';
+import { cleanRecallDisplayText } from '../lib/recall-display-text';
 import '../styles/global.css';
 
 const title = 'Saved Watchlist | Recall Radar';
@@ -53,10 +54,10 @@ const watchlistRecalls = siteRecalls.map((recall) => {
   taxonomyAudienceLabels: recall.taxonomyAudienceLabels,
   taxonomyReason: recall.taxonomyReason,
   hazard: recall.hazard,
-  remedy: recall.remedy,
+  remedy: cleanRecallDisplayText(recall.remedy),
   recallDate: recall.recallDate,
   affectedUnits: recall.affectedUnits,
-  description: recall.description,
+  description: cleanRecallDisplayText(recall.description),
   slug: recall.slug,
   detailPath: recall.detailPath,
   classification: recall.classification,
