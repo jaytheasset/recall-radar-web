@@ -138,6 +138,10 @@ function safeText(value: unknown): string {
   return typeof value === 'string' || typeof value === 'number' ? cleanText(String(value)) : '';
 }
 
+function sentenceFragment(value: string): string {
+  return cleanText(value).replace(/[.!?]+$/g, '');
+}
+
 function uniqueNonEmpty(values: string[]): string[] {
   return [...new Set(values.map(cleanText).filter(Boolean))];
 }
@@ -639,11 +643,10 @@ function buildAustraliaProductSafetyView(recall: SiteRecall, raw: RawObject): So
     actionParagraphs: paragraphs(action),
     description: firstNonEmpty([recall.description, productName], productName),
     identificationDetails: details,
-    consumerContact: '',
+    consumerContact: rawStringArray(detail, 'consumerContact').join(' '),
     soldAt: uniqueNonEmpty([
       cleanAustraliaField(detail.traders),
-      cleanAustraliaField(detail.soldWhere),
-      cleanAustraliaField(detail.saleDates)
+      cleanAustraliaField(detail.soldWhere)
     ]),
     incidents: [],
     importer: [],
@@ -1151,10 +1154,10 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
                     : recall.source === 'FSANZ_FOOD_RECALLS'
                       ? buildFsanzFoodRecallView(recall, raw)
                       : buildCpscView(recall, raw);
-  const productIntro = sourceSpecificView.productName
-    ? `This recall involves ${sourceSpecificView.productName}`
+  const productIntro = sentenceFragment(sourceSpecificView.productName)
+    ? `This recall involves ${sentenceFragment(sourceSpecificView.productName)}`
     : 'This recall involves a recalled product';
-  const brandIntro = sourceSpecificView.brandName ? ` from ${sourceSpecificView.brandName}` : '';
+  const brandIntro = sentenceFragment(sourceSpecificView.brandName) ? ` from ${sentenceFragment(sourceSpecificView.brandName)}` : '';
   const introSentence =
     recall.source === 'UK_FSA'
       ? `${productIntro}${brandIntro}. Compare the package, batch, date, allergen, and action details with the official FSA notice before eating, serving, selling, or returning it.`
@@ -1188,7 +1191,7 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
       'Search matches and recall notices are not safety confirmations. Verify affected models, lots, dates, distribution, and remedies with the official notice.',
     quantityLabel: getRecallQuantityLabel(recall.source),
     distributionLabel: getRecallDistributionLabel(recall.source),
-    officialSourceLabel: getOfficialSourceLabel(recall.source),
+    officialSourceLabel: getOfficialSourceLabel(recall.source).replace(/^Source:\s*/i, ''),
     officialSourceUrl: recall.sourceUrl,
     officialVerificationCopy: getOfficialVerificationCopy(recall.source),
     fdaDetails: sourceSpecificView.fdaDetails,

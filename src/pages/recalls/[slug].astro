@@ -70,6 +70,7 @@ const displayRecallDomainLabel = isUsefulDisplayValue(view.taxonomyRecallDomainL
   ? view.taxonomyRecallDomainLabel
   : '';
 const displayAudienceLabels = view.taxonomyAudienceLabels.filter(isUsefulDisplayValue).slice(0, 3);
+const displayProductName = view.productName.replace(/[.\s]+$/g, '');
 const displayActionItems = buildRecallActionItems([view.action, ...view.actionParagraphs]);
 const summaryActionItems = displayActionItems.slice(0, 2);
 const displayContactItems = buildRecallContactItems([view.action, view.consumerContact]);
@@ -84,7 +85,7 @@ const secondarySummaryFacts = [
   pageFact('Source', view.sourceBadge),
   pageFact('Area', displayRecallDomainLabel)
 ].filter((fact): fact is DetailFact => Boolean(fact));
-const supportingNoticeFacts = [
+const baseSupportingNoticeFacts = [
   pageFact('Consumer contact', displayContactItems),
   pageFact(view.distributionLabel, view.soldAt),
   ...companyDetails,
@@ -118,6 +119,31 @@ const whatToCheckFacts = view.identificationDetails.filter((fact) => {
     !duplicateIdentificationValues.some((duplicateValue) => duplicateValue === value)
   );
 });
+function normalizedFactValues(value: string | string[]): string[] {
+  return (Array.isArray(value) ? value : [value])
+    .map((item) => item.replace(/\s+/g, ' ').trim().toLowerCase())
+    .filter(Boolean);
+}
+const alreadyVisibleValues = new Set([
+  ...normalizedFactValues(view.productName),
+  ...normalizedFactValues(view.brandName),
+  ...normalizedFactValues(view.reason),
+  ...normalizedFactValues(view.action),
+  ...primarySummaryFacts.flatMap((fact) => normalizedFactValues(fact.value)),
+  ...secondarySummaryFacts.flatMap((fact) => normalizedFactValues(fact.value)),
+  ...whatToCheckFacts.flatMap((fact) => normalizedFactValues(fact.value))
+]);
+function removeAlreadyVisibleFactValues(fact: DetailFact): DetailFact | undefined {
+  if (Array.isArray(fact.value)) {
+    const filtered = fact.value.filter((item) => !alreadyVisibleValues.has(item.replace(/\s+/g, ' ').trim().toLowerCase()));
+    return filtered.length ? { ...fact, value: filtered } : undefined;
+  }
+
+  return alreadyVisibleValues.has(fact.value.replace(/\s+/g, ' ').trim().toLowerCase()) ? undefined : fact;
+}
+const supportingNoticeFacts = baseSupportingNoticeFacts
+  .map(removeAlreadyVisibleFactValues)
+  .filter((fact): fact is DetailFact => Boolean(fact));
 const officialSourceFacts = [
   pageFact('Source', view.sourceBadge),
   pageFact('Recall date', view.recallDate),
@@ -256,7 +282,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
 
         <aside class="detail-card recall-summary-card compact-summary-card v2-report-card" aria-label="Recall report summary">
           <p class="eyebrow">Quick check</p>
-          <h2>{view.productName}</h2>
+          <h2>{displayProductName}</h2>
           <p class="summary-brand">{view.brandName || 'Brand or company not listed'}</p>
           <div class="v2-summary-priority-grid">
             {primarySummaryFacts.map((fact) => (
