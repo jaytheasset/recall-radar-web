@@ -1,9 +1,8 @@
 ---
 import SiteHeader from '../../components/SiteHeader.astro';
 import EuImageResourceHints from '../../components/EuImageResourceHints.astro';
+import RecallListCard from '../../components/RecallListCard.astro';
 import { brandGroups } from '../../lib/recall-data';
-import { getRecallImageForContext } from '../../lib/recall-images';
-import { getRecallSourcePlaceholder } from '../../lib/recall-sources';
 import '../../styles/global.css';
 
 export function getStaticPaths() {
@@ -20,7 +19,7 @@ const sourceNames = rawNames.filter(
 const sourceLabels = [...new Set(recalls.map((recall: { sourceLabel: string }) => recall.sourceLabel))];
 const sourceLabel = sourceLabels.join(' + ');
 const title = `Recalls linked to ${brand} | Recall Radar`;
-const description = `Indexed recall notices linked to ${brand}, with related products, source company names, hazards, remedies, and official detail links.`;
+const description = `Recall notices linked to ${brand}, with related products, source company names, hazards, remedies, and official detail links.`;
 ---
 
 <html lang="en">
@@ -40,10 +39,10 @@ const description = `Indexed recall notices linked to ${brand}, with related pro
         <p class="eyebrow">Brand page</p>
         <div class="meta-row data-source-row">
           <span class="badge-source">{sourceLabel}</span>
-          <span class="badge-date">{recalls.length} indexed notice{recalls.length === 1 ? '' : 's'}</span>
+          <span class="badge-date">{recalls.length} recall notice{recalls.length === 1 ? '' : 's'}</span>
         </div>
         <h1>Recalls linked to {brand}</h1>
-        <p class="lead">Indexed recall notices linked to this brand, company, importer, recalling firm, or related product name.</p>
+        <p class="lead">Recall notices linked to this brand, company, importer, recalling firm, or related product name.</p>
         <div class="link-row data-source-row">
           <button class="btn btn-primary" id="save-brand-watchlist" type="button" data-brand={brand} data-brand-slug={slug}>
             Save this brand in this browser
@@ -68,49 +67,15 @@ const description = `Indexed recall notices linked to ${brand}, with related pro
       <section class="section">
         <div class="section-header">
           <div>
-            <p class="eyebrow">Indexed brand notices</p>
-            <h2>Indexed notices linked to this brand/company</h2>
-            <p class="section-note">Cards are based on indexed notices connected to this brand/company page.</p>
+            <p class="eyebrow">Brand notices</p>
+            <h2>Recall notices linked to this brand/company</h2>
+            <p class="section-note">Cards are based on recall notices connected to this brand/company page.</p>
           </div>
         </div>
         <div class="product-grid">
-          {recalls.map((recall) => {
-            const image = getRecallImageForContext(recall, 'list');
-
-            return (
-            <article class="product-card">
-              <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
-                {image.url ? (
-                  <>
-                    <img
-                      src={image.url}
-                      alt={image.alt}
-                      loading="lazy"
-                      decoding="async"
-                      data-fallback-label={getRecallSourcePlaceholder(recall.source)}
-                    />
-                    <span class="image-placeholder image-placeholder-fallback" hidden>
-                      {getRecallSourcePlaceholder(recall.source)}
-                    </span>
-                  </>
-                ) : (
-                  <span class="image-placeholder">{getRecallSourcePlaceholder(recall.source)}</span>
-                )}
-              </a>
-              <div class="card-body">
-                <div class="meta-row">
-                  <span class="badge-source">{recall.sourceLabel}</span>
-                  <span class="tag">{recall.taxonomyProductFamilyLabel || recall.categoryLabel}</span>
-                  {recall.taxonomyHazardTypeLabel ? <span class="badge-danger">{recall.taxonomyHazardTypeLabel}</span> : null}
-                  <span class="badge-date">{recall.recallDate}</span>
-                </div>
-                <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-                <p>{recall.hazard || recall.reason || 'Hazard or reason not listed in the indexed notice.'}</p>
-                <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
-              </div>
-            </article>
-            );
-          })}
+          {recalls.map((recall) => (
+            <RecallListCard recall={recall} />
+          ))}
         </div>
       </section>
 

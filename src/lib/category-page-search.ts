@@ -78,7 +78,7 @@ export function initCategoryPageSearch(): void {
       group.hidden = (hasQuery || activeCategory !== 'all') && !hasVisibleCard;
     }
 
-    resultCountLabel.textContent = `${visibleCount} of ${total} indexed notice${
+    resultCountLabel.textContent = `${visibleCount} of ${total} recall notice${
       total === 1 ? '' : 's'
     } shown${activeCategory !== 'all' && categoryLabel ? ` for ${categoryLabel}` : ''}`;
 

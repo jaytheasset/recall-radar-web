@@ -1,11 +1,10 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import EuImageResourceHints from '../components/EuImageResourceHints.astro';
+import RecallListCard from '../components/RecallListCard.astro';
 import { getRecallsByCategory } from '../lib/recall-data';
 import { categorySearchTextFor } from '../lib/category-search';
 import { getNoResultIdentifierHint } from '../lib/identifier-guidance';
-import { getRecallImageForContext } from '../lib/recall-images';
-import { getRecallSourcePlaceholder } from '../lib/recall-sources';
 import '../styles/global.css';
 
 const title = 'Baby & Kids Product Recalls | Recall Radar';
@@ -33,7 +32,7 @@ const noResultCopy = getNoResultIdentifierHint();
         <p class="eyebrow">Baby & Kids</p>
         <div class="meta-row data-source-row">
           <span class="badge-source">Product family</span>
-          <span class="badge-date">{recalls.length} indexed notice{recalls.length === 1 ? '' : 's'}</span>
+          <span class="badge-date">{recalls.length} recall notice{recalls.length === 1 ? '' : 's'}</span>
         </div>
         <h1>Baby & Kids product recalls</h1>
         <p class="lead">Baby, infant, nursery, toy, and kids product recall notices.</p>
@@ -50,7 +49,7 @@ const noResultCopy = getNoResultIdentifierHint();
         </form>
         <div class="category-search-status">
           <span class="status-pill" data-category-result-count>
-            {recalls.length} of {recalls.length} indexed notice{recalls.length === 1 ? '' : 's'} shown
+            {recalls.length} of {recalls.length} recall notice{recalls.length === 1 ? '' : 's'} shown
           </span>
         </div>
         <div class="notice-panel category-no-results" data-category-no-results hidden>
@@ -61,58 +60,19 @@ const noResultCopy = getNoResultIdentifierHint();
       <section class="section" data-category-group>
         <div class="section-header">
           <div>
-            <h2>Indexed notices</h2>
+            <h2>Recall notices</h2>
             <p class="section-note">Shown when classification identifies a baby or kids product recall.</p>
           </div>
         </div>
         {recalls.length ? (
           <div class="product-grid">
-            {recalls.map((recall) => {
-              const image = getRecallImageForContext(recall, 'list');
-
-              return (
-              <article class="product-card" data-category-card data-search-text={categorySearchTextFor(recall)}>
-                <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
-                  {image.url ? (
-                    <>
-                      <img
-                        src={image.url}
-                        alt={image.alt}
-                        loading="lazy"
-                        decoding="async"
-                        data-fallback-label={getRecallSourcePlaceholder(recall.source)}
-                      />
-                      <span class="image-placeholder image-placeholder-fallback" hidden>
-                        {getRecallSourcePlaceholder(recall.source)}
-                      </span>
-                    </>
-                  ) : (
-                    <span class="image-placeholder">{getRecallSourcePlaceholder(recall.source)}</span>
-                  )}
-                </a>
-                <div class="card-body">
-                  <div class="meta-row">
-                    <span class="badge-source">{recall.sourceLabel}</span>
-                    <span class="tag">{recall.taxonomyProductFamilyLabel || recall.categoryLabel}</span>
-                    {recall.taxonomyHazardTypeLabel ? <span class="badge-danger">{recall.taxonomyHazardTypeLabel}</span> : null}
-                    <span class="badge-date">{recall.recallDate}</span>
-                  </div>
-                  <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-                  <p>{recall.hazard || recall.reason || 'Hazard or reason not listed in the indexed notice.'}</p>
-                  <div class="link-row">
-                    {recall.primaryBrandSlug ? (
-                      <a class="btn btn-ghost" href={`/brands/${recall.primaryBrandSlug}`}>{recall.primaryBrand} page</a>
-                    ) : null}
-                    <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
-                  </div>
-                </div>
-              </article>
-              );
-            })}
+            {recalls.map((recall) => (
+              <RecallListCard recall={recall} searchText={categorySearchTextFor(recall)} />
+            ))}
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No indexed notices are currently classified in this product family.</p>
+            <p>No recall notices are currently classified in this product family.</p>
           </div>
         )}
       </section>

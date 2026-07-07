@@ -99,7 +99,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         <div class="meta-row data-source-row">
           <span class="status-pill">{dataSourceLabel}</span>
           <span class="tag">
-            {usingProcessedLocalData ? `${processedLocalRecordCount} indexed notices` : 'Sample notices'}
+            {usingProcessedLocalData ? `${processedLocalRecordCount} recall notices` : 'Sample notices'}
           </span>
           {usingProcessedLocalData ? (
             <>
@@ -153,7 +153,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
           <div>
             <p class="eyebrow">Saved recall previews</p>
             <h2>Saved recall previews</h2>
-            <p class="section-note">Cards are matched in this browser from indexed notices.</p>
+            <p class="section-note">Cards are matched in this browser from recall notices.</p>
           </div>
           <a class="btn btn-secondary" href="/checker">Save another search</a>
         </div>
@@ -307,7 +307,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       }
 
       function reasonTextFor(recall: WatchlistRecall): string {
-        return recall.hazard || recall.reason || 'Not listed in the indexed notice.';
+        return recall.hazard || recall.reason || 'Not listed in the recall notice.';
       }
 
       function actionTextFor(recall: WatchlistRecall): string {

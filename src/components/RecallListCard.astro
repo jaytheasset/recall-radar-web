@@ -1,0 +1,117 @@
+---
+import type { SiteRecall } from '../lib/recall-data';
+import { cleanRecallDisplayText } from '../lib/recall-display-text';
+import { getRecallImageForContext, type RecallImageContext } from '../lib/recall-images';
+import {
+  getRecallActionLabel,
+  getRecallDefaultActionFallback,
+  getRecallReasonLabel,
+  getRecallSourcePlaceholder
+} from '../lib/recall-sources';
+import {
+  TAXONOMY_REVIEW_LABEL,
+  TAXONOMY_REVIEW_NOTICE,
+  needsTaxonomyReview
+} from '../lib/taxonomy-review';
+
+type Props = {
+  recall: SiteRecall;
+  searchText?: string;
+  cardCategory?: string;
+  cardSource?: string;
+  sourceCard?: boolean;
+  imageContext?: RecallImageContext;
+  class?: string;
+};
+
+const {
+  recall,
+  searchText,
+  cardCategory,
+  cardSource,
+  sourceCard = false,
+  imageContext = 'list'
+} = Astro.props;
+const className = Astro.props.class;
+const image = getRecallImageForContext(recall, imageContext);
+const fallbackLabel = getRecallSourcePlaceholder(recall.source);
+const productText = recall.productNames.length
+  ? recall.productNames.slice(0, 3).join(', ')
+  : recall.primaryProductName;
+const brandText = recall.displayBrandNames.length
+  ? recall.displayBrandNames.slice(0, 3).join(', ')
+  : recall.primaryBrand;
+const reasonText = cleanRecallDisplayText(recall.hazard || recall.reason || 'Not listed in the recall notice.');
+const actionText = cleanRecallDisplayText(recall.remedy || getRecallDefaultActionFallback(recall.source));
+const taxonomyFacts = [
+  {
+    label: 'Product family',
+    value: recall.taxonomyProductFamilyLabel || recall.categoryLabel
+  },
+  {
+    label: 'Product type',
+    value: recall.taxonomyProductTypeLabel
+  },
+  {
+    label: 'Issue',
+    value: recall.taxonomyHazardTypeLabel || reasonText
+  },
+  {
+    label: 'Audience',
+    value: (recall.taxonomyAudienceLabels ?? []).filter(Boolean).slice(0, 2).join(', ')
+  }
+].filter((fact): fact is { label: string; value: string } => Boolean(fact.value));
+const reviewNeeded = needsTaxonomyReview(recall);
+---
+
+<article
+  class:list={['product-card', 'result-card', 'recall-list-card', className]}
+  data-category-card
+  data-source-card={sourceCard ? true : undefined}
+  data-card-category={cardCategory}
+  data-card-source={cardSource}
+  data-search-text={searchText}
+>
+  <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
+    {image.url ? (
+      <>
+        <img
+          src={image.url}
+          alt={image.alt}
+          loading="lazy"
+          decoding="async"
+          data-fallback-label={fallbackLabel}
+        />
+        <span class="image-placeholder image-placeholder-fallback" hidden>{fallbackLabel}</span>
+      </>
+    ) : (
+      <span class="image-placeholder">{fallbackLabel}</span>
+    )}
+  </a>
+  <div class="card-body">
+    <div class="meta-row result-card-badges result-card-topline">
+      <span class="badge-source">{recall.sourceLabel}</span>
+      <span class="badge-date">{recall.recallDate}</span>
+      {reviewNeeded ? <span class="badge-review">{TAXONOMY_REVIEW_LABEL}</span> : null}
+    </div>
+    <h3><a href={recall.detailPath}>{recall.title}</a></h3>
+    <p class="result-card-line"><strong>Product: </strong>{productText}</p>
+    <p class="result-card-line"><strong>Brand/company: </strong>{brandText}</p>
+    {taxonomyFacts.length ? (
+      <dl class="result-taxonomy-facts">
+        {taxonomyFacts.slice(0, 4).map((fact) => (
+          <div>
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))}
+      </dl>
+    ) : null}
+    <p class="result-card-line result-card-reason"><strong>{getRecallReasonLabel(recall.source)}: </strong>{reasonText}</p>
+    <p class="result-card-line result-card-action"><strong>{getRecallActionLabel(recall.source)}: </strong>{actionText}</p>
+    {reviewNeeded ? <p class="taxonomy-review-note">{TAXONOMY_REVIEW_NOTICE}</p> : null}
+    <div class="link-row">
+      <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
+    </div>
+  </div>
+</article>
