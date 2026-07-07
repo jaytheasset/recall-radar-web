@@ -73,6 +73,17 @@ const displayAudienceLabels = view.taxonomyAudienceLabels.filter(isUsefulDisplay
 const displayActionItems = buildRecallActionItems([view.action, ...view.actionParagraphs]);
 const summaryActionItems = displayActionItems.slice(0, 2);
 const displayContactItems = buildRecallContactItems([view.action, view.consumerContact]);
+const primarySummaryFacts = [
+  pageFact('Product family', view.taxonomyProductFamilyLabel),
+  pageFact('Product type', displayProductTypeLabel),
+  pageFact('Issue', view.taxonomyHazardTypeLabel),
+  pageFact('Audience', displayAudienceLabels.join(', '))
+].filter((fact): fact is DetailFact => Boolean(fact));
+const secondarySummaryFacts = [
+  pageFact('Recall date', view.recallDate),
+  pageFact('Source', view.sourceBadge),
+  pageFact('Area', displayRecallDomainLabel)
+].filter((fact): fact is DetailFact => Boolean(fact));
 const supportingNoticeFacts = [
   pageFact('Consumer contact', displayContactItems),
   pageFact(view.distributionLabel, view.soldAt),
@@ -140,13 +151,13 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
     ) : (
     <main class="page-shell detail-report-page">
       <section class="section detail-report-hero">
-        <p class="eyebrow">Recall report</p>
-        <div class="meta-row data-source-row">
-          <span class="badge-source">{view.sourceBadge}</span>
-          <span class="badge-date">{view.recallDate}</span>
-          <span class="tag">{view.taxonomyProductFamilyLabel}</span>
-          {view.taxonomyHazardTypeLabel ? <span class="tag">{view.taxonomyHazardTypeLabel}</span> : null}
-          {taxonomyNeedsReview ? <span class="badge-review">{TAXONOMY_REVIEW_LABEL}</span> : null}
+        <div class="detail-hero-topline">
+          <p class="eyebrow">Recall notice</p>
+          <div class="meta-row data-source-row">
+            <span class="badge-source">{view.sourceBadge}</span>
+            <span class="badge-date">{view.recallDate}</span>
+            {taxonomyNeedsReview ? <span class="badge-review">{TAXONOMY_REVIEW_LABEL}</span> : null}
+          </div>
         </div>
         <h1 class="detail-title">{view.displayTitle}</h1>
         <p class="lead detail-intro">{view.introSentence}</p>
@@ -216,46 +227,24 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         </article>
 
         <aside class="detail-card recall-summary-card compact-summary-card v2-report-card" aria-label="Recall report summary">
-          <p class="eyebrow">Recall report</p>
+          <p class="eyebrow">Quick check</p>
           <h2>{view.productName}</h2>
           <p class="summary-brand">{view.brandName || 'Brand or company not listed'}</p>
-          <div class="v2-summary-stack">
-            <div>
-              <strong>Product family</strong>
-              <span>{view.taxonomyProductFamilyLabel}</span>
-            </div>
-            {displayProductTypeLabel ? (
-              <div>
-                <strong>Product type</strong>
-                <span>{displayProductTypeLabel}</span>
+          <div class="v2-summary-priority-grid">
+            {primarySummaryFacts.map((fact) => (
+              <div class="v2-summary-fact">
+                <strong>{fact.label}</strong>
+                <span>{fact.value}</span>
               </div>
-            ) : null}
-            {view.taxonomyHazardTypeLabel ? (
+            ))}
+          </div>
+          <div class="v2-summary-meta-list">
+            {secondarySummaryFacts.map((fact) => (
               <div>
-                <strong>Issue</strong>
-                <span>{view.taxonomyHazardTypeLabel}</span>
+                <strong>{fact.label}</strong>
+                <span>{fact.value}</span>
               </div>
-            ) : null}
-            {displayAudienceLabels.length ? (
-              <div>
-                <strong>Audience</strong>
-                <span>{displayAudienceLabels.join(', ')}</span>
-              </div>
-            ) : null}
-            {displayRecallDomainLabel ? (
-              <div>
-                <strong>Area</strong>
-                <span>{displayRecallDomainLabel}</span>
-              </div>
-            ) : null}
-            <div>
-              <strong>Recall date</strong>
-              <span>{view.recallDate}</span>
-            </div>
-            <div>
-              <strong>Source</strong>
-              <span>{view.sourceBadge}</span>
-            </div>
+            ))}
           </div>
           {taxonomyNeedsReview ? (
             <div class="classification-confidence-card needs-review">
