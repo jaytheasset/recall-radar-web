@@ -70,14 +70,6 @@ const displayRecallDomainLabel = isUsefulDisplayValue(view.taxonomyRecallDomainL
   ? view.taxonomyRecallDomainLabel
   : '';
 const displayAudienceLabels = view.taxonomyAudienceLabels.filter(isUsefulDisplayValue).slice(0, 3);
-const displayConfidenceLabel =
-  typeof view.taxonomyConfidence === 'number'
-    ? `${Math.round(view.taxonomyConfidence * 100)}% confidence`
-    : '';
-const displayQualityFlags = view.taxonomyQualityFlags
-  .map((flag) => flag.replace(/[-_]+/g, ' '))
-  .filter(Boolean)
-  .slice(0, 4);
 const displayActionItems = buildRecallActionItems([view.action, ...view.actionParagraphs]);
 const displayContactItems = buildRecallContactItems([view.action, view.consumerContact]);
 const officialSourceFacts = [
@@ -239,13 +231,13 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
             ) : null}
             {displayAudienceLabels.length ? (
               <div>
-                <strong>Who to check for</strong>
+                <strong>Audience</strong>
                 <span>{displayAudienceLabels.join(', ')}</span>
               </div>
             ) : null}
             {displayRecallDomainLabel ? (
               <div>
-                <strong>Recall domain</strong>
+                <strong>Area</strong>
                 <span>{displayRecallDomainLabel}</span>
               </div>
             ) : null}
@@ -258,16 +250,10 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
               <span>{view.sourceBadge}</span>
             </div>
           </div>
-          {taxonomyNeedsReview || displayConfidenceLabel ? (
-            <div class:list={['classification-confidence-card', taxonomyNeedsReview && 'needs-review']}>
-              <strong>{taxonomyNeedsReview ? 'Classification review' : 'Classification confidence'}</strong>
-              {displayConfidenceLabel ? <span>{displayConfidenceLabel}</span> : null}
-              {taxonomyNeedsReview ? <p>{TAXONOMY_REVIEW_NOTICE}</p> : null}
-              {displayQualityFlags.length ? (
-                <div class="classification-flag-row">
-                  {displayQualityFlags.map((flag) => <span>{flag}</span>)}
-                </div>
-              ) : null}
+          {taxonomyNeedsReview ? (
+            <div class="classification-confidence-card needs-review">
+              <strong>Category needs review</strong>
+              <p>{TAXONOMY_REVIEW_NOTICE}</p>
             </div>
           ) : null}
           <div class="summary-alert">

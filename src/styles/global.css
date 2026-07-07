@@ -2380,21 +2380,6 @@ button:disabled {
   line-height: 1.38;
 }
 
-.classification-flag-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.classification-flag-row span {
-  border-radius: 999px;
-  padding: 0.22rem 0.48rem;
-  background: rgba(255, 255, 255, 0.72);
-  color: #92400E;
-  font-size: 0.72rem;
-  font-weight: 820;
-}
-
 .summary-alert {
   display: grid;
   gap: 0.35rem;
