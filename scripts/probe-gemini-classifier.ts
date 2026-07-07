@@ -12,6 +12,7 @@ import {
   loadLocalEnv
 } from './load-local-env.ts';
 import { buildRecallClassifierPrompt } from './llm-recall-classifier-prompt.ts';
+import { repairClassifierEvidenceFields } from './repair-classifier-output.ts';
 import { parseStrictClassifierJson } from './validate-recall-classification-output.ts';
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -98,7 +99,8 @@ async function runProbe(): Promise<void> {
     errorMessage = error instanceof Error ? error.message : String(error);
   }
 
-  const validation = rawText ? parseStrictClassifierJson(rawText) : { ok: false, errors: ['No response text.'] };
+  const repaired = rawText ? repairClassifierEvidenceFields(rawText) : { rawText: '', repairs: [] };
+  const validation = rawText ? parseStrictClassifierJson(repaired.rawText) : { ok: false, errors: ['No response text.'] };
   parsedJson = rawText ? !validation.errors.some((error) => error.startsWith('Invalid strict JSON:')) : false;
   validClassification = validation.ok;
 
@@ -115,6 +117,7 @@ async function runProbe(): Promise<void> {
     needsReview: validation.classification?.needsReview ?? null,
     estimatedInputTokens: requestEstimate.estimatedInputTokens,
     estimatedOutputTokens: rawText ? estimateTokensFromText(rawText) : 0,
+    evidenceFieldRepairs: repaired.repairs,
     expectedBroadClassification: {
       productFamily: 'food-grocery',
       hazardType: 'allergen',

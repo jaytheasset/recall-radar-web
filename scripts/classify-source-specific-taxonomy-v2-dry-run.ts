@@ -22,6 +22,7 @@ import {
   type RecallClassifierProviderName,
   type RecallClassifierProviderSettings
 } from './llm-recall-classifier-provider.ts';
+import { repairClassifierEvidenceFields } from './repair-classifier-output.ts';
 import { parseStrictClassifierJson } from './validate-recall-classification-output.ts';
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -144,88 +145,12 @@ function envFlag(name: string): boolean {
   return ['1', 'true', 'yes'].includes(getLocalEnvValue(name).toLowerCase());
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
+}
+
 function normalize(value: string): string {
   return value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
-}
-
-function mapEvidenceFieldAlias(value: unknown): string {
-  const text = typeof value === 'string' ? value : '';
-  const key = normalize(text);
-
-  if ([
-    'title',
-    'productnames',
-    'brandnames',
-    'category',
-    'hazard',
-    'remedy',
-    'description',
-    'rawsourcecategory',
-    'source',
-    'sourceurl',
-    'identifiers'
-  ].includes(key)) {
-    return text;
-  }
-
-  if (/(hazard|risk|problem|issue|reason|defect|safetyhazard|allergen|contamination)/.test(key)) {
-    return 'hazard';
-  }
-  if (/(action|remedy|advice|measure|whattodo|instruction)/.test(key)) {
-    return 'remedy';
-  }
-  if (/(productname|productdescription|affectedproduct|productdetail|foodproduct)/.test(key)) {
-    return 'productNames';
-  }
-  if (/(brand|supplier|importer|retailer|firm|company|manufacturer|business)/.test(key)) {
-    return 'brandNames';
-  }
-  if (/(sourcecategory|sourcecategories|sourceproductcategory|sourceproducttype|sourcealerttype|category|classification|alerttype|notificationtype)/.test(key)) {
-    return 'rawSourceCategory';
-  }
-  if (/(url|notice)/.test(key)) {
-    return 'sourceUrl';
-  }
-  if (/(identifier|recallnumber|barcode|upc|gtin|ean|jan|model|batch|lot|date|bestbefore|useby|expiry|code|sku|serial|pack)/.test(key)) {
-    return 'identifiers';
-  }
-  if (/(source|sourcehints|market|officialsource|sourceapi)/.test(key)) {
-    return 'source';
-  }
-  return 'description';
-}
-
-function repairEvidenceFields(rawText: string): { rawText: string; repairs: Array<{ from: string; to: string }> } {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(rawText);
-  } catch {
-    return { rawText, repairs: [] };
-  }
-
-  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-    return { rawText, repairs: [] };
-  }
-
-  const output = parsed as Record<string, unknown>;
-  if (!Array.isArray(output.evidenceFields)) {
-    return { rawText, repairs: [] };
-  }
-
-  const repairs: Array<{ from: string; to: string }> = [];
-  const mapped = output.evidenceFields.map((field) => {
-    const mappedField = mapEvidenceFieldAlias(field);
-    if (typeof field === 'string' && field !== mappedField) {
-      repairs.push({ from: field, to: mappedField });
-    }
-    return mappedField;
-  });
-
-  output.evidenceFields = [...new Set(mapped)].slice(0, 8);
-  return {
-    rawText: JSON.stringify(output),
-    repairs
-  };
 }
 
 function pathFor(relativePath: string): string {
@@ -354,12 +279,36 @@ async function callProviderWithPrompt(prompt: string, settings: RecallClassifier
   return { rawText, provider: 'openai', model: settings.model };
 }
 
+function isRetryableProviderError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /HTTP (429|500|502|503|504)|timeout|temporarily|rate/i.test(message);
+}
+
+async function callProviderWithRetry(prompt: string, settings: RecallClassifierProviderSettings): Promise<{ rawText: string; provider: RecallClassifierProviderName; model: string }> {
+  const maxAttempts = 3;
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      return await callProviderWithPrompt(prompt, settings);
+    } catch (error) {
+      lastError = error;
+      if (attempt === maxAttempts || !isRetryableProviderError(error)) {
+        throw error;
+      }
+      await sleep(750 * attempt * attempt);
+    }
+  }
+
+  throw lastError;
+}
+
 async function classifyPrompt(prompt: string, settings: RecallClassifierProviderSettings): Promise<ProviderRunResult> {
   const estimatedInputTokens = estimateTokensFromText(prompt);
   try {
-    const providerResult = await callProviderWithPrompt(prompt, settings);
+    const providerResult = await callProviderWithRetry(prompt, settings);
     const estimatedOutputTokens = estimateTokensFromText(providerResult.rawText);
-    const repaired = repairEvidenceFields(providerResult.rawText);
+    const repaired = repairClassifierEvidenceFields(providerResult.rawText);
     const validation = parseStrictClassifierJson(repaired.rawText);
 
     return {

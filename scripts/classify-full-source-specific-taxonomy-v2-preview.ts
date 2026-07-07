@@ -20,6 +20,7 @@ import {
   type RecallClassifierProviderName,
   type RecallClassifierProviderSettings
 } from './llm-recall-classifier-provider.ts';
+import { repairClassifierEvidenceFields } from './repair-classifier-output.ts';
 import { parseStrictClassifierJson } from './validate-recall-classification-output.ts';
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -103,86 +104,6 @@ function sleep(ms: number): Promise<void> {
 
 function normalize(value: string): string {
   return value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
-}
-
-function mapEvidenceFieldAlias(value: unknown): string {
-  const text = typeof value === 'string' ? value : '';
-  const key = normalize(text);
-
-  if ([
-    'title',
-    'productnames',
-    'brandnames',
-    'category',
-    'hazard',
-    'remedy',
-    'description',
-    'rawsourcecategory',
-    'source',
-    'sourceurl',
-    'identifiers'
-  ].includes(key)) {
-    return text;
-  }
-
-  if (/(hazard|risk|problem|issue|reason|defect|safetyhazard|allergen|contamination)/.test(key)) {
-    return 'hazard';
-  }
-  if (/(action|remedy|advice|measure|whattodo|instruction)/.test(key)) {
-    return 'remedy';
-  }
-  if (/(productname|productdescription|affectedproduct|productdetail|foodproduct)/.test(key)) {
-    return 'productNames';
-  }
-  if (/(brand|supplier|importer|retailer|firm|company|manufacturer|business)/.test(key)) {
-    return 'brandNames';
-  }
-  if (/(sourcecategory|sourcecategories|sourceproductcategory|sourceproducttype|sourcealerttype|category|classification|alerttype|notificationtype)/.test(key)) {
-    return 'rawSourceCategory';
-  }
-  if (/(url|notice)/.test(key)) {
-    return 'sourceUrl';
-  }
-  if (/(identifier|recallnumber|barcode|upc|gtin|ean|jan|model|batch|lot|date|bestbefore|useby|expiry|code|sku|serial|pack)/.test(key)) {
-    return 'identifiers';
-  }
-  if (/(source|sourcehints|market|officialsource|sourceapi)/.test(key)) {
-    return 'source';
-  }
-  return 'description';
-}
-
-function repairEvidenceFields(rawText: string): { rawText: string; repairs: Array<{ from: string; to: string }> } {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(rawText);
-  } catch {
-    return { rawText, repairs: [] };
-  }
-
-  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-    return { rawText, repairs: [] };
-  }
-
-  const output = parsed as Record<string, unknown>;
-  if (!Array.isArray(output.evidenceFields)) {
-    return { rawText, repairs: [] };
-  }
-
-  const repairs: Array<{ from: string; to: string }> = [];
-  const mapped = output.evidenceFields.map((field) => {
-    const mappedField = mapEvidenceFieldAlias(field);
-    if (typeof field === 'string' && field !== mappedField) {
-      repairs.push({ from: field, to: mappedField });
-    }
-    return mappedField;
-  });
-
-  output.evidenceFields = [...new Set(mapped)].slice(0, 8);
-  return {
-    rawText: JSON.stringify(output),
-    repairs
-  };
 }
 
 function allowedOrAlias(value: unknown, allowed: readonly string[], aliases: Record<string, string>): string | undefined {
@@ -475,7 +396,7 @@ async function classifyRecord(record: NormalizedRecall, settings: RecallClassifi
   try {
     const rawText = await callWithRetry(prompt, settings);
     const estimatedOutputTokens = estimateTokensFromText(rawText);
-    const repairedEvidence = repairEvidenceFields(rawText);
+    const repairedEvidence = repairClassifierEvidenceFields(rawText);
     const repairedEnums = repairClassificationEnums(repairedEvidence.rawText);
     const validation = parseStrictClassifierJson(repairedEnums.rawText);
     const flags = qualityFlags(record, input, validation.classification, validation.errors);
