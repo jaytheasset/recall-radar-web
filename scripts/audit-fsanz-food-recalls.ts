@@ -33,6 +33,7 @@ type AuditSummary = {
   nonOfficialImageHosts: AuditIssue[];
   suspiciousImageCandidates: AuditIssue[];
   rawHtmlLeakage: AuditIssue[];
+  rawNavigationLeakage: AuditIssue[];
   recordsWithProductNames: number;
   recordsWithCompanyOrBrand: number;
   recordsWithHazardOrRisk: number;
@@ -189,6 +190,33 @@ function rawHtmlLeakageIssues(records: NormalizedRecall[]): AuditIssue[] {
   return records.filter((record) => leakagePattern.test(textFieldsFor(record))).map((record) => compactIssue(record));
 }
 
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function rawNavigationLeakageIssues(records: NormalizedRecall[]): AuditIssue[] {
+  return records.flatMap((record) => {
+    const raw = isObject(record.raw) ? record.raw : {};
+    const detail = isObject(raw.detail) ? raw.detail : {};
+    const text = typeof detail.text === 'string' ? detail.text : '';
+    const links = Array.isArray(detail.relatedLinks) ? detail.relatedLinks : [];
+    const hasNavigationText = /\bRelated Links?\b|\bFile\b\s+.+\.pdf\b/i.test(text);
+    const hasBadLink = links.some((link) => {
+      if (!isObject(link)) {
+        return false;
+      }
+
+      const href = typeof link.href === 'string' ? link.href : '';
+      const text = typeof link.text === 'string' ? link.text : '';
+      return /^mailto:/i.test(href) || /&nbsp;|<[^>]+>/i.test(text);
+    });
+
+    return hasNavigationText || hasBadLink
+      ? [compactIssue(record, 'Related-link, contact-link, or navigation text leaked into processed raw detail.')]
+      : [];
+  });
+}
+
 function invalidImageIssues(records: NormalizedRecall[]): AuditIssue[] {
   return records.flatMap((record) =>
     imageUrlsFor(record)
@@ -275,6 +303,7 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     .map((record) => compactIssue(record, record.slug));
   const recordsWithImages = records.filter((record) => (record.images?.length ?? 0) > 0);
   const rawHtmlLeakage = rawHtmlLeakageIssues(records);
+  const rawNavigationLeakage = rawNavigationLeakageIssues(records);
   const suspiciousImageCandidates = suspiciousImageCandidateIssues(records);
   const warnings = [
     recordsWithImages.length === 0
@@ -316,6 +345,7 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     nonOfficialImageHosts: nonOfficialImageHostIssues(records),
     suspiciousImageCandidates,
     rawHtmlLeakage,
+    rawNavigationLeakage,
     recordsWithProductNames: records.filter((record) => record.productNames.length > 0).length,
     recordsWithCompanyOrBrand: records.filter((record) => record.brandNames.length > 0).length,
     recordsWithHazardOrRisk: records.filter((record) => Boolean(record.hazard || record.reason)).length,
@@ -410,6 +440,9 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
       ? `Non-official FSANZ image URLs found: ${summary.nonOfficialImageHosts.length}.`
       : '',
     summary.rawHtmlLeakage.length > 0 ? `Raw HTML/script/style leakage found in visible fields: ${summary.rawHtmlLeakage.length}.` : '',
+    summary.rawNavigationLeakage.length > 0
+      ? `FSANZ processed raw contains related-link or navigation text: ${summary.rawNavigationLeakage.length}.`
+      : '',
     sourceFilters.join('|') !== expectedSourceFilterValues.join('|')
       ? `Source filter values changed unexpectedly: ${sourceFilters.join(', ')}.`
       : ''
@@ -462,6 +495,7 @@ async function runAudit(): Promise<void> {
           nonOfficialImageHosts: summary.nonOfficialImageHosts.length,
           suspiciousImageCandidates: summary.suspiciousImageCandidates.length,
           rawHtmlLeakage: summary.rawHtmlLeakage.length,
+          rawNavigationLeakage: summary.rawNavigationLeakage.length,
           sourceUrlHostDistribution: summary.sourceUrlHostDistribution,
           imageHostDistribution: summary.imageHostDistribution,
           sampleRecords: summary.sampleRecords,

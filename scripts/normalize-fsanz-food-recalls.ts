@@ -218,7 +218,132 @@ export function isOfficialFsanzImageUrl(value: string): boolean {
 }
 
 function isMeaningfulCaption(value: string): boolean {
-  return Boolean(value) && !/^[^\\/]+\.(?:png|jpe?g|gif|webp|bmp|tiff?)(?:\?.*)?$/i.test(value);
+  return Boolean(value) && !isLikelyImageFilename(value);
+}
+
+function isLikelyImageFilename(value: string): boolean {
+  return /(?:^|[\\/])[^\\/]+\.(?:png|jpe?g|gif|webp|bmp|tiff?)(?:\?.*)?$/i.test(value.trim());
+}
+
+function cleanImageLabel(value: unknown): string {
+  const text = normalizeFsanzText(value);
+  return text && !isLikelyImageFilename(text) ? text : '';
+}
+
+function cleanIdentifierCandidate(value: string): string {
+  const text = normalizeFsanzText(value);
+  return /^(?:batch|batch numbers?|lot|lot number|code|date marking|best before|use by)$/i.test(text) ? '' : text;
+}
+
+function stripRelatedLinksTail(value: unknown): string {
+  return normalizeFsanzText(value).replace(/\bRelated Links?:.*$/i, '').trim();
+}
+
+function cleanFsanzRawImages(raw: FsanzFoodRecallRaw): FsanzFoodRecallImage[] {
+  const detailImages = arrayOfObjects(raw.detail?.images) as FsanzFoodRecallImage[];
+  const listImage = raw.listImage && typeof raw.listImage === 'object' ? [raw.listImage as FsanzFoodRecallImage] : [];
+  const seen = new Set<string>();
+
+  return [...detailImages, ...listImage].flatMap((image) => {
+    const url = normalizeFsanzText(image.url);
+    const thumbnailUrl = normalizeFsanzText(image.thumbnailUrl);
+    const alt = cleanImageLabel(image.alt);
+    const caption = cleanImageLabel(image.caption);
+
+    if (!url || !isOfficialFsanzImageUrl(url) || seen.has(url)) {
+      return [];
+    }
+
+    seen.add(url);
+    return [
+      {
+        url,
+        ...(thumbnailUrl && isOfficialFsanzImageUrl(thumbnailUrl) ? { thumbnailUrl } : {}),
+        ...(alt ? { alt } : {}),
+        ...(caption ? { caption } : {})
+      }
+    ];
+  });
+}
+
+function cleanFsanzRawLinks(raw: FsanzFoodRecallRaw): FsanzFoodRecallLink[] {
+  const seen = new Set<string>();
+
+  return arrayOfObjects(raw.detail?.relatedLinks).flatMap((link) => {
+    const href = normalizeFsanzText(link.href);
+    const text = normalizeFsanzText(link.text).replace(/&nbsp;?/gi, '').trim();
+
+    if (!href || !text) {
+      return [];
+    }
+
+    try {
+      const url = new URL(href);
+      if (url.protocol !== 'https:') {
+        return [];
+      }
+    } catch {
+      return [];
+    }
+
+    if (/\.pdf(?:$|[?#])/i.test(href) || /\.pdf$/i.test(text)) {
+      return [];
+    }
+
+    const key = `${href} ${text}`.toLowerCase();
+    if (seen.has(key)) {
+      return [];
+    }
+
+    seen.add(key);
+    return [{ href, text }];
+  });
+}
+
+function cleanFsanzDetailText(raw: FsanzFoodRecallRaw): string {
+  return uniqueNonEmpty([
+    raw.detail?.introduction ? `Product availability: ${normalizeFsanzText(raw.detail.introduction)}` : '',
+    raw.detail?.dateMarking ? `Date marking: ${normalizeFsanzText(raw.detail.dateMarking)}` : '',
+    raw.detail?.problem ? `Problem: ${normalizeFsanzText(raw.detail.problem)}` : '',
+    raw.detail?.foodSafetyHazard ? `Food safety hazard: ${normalizeFsanzText(raw.detail.foodSafetyHazard)}` : '',
+    raw.detail?.whatToDo ? `What to do: ${normalizeFsanzText(raw.detail.whatToDo)}` : '',
+    raw.detail?.contact ? `Contact: ${stripRelatedLinksTail(raw.detail.contact)}` : ''
+  ]).join(' ');
+}
+
+function cleanFsanzRawRecord(raw: FsanzFoodRecallRaw): FsanzFoodRecallRaw {
+  const images = cleanFsanzRawImages(raw);
+
+  return {
+    id: normalizeFsanzText(raw.id),
+    sourceUrl: normalizeFsanzText(raw.sourceUrl),
+    path: normalizeFsanzText(raw.path),
+    title: cleanTitle(raw.title),
+    listedTitle: cleanTitle(raw.listedTitle),
+    listSummary: normalizeFsanzText(raw.listSummary),
+    publishedDate: normalizeFsanzText(raw.publishedDate),
+    ...(images[0] ? { listImage: images[0] } : {}),
+    rssItem: {
+      title: cleanTitle(raw.rssItem?.title),
+      link: normalizeFsanzText(raw.rssItem?.link),
+      description: normalizeFsanzText(raw.rssItem?.description),
+      pubDate: normalizeFsanzText(raw.rssItem?.pubDate)
+    },
+    detail: {
+      title: cleanTitle(raw.detail?.title),
+      publishedDate: normalizeFsanzText(raw.detail?.publishedDate),
+      metaDescription: normalizeFsanzText(raw.detail?.metaDescription),
+      introduction: normalizeFsanzText(raw.detail?.introduction),
+      dateMarking: normalizeFsanzText(raw.detail?.dateMarking),
+      problem: normalizeFsanzText(raw.detail?.problem),
+      foodSafetyHazard: normalizeFsanzText(raw.detail?.foodSafetyHazard),
+      whatToDo: normalizeFsanzText(raw.detail?.whatToDo),
+      contact: stripRelatedLinksTail(raw.detail?.contact),
+      relatedLinks: cleanFsanzRawLinks(raw),
+      images,
+      text: cleanFsanzDetailText(raw)
+    }
+  };
 }
 
 function normalizeImages(raw: FsanzFoodRecallRaw, fallbackAlt: string): RecallImage[] {
@@ -229,7 +354,7 @@ function normalizeImages(raw: FsanzFoodRecallRaw, fallbackAlt: string): RecallIm
   return [...detailImages, ...listImage].flatMap((image) => {
     const url = normalizeFsanzText(image.url);
     const thumbnailUrl = normalizeFsanzText(image.thumbnailUrl);
-    const alt = firstNonEmpty([image.alt, image.caption], fallbackAlt);
+    const alt = cleanImageLabel(firstNonEmpty([image.alt, image.caption], '')) || fallbackAlt;
     const caption = normalizeFsanzText(image.caption);
 
     if (!url || !isOfficialFsanzImageUrl(url) || seen.has(url)) {
@@ -291,7 +416,9 @@ function extractIdentifierText(raw: FsanzFoodRecallRaw): string[] {
     /\b(?:\d+(?:\.\d+)?\s*(?:g|kg|ml|l|litre|litres))\b/gi
   ];
 
-  return uniqueNonEmpty([...explicit, ...patterns.flatMap((pattern) => [...text.matchAll(pattern)].map((match) => match[0]))]);
+  return uniqueNonEmpty([...explicit, ...patterns.flatMap((pattern) => [...text.matchAll(pattern)].map((match) => match[0]))])
+    .map(cleanIdentifierCandidate)
+    .filter(Boolean);
 }
 
 function descriptionFor(raw: FsanzFoodRecallRaw, identifiers: string[]): string {
@@ -339,22 +466,23 @@ export function normalizeFsanzFoodRecallRecords(records: FsanzFoodRecallRaw[]): 
     .slice()
     .sort(compareFsanzFoodRecallDateDescending)
     .map((raw) => {
-      const officialTitle = cleanTitle(firstNonEmpty([raw.detail?.title, raw.title, raw.listedTitle], 'FSANZ food recall'));
+      const cleanedRaw = cleanFsanzRawRecord(raw);
+      const officialTitle = cleanTitle(firstNonEmpty([cleanedRaw.detail?.title, cleanedRaw.title, cleanedRaw.listedTitle], 'FSANZ food recall'));
       const titleParts = splitCompanyAndProduct(officialTitle);
       const productName = firstNonEmpty([titleParts.product, officialTitle], officialTitle);
       const companyName = firstNonEmpty([titleParts.company], '');
-      const sourceRecordId = sourceIdFor(raw);
+      const sourceRecordId = sourceIdFor(cleanedRaw);
       const id = `fsanz-food-recalls-${sourceRecordId}`;
-      const identifiers = extractIdentifierText(raw);
+      const identifiers = extractIdentifierText(cleanedRaw);
       const hazard = firstNonEmpty(
-        [raw.detail?.problem, raw.detail?.foodSafetyHazard, raw.listSummary],
+        [cleanedRaw.detail?.problem, cleanedRaw.detail?.foodSafetyHazard, cleanedRaw.listSummary],
         'Food recall reason not listed.'
       );
-      const action = firstNonEmpty([raw.detail?.whatToDo], 'Review the official FSANZ recall notice for current instructions.');
-      const images = normalizeImages(raw, `${productName} food recall product image`);
+      const action = firstNonEmpty([cleanedRaw.detail?.whatToDo], 'Review the official FSANZ recall notice for current instructions.');
+      const images = normalizeImages(cleanedRaw, `${productName} food recall product image`);
       const primaryImage = images[0];
-      const recallDate = normalizeDate(raw.detail?.publishedDate ?? raw.publishedDate);
-      const sourceUrl = normalizeFsanzText(raw.sourceUrl);
+      const recallDate = normalizeDate(cleanedRaw.detail?.publishedDate ?? cleanedRaw.publishedDate);
+      const sourceUrl = normalizeFsanzText(cleanedRaw.sourceUrl);
 
       return {
         id,
@@ -363,17 +491,17 @@ export function normalizeFsanzFoodRecallRecords(records: FsanzFoodRecallRaw[]): 
         title: truncateText(officialTitle, 180),
         brandNames: uniqueNonEmpty([companyName]),
         productNames: uniqueNonEmpty([productName, officialTitle, ...identifiers]),
-        category: classifyFsanzCategory(raw),
+        category: classifyFsanzCategory(cleanedRaw),
         hazard,
         remedy: action,
         recallDate,
-        affectedUnits: uniqueNonEmpty([normalizeFsanzText(raw.detail?.dateMarking), ...identifiers]).join('; '),
-        description: descriptionFor(raw, identifiers),
+        affectedUnits: uniqueNonEmpty([normalizeFsanzText(cleanedRaw.detail?.dateMarking), ...identifiers]).join('; '),
+        description: descriptionFor(cleanedRaw, identifiers),
         slug: slugify(`${productName}-${id}`),
         classification: 'Food Standards Australia New Zealand food recall',
         reason: hazard,
-        distributionPattern: normalizeFsanzText(raw.detail?.introduction || raw.listSummary),
-        productQuantity: uniqueNonEmpty([normalizeFsanzText(raw.detail?.dateMarking), ...identifiers]).join('; '),
+        distributionPattern: normalizeFsanzText(cleanedRaw.detail?.introduction || cleanedRaw.listSummary),
+        productQuantity: uniqueNonEmpty([normalizeFsanzText(cleanedRaw.detail?.dateMarking), ...identifiers]).join('; '),
         recallNumber: sourceRecordId,
         status: '',
         ...(images.length
@@ -384,7 +512,7 @@ export function normalizeFsanzFoodRecallRecords(records: FsanzFoodRecallRaw[]): 
               primaryImageAlt: primaryImage.alt ?? primaryImage.caption
             }
           : {}),
-        raw
+        raw: cleanedRaw
       } satisfies NormalizedRecall;
     })
     .filter((record) => record.id && record.title && isOfficialFsanzUrl(record.sourceUrl) && record.recallDate);

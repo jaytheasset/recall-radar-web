@@ -509,7 +509,7 @@ function fsanz(record: NormalizedRecall, raw: unknown): SourceSpecificClassifier
     identifiers: withIdentifiers(record, [
       firstText(raw, ['path'], 180),
       firstText(detail, ['dateMarking'], 500),
-      firstText(detail, ['contact'], 300)
+      firstText(detail, ['problem'], 240)
     ], 24)
   });
 }
