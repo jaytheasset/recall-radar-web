@@ -24,7 +24,10 @@ import { repairClassifierEvidenceFields } from './repair-classifier-output.ts';
 import { parseStrictClassifierJson } from './validate-recall-classification-output.ts';
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const outputDir = 'outputs/llm-classifier/full-source-specific-preview';
+const processEnv = (process as unknown as { env?: Record<string, string | undefined> }).env ?? {};
+const outputDir =
+  processEnv.SOURCE_SPECIFIC_FULL_CLASSIFIER_OUTPUT_DIR ||
+  'outputs/llm-classifier/full-source-specific-preview';
 const absoluteOutputDir = resolve(projectRoot, outputDir);
 const resultsPath = resolve(absoluteOutputDir, 'full-source-specific-classifier-results.json');
 
@@ -98,6 +101,13 @@ function envFlag(name: string, fallback = false): boolean {
   return ['1', 'true', 'yes'].includes(raw);
 }
 
+function envList(name: string): string[] {
+  return getLocalEnvValue(name)
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
 function sleep(ms: number): Promise<void> {
   return new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
 }
@@ -165,6 +175,29 @@ function repairClassificationEnums(rawText: string): { rawText: string; repairs:
       'clogs': 'footwear',
       'shoe': 'footwear',
       'shoes': 'footwear',
+      'smoke-alarm': 'electronics-other',
+      'smoke-detector': 'electronics-other',
+      'carbon-monoxide-alarm': 'electronics-other',
+      'carbon-monoxide-detector': 'electronics-other',
+      'night-light': 'lighting',
+      'lamp': 'lighting',
+      'mobile-phone': 'electronics-other',
+      'cell-phone': 'electronics-other',
+      'cellphone': 'electronics-other',
+      'feature-phone': 'electronics-other',
+      'phone': 'electronics-other',
+      'headset': 'electronics-other',
+      'headsets': 'electronics-other',
+      'hearing-defender': 'electronics-other',
+      'hearing-defenders': 'electronics-other',
+      'hearing-protection': 'electronics-other',
+      'diving-regulator': 'pool-water-sports',
+      'scuba-regulator': 'pool-water-sports',
+      'regulator-second-stage': 'pool-water-sports',
+      'diving-equipment': 'pool-water-sports',
+      'scuba-equipment': 'pool-water-sports',
+      'vacuum-cleaner': 'home-appliance-other',
+      'vacuum': 'home-appliance-other',
       'off-road-motorcycle': 'atv-off-road',
       'off-road-motorcycles': 'atv-off-road',
       'off-road-vehicle': 'atv-off-road',
@@ -176,7 +209,22 @@ function repairClassificationEnums(rawText: string): { rawText: string; repairs:
       'electrical-appliances': 'appliance-electrical',
       'food-product': 'food-other',
       'food-products': 'food-other',
-      'medical-device': 'medical-device-consumer'
+      'seafood': 'meat-seafood',
+      'medical-device': 'medical-device-consumer',
+      'tools-equipment-other': 'tools-other',
+      'food-grocery': 'unknown',
+      'baby-kids': 'unknown',
+      'electronics-batteries': 'unknown',
+      'home-appliances': 'unknown',
+      'furniture-household': 'unknown',
+      'vehicles-mobility': 'unknown',
+      'sports-outdoor': 'unknown',
+      'clothing-accessories': 'unknown',
+      'tools-equipment': 'unknown',
+      'health-personal-care': 'unknown',
+      'chemicals-cleaning': 'unknown',
+      'pet-products': 'unknown',
+      'industrial-workplace': 'unknown'
     },
     hazardType: {
       'overheating': 'battery-overheat',
@@ -190,7 +238,9 @@ function repairClassificationEnums(rawText: string): { rawText: string; repairs:
       'internal-injury': 'injury',
       'electric-shock-risk': 'electric-shock',
       'chemical': 'contamination-chemical',
-      'pathogen': 'contamination-pathogen'
+      'pathogen': 'contamination-pathogen',
+      'tip-over': 'entrapment',
+      'tipover': 'entrapment'
     },
     recallDomain: {
       'consumer': 'consumer-product',
@@ -301,7 +351,7 @@ async function callProviderWithPrompt(prompt: string, settings: RecallClassifier
 }
 
 async function callWithRetry(prompt: string, settings: RecallClassifierProviderSettings): Promise<string> {
-  const attempts = envInt('SOURCE_SPECIFIC_FULL_CLASSIFIER_RETRIES', 3, 1, 6);
+  const attempts = envInt('SOURCE_SPECIFIC_FULL_CLASSIFIER_RETRIES', 5, 1, 8);
   let lastError = '';
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
@@ -473,6 +523,22 @@ function sourceCounts(records: NormalizedRecall[]): Record<string, number> {
   }, {});
 }
 
+function selectRecords(records: NormalizedRecall[]): NormalizedRecall[] {
+  const sourceFilter = new Set(envList('SOURCE_SPECIFIC_FULL_CLASSIFIER_SOURCES'));
+  const filtered = sourceFilter.size
+    ? records.filter((record) => sourceFilter.has(record.source))
+    : records;
+  const perSourceLimit = envInt('SOURCE_SPECIFIC_FULL_CLASSIFIER_LIMIT_PER_SOURCE', 0, 0, records.length);
+
+  if (perSourceLimit > 0) {
+    const sourceOrder = sourceFilter.size ? [...sourceFilter] : [...new Set(filtered.map((record) => record.source))];
+    return sourceOrder.flatMap((source) => filtered.filter((record) => record.source === source).slice(0, perSourceLimit));
+  }
+
+  const limit = envInt('SOURCE_SPECIFIC_FULL_CLASSIFIER_LIMIT', filtered.length, 1, filtered.length);
+  return filtered.slice(0, limit);
+}
+
 function buildPayload(records: NormalizedRecall[], selectedRecords: number, results: ClassificationPreviewResult[], settings: RecallClassifierProviderSettings): ClassificationPreviewPayload {
   const sourceSuccess: Record<string, number> = {};
   const sourceFailures: Record<string, number> = {};
@@ -596,7 +662,7 @@ async function writeOutputs(payload: ClassificationPreviewPayload): Promise<void
 }
 
 async function loadExistingResults(): Promise<ClassificationPreviewResult[]> {
-  if (!existsSync(resultsPath) || !envFlag('SOURCE_SPECIFIC_FULL_CLASSIFIER_RESUME', false)) {
+  if (!existsSync(resultsPath) || !envFlag('SOURCE_SPECIFIC_FULL_CLASSIFIER_RESUME', true)) {
     return [];
   }
 
@@ -612,11 +678,11 @@ async function run(): Promise<void> {
   await loadLocalEnv();
   const settings = getProviderSettingsFromEnv();
   const records = await readProcessedRecalls();
-  const limit = envInt('SOURCE_SPECIFIC_FULL_CLASSIFIER_LIMIT', records.length, 1, records.length);
   const concurrency = envInt('SOURCE_SPECIFIC_FULL_CLASSIFIER_CONCURRENCY', 3, 1, 8);
   const writeEvery = envInt('SOURCE_SPECIFIC_FULL_CLASSIFIER_WRITE_EVERY', 25, 1, 100);
-  const selected = records.slice(0, limit);
-  const existingResults = await loadExistingResults();
+  const selected = selectRecords(records);
+  const selectedIds = new Set(selected.map((record) => record.id));
+  const existingResults = (await loadExistingResults()).filter((result) => selectedIds.has(result.recordId));
   const completedIds = new Set(existingResults.map((result) => result.recordId));
   const results: ClassificationPreviewResult[] = [...existingResults];
   const pending = selected.filter((record) => !completedIds.has(record.id));
