@@ -2,18 +2,54 @@ function uniqueText(values: string[]): string[] {
   return [...new Set(values.map((value) => value.replace(/\s+/g, ' ').trim()).filter(Boolean))];
 }
 
-function simplifyContactHeavyAction(value: string): string {
+const contactDetailPattern =
+  /\b(?:call|phone|tel|email|visit|web|website|online|live chat)\s*:?\s*|\bhttps?:\/\/[^\s)]+|\bwww\.[^\s)]+|\b[A-Z0-9._%+-]+@[A-Z0-9.-]+(?:\.[A-Z]{2,})+\b|[+()0-9][0-9 ()+-]{6,}[0-9]/i;
+
+const contactActionPattern =
+  /\b(?:to arrange|to receive|to return|to obtain|to request|to schedule|to register|for a full refund|for a refund|for a replacement|for repair|for further instructions|if you|if unable)\b/i;
+
+function stripContactDetails(value: string): string {
   return value
+    .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+(?:\.[A-Z]{2,})+\b/gi, '')
+    .replace(/\bhttps?:\/\/[^\s)]+|\bwww\.[^\s)]+/gi, '')
+    .replace(/\b(?:call|phone|tel)\s*:?\s*[+()0-9][0-9 ()+-]{6,}[0-9]\b/gi, '')
+    .replace(/\b(?:email|visit|web|website|online|live chat|call|phone|tel)\s*:?\s*/gi, '')
+    .replace(/\b(?:via|by)\s+email\b/gi, '')
+    .replace(/\s+([.,;:])/g, '$1')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function simplifyContactSegments(value: string): string {
+  return value
+    .split(/\s+(?=Contact\s+)/i)
+    .map((segment) => {
+      const text = segment.trim();
+
+      if (!/^Contact\s+/i.test(text)) {
+        return stripContactDetails(text);
+      }
+
+      if (contactDetailPattern.test(text) && !contactActionPattern.test(text)) {
+        return '';
+      }
+
+      return stripContactDetails(text);
+    })
+    .filter(Boolean)
+    .join(' ');
+}
+
+function simplifyContactHeavyAction(value: string): string {
+  return simplifyContactSegments(
+    value
+      .replace(/\s+Details to help identify the product\b.*$/i, '')
     .replace(
       /\bContact\s+(.+?)\s+(?:via|by)\s+email\s+[A-Z0-9._%+-]+@[A-Z0-9.-]+(?:\.[A-Z]{2,})+\s+to\s+/gi,
       'Contact $1 to '
     )
-    .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+(?:\.[A-Z]{2,})+\b/gi, '')
-    .replace(/\b(?:call|phone|tel)\s*:?\s*[+()0-9][0-9 ()+-]{6,}[0-9]\b/gi, '')
-    .replace(/\b(?:via|by)\s+email\b/gi, '')
-    .replace(/\b(?:email|visit|web|call|phone|tel)\s*:?\s*/gi, '')
-    .replace(/\s+Contact\s+[^.]+\.?\s*$/i, '')
-    .replace(/\s+Contact\s+[^.]+\.?\s*Contact\s+/gi, ' Contact ')
+  )
     .replace(/\s+([.,;:])/g, '$1')
     .replace(/\s{2,}/g, ' ')
     .replace(/\s+/g, ' ')
