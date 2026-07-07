@@ -285,8 +285,7 @@ function limitWithoutEllipsis(value: string, maxLength = 92): string {
 }
 
 function displayTitleFor(productName: string, officialTitle: string): string {
-  const titleBase = limitWithoutEllipsis(compactTitle(productName) || compactTitle(officialTitle) || 'Product');
-  return `${titleBase} Recall`;
+  return limitWithoutEllipsis(compactTitle(productName) || compactTitle(officialTitle) || 'Product').replace(/[.\s]+$/g, '');
 }
 
 export function recallSourceBadge(recall: SiteRecall): string {

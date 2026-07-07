@@ -2690,6 +2690,11 @@ button:disabled {
   gap: 0.75rem;
 }
 
+.identification-guide-card .detail-fact-grid,
+.supporting-notice-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+}
+
 .detail-fact {
   display: grid;
   gap: 0.35rem;

@@ -90,6 +90,34 @@ const supportingNoticeFacts = [
   ...companyDetails,
   pageFact('Incidents reported', view.incidents)
 ].filter((fact): fact is DetailFact => Boolean(fact));
+const duplicateIdentificationLabels = new Set([
+  'product',
+  'product description',
+  'brand or company',
+  'recalling firm',
+  'problem',
+  'food safety hazard',
+  'risk type',
+  'product category'
+]);
+function factValueText(value: string | string[]): string {
+  return (Array.isArray(value) ? value.join(' ') : value).replace(/\s+/g, ' ').trim().toLowerCase();
+}
+const duplicateIdentificationValues = [
+  view.productName,
+  view.brandName,
+  view.reason,
+  view.action
+].map((value) => value.replace(/\s+/g, ' ').trim().toLowerCase()).filter(Boolean);
+const whatToCheckFacts = view.identificationDetails.filter((fact) => {
+  const label = fact.label.toLowerCase();
+  const value = factValueText(fact.value);
+
+  return (
+    !duplicateIdentificationLabels.has(label) &&
+    !duplicateIdentificationValues.some((duplicateValue) => duplicateValue === value)
+  );
+});
 const officialSourceFacts = [
   pageFact('Source', view.sourceBadge),
   pageFact('Recall date', view.recallDate),
@@ -286,9 +314,9 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
               </p>
             </div>
           </div>
-          {view.identificationDetails.length ? (
+          {whatToCheckFacts.length ? (
             <div class="detail-fact-grid">
-              {view.identificationDetails.map((fact) => (
+              {whatToCheckFacts.map((fact) => (
                 <div class="detail-fact">
                   <strong>{fact.label}</strong>
                   {Array.isArray(fact.value) ? (
