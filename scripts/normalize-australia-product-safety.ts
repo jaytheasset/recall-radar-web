@@ -36,6 +36,7 @@ export type AustraliaProductSafetyRaw = {
     defects?: unknown;
     hazards?: unknown;
     consumerAction?: unknown;
+    consumerContact?: unknown;
     supplierRunningRecall?: unknown;
     traders?: unknown;
     saleDates?: unknown;
@@ -126,6 +127,111 @@ function cleanAustraliaField(value: unknown): string {
     .trim();
 }
 
+function cleanAustraliaDistributionField(value: unknown): string {
+  return cleanAustraliaField(value).replace(/\s+Identifying numbers\b.*$/i, '').trim();
+}
+
+const contactDetailPattern =
+  /\b(?:call|phone|tel|email|visit|web|website|online|live chat)\s*:?\s*|\bhttps?:\/\/[^\s)]+|\bwww\.[^\s)]+|\b[A-Z0-9._%+-]+@[A-Z0-9.-]+(?:\.[A-Z]{2,})+\b|[+()0-9][0-9 ()+-]{6,}[0-9]/i;
+
+const contactActionPattern =
+  /\b(?:to arrange|to receive|to return|to obtain|to request|to schedule|to register|for a full refund|for a refund|for a replacement|for repair|for further instructions|if you|if unable)\b/i;
+
+function stripContactDetails(value: string): string {
+  return value
+    .replace(
+      /\bcontact\s+[A-Z0-9._%+-]+@[A-Z0-9.-]+(?:\.[A-Z]{2,})+\s+to\b/gi,
+      'contact the supplier to'
+    )
+    .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+(?:\.[A-Z]{2,})+\b/gi, '')
+    .replace(/\bhttps?:\/\/[^\s)]+|\bwww\.[^\s)]+/gi, '')
+    .replace(/\b(?:call|phone|tel)\s*:?\s*[+()0-9][0-9 ()+-]{6,}[0-9]\b/gi, '')
+    .replace(/\b(?:email|visit|web|website|online|live chat|call|phone|tel)\s*:?\s*/gi, '')
+    .replace(/\b(?:via|by)\s+email\b/gi, '')
+    .replace(/\s+([.,;:])/g, '$1')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function simplifyContactSegments(value: string): string {
+  return value
+    .split(/\s+(?=Contact\s+)/i)
+    .map((segment) => {
+      const text = segment.trim();
+
+      if (!/^Contact\s+/i.test(text)) {
+        return stripContactDetails(text);
+      }
+
+      if (contactDetailPattern.test(text) && !contactActionPattern.test(text)) {
+        return '';
+      }
+
+      return stripContactDetails(text);
+    })
+    .filter(Boolean)
+    .join(' ');
+}
+
+function simplifyAustraliaAction(value: unknown): string {
+  const text = cleanAustraliaField(value);
+  if (!text) {
+    return '';
+  }
+
+  return simplifyContactSegments(
+    text.replace(
+      /\bContact\s+(.+?)\s+(?:via|by)\s+email\s+[A-Z0-9._%+-]+@[A-Z0-9.-]+(?:\.[A-Z]{2,})+\s+to\s+/gi,
+      'Contact $1 to '
+    )
+  )
+    .replace(/\s+([.,;:])/g, '$1')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function extractAustraliaContactItems(value: unknown): string[] {
+  const text = cleanAustraliaField(value);
+  const emails = [...text.matchAll(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+(?:\.[A-Z]{2,})+\b/gi)].map(
+    (match) => `Email: ${match[0]}`
+  );
+  const phones = [...text.matchAll(/\b(?:call|phone|tel)\s*:?\s*([+()0-9][0-9 ()+-]{6,}[0-9])\b/gi)].map(
+    (match) => `Phone: ${match[1].trim()}`
+  );
+  const websites = [...text.matchAll(/\b(?:https?:\/\/[^\s)]+|www\.[^\s)]+)/gi)].map((match) => `Website: ${match[0]}`);
+
+  return uniqueNonEmpty([...emails, ...phones, ...websites]);
+}
+
+function cleanAustraliaRaw(raw: AustraliaProductSafetyRaw): AustraliaProductSafetyRaw {
+  if (!raw.detail) {
+    return raw;
+  }
+
+  return {
+    ...raw,
+    detail: {
+      ...raw.detail,
+      title: firstNonEmpty([raw.detail.title]),
+      supplierName: firstNonEmpty([raw.detail.supplierName]),
+      productDescription: cleanAustraliaField(raw.detail.productDescription),
+      brand: cleanAustraliaField(raw.detail.brand),
+      defects: cleanAustraliaField(raw.detail.defects),
+      hazards: cleanAustraliaField(raw.detail.hazards),
+      consumerAction: simplifyAustraliaAction(raw.detail.consumerAction) || cleanAustraliaField(raw.detail.consumerAction),
+      consumerContact: extractAustraliaContactItems(raw.detail.consumerAction),
+      supplierRunningRecall: cleanAustraliaField(raw.detail.supplierRunningRecall),
+      traders: cleanAustraliaDistributionField(raw.detail.traders),
+      saleDates: cleanAustraliaField(raw.detail.saleDates),
+      soldWhere: cleanAustraliaDistributionField(raw.detail.soldWhere),
+      manufacturerCountry: cleanAustraliaField(raw.detail.manufacturerCountry),
+      recallNumber: firstNonEmpty([raw.detail.recallNumber])
+    }
+  };
+}
+
 function isOfficialAustraliaProductSafetyImageUrl(value: string): boolean {
   try {
     const url = new URL(value);
@@ -191,14 +297,13 @@ function extractIdentifierText(raw: AustraliaProductSafetyRaw): string[] {
   const text = [
     raw.title,
     raw.supplierName,
-    raw.detail?.productDescription,
-    raw.detail?.brand,
-    raw.detail?.defects,
-    raw.detail?.hazards,
-    raw.detail?.consumerAction,
-    raw.detail?.traders,
-    raw.detail?.saleDates,
-    raw.detail?.soldWhere,
+    cleanAustraliaField(raw.detail?.productDescription),
+    cleanAustraliaField(raw.detail?.brand),
+    cleanAustraliaField(raw.detail?.defects),
+    cleanAustraliaField(raw.detail?.hazards),
+    cleanAustraliaDistributionField(raw.detail?.traders),
+    cleanAustraliaField(raw.detail?.saleDates),
+    cleanAustraliaDistributionField(raw.detail?.soldWhere),
     raw.detail?.recallNumber
   ]
     .map(asString)
@@ -231,8 +336,7 @@ function descriptionFor(raw: AustraliaProductSafetyRaw, identifiers: string[]): 
     `Sale dates: ${cleanAustraliaField(raw.detail?.saleDates)}`,
     `Sold in: ${cleanAustraliaField(raw.detail?.soldWhere)}`,
     `Country of manufacture: ${cleanAustraliaField(raw.detail?.manufacturerCountry)}`,
-    identifiers.length ? `Identifiers: ${identifiers.join(', ')}` : '',
-    cleanAustraliaField(raw.detail?.consumerAction)
+    identifiers.length ? `Identifiers: ${identifiers.join(', ')}` : ''
   ]).join(' ');
 }
 
@@ -270,26 +374,30 @@ export function normalizeAustraliaProductSafetyRecords(records: AustraliaProduct
     .slice()
     .sort(compareAustraliaProductSafetyDateDescending)
     .map((raw) => {
+      const cleanRaw = cleanAustraliaRaw(raw);
       const sourceRecordId = sourceIdFor(raw);
       const id = `au-product-safety-${sourceRecordId}`;
-      const title = truncateText(firstNonEmpty([raw.detail?.title, raw.title], 'Australia product safety recall'), 170);
-      const category = firstNonEmpty([arrayOfStrings(raw.detail?.categories)[0], arrayOfStrings(raw.categories)[0]], 'Product safety recall');
-      const supplier = firstNonEmpty([raw.detail?.supplierName, raw.supplierName]);
-      const brand = firstNonEmpty([cleanAustraliaField(raw.detail?.brand)]);
-      const productDescription = firstNonEmpty([cleanAustraliaField(raw.detail?.productDescription), raw.title], title);
-      const identifiers = extractIdentifierText(raw);
-      const images = normalizeImages(raw, `${title} recall product image`);
+      const title = truncateText(firstNonEmpty([cleanRaw.detail?.title, cleanRaw.title], 'Australia product safety recall'), 170);
+      const category = firstNonEmpty(
+        [arrayOfStrings(cleanRaw.detail?.categories)[0], arrayOfStrings(cleanRaw.categories)[0]],
+        'Product safety recall'
+      );
+      const supplier = firstNonEmpty([cleanRaw.detail?.supplierName, cleanRaw.supplierName]);
+      const brand = firstNonEmpty([cleanAustraliaField(cleanRaw.detail?.brand)]);
+      const productDescription = firstNonEmpty([cleanAustraliaField(cleanRaw.detail?.productDescription), cleanRaw.title], title);
+      const identifiers = extractIdentifierText(cleanRaw);
+      const images = normalizeImages(cleanRaw, `${title} recall product image`);
       const primaryImage = images[0];
-      const defects = firstNonEmpty([cleanAustraliaField(raw.detail?.defects)], 'Reason not listed in the indexed notice.');
+      const defects = firstNonEmpty([cleanAustraliaField(cleanRaw.detail?.defects)], 'Reason not listed in the indexed notice.');
       const hazards = firstNonEmpty(
-        [cleanAustraliaField(raw.detail?.hazards), cleanAustraliaField(raw.detail?.defects)],
+        [cleanAustraliaField(cleanRaw.detail?.hazards), cleanAustraliaField(cleanRaw.detail?.defects)],
         'Hazard not listed in the indexed notice.'
       );
       const remedy = firstNonEmpty(
-        [cleanAustraliaField(raw.detail?.consumerAction)],
+        [simplifyAustraliaAction(cleanRaw.detail?.consumerAction)],
         'Review the official Product Safety Australia notice for current instructions.'
       );
-      const recallDate = normalizeDate(raw.detail?.publishedDate ?? raw.publishedDate);
+      const recallDate = normalizeDate(cleanRaw.detail?.publishedDate ?? cleanRaw.publishedDate);
 
       return {
         id,
@@ -303,14 +411,14 @@ export function normalizeAustraliaProductSafetyRecords(records: AustraliaProduct
         remedy,
         recallDate,
         affectedUnits: '',
-        description: descriptionFor(raw, identifiers),
+        description: descriptionFor(cleanRaw, identifiers),
         slug: slugify(`${title}-${id}`),
         classification: 'Product Safety Australia recall',
         reason: defects,
         distributionPattern: uniqueNonEmpty([
-          cleanAustraliaField(raw.detail?.traders),
-          cleanAustraliaField(raw.detail?.soldWhere),
-          cleanAustraliaField(raw.detail?.saleDates)
+          cleanAustraliaDistributionField(cleanRaw.detail?.traders),
+          cleanAustraliaDistributionField(cleanRaw.detail?.soldWhere),
+          cleanAustraliaField(cleanRaw.detail?.saleDates)
         ]).join(' '),
         productQuantity: '',
         recallNumber: sourceRecordId,
@@ -323,7 +431,7 @@ export function normalizeAustraliaProductSafetyRecords(records: AustraliaProduct
               primaryImageAlt: primaryImage.alt ?? primaryImage.caption
             }
           : {}),
-        raw
+        raw: cleanRaw
       } satisfies NormalizedRecall;
     })
     .filter((record) => record.id && record.title && record.sourceUrl && record.recallDate);

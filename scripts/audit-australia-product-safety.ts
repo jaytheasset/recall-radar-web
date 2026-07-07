@@ -41,6 +41,7 @@ type AuditSummary = {
   recordsWithModelBarcodeBatchOrLotLikeValues: number;
   recordsWithDistributionDetails: number;
   rawHtmlLeakage: AuditIssue[];
+  sourceTextBoilerplateLeakage: AuditIssue[];
   sourceUrlHostDistribution: Record<string, number>;
   imageHostDistribution: Record<string, number>;
   sampleRecords: Array<{
@@ -237,6 +238,46 @@ function rawHtmlLeakageIssues(records: NormalizedRecall[]): AuditIssue[] {
   return records.filter((record) => leakagePattern.test(textFieldsFor(record))).map((record) => compactIssue(record));
 }
 
+function isObject(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function rawDetailFor(record: NormalizedRecall): Record<string, unknown> {
+  if (!isObject(record.raw) || !isObject(record.raw.detail)) {
+    return {};
+  }
+
+  return record.raw.detail;
+}
+
+function sourceTextBoilerplateLeakageIssues(records: NormalizedRecall[]): AuditIssue[] {
+  const issuePatterns: Array<[string, RegExp]> = [
+    ['raw.detail.productDescription', /^Product description\b/i],
+    ['raw.detail.brand', /^Brand\b/i],
+    ['raw.detail.defects', /^Reason the product is recalled\b/i],
+    ['raw.detail.hazards', /^The hazards to consumers\b/i],
+    ['raw.detail.consumerAction', /^What consumers should do\b/i],
+    ['raw.detail.saleDates', /^Dates available for sale\b/i],
+    ['raw.detail.manufacturerCountry', /^Manufacturer country ID\b/i],
+    ['raw.detail.traders', /\s+Identifying numbers\b/i],
+    ['raw.detail.soldWhere', /\s+Identifying numbers\b/i]
+  ];
+  const trailingBoilerplatePattern =
+    /\b(?:See a list of details to help identify the product|Details to help identify the product)\b/i;
+
+  return records.flatMap((record) => {
+    const detail = rawDetailFor(record);
+    const fieldIssues = issuePatterns.flatMap(([fieldName, pattern]) => {
+      const key = fieldName.split('.').at(-1) ?? fieldName;
+      const value = detail[key];
+      const text = typeof value === 'string' ? value : '';
+      return pattern.test(text) || trailingBoilerplatePattern.test(text) ? [compactIssue(record, `${fieldName}: ${text}`)] : [];
+    });
+
+    return fieldIssues;
+  });
+}
+
 function invalidImageIssues(records: NormalizedRecall[]): AuditIssue[] {
   return records.flatMap((record) =>
     imageUrlsFor(record)
@@ -375,6 +416,7 @@ function audit(records: NormalizedRecall[]): AuditSummary {
   const duplicateImageUrls = duplicateImageUrlIssues(records);
   const suspiciousImageCandidates = suspiciousImageCandidateIssues(records);
   const rawHtmlLeakage = rawHtmlLeakageIssues(records);
+  const sourceTextBoilerplateLeakage = sourceTextBoilerplateLeakageIssues(records);
   const recordsWithSupplierOrBrand = records.filter((record) => record.brandNames.length > 0).length;
   const recordsWithProductNames = records.filter((record) => record.productNames.length > 0).length;
   const recordsWithHazardOrReason = records.filter((record) => Boolean(record.hazard || record.reason)).length;
@@ -428,6 +470,7 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     recordsWithModelBarcodeBatchOrLotLikeValues: records.filter(hasIdentifierLikeValue).length,
     recordsWithDistributionDetails: records.filter((record) => Boolean(record.distributionPattern)).length,
     rawHtmlLeakage,
+    sourceTextBoilerplateLeakage,
     sourceUrlHostDistribution,
     imageHostDistribution,
     sampleRecords: records.slice(0, 5).map((record) => ({
@@ -522,6 +565,9 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
       ? `Non-official Australia image URLs found: ${summary.nonOfficialImageHosts.length}.`
       : '',
     summary.rawHtmlLeakage.length > 0 ? `Raw HTML/script/style leakage found in visible fields: ${summary.rawHtmlLeakage.length}.` : '',
+    summary.sourceTextBoilerplateLeakage.length > 0
+      ? `Australia source text boilerplate leakage found in raw detail fields: ${summary.sourceTextBoilerplateLeakage.length}.`
+      : '',
     sourceFilters.join('|') !== expectedSourceFilterValues.join('|')
       ? `Source filter values changed unexpectedly: ${sourceFilters.join(', ')}.`
       : ''
@@ -587,6 +633,7 @@ async function runAudit(): Promise<void> {
           duplicateImageUrls: summary.duplicateImageUrls.length,
           suspiciousImageCandidates: summary.suspiciousImageCandidates.length,
           rawHtmlLeakage: summary.rawHtmlLeakage.length,
+          sourceTextBoilerplateLeakage: summary.sourceTextBoilerplateLeakage.length,
           sourceUrlHostDistribution: summary.sourceUrlHostDistribution,
           imageHostDistribution: summary.imageHostDistribution,
           sampleRecords: summary.sampleRecords,
