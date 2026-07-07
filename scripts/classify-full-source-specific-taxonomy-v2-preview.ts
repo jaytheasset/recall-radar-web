@@ -205,6 +205,8 @@ function repairClassificationEnums(rawText: string): { rawText: string; repairs:
       'drain-covers': 'pool-water-sports',
       'storage-holder': 'electronic-accessory',
       'usb-power-supply': 'electronic-accessory',
+      'power-supply-storage': 'electronic-accessory',
+      'extension-cord': 'electronic-accessory',
       'novelty-lighter': 'other',
       'lighter': 'other',
       'diving-regulator': 'pool-water-sports',
@@ -214,6 +216,8 @@ function repairClassificationEnums(rawText: string): { rawText: string; repairs:
       'scuba-equipment': 'pool-water-sports',
       'vacuum-cleaner': 'home-appliance-other',
       'vacuum': 'home-appliance-other',
+      'kitchenware': 'kitchen-appliance',
+      'travel-kettle': 'kitchen-appliance',
       'off-road-motorcycle': 'atv-off-road',
       'off-road-motorcycles': 'atv-off-road',
       'off-road-vehicle': 'atv-off-road',
@@ -225,6 +229,8 @@ function repairClassificationEnums(rawText: string): { rawText: string; repairs:
       'electrical-appliances': 'appliance-electrical',
       'food-product': 'food-other',
       'food-products': 'food-other',
+      'frozen-dessert': 'dairy',
+      'frozen-confection': 'dairy',
       'seafood': 'meat-seafood',
       'medical-device': 'medical-device-consumer',
       'tools-equipment-other': 'tools-other',
@@ -254,6 +260,7 @@ function repairClassificationEnums(rawText: string): { rawText: string; repairs:
       'internal-injury': 'injury',
       'electric-shock-risk': 'electric-shock',
       'chemical': 'contamination-chemical',
+      'asbestos': 'contamination-chemical',
       'pathogen': 'contamination-pathogen',
       'tip-over': 'entrapment',
       'tipover': 'entrapment'
@@ -697,8 +704,10 @@ async function run(): Promise<void> {
   const concurrency = envInt('SOURCE_SPECIFIC_FULL_CLASSIFIER_CONCURRENCY', 3, 1, 8);
   const writeEvery = envInt('SOURCE_SPECIFIC_FULL_CLASSIFIER_WRITE_EVERY', 25, 1, 100);
   const selected = selectRecords(records);
+  const appendMode = envFlag('SOURCE_SPECIFIC_FULL_CLASSIFIER_APPEND', false);
+  const selectedRecordCount = appendMode ? records.length : selected.length;
   const selectedIds = new Set(selected.map((record) => record.id));
-  const existingResults = (await loadExistingResults()).filter((result) => selectedIds.has(result.recordId));
+  const existingResults = (await loadExistingResults()).filter((result) => appendMode || selectedIds.has(result.recordId));
   const completedIds = new Set(existingResults.map((result) => result.recordId));
   const results: ClassificationPreviewResult[] = [...existingResults];
   const pending = selected.filter((record) => !completedIds.has(record.id));
@@ -712,7 +721,7 @@ async function run(): Promise<void> {
   let writeQueue = Promise.resolve();
 
   async function scheduleWrite(): Promise<void> {
-    const payload = buildPayload(records, selected.length, results, settings);
+    const payload = buildPayload(records, selectedRecordCount, results, settings);
     writeQueue = writeQueue.then(() => writeOutputs(payload));
     await writeQueue;
   }
@@ -730,7 +739,7 @@ async function run(): Promise<void> {
       if (completed % 25 === 0 || result.failed) {
         console.log(JSON.stringify({
           completed,
-          selected: selected.length,
+          selected: selectedRecordCount,
           source: result.source,
           recordId: result.recordId,
           success: result.success,
@@ -748,7 +757,7 @@ async function run(): Promise<void> {
   await Promise.all(Array.from({ length: Math.min(concurrency, Math.max(1, pending.length)) }, () => worker()));
   await scheduleWrite();
 
-  const payload = buildPayload(records, selected.length, results, settings);
+  const payload = buildPayload(records, selectedRecordCount, results, settings);
   console.log(JSON.stringify({
     provider: payload.provider,
     model: payload.model,
