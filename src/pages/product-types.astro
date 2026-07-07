@@ -19,8 +19,7 @@ const productFamilyOrder = [
   'chemicals-cleaning',
   'pet-products',
   'industrial-workplace',
-  'other',
-  'need-review'
+  'other'
 ];
 const productFamilyRoutes = [
   ...productFamilyOrder
@@ -48,7 +47,7 @@ const productFamilyIconSvg: Record<string, string> = {
 const productTypes = productFamilyRoutes.map((route) => ({
   ...route,
   count: getRecallsByCategory(route.category).length
-}));
+})).filter((type) => type.category !== 'unknown' && type.count > 0);
 ---
 
 <html lang="en">

@@ -61,7 +61,7 @@ const productFamilies = orderedProductFamilyRoutes.map((route, index) => ({
   icon: route.category,
   count: getRecallsByCategory(route.category).length,
   isInitiallyVisible: index < homepageProductFamilyOrder.length
-}));
+})).filter((type) => type.category !== 'unknown' && type.count > 0);
 const productFamilyIconSvg: Record<string, string> = {
   'baby-kids': '<path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.3.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 1 1-14 0"/><path d="M9 6.3a3 3 0 1 1 6 0"/>',
   'electronics-batteries': '<path d="M15 7h1a2 2 0 0 1 2 2v1h1a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2h-2"/><path d="M8 7H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h1"/><path d="m11 7-3 5h4l-3 5"/>',
