@@ -859,8 +859,12 @@ const sourceCardDetails = {
       function createTaxonomyFacts(recall: BrowseRecall): HTMLElement {
         const facts = [
           {
+            label: 'Product family',
+            value: recall.taxonomyProductFamilyLabel || recall.categoryLabel
+          },
+          {
             label: 'Product type',
-            value: recall.taxonomyProductTypeLabel || recall.taxonomyProductFamilyLabel || recall.categoryLabel
+            value: recall.taxonomyProductTypeLabel
           },
           {
             label: 'Issue',
@@ -875,7 +879,7 @@ const sourceCardDetails = {
         const wrapper = document.createElement('dl');
         wrapper.className = 'result-taxonomy-facts';
 
-        facts.slice(0, 3).forEach((fact) => {
+        facts.slice(0, 4).forEach((fact) => {
           const item = document.createElement('div');
           const term = document.createElement('dt');
           const description = document.createElement('dd');
@@ -899,6 +903,31 @@ const sourceCardDetails = {
         return note;
       }
 
+      function createResultMetaRow(
+        recall: BrowseRecall,
+        match?: SearchItem['match'],
+        priorityLabel?: string
+      ): HTMLElement {
+        const meta = document.createElement('div');
+        meta.className = 'meta-row result-card-badges result-card-topline';
+
+        if (match) {
+          meta.append(createTag(MATCH_LABELS[match], `match-badge match-${match}`));
+        }
+
+        if (priorityLabel) {
+          meta.append(createTag(priorityLabel, 'badge-score'));
+        }
+
+        meta.append(createTag(recall.sourceLabel, 'badge-source'), createTag(recall.recallDate, 'badge-date'));
+
+        if (needsTaxonomyReview(recall)) {
+          meta.append(createTag(TAXONOMY_REVIEW_LABEL, 'badge-review'));
+        }
+
+        return meta;
+      }
+
       function createResultCard(item: SearchItem): HTMLElement {
         const { recall, match } = item;
         const article = document.createElement('article');
@@ -907,17 +936,7 @@ const sourceCardDetails = {
         const body = document.createElement('div');
         body.className = 'card-body';
 
-        const meta = document.createElement('div');
-        meta.className = 'meta-row result-card-badges';
-        meta.append(
-          createTag(MATCH_LABELS[match], 'badge-danger'),
-          createTag(item.searchPriorityLabel, 'badge-score'),
-          createTag(recall.sourceLabel, 'badge-source'),
-          createTag(recall.taxonomyProductFamilyLabel || recall.categoryLabel),
-          ...(recall.taxonomyHazardTypeLabel ? [createTag(recall.taxonomyHazardTypeLabel, 'badge-danger')] : []),
-          ...(needsTaxonomyReview(recall) ? [createTag(TAXONOMY_REVIEW_LABEL, 'badge-review')] : []),
-          createTag(recall.recallDate, 'badge-date')
-        );
+        const meta = createResultMetaRow(recall, match, item.searchPriorityLabel);
 
         const heading = document.createElement('h3');
         const detailLink = document.createElement('a');
@@ -949,11 +968,11 @@ const sourceCardDetails = {
         details.textContent = 'View recall';
 
         links.append(details);
-        body.append(heading, taxonomy, reason, action, product, brand);
+        body.append(meta, heading, product, brand, taxonomy, reason, action);
         if (taxonomyReviewNote) {
           body.append(taxonomyReviewNote);
         }
-        body.append(matchReason, identifierHint, meta, links);
+        body.append(matchReason, identifierHint, links);
         article.append(createImageShell(recall), body);
 
         return article;
@@ -966,15 +985,7 @@ const sourceCardDetails = {
         const body = document.createElement('div');
         body.className = 'card-body';
 
-        const meta = document.createElement('div');
-        meta.className = 'meta-row result-card-badges';
-        meta.append(
-          createTag(recall.sourceLabel, 'badge-source'),
-          createTag(recall.taxonomyProductFamilyLabel || recall.categoryLabel),
-          ...(recall.taxonomyHazardTypeLabel ? [createTag(recall.taxonomyHazardTypeLabel, 'badge-danger')] : []),
-          ...(needsTaxonomyReview(recall) ? [createTag(TAXONOMY_REVIEW_LABEL, 'badge-review')] : []),
-          createTag(recall.recallDate, 'badge-date')
-        );
+        const meta = createResultMetaRow(recall);
 
         const heading = document.createElement('h3');
         const detailLink = document.createElement('a');
@@ -998,11 +1009,11 @@ const sourceCardDetails = {
         details.textContent = 'View recall';
 
         links.append(details);
-        body.append(heading, taxonomy, reason, action, product, brand);
+        body.append(meta, heading, product, brand, taxonomy, reason, action);
         if (taxonomyReviewNote) {
           body.append(taxonomyReviewNote);
         }
-        body.append(meta, links);
+        body.append(links);
         article.append(createImageShell(recall), body);
 
         return article;
