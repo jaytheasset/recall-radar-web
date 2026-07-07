@@ -259,6 +259,12 @@ function detailRows(rawRows: unknown, limit = 12): Array<Record<string, string>>
   return output;
 }
 
+function detailRowValue(rawRows: unknown, label: string, limit = 500): string {
+  const normalizedLabel = label.toLowerCase();
+  const row = detailRows(rawRows, 30).find((item) => item.label?.toLowerCase() === normalizedLabel);
+  return row ? cleanText(row.value, limit) : '';
+}
+
 function compact<T extends Record<string, unknown>>(input: T): T {
   const output: Record<string, unknown> = {};
   const requiredArrayKeys = new Set(['productNames', 'brandNames', 'identifiers']);
@@ -462,17 +468,28 @@ function newZealand(record: NormalizedRecall, raw: unknown): SourceSpecificClass
 
 function hongKongCfs(record: NormalizedRecall, raw: unknown): SourceSpecificClassifierInput {
   const detail = at(raw, 'detail');
+  const rows = at(detail, 'rows');
+  const productDescription =
+    detailRowValue(rows, 'Product Name and Description', 700) || firstText(raw, ['xmlItem.description'], 500) || common(record).productDescription;
+  const riskText = detailRowValue(rows, 'Reason For Issuing Alert', 700) || common(record).hazardText;
+  const actionText =
+    detailRowValue(rows, 'Advice to Consumers', 500) ||
+    detailRowValue(rows, 'Advice to the Trade', 500) ||
+    detailRowValue(rows, 'Action Taken by the Centre for Food Safety', 500) ||
+    common(record).remedyText;
+
   return compact({
     ...common(record),
     sourceCategory: 'Food alert',
-    productDescription: firstText(detail, ['text'], 700) || firstText(raw, ['xmlItem.description'], 500) || common(record).productDescription,
-    riskText: firstText(detail, ['text'], 700) || common(record).hazardText,
-    actionText: common(record).remedyText,
-    productDetails: detailRows(at(detail, 'rows'), 12),
+    productDescription,
+    riskText,
+    actionText,
+    productDetails: detailRows(rows, 12),
     recallNumber: firstText(raw, ['id'], 120) || common(record).recallNumber,
     identifiers: withIdentifiers(record, [
       firstText(raw, ['id'], 120),
-      JSON.stringify(at(detail, 'rows') ?? '')
+      productDescription,
+      detailRowValue(rows, 'Further Information', 300)
     ], 24)
   });
 }

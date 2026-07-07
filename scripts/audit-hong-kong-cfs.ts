@@ -33,6 +33,7 @@ type AuditSummary = {
   nonOfficialImageHosts: AuditIssue[];
   suspiciousImageCandidates: AuditIssue[];
   rawHtmlLeakage: AuditIssue[];
+  rawNavigationLeakage: AuditIssue[];
   recordsWithProductNames: number;
   recordsWithCompanyOrBrand: number;
   recordsWithHazardOrRisk: number;
@@ -172,6 +173,10 @@ function hostFor(value: string): string {
   }
 }
 
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
 function duplicateSourceUrlIssues(records: NormalizedRecall[]): AuditIssue[] {
   const counts = new Map<string, number>();
   for (const record of records) {
@@ -186,6 +191,19 @@ function duplicateSourceUrlIssues(records: NormalizedRecall[]): AuditIssue[] {
 function rawHtmlLeakageIssues(records: NormalizedRecall[]): AuditIssue[] {
   const leakagePattern = /<script\b|<style\b|<\/?[a-z][^>]*>|&(?:lt|gt|nbsp|quot|#039|apos);/i;
   return records.filter((record) => leakagePattern.test(textFieldsFor(record))).map((record) => compactIssue(record));
+}
+
+function rawNavigationLeakageIssues(records: NormalizedRecall[]): AuditIssue[] {
+  return records.flatMap((record) => {
+    const raw = isObject(record.raw) ? record.raw : {};
+    const detail = isObject(raw.detail) ? raw.detail : {};
+    const links = Array.isArray(detail.links) ? detail.links : [];
+    const text = typeof detail.text === 'string' ? detail.text : '';
+    const hasBackLink = links.some((link) => isObject(link) && typeof link.text === 'string' && /^back$/i.test(link.text.trim()));
+    const hasBackText = /\bBack$/i.test(text.trim());
+
+    return hasBackLink || hasBackText ? [compactIssue(record, 'Back navigation leaked into processed raw detail.')] : [];
+  });
 }
 
 function invalidImageIssues(records: NormalizedRecall[]): AuditIssue[] {
@@ -266,6 +284,7 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     .map((record) => compactIssue(record, record.slug));
   const recordsWithImages = records.filter((record) => (record.images?.length ?? 0) > 0);
   const rawHtmlLeakage = rawHtmlLeakageIssues(records);
+  const rawNavigationLeakage = rawNavigationLeakageIssues(records);
   const suspiciousImageCandidates = suspiciousImageCandidateIssues(records);
   const warnings = [
     recordsWithImages.length === 0
@@ -307,6 +326,7 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     nonOfficialImageHosts: nonOfficialImageHostIssues(records),
     suspiciousImageCandidates,
     rawHtmlLeakage,
+    rawNavigationLeakage,
     recordsWithProductNames: records.filter((record) => record.productNames.length > 0).length,
     recordsWithCompanyOrBrand: records.filter((record) => record.brandNames.length > 0).length,
     recordsWithHazardOrRisk: records.filter((record) => Boolean(record.hazard || record.reason)).length,
@@ -399,6 +419,9 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
       ? `Non-official Hong Kong CFS image URLs found: ${summary.nonOfficialImageHosts.length}.`
       : '',
     summary.rawHtmlLeakage.length > 0 ? `Raw HTML/script/style leakage found in visible fields: ${summary.rawHtmlLeakage.length}.` : '',
+    summary.rawNavigationLeakage.length > 0
+      ? `Hong Kong CFS processed raw contains navigation text or Back links: ${summary.rawNavigationLeakage.length}.`
+      : '',
     sourceFilters.join('|') !== expectedSourceFilterValues.join('|')
       ? `Source filter values changed unexpectedly: ${sourceFilters.join(', ')}.`
       : ''
@@ -450,6 +473,7 @@ async function runAudit(): Promise<void> {
           nonOfficialImageHosts: summary.nonOfficialImageHosts.length,
           suspiciousImageCandidates: summary.suspiciousImageCandidates.length,
           rawHtmlLeakage: summary.rawHtmlLeakage.length,
+          rawNavigationLeakage: summary.rawNavigationLeakage.length,
           sourceUrlHostDistribution: summary.sourceUrlHostDistribution,
           imageHostDistribution: summary.imageHostDistribution,
           sampleRecords: summary.sampleRecords,

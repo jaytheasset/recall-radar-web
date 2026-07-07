@@ -164,6 +164,135 @@ function detailRows(raw: HongKongCfsRaw): HongKongCfsDetailRow[] {
   return arrayOfObjects(raw.detail?.rows) as HongKongCfsDetailRow[];
 }
 
+function cleanHongKongCfsRows(raw: HongKongCfsRaw): HongKongCfsDetailRow[] {
+  return detailRows(raw).flatMap((row) => {
+    const label = normalizeHongKongCfsText(row.label);
+    const lines = uniqueNonEmpty(
+      (Array.isArray(row.lines) ? row.lines : [row.value]).map((value) => normalizeHongKongCfsText(value))
+    );
+    const value = normalizeHongKongCfsText(row.value) || lines.join(' ');
+
+    if (!label || (!value && lines.length === 0)) {
+      return [];
+    }
+
+    return [
+      {
+        label,
+        value,
+        ...(lines.length ? { lines } : {})
+      }
+    ];
+  });
+}
+
+function cleanHongKongCfsLinks(raw: HongKongCfsRaw): HongKongCfsLink[] {
+  const seen = new Set<string>();
+
+  return arrayOfObjects(raw.detail?.links).flatMap((link) => {
+    const href = normalizeHongKongCfsText(link.href);
+    const text = normalizeHongKongCfsText(link.text);
+
+    if (!href || /^back$/i.test(text)) {
+      return [];
+    }
+
+    try {
+      const url = new URL(href);
+      if (url.protocol !== 'https:') {
+        return [];
+      }
+    } catch {
+      return [];
+    }
+
+    const key = `${href} ${text}`.toLowerCase();
+    if (seen.has(key)) {
+      return [];
+    }
+
+    seen.add(key);
+    return [
+      {
+        href,
+        ...(text ? { text } : {})
+      }
+    ];
+  });
+}
+
+function cleanHongKongCfsImages(raw: HongKongCfsRaw): HongKongCfsImage[] {
+  const seen = new Set<string>();
+
+  return arrayOfObjects(raw.detail?.images).flatMap((image) => {
+    const url = normalizeHongKongCfsText(image.url);
+    const thumbnailUrl = normalizeHongKongCfsText(image.thumbnailUrl);
+    const alt = normalizeHongKongCfsText(image.alt);
+    const caption = normalizeHongKongCfsText(image.caption);
+
+    if (!url || !isOfficialHongKongCfsImageUrl(url) || seen.has(url)) {
+      return [];
+    }
+
+    seen.add(url);
+    return [
+      {
+        url,
+        ...(thumbnailUrl && isOfficialHongKongCfsImageUrl(thumbnailUrl) ? { thumbnailUrl } : {}),
+        ...(alt ? { alt } : {}),
+        ...(caption && !/\.(?:png|jpe?g|gif|webp)$/i.test(caption) ? { caption } : {})
+      }
+    ];
+  });
+}
+
+function cleanHongKongCfsDetailText(raw: HongKongCfsRaw): string {
+  return uniqueNonEmpty([
+    normalizeHongKongCfsText(raw.detail?.title),
+    ...cleanHongKongCfsRows(raw).flatMap((row) => [
+      normalizeHongKongCfsText(row.label),
+      normalizeHongKongCfsText(row.value)
+    ])
+  ]).join(' ');
+}
+
+function cleanHongKongCfsRawRecord(raw: HongKongCfsRaw): HongKongCfsRaw {
+  const detail = raw.detail ?? {};
+
+  return {
+    ...(normalizeHongKongCfsText(raw.id) ? { id: normalizeHongKongCfsText(raw.id) } : {}),
+    ...(normalizeHongKongCfsText(raw.sourceUrl) ? { sourceUrl: normalizeHongKongCfsText(raw.sourceUrl) } : {}),
+    ...(normalizeHongKongCfsText(raw.title) ? { title: normalizeHongKongCfsText(raw.title) } : {}),
+    ...(normalizeHongKongCfsText(raw.listedTitle) ? { listedTitle: normalizeHongKongCfsText(raw.listedTitle) } : {}),
+    ...(normalizeHongKongCfsText(raw.publishedDate) ? { publishedDate: normalizeHongKongCfsText(raw.publishedDate) } : {}),
+    ...(raw.xmlItem
+      ? {
+          xmlItem: {
+            ...(normalizeHongKongCfsText(raw.xmlItem.title) ? { title: normalizeHongKongCfsText(raw.xmlItem.title) } : {}),
+            ...(normalizeHongKongCfsText(raw.xmlItem.description)
+              ? { description: normalizeHongKongCfsText(raw.xmlItem.description) }
+              : {}),
+            ...(normalizeHongKongCfsText(raw.xmlItem.link) ? { link: normalizeHongKongCfsText(raw.xmlItem.link) } : {}),
+            ...(normalizeHongKongCfsText(raw.xmlItem.pubDate) ? { pubDate: normalizeHongKongCfsText(raw.xmlItem.pubDate) } : {})
+          }
+        }
+      : {}),
+    detail: {
+      ...(normalizeHongKongCfsText(detail.title) ? { title: normalizeHongKongCfsText(detail.title) } : {}),
+      ...(normalizeHongKongCfsText(detail.issueDate) ? { issueDate: normalizeHongKongCfsText(detail.issueDate) } : {}),
+      ...(normalizeHongKongCfsText(detail.sourceOfInformation)
+        ? { sourceOfInformation: normalizeHongKongCfsText(detail.sourceOfInformation) }
+        : {}),
+      ...(normalizeHongKongCfsText(detail.metaDate) ? { metaDate: normalizeHongKongCfsText(detail.metaDate) } : {}),
+      ...(normalizeHongKongCfsText(detail.canonicalUrl) ? { canonicalUrl: normalizeHongKongCfsText(detail.canonicalUrl) } : {}),
+      rows: cleanHongKongCfsRows(raw),
+      links: cleanHongKongCfsLinks(raw),
+      images: cleanHongKongCfsImages(raw),
+      text: cleanHongKongCfsDetailText(raw)
+    }
+  };
+}
+
 function rowValue(raw: HongKongCfsRaw, label: string): string {
   const normalizedLabel = label.toLowerCase();
   return firstNonEmpty(
@@ -211,6 +340,42 @@ function normalizeSearchText(value: string): string {
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function cleanIdentifierCandidate(value: string): string {
+  let text = normalizeHongKongCfsText(value);
+  for (const nextLabel of [
+    'Product name',
+    'Brand',
+    'Place of origin',
+    'Net Weight',
+    'Pack size',
+    'Volume',
+    'Size',
+    'Retailer',
+    'Importer',
+    'Manufacturer',
+    'Distributor',
+    'Batch Number',
+    'JAN code',
+    'Barcode',
+    'The CFS press release',
+    'CFS press release',
+    'Members of the public',
+    'Reason For Issuing Alert',
+    'Action Taken by the Centre for Food Safety',
+    'Advice to the Trade',
+    'Advice to Consumers',
+    'Further Information'
+  ]) {
+    text = text.replace(new RegExp(`\\s+${escapeRegExp(nextLabel)}\\b.*$`, 'i'), '').trim();
+  }
+
+  return text;
 }
 
 function classifyHongKongCfsCategory(raw: HongKongCfsRaw): string {
@@ -270,7 +435,11 @@ function extractIdentifierText(raw: HongKongCfsRaw): string[] {
     /\b(?:best-before|best before|use-by|use by|expiry|expiration|manufacture)\s+date\s*[:#-]?\s*[A-Za-z0-9 ,./-]{3,40}/gi
   ];
 
-  return uniqueNonEmpty([...explicit, ...patterns.flatMap((pattern) => [...text.matchAll(pattern)].map((match) => match[0]))]);
+  return uniqueNonEmpty(
+    [...explicit, ...patterns.flatMap((pattern) => [...text.matchAll(pattern)].map((match) => match[0]))]
+      .map(cleanIdentifierCandidate)
+      .filter((candidate) => candidate.length >= 3)
+  );
 }
 
 function normalizeImages(raw: HongKongCfsRaw, fallbackAlt: string): RecallImage[] {
@@ -351,27 +520,28 @@ export function normalizeHongKongCfsRecords(records: HongKongCfsRaw[]): Normaliz
     .slice()
     .sort(compareHongKongCfsDateDescending)
     .map((raw) => {
-      const pairs = productDescriptionPairs(raw);
-      const sourceRecordId = sourceIdFor(raw);
+      const cleanedRaw = cleanHongKongCfsRawRecord(raw);
+      const pairs = productDescriptionPairs(cleanedRaw);
+      const sourceRecordId = sourceIdFor(cleanedRaw);
       const id = `hk-cfs-${sourceRecordId}`;
-      const officialTitle = firstNonEmpty([raw.detail?.title, raw.title, raw.listedTitle], 'Hong Kong food alert');
-      const foodProduct = rowValue(raw, 'Food Product');
+      const officialTitle = firstNonEmpty([cleanedRaw.detail?.title, cleanedRaw.title, cleanedRaw.listedTitle], 'Hong Kong food alert');
+      const foodProduct = rowValue(cleanedRaw, 'Food Product');
       const productName = firstNonEmpty([pairs['product name'], foodProduct, officialTitle], officialTitle);
       const brandNames = uniqueNonEmpty(
         valuesForKeys(pairs, ['brand', 'importer', 'retailer', 'manufacturer', 'distributor']).slice(0, 5)
       );
-      const identifiers = extractIdentifierText(raw);
-      const hazard = firstNonEmpty([rowValue(raw, 'Reason For Issuing Alert'), raw.xmlItem?.description], officialTitle);
+      const identifiers = extractIdentifierText(cleanedRaw);
+      const hazard = firstNonEmpty([rowValue(cleanedRaw, 'Reason For Issuing Alert'), cleanedRaw.xmlItem?.description], officialTitle);
       const action = firstNonEmpty(
         [
-          rowValue(raw, 'Advice to Consumers'),
-          rowValue(raw, 'Action Taken by the Centre for Food Safety'),
-          rowValue(raw, 'Advice to the Trade')
+          rowValue(cleanedRaw, 'Advice to Consumers'),
+          rowValue(cleanedRaw, 'Action Taken by the Centre for Food Safety'),
+          rowValue(cleanedRaw, 'Advice to the Trade')
         ],
         'Review the official Centre for Food Safety notice for current instructions.'
       );
-      const recallDate = normalizeDate(raw.detail?.issueDate ?? raw.publishedDate);
-      const images = normalizeImages(raw, `${productName} food alert product image`);
+      const recallDate = normalizeDate(cleanedRaw.detail?.issueDate ?? cleanedRaw.publishedDate);
+      const images = normalizeImages(cleanedRaw, `${productName} food alert product image`);
       const primaryImage = images[0];
       const productQuantity = valuesForKeys(pairs, [
         'net weight',
@@ -384,7 +554,7 @@ export function normalizeHongKongCfsRecords(records: HongKongCfsRaw[]): Normaliz
         'expiry date',
         'expiration date'
       ]).join('; ');
-      const sourceUrl = normalizeHongKongCfsText(raw.detail?.canonicalUrl) || normalizeHongKongCfsText(raw.sourceUrl);
+      const sourceUrl = normalizeHongKongCfsText(cleanedRaw.detail?.canonicalUrl) || normalizeHongKongCfsText(cleanedRaw.sourceUrl);
 
       return {
         id,
@@ -393,12 +563,12 @@ export function normalizeHongKongCfsRecords(records: HongKongCfsRaw[]): Normaliz
         title: truncateText(officialTitle, 170),
         brandNames,
         productNames: uniqueNonEmpty([productName, foodProduct, officialTitle, ...identifiers]),
-        category: classifyHongKongCfsCategory(raw),
+        category: classifyHongKongCfsCategory(cleanedRaw),
         hazard,
         remedy: action,
         recallDate,
         affectedUnits: productQuantity,
-        description: descriptionFor(raw, identifiers),
+        description: descriptionFor(cleanedRaw, identifiers),
         slug: slugify(`${productName}-${id}`),
         classification: 'Hong Kong Centre for Food Safety food alert',
         reason: hazard,
@@ -414,7 +584,7 @@ export function normalizeHongKongCfsRecords(records: HongKongCfsRaw[]): Normaliz
               primaryImageAlt: primaryImage.alt ?? primaryImage.caption
             }
           : {}),
-        raw
+        raw: cleanedRaw
       } satisfies NormalizedRecall;
     })
     .filter((record) => record.id && record.title && isOfficialHongKongCfsUrl(record.sourceUrl) && record.recallDate);
