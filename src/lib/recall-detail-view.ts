@@ -1186,7 +1186,7 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
     identifierVerificationHint: getDetailVerificationIdentifierHint(recall.source),
     sparseIdentificationCopy: getRecallSparseIdentificationCopy(recall.source),
     detailSafetyCopy:
-      'Search matches and indexed notices are not safety confirmations. Verify affected models, lots, dates, distribution, and remedies with the official notice.',
+      'Search matches and recall notices are not safety confirmations. Verify affected models, lots, dates, distribution, and remedies with the official notice.',
     quantityLabel: getRecallQuantityLabel(recall.source),
     distributionLabel: getRecallDistributionLabel(recall.source),
     officialSourceLabel: getOfficialSourceLabel(recall.source),

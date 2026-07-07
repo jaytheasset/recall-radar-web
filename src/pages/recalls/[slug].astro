@@ -71,7 +71,14 @@ const displayRecallDomainLabel = isUsefulDisplayValue(view.taxonomyRecallDomainL
   : '';
 const displayAudienceLabels = view.taxonomyAudienceLabels.filter(isUsefulDisplayValue).slice(0, 3);
 const displayActionItems = buildRecallActionItems([view.action, ...view.actionParagraphs]);
+const summaryActionItems = displayActionItems.slice(0, 2);
 const displayContactItems = buildRecallContactItems([view.action, view.consumerContact]);
+const supportingNoticeFacts = [
+  pageFact('Consumer contact', displayContactItems),
+  pageFact(view.distributionLabel, view.soldAt),
+  ...companyDetails,
+  pageFact('Incidents reported', view.incidents)
+].filter((fact): fact is DetailFact => Boolean(fact));
 const officialSourceFacts = [
   pageFact('Source', view.sourceBadge),
   pageFact('Recall date', view.recallDate),
@@ -85,7 +92,7 @@ const officialSourceFacts = [
 ].filter((fact): fact is DetailFact => Boolean(fact));
 const title = taxonomyPage ? `${taxonomyPage.label} Recalls | Recall Radar` : `${view.displayTitle} | Recall Radar`;
 const description = taxonomyPage
-  ? `Browse indexed ${taxonomyPage.label} recall notices by product family, issue tag, brand, model, barcode, lot, or keyword.`
+  ? `Browse ${taxonomyPage.label} recall notices by product family, issue tag, brand, model, barcode, lot, or keyword.`
   : `${view.displayTitle} with product photos, affected item details, reason for recall, consumer action, and official source link.`;
 const fallbackImageLabel = getRecallSourcePlaceholder(recall.source);
 const detailHeroImage = view.productImages[0];
@@ -260,11 +267,11 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
             <strong>Risk / issue</strong>
             <p>{view.reason}</p>
           </div>
-          {displayActionItems.length ? (
+          {summaryActionItems.length ? (
             <div class="summary-action">
               <strong>What to do</strong>
               <ul class="detail-action-list compact">
-                {displayActionItems.slice(0, 3).map((item) => <li>{item}</li>)}
+                {summaryActionItems.map((item) => <li>{item}</li>)}
               </ul>
             </div>
           ) : null}
@@ -284,11 +291,10 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
           <div class="section-header">
             <div>
               <p class="eyebrow">What to check</p>
-              <h2>Details to compare on your product</h2>
+              <h2>Check these product details</h2>
               <p class="section-note">
-                Compare these fields with your product label, packaging, receipt, and the official notice.
+                Match these details against the product label, packaging, receipt, seller information, and official notice.
               </p>
-              <p class="section-note">{view.identifierVerificationHint}</p>
             </div>
           </div>
           {view.identificationDetails.length ? (
@@ -313,94 +319,28 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         </article>
       </section>
 
-      {displayContactItems.length || view.soldAt.length ? (
-        <section class="section detail-secondary-section" aria-label="Contact and purchase details">
-          <div
-            class:list={[
-              'detail-secondary-grid',
-              (!displayContactItems.length || !view.soldAt.length) && 'single-secondary-card'
-            ]}
-          >
-            {displayContactItems.length ? (
-              <article class="detail-card detail-section-card detail-compact-info-card">
-                <div class="section-header">
-                  <div>
-                    <p class="eyebrow">Contact</p>
-                    <h2>Consumer contact</h2>
-                  </div>
-                </div>
-                <div class="detail-fact-grid detail-action-facts">
-                  <div class="detail-fact">
-                    <strong>Contact details listed in the notice</strong>
-                    <ul>
-                      {displayContactItems.map((item) => <li>{item}</li>)}
-                    </ul>
-                  </div>
-                </div>
-              </article>
-            ) : null}
-
-            {view.soldAt.length ? (
-              <article class="detail-card detail-section-card detail-compact-info-card">
-                <div class="section-header">
-                  <div>
-                    <p class="eyebrow">Purchase details</p>
-                    <h2>Where it was sold</h2>
-                  </div>
-                </div>
-                <div class="detail-fact-grid">
-                  <div class="detail-fact">
-                    <strong>{view.distributionLabel}</strong>
-                    <ul>
-                      {view.soldAt.map((item) => <li>{item}</li>)}
-                    </ul>
-                  </div>
-                </div>
-              </article>
-            ) : null}
-          </div>
-        </section>
-      ) : null}
-
-      {companyDetails.length ? (
+      {supportingNoticeFacts.length ? (
         <section class="section">
-          <article class="detail-card detail-section-card">
+          <article class="detail-card detail-section-card supporting-notice-card">
             <div class="section-header">
               <div>
-                <p class="eyebrow">Company</p>
-                <h2>Company and manufacturing details</h2>
+                <p class="eyebrow">Notice details</p>
+                <h2>Contact, seller, and company details</h2>
               </div>
             </div>
-            <div class="detail-fact-grid">
-              {companyDetails.map((fact) => (
+            <div class="detail-fact-grid supporting-notice-grid">
+              {supportingNoticeFacts.map((fact) => (
                 <div class="detail-fact">
                   <strong>{fact.label}</strong>
-                  <ul>
-                    {fact.value.map((item) => <li>{item}</li>)}
-                  </ul>
+                  {Array.isArray(fact.value) ? (
+                    <ul>
+                      {fact.value.map((item) => <li>{item}</li>)}
+                    </ul>
+                  ) : (
+                    <span>{fact.value}</span>
+                  )}
                 </div>
               ))}
-            </div>
-          </article>
-        </section>
-      ) : null}
-
-      {view.incidents.length ? (
-        <section class="section">
-          <article class="detail-card detail-section-card">
-            <div class="section-header">
-              <div>
-                <p class="eyebrow">Incidents</p>
-                <h2>Incidents reported</h2>
-              </div>
-            </div>
-            <div class="detail-fact-grid">
-              <div class="detail-fact">
-                <strong>Reports</strong>
-                <ul>
-                  {view.incidents.map((item) => <li>{item}</li>)}
-                </ul>
-              </div>
             </div>
           </article>
         </section>
@@ -413,8 +353,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
               <p class="eyebrow">Official source</p>
               <h2>Verify against the source notice</h2>
               <p>{view.officialVerificationCopy}</p>
-              <p class="official-recall-number">{view.officialSourceLabel}</p>
-              <p>{view.officialTitle}</p>
+              <p class="official-recall-number">Source: {view.officialSourceLabel}</p>
               {view.recallNumber ? <p class="official-recall-number">Recall number: {view.recallNumber}</p> : null}
             </div>
             {view.officialSourceUrl ? (
@@ -447,7 +386,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         <div class="section-header">
           <div>
             <p class="eyebrow">Brand history</p>
-            <h2>Other indexed notices from this brand or company</h2>
+            <h2>Other recalls from this brand or company</h2>
           </div>
         </div>
         {view.companyRecallHistory.length ? (
@@ -481,7 +420,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
                     <span class="badge-date">{historyRecall.recallDate}</span>
                   </div>
                   <h3><a href={historyRecall.detailPath}>{historyRecall.title}</a></h3>
-                  <p>{historyRecall.hazard || historyRecall.reason || 'Hazard or reason not listed'}</p>
+                  <p>{historyRecall.hazard || historyRecall.reason || 'Issue not listed'}</p>
                   <a class="btn btn-primary" href={historyRecall.detailPath}>View recall</a>
                 </div>
               </article>
@@ -490,7 +429,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No other indexed notices from this brand or company were found.</p>
+            <p>No other recalls from this brand or company were found.</p>
           </div>
         )}
       </section>
@@ -499,8 +438,8 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         <div class="section-header">
           <div>
             <p class="eyebrow">Related recalls</p>
-            <h2>Similar indexed notices</h2>
-            <p class="section-note">Based on product family, product type, and issue tags.</p>
+            <h2>Similar recalls</h2>
+            <p class="section-note">Based on product type and issue labels.</p>
           </div>
         </div>
         {view.relatedRecalls.length ? (
@@ -534,7 +473,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
                     <span class="badge-date">{relatedRecall.recallDate}</span>
                   </div>
                   <h3><a href={relatedRecall.detailPath}>{relatedRecall.title}</a></h3>
-                  <p>{relatedRecall.hazard || relatedRecall.reason || 'Hazard or reason not listed'}</p>
+                  <p>{relatedRecall.hazard || relatedRecall.reason || 'Issue not listed'}</p>
                   <a class="btn btn-primary" href={relatedRecall.detailPath}>View recall</a>
                 </div>
               </article>
@@ -543,7 +482,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No similar indexed notices were found.</p>
+            <p>No similar recalls were found.</p>
             <a class="btn btn-secondary" href={categoryFallbackPath}>Browse {view.taxonomyProductFamilyLabel} recalls</a>
           </div>
         )}

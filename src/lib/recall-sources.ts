@@ -80,7 +80,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
       'Remedy/action in the official notice'
     ],
     sparseIdentificationCopy:
-      'This indexed notice may not list every identifier in a structured field. Review the official notice and product label carefully.',
+      'This recall notice may not list every identifier in a structured field. Review the official notice and product label carefully.',
     officialVerificationCopy:
       'Use the official notice to confirm affected models, lots, dates, distribution, and remedies.'
   },
@@ -119,7 +119,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
       'Instructions in the official notice'
     ],
     sparseIdentificationCopy:
-      'This indexed notice may not list every identifier in a structured field. Review the official notice, package label, and lot or date code carefully.',
+      'This recall notice may not list every identifier in a structured field. Review the official notice, package label, and lot or date code carefully.',
     officialVerificationCopy:
       'Use the official notice to confirm affected lots, dates, distribution, product quantity, classification, status, and instructions.'
   },
@@ -163,7 +163,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
       'Instructions in the official notice'
     ],
     sparseIdentificationCopy:
-      'This indexed notice may not list every identifier in a structured field. Review the official RappelConso notice, product label, and lot or date code carefully.',
+      'This recall notice may not list every identifier in a structured field. Review the official RappelConso notice, product label, and lot or date code carefully.',
     officialVerificationCopy:
       'Use the official notice to confirm affected products, identifiers, dates, distribution, and consumer instructions.'
   },
@@ -209,7 +209,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
       'Instructions in the official notice'
     ],
     sparseIdentificationCopy:
-      'This indexed notice may not list every identifier in a structured field. Review the official notice and product label carefully.',
+      'This recall notice may not list every identifier in a structured field. Review the official notice and product label carefully.',
     officialVerificationCopy:
       'Use the official notice to confirm affected products, identifiers, dates, distribution, classification, and instructions.'
   },
@@ -257,7 +257,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
       'Measure/action in the official alert'
     ],
     sparseIdentificationCopy:
-      'This indexed notice may not list every identifier in a structured field. Review the official notice and product label carefully.',
+      'This recall notice may not list every identifier in a structured field. Review the official notice and product label carefully.',
     officialVerificationCopy:
       'Use the official Safety Gate alert to confirm affected products, identifiers, risks, measures, notifying country, country of origin, and countries concerned.'
   },
@@ -303,7 +303,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
       'Consumer action in the official notice'
     ],
     sparseIdentificationCopy:
-      'This indexed notice may not list every identifier in a structured field. Review the official FSA notice, food label, and batch or date code carefully.',
+      'This recall notice may not list every identifier in a structured field. Review the official FSA notice, food label, and batch or date code carefully.',
     officialVerificationCopy:
       'Use the official FSA notice to confirm affected products, pack sizes, batches, dates, allergens or risks, and consumer action.'
   },
@@ -348,7 +348,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
       'Reason, hazard, and consumer action in the official notice'
     ],
     sparseIdentificationCopy:
-      'This indexed notice may not list every identifier in a structured field. Review the official Product Safety Australia notice and product label carefully.',
+      'This recall notice may not list every identifier in a structured field. Review the official Product Safety Australia notice and product label carefully.',
     officialVerificationCopy:
       'Use the official notice to confirm affected products, identifiers, sale dates, traders, locations sold, hazards, and consumer action.'
   },
@@ -393,7 +393,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
       'Hazard and action in the official notice'
     ],
     sparseIdentificationCopy:
-      'This indexed notice may not list every identifier in a structured field. Review the official Product Safety New Zealand notice and product label carefully.',
+      'This recall notice may not list every identifier in a structured field. Review the official Product Safety New Zealand notice and product label carefully.',
     officialVerificationCopy:
       'Use the official notice to confirm affected products, identifiers, sale dates, suppliers, hazards, and consumer action.'
   },
@@ -438,7 +438,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
       'Consumer action in the official notice'
     ],
     sparseIdentificationCopy:
-      'This indexed notice may not list every identifier in a structured field. Review the official CFS notice, package label, and batch or date code carefully.',
+      'This recall notice may not list every identifier in a structured field. Review the official CFS notice, package label, and batch or date code carefully.',
     officialVerificationCopy:
       'Use the official CFS notice to confirm affected products, dates, importer or retailer details, risks, and consumer instructions.'
   },
@@ -483,7 +483,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
       'Consumer action in the official notice'
     ],
     sparseIdentificationCopy:
-      'This indexed notice may not list every identifier in a structured field. Review the official FSANZ notice, food label, and batch or date code carefully.',
+      'This recall notice may not list every identifier in a structured field. Review the official FSANZ notice, food label, and batch or date code carefully.',
     officialVerificationCopy:
       'Use the official FSANZ notice to confirm affected products, date markings, batch or barcode details, distribution, risks, and consumer instructions.'
   },
@@ -516,7 +516,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
       'Remedy/action instructions'
     ],
     sparseIdentificationCopy:
-      'This indexed notice may not list every identifier in a structured field. Review the official notice and product label carefully.',
+      'This recall notice may not list every identifier in a structured field. Review the official notice and product label carefully.',
     officialVerificationCopy:
       'Use the official notice to confirm affected models, lots, dates, distribution, and remedies.'
   }
