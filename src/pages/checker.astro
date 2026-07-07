@@ -421,6 +421,7 @@ const sourceCardDetails = {
         TAXONOMY_REVIEW_NOTICE,
         needsTaxonomyReview
       } from '../lib/taxonomy-review';
+      import { cleanRecallDisplayText } from '../lib/recall-display-text';
       import {
         getRecallActionLabel,
         getRecallDefaultActionFallback,
@@ -822,23 +823,64 @@ const sourceCardDetails = {
       }
 
       function reasonTextFor(recall: SearchItem['recall']): string {
-        return recall.hazard || recall.reason || 'Not listed in the recall notice.';
+        return cleanRecallDisplayText(recall.hazard || recall.reason || 'Not listed in the recall notice.');
       }
 
       function actionTextFor(recall: SearchItem['recall']): string {
-        return recall.remedy || getRecallDefaultActionFallback(recall.source);
+        return cleanRecallDisplayText(recall.remedy || getRecallDefaultActionFallback(recall.source));
+      }
+
+      function normalizeDisplayText(value: string): string {
+        return value.replace(/\s+/g, ' ').trim();
+      }
+
+      function shortText(value: string, maxLength = 120): string {
+        const text = normalizeDisplayText(value);
+        if (text.length <= maxLength) {
+          return text;
+        }
+
+        const clipped = text.slice(0, maxLength);
+        const lastSpace = clipped.lastIndexOf(' ');
+        const safeCut = lastSpace > Math.floor(maxLength * 0.65) ? lastSpace : maxLength;
+
+        return `${clipped.slice(0, safeCut).trim()}...`;
+      }
+
+      function isUsefulTaxonomyText(value: string | undefined): value is string {
+        const text = normalizeDisplayText(value ?? '');
+        return Boolean(text) && !/^unknown\b/i.test(text) && !/^need review\b/i.test(text);
       }
 
       function productTextFor(recall: SearchItem['recall']): string {
-        return recall.productNames.length
+        const text = recall.productNames.length
           ? recall.productNames.slice(0, 3).join(', ')
           : recall.primaryProductName;
+
+        return shortText(text, 110);
       }
 
       function brandTextFor(recall: SearchItem['recall']): string {
-        return recall.displayBrandNames.length
+        const text = recall.displayBrandNames.length
           ? recall.displayBrandNames.slice(0, 3).join(', ')
           : recall.primaryBrand;
+
+        return shortText(text, 72);
+      }
+
+      function productBrandSummaryFor(recall: SearchItem['recall']): string {
+        const product = productTextFor(recall);
+        const brand = brandTextFor(recall);
+
+        if (!product) {
+          return brand;
+        }
+
+        if (!brand || product.toLowerCase() === brand.toLowerCase()) {
+          return product;
+        }
+
+        return `${product} · ${brand}`;
       }
 
       function createCardLine(label: string, value: string, className = 'result-card-line'): HTMLElement {
@@ -854,37 +896,22 @@ const sourceCardDetails = {
         return values.filter((value): value is string => Boolean(value?.trim())).slice(0, limit).join(', ');
       }
 
-      function createTaxonomyFacts(recall: BrowseRecall): HTMLElement {
-        const facts = [
-          {
-            label: 'Product family',
-            value: recall.taxonomyProductFamilyLabel || recall.categoryLabel
-          },
-          {
-            label: 'Product type',
-            value: recall.taxonomyProductTypeLabel
-          },
-          {
-            label: 'Issue',
-            value: recall.taxonomyHazardTypeLabel || reasonTextFor(recall)
-          },
-          {
-            label: 'Audience',
-            value: compactList(recall.taxonomyAudienceLabels ?? [])
-          }
-        ].filter((fact): fact is { label: string; value: string } => Boolean(fact.value));
+      function createTaxonomyChips(recall: BrowseRecall): HTMLElement | null {
+        const values = [
+          recall.taxonomyProductFamilyLabel || recall.categoryLabel,
+          recall.taxonomyProductTypeLabel,
+          recall.taxonomyHazardTypeLabel,
+          compactList(recall.taxonomyAudienceLabels ?? [])
+        ].filter(isUsefulTaxonomyText);
 
-        const wrapper = document.createElement('dl');
-        wrapper.className = 'result-taxonomy-facts';
+        if (!values.length) {
+          return null;
+        }
 
-        facts.slice(0, 4).forEach((fact) => {
-          const item = document.createElement('div');
-          const term = document.createElement('dt');
-          const description = document.createElement('dd');
-          term.textContent = fact.label;
-          description.textContent = fact.value;
-          item.append(term, description);
-          wrapper.append(item);
+        const wrapper = document.createElement('div');
+        wrapper.className = 'result-taxonomy-chips';
+        values.slice(0, 4).forEach((value) => {
+          wrapper.append(createTag(value, 'result-taxonomy-chip'));
         });
 
         return wrapper;
@@ -942,11 +969,10 @@ const sourceCardDetails = {
         detailLink.textContent = recall.title;
         heading.append(detailLink);
 
-        const reason = createCardLine(reasonLabelFor(recall), reasonTextFor(recall), 'result-card-line result-card-reason');
-        const action = createCardLine(getRecallActionLabel(recall.source), actionTextFor(recall), 'result-card-line result-card-action');
-        const product = createCardLine('Product', productTextFor(recall));
-        const brand = createCardLine('Brand/company', brandTextFor(recall));
-        const taxonomy = createTaxonomyFacts(recall);
+        const productSummary = createCardLine('Product / brand', productBrandSummaryFor(recall), 'result-card-line result-card-product-summary');
+        const taxonomy = createTaxonomyChips(recall);
+        const reason = createCardLine(reasonLabelFor(recall), shortText(reasonTextFor(recall), 180), 'result-card-line result-card-reason');
+        const action = createCardLine(getRecallActionLabel(recall.source), shortText(actionTextFor(recall), 170), 'result-card-line result-card-action');
         const taxonomyReviewNote = createTaxonomyReviewNote(recall);
         const matchReason = createCardLine(
           'Why shown',
@@ -966,7 +992,11 @@ const sourceCardDetails = {
         details.textContent = 'View recall';
 
         links.append(details);
-        body.append(meta, heading, product, brand, taxonomy, reason, action);
+        body.append(meta, heading, productSummary);
+        if (taxonomy) {
+          body.append(taxonomy);
+        }
+        body.append(reason, action);
         if (taxonomyReviewNote) {
           body.append(taxonomyReviewNote);
         }
@@ -991,11 +1021,10 @@ const sourceCardDetails = {
         detailLink.textContent = recall.title;
         heading.append(detailLink);
 
-        const reason = createCardLine(reasonLabelFor(recall), reasonTextFor(recall), 'result-card-line result-card-reason');
-        const action = createCardLine(getRecallActionLabel(recall.source), actionTextFor(recall), 'result-card-line result-card-action');
-        const product = createCardLine('Product', productTextFor(recall));
-        const brand = createCardLine('Brand/company', brandTextFor(recall));
-        const taxonomy = createTaxonomyFacts(recall);
+        const productSummary = createCardLine('Product / brand', productBrandSummaryFor(recall), 'result-card-line result-card-product-summary');
+        const taxonomy = createTaxonomyChips(recall);
+        const reason = createCardLine(reasonLabelFor(recall), shortText(reasonTextFor(recall), 180), 'result-card-line result-card-reason');
+        const action = createCardLine(getRecallActionLabel(recall.source), shortText(actionTextFor(recall), 170), 'result-card-line result-card-action');
         const taxonomyReviewNote = createTaxonomyReviewNote(recall);
 
         const links = document.createElement('div');
@@ -1007,7 +1036,11 @@ const sourceCardDetails = {
         details.textContent = 'View recall';
 
         links.append(details);
-        body.append(meta, heading, product, brand, taxonomy, reason, action);
+        body.append(meta, heading, productSummary);
+        if (taxonomy) {
+          body.append(taxonomy);
+        }
+        body.append(reason, action);
         if (taxonomyReviewNote) {
           body.append(taxonomyReviewNote);
         }

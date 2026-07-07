@@ -2022,6 +2022,33 @@ button:disabled {
   font-weight: 850;
 }
 
+.result-card-product-summary {
+  color: var(--ink);
+  font-weight: 720;
+  -webkit-line-clamp: 2;
+}
+
+.result-taxonomy-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.result-taxonomy-chip {
+  display: inline-flex;
+  max-width: 100%;
+  min-height: 28px;
+  align-items: center;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 999px;
+  padding: 0.28rem 0.6rem;
+  background: #F5F6F8;
+  color: var(--ink);
+  font-size: 0.76rem;
+  font-weight: 820;
+  line-height: 1.15;
+}
+
 .result-taxonomy-facts {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
