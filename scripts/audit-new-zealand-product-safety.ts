@@ -39,6 +39,8 @@ type AuditSummary = {
   nonOfficialImageHosts: AuditIssue[];
   suspiciousImageCandidates: AuditIssue[];
   rawHtmlLeakage: AuditIssue[];
+  sourceTextBoilerplateLeakage: AuditIssue[];
+  rawImageDataUrlLeakage: AuditIssue[];
   recordsWithProductNames: number;
   recordsWithSupplierOrBrand: number;
   recordsWithHazardOrReason: number;
@@ -193,6 +195,40 @@ function rawHtmlLeakageIssues(records: NormalizedRecall[]): AuditIssue[] {
   return records.filter((record) => leakagePattern.test(textFieldsFor(record))).map((record) => compactIssue(record));
 }
 
+function rawDetailFor(record: NormalizedRecall): NonNullable<NewZealandProductSafetyRaw['detail']> {
+  const raw = record.raw as NewZealandProductSafetyRaw | undefined;
+  return raw?.detail ?? {};
+}
+
+function sourceTextBoilerplateLeakageIssues(records: NormalizedRecall[]): AuditIssue[] {
+  return records.flatMap((record) => {
+    const detail = rawDetailFor(record);
+    const issues = [
+      [/^Supplier\s+Contact\b/i, detail.supplierContact, 'supplierContact still includes source label'],
+      [/^Responsible\s+Agency\b/i, detail.responsibleAgency, 'responsibleAgency still includes source label'],
+      [/https?:\/\/www\.mbie\.govt\.nz/i, detail.responsibleAgency, 'responsibleAgency still includes raw MBIE URL']
+    ];
+
+    return issues
+      .filter(([pattern, value]) => typeof value === 'string' && (pattern as RegExp).test(value))
+      .map(([, , detailText]) => compactIssue(record, detailText as string));
+  });
+}
+
+function rawImageDataUrlLeakageIssues(records: NormalizedRecall[]): AuditIssue[] {
+  return records.flatMap((record) => {
+    const raw = record.raw as NewZealandProductSafetyRaw | undefined;
+    const detailImages = Array.isArray(raw?.detail?.images) ? raw.detail.images : [];
+    const images = [...detailImages, raw?.listImage].filter(Boolean) as Array<{ url?: unknown; thumbnailUrl?: unknown }>;
+
+    return images
+      .filter((image) =>
+        [image.url, image.thumbnailUrl].some((value) => typeof value === 'string' && /^data:image\//i.test(value))
+      )
+      .map(() => compactIssue(record, 'processed raw image list still includes data URL image payload'));
+  });
+}
+
 function invalidImageIssues(records: NormalizedRecall[]): AuditIssue[] {
   return records.flatMap((record) =>
     imageUrlsFor(record)
@@ -268,6 +304,8 @@ function audit(records: NormalizedRecall[]): AuditSummary {
   const recordsWithImages = records.filter((record) => (record.images?.length ?? 0) > 0);
   const rawHtmlLeakage = rawHtmlLeakageIssues(records);
   const suspiciousImageCandidates = suspiciousImageCandidateIssues(records);
+  const sourceTextBoilerplateLeakage = sourceTextBoilerplateLeakageIssues(records);
+  const rawImageDataUrlLeakage = rawImageDataUrlLeakageIssues(records);
   const warnings = [
     countMissing(records, (record) => record.affectedUnits.length === 0) > 0
       ? 'Product Safety New Zealand detail pages do not expose affected unit counts in a consistent structured field.'
@@ -313,6 +351,8 @@ function audit(records: NormalizedRecall[]): AuditSummary {
     nonOfficialImageHosts: nonOfficialImageHostIssues(records),
     suspiciousImageCandidates,
     rawHtmlLeakage,
+    sourceTextBoilerplateLeakage,
+    rawImageDataUrlLeakage,
     recordsWithProductNames: records.filter((record) => record.productNames.length > 0).length,
     recordsWithSupplierOrBrand: records.filter((record) => record.brandNames.length > 0).length,
     recordsWithHazardOrReason: records.filter((record) => Boolean(record.hazard || record.reason)).length,
@@ -400,6 +440,12 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
       ? `Non-official New Zealand image URLs found: ${summary.nonOfficialImageHosts.length}.`
       : '',
     summary.rawHtmlLeakage.length > 0 ? `Raw HTML/script/style leakage found in visible fields: ${summary.rawHtmlLeakage.length}.` : '',
+    summary.sourceTextBoilerplateLeakage.length > 0
+      ? `New Zealand processed raw fields still include source boilerplate labels: ${summary.sourceTextBoilerplateLeakage.length}.`
+      : '',
+    summary.rawImageDataUrlLeakage.length > 0
+      ? `New Zealand processed raw images still include data URL payloads: ${summary.rawImageDataUrlLeakage.length}.`
+      : '',
     sourceFilters.join('|') !== expectedSourceFilterValues.join('|')
       ? `Source filter values changed unexpectedly: ${sourceFilters.join(', ')}.`
       : ''
@@ -452,6 +498,8 @@ async function runAudit(): Promise<void> {
           nonOfficialImageHosts: summary.nonOfficialImageHosts.length,
           suspiciousImageCandidates: summary.suspiciousImageCandidates.length,
           rawHtmlLeakage: summary.rawHtmlLeakage.length,
+          sourceTextBoilerplateLeakage: summary.sourceTextBoilerplateLeakage.length,
+          rawImageDataUrlLeakage: summary.rawImageDataUrlLeakage.length,
           sourceUrlHostDistribution: summary.sourceUrlHostDistribution,
           imageHostDistribution: summary.imageHostDistribution,
           sampleRecords: summary.sampleRecords,

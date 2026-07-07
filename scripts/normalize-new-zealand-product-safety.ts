@@ -95,6 +95,23 @@ function arrayOfStrings(value: unknown): string[] {
   return Array.isArray(value) ? uniqueNonEmpty(value.map(normalizeNewZealandText)) : uniqueNonEmpty([normalizeNewZealandText(value)]);
 }
 
+function stripLeadingLabel(value: unknown, labelPattern: RegExp): string {
+  return normalizeNewZealandText(value).replace(labelPattern, '').trim();
+}
+
+function normalizeResponsibleAgency(value: unknown): string {
+  const text = stripLeadingLabel(value, /^Responsible\s+Agency\s*/i);
+  if (!text) {
+    return '';
+  }
+
+  return /mbie\.govt\.nz/i.test(text) || /^mbie$/i.test(text) ? 'MBIE' : text;
+}
+
+function normalizeSupplierContact(value: unknown): string {
+  return stripLeadingLabel(value, /^Supplier\s+Contact\s*/i);
+}
+
 function normalizeDate(value: unknown): string {
   const text = normalizeNewZealandText(value);
   if (!text) {
@@ -273,6 +290,59 @@ function normalizeImages(raw: NewZealandProductSafetyRaw, fallbackAlt: string): 
   });
 }
 
+function normalizeRawImageForProcessed(image: NewZealandProductSafetyImage): NewZealandProductSafetyImage | null {
+  const url = normalizeNewZealandText(image.url);
+  const thumbnailUrl = normalizeNewZealandText(image.thumbnailUrl);
+
+  if (!url || !isOfficialNewZealandProductSafetyImageUrl(url)) {
+    return null;
+  }
+
+  return {
+    url,
+    ...(thumbnailUrl && isOfficialNewZealandProductSafetyImageUrl(thumbnailUrl) ? { thumbnailUrl } : {}),
+    ...(() => {
+      const alt = normalizeNewZealandText(image.alt);
+      return alt ? { alt } : {};
+    })(),
+    ...(() => {
+      const caption = normalizeNewZealandText(image.caption);
+      return isMeaningfulCaption(caption) ? { caption } : {};
+    })()
+  };
+}
+
+function sanitizeRawNewZealandRecord(raw: NewZealandProductSafetyRaw): NewZealandProductSafetyRaw {
+  const detail = raw.detail ?? {};
+  const images = Array.isArray(detail.images)
+    ? (detail.images as NewZealandProductSafetyImage[]).map(normalizeRawImageForProcessed).filter((image): image is NewZealandProductSafetyImage => Boolean(image))
+    : [];
+  const listImage = raw.listImage ? normalizeRawImageForProcessed(raw.listImage) : null;
+
+  return {
+    id: normalizeNewZealandText(raw.id),
+    path: normalizeNewZealandText(raw.path),
+    sourceUrl: normalizeNewZealandText(raw.sourceUrl),
+    title: normalizeNewZealandText(raw.title),
+    publishedDate: normalizeNewZealandText(raw.publishedDate),
+    categories: arrayOfStrings(raw.categories),
+    ...(listImage ? { listImage } : {}),
+    detail: {
+      title: normalizeNewZealandText(detail.title),
+      publishedDate: normalizeNewZealandText(detail.publishedDate),
+      metaDescription: normalizeNewZealandText(detail.metaDescription),
+      canonicalUrl: normalizeNewZealandText(detail.canonicalUrl),
+      productIdentifiers: normalizeNewZealandText(detail.productIdentifiers),
+      supplierName: normalizeNewZealandText(detail.supplierName),
+      supplierContact: normalizeSupplierContact(detail.supplierContact),
+      responsibleAgency: normalizeResponsibleAgency(detail.responsibleAgency),
+      hazard: normalizeNewZealandText(detail.hazard),
+      action: normalizeNewZealandText(detail.action),
+      images
+    }
+  };
+}
+
 function sourceIdFor(raw: NewZealandProductSafetyRaw): string {
   const explicitId = firstNonEmpty([raw.id]);
   const pathSlug = normalizeNewZealandText(raw.path).split('/').filter(Boolean).at(-1) ?? '';
@@ -306,7 +376,9 @@ function descriptionFor(raw: NewZealandProductSafetyRaw, identifiers: string[]):
   return uniqueNonEmpty([
     `Product identifiers: ${normalizeNewZealandText(raw.detail?.productIdentifiers)}`,
     `Supplier: ${normalizeNewZealandText(raw.detail?.supplierName)}`,
-    `Responsible agency: ${normalizeNewZealandText(raw.detail?.responsibleAgency)}`,
+    normalizeResponsibleAgency(raw.detail?.responsibleAgency) && normalizeResponsibleAgency(raw.detail?.responsibleAgency) !== 'MBIE'
+      ? `Responsible agency: ${normalizeResponsibleAgency(raw.detail?.responsibleAgency)}`
+      : '',
     `Category: ${arrayOfStrings(raw.categories).join(', ')}`,
     `Hazard: ${normalizeNewZealandText(raw.detail?.hazard)}`,
     identifiers.length ? `Identifiers: ${identifiers.join(', ')}` : '',
@@ -349,21 +421,22 @@ export function normalizeNewZealandProductSafetyRecords(records: NewZealandProdu
     .filter((raw) => !isExcludedNewZealandSpecialistRecord(raw))
     .sort(compareNewZealandProductSafetyDateDescending)
     .map((raw) => {
-      const sourceRecordId = sourceIdFor(raw);
+      const cleanedRaw = sanitizeRawNewZealandRecord(raw);
+      const sourceRecordId = sourceIdFor(cleanedRaw);
       const id = `nz-product-safety-${sourceRecordId}`;
-      const title = truncateText(firstNonEmpty([raw.detail?.title, raw.title], 'New Zealand product recall'), 170);
-      const supplier = firstNonEmpty([raw.detail?.supplierName]);
-      const identifiers = extractIdentifierText(raw);
-      const productIdentifiers = normalizeNewZealandText(raw.detail?.productIdentifiers);
+      const title = truncateText(firstNonEmpty([cleanedRaw.detail?.title, cleanedRaw.title], 'New Zealand product recall'), 170);
+      const supplier = firstNonEmpty([cleanedRaw.detail?.supplierName]);
+      const identifiers = extractIdentifierText(cleanedRaw);
+      const productIdentifiers = normalizeNewZealandText(cleanedRaw.detail?.productIdentifiers);
       const productName = firstNonEmpty([productIdentifiers, title], title);
-      const hazard = firstNonEmpty([raw.detail?.hazard], 'Hazard not listed in the indexed notice.');
+      const hazard = firstNonEmpty([cleanedRaw.detail?.hazard], 'Hazard not listed in the indexed notice.');
       const remedy = firstNonEmpty(
-        [raw.detail?.action],
+        [cleanedRaw.detail?.action],
         'Review the official Product Safety New Zealand notice for current instructions.'
       );
-      const recallDate = normalizeDate(raw.detail?.publishedDate ?? raw.publishedDate);
-      const category = classifyNewZealandProductSafetyCategory(raw);
-      const images = normalizeImages(raw, `${title} recall product image`);
+      const recallDate = normalizeDate(cleanedRaw.detail?.publishedDate ?? cleanedRaw.publishedDate);
+      const category = classifyNewZealandProductSafetyCategory(cleanedRaw);
+      const images = normalizeImages(cleanedRaw, `${title} recall product image`);
       const primaryImage = images[0];
 
       return {
@@ -378,7 +451,7 @@ export function normalizeNewZealandProductSafetyRecords(records: NewZealandProdu
         remedy,
         recallDate,
         affectedUnits: '',
-        description: descriptionFor(raw, identifiers),
+        description: descriptionFor(cleanedRaw, identifiers),
         slug: slugify(`${title}-${id}`),
         classification: 'Product Safety New Zealand recall',
         reason: hazard,
@@ -394,7 +467,7 @@ export function normalizeNewZealandProductSafetyRecords(records: NewZealandProdu
               primaryImageAlt: primaryImage.alt ?? primaryImage.caption
             }
           : {}),
-        raw
+        raw: cleanedRaw
       } satisfies NormalizedRecall;
     })
     .filter((record) => record.id && record.title && isOfficialNewZealandProductSafetyUrl(record.sourceUrl) && record.recallDate);
