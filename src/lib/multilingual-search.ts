@@ -62,6 +62,12 @@ const SEARCH_STOP_WORDS = new Set([
   'barcode'
 ]);
 const NOISE_STOP_WORDS = new Set(['fake', 'not', 'real', 'test', 'no', 'qwerty', 'zzzz']);
+const SPECIFIC_ALIAS_GROUP_SUPPRESSIONS: Record<string, string[]> = {
+  'baby-sleep': ['baby-kids'],
+  'clothing-sleepwear': ['baby-kids'],
+  charger: ['appliance-electric'],
+  'power-bank': ['battery']
+};
 
 export function normalizeSearchText(value: string): string {
   return value
@@ -90,6 +96,7 @@ export function expandSearchQuery(query: string): string[] {
   const baseTokens = tokenizeSearchQuery(query);
   const hasNoiseStopWord = normalizedTokens.some((token) => NOISE_STOP_WORDS.has(token));
   const expanded = new Set<string>();
+  const matchedGroupIds = new Set<string>();
 
   function add(value: string): void {
     const normalized = normalizeSearchText(value);
@@ -105,12 +112,12 @@ export function expandSearchQuery(query: string): string[] {
     }
   }
 
-  for (const group of SEARCH_ALIAS_GROUPS) {
+  const matchingGroups = SEARCH_ALIAS_GROUPS.filter((group) => {
     if ((group.id === 'recall-alert' || group.id === 'identifiers') && hasNoiseStopWord) {
-      continue;
+      return false;
     }
 
-    const shouldExpand = [...group.terms, ...group.aliases].some((rawTerm) => {
+    return [...group.terms, ...group.aliases].some((rawTerm) => {
       const term = normalizeSearchText(rawTerm);
       const rawNeedle = rawTerm.trim().toLowerCase();
 
@@ -123,11 +130,23 @@ export function expandSearchQuery(query: string): string[] {
         (rawNeedle.length > 1 && rawQuery.includes(rawNeedle))
       );
     });
+  });
 
-    if (shouldExpand) {
-      for (const term of [...group.terms, ...group.aliases]) {
-        add(term);
-      }
+  for (const group of matchingGroups) {
+    matchedGroupIds.add(group.id);
+  }
+
+  const suppressedGroupIds = new Set(
+    [...matchedGroupIds].flatMap((groupId) => SPECIFIC_ALIAS_GROUP_SUPPRESSIONS[groupId] ?? [])
+  );
+
+  for (const group of matchingGroups) {
+    if (suppressedGroupIds.has(group.id)) {
+      continue;
+    }
+
+    for (const term of [...group.terms, ...group.aliases]) {
+      add(term);
     }
   }
 
