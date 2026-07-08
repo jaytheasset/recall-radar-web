@@ -328,6 +328,7 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     group: 'mixed-language',
     query: '\uC54C\uB808\uB974\uAE30 milk',
     minMatches: 1,
+    maxMatches: 150,
     expectedAliases: ['allergen', 'milk']
   },
   {

@@ -120,14 +120,18 @@ const IDENTIFIER_TERMS = [
 
 const ALLERGEN_TERMS = [
   'milk',
+  'dairy',
   'egg',
   'peanut',
   'tree nut',
+  'nuts',
   'almond',
   'cashew',
   'walnut',
+  'hazelnut',
   'soy',
   'wheat',
+  'gluten',
   'sesame',
   'fish',
   'shellfish',
@@ -136,6 +140,22 @@ const ALLERGEN_TERMS = [
   'celery',
   'sulphites',
   'soya'
+];
+const GENERIC_ALLERGEN_TERMS = [
+  'allergen',
+  'allergy',
+  'undeclared allergen',
+  'undeclared',
+  'allergene',
+  'allergie',
+  'alergeno',
+  'alergia',
+  'allergenhinweis',
+  '알레르기',
+  '알레르겐',
+  'アレルゲン',
+  '过敏原',
+  '過敏原'
 ];
 
 function normalize(value: string): string {
@@ -331,6 +351,42 @@ function hasAllergenQuery(normalizedQuery: string, queryTokens: string[]): boole
   });
 }
 
+function hasGenericAllergenCue(normalizedQuery: string, queryTokens: string[], expandedTokens: string[]): boolean {
+  return GENERIC_ALLERGEN_TERMS.some((term) => {
+    const normalizedTerm = normalize(term);
+    return (
+      normalizedQuery.includes(normalizedTerm) ||
+      queryTokens.includes(normalizedTerm) ||
+      expandedTokens.includes(normalizedTerm)
+    );
+  });
+}
+
+function specificAllergenTermsForQuery(expandedTerms: string[]): string[] {
+  const specificTerms = new Set(ALLERGEN_TERMS.map(normalize));
+
+  return expandedTerms
+    .map(normalize)
+    .filter((term) => specificTerms.has(term));
+}
+
+function hasSpecificAllergenMatch(specificTerms: string[], values: string[]): boolean {
+  const text = searchableText(values);
+  return text ? specificTerms.some((term) => hasExpandedTermMatch(term, text)) : false;
+}
+
+function requiresSpecificAllergenMatch(
+  normalizedQuery: string,
+  queryTokens: string[],
+  expandedTerms: string[],
+  expandedTokens: string[]
+): boolean {
+  return (
+    hasGenericAllergenCue(normalizedQuery, queryTokens, expandedTokens) &&
+    specificAllergenTermsForQuery(expandedTerms).length > 0
+  );
+}
+
 function identifierFields(recall: SiteRecall): string[] {
   return [
     recall.id,
@@ -490,6 +546,7 @@ function getMatchReason(query: string, recall: SiteRecall): RecallMatchReason {
   const queryTokens = tokensFor(query);
   const expandedTerms = expandedTermsFor(query);
   const expandedTokens = expandedTokensFor(query);
+  const specificAllergenTerms = specificAllergenTermsForQuery(expandedTerms);
 
   if (!normalizedQuery || (queryTokens.length === 0 && expandedTokens.length === 0)) {
     return 'keyword';
@@ -512,6 +569,13 @@ function getMatchReason(query: string, recall: SiteRecall): RecallMatchReason {
 
   if (hasTextMatch(normalizedQuery, queryTokens, brandFields(recall), expandedTerms)) {
     return 'brand';
+  }
+
+  if (
+    requiresSpecificAllergenMatch(normalizedQuery, queryTokens, expandedTerms, expandedTokens) &&
+    hasSpecificAllergenMatch(specificAllergenTerms, ingredientFields(recall))
+  ) {
+    return 'ingredient';
   }
 
   if (
@@ -553,6 +617,7 @@ export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchTy
   const queryTokens = tokensFor(query);
   const expandedTerms = expandedTermsFor(query);
   const expandedTokens = expandedTokensFor(query);
+  const specificAllergenTerms = specificAllergenTermsForQuery(expandedTerms);
 
   if (!normalizedQuery || (queryTokens.length === 0 && expandedTokens.length === 0)) {
     return 'none';
@@ -564,6 +629,13 @@ export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchTy
 
   if (looksLikeIdentifier(query, normalizedQuery)) {
     return hasExactIdentifierMatch(normalizedQuery, identifierFields(recall)) ? 'possible' : 'none';
+  }
+
+  if (
+    requiresSpecificAllergenMatch(normalizedQuery, queryTokens, expandedTerms, expandedTokens) &&
+    !hasSpecificAllergenMatch(specificAllergenTerms, ingredientFields(recall))
+  ) {
+    return 'none';
   }
 
   const possibleText = possibleFields(recall);

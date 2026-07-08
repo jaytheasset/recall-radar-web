@@ -80,6 +80,47 @@ const SEARCH_STOP_WORDS = new Set([
   'barcode'
 ]);
 const NOISE_STOP_WORDS = new Set(['fake', 'not', 'real', 'test', 'no', 'qwerty', 'zzzz']);
+const GENERIC_ALLERGEN_TERMS = [
+  'allergen',
+  'allergy',
+  'undeclared allergen',
+  'undeclared',
+  'allergene',
+  'allergie',
+  'alergeno',
+  'alergia',
+  'allergenhinweis',
+  '알레르기',
+  '알레르겐',
+  'アレルゲン',
+  '过敏原',
+  '過敏原'
+].map(normalizeSearchText);
+const SPECIFIC_ALLERGEN_TERMS = new Set(
+  [
+    'milk',
+    'dairy',
+    'egg',
+    'peanut',
+    'tree nut',
+    'nuts',
+    'almond',
+    'cashew',
+    'walnut',
+    'hazelnut',
+    'soy',
+    'wheat',
+    'gluten',
+    'sesame',
+    'fish',
+    'shellfish',
+    'pistachio',
+    'mustard',
+    'celery',
+    'sulphites',
+    'soya'
+  ].map(normalizeSearchText)
+);
 const SPECIFIC_ALIAS_GROUP_SUPPRESSIONS: Record<string, string[]> = {
   'baby-sleep': ['baby-kids'],
   'clothing-sleepwear': ['baby-kids'],
@@ -278,6 +319,23 @@ function termMatchesText(term: string, normalizedText: string): boolean {
   return termTokens.some((token) => tokenInText(token, normalizedText));
 }
 
+function specificAllergenTermsForExpandedTerms(expandedTerms: string[]): string[] {
+  return expandedTerms
+    .map(normalizeSearchText)
+    .filter((term) => SPECIFIC_ALLERGEN_TERMS.has(term));
+}
+
+function requiresSpecificAllergenMatch(query: string, expandedTerms: string[]): boolean {
+  const normalizedQuery = normalizeSearchText(query);
+  const queryTokens = tokenizeSearchQuery(query);
+  const expandedTokens = tokenizeExpandedSearchTerms(expandedTerms);
+  const hasGenericCue = GENERIC_ALLERGEN_TERMS.some(
+    (term) => normalizedQuery.includes(term) || queryTokens.includes(term) || expandedTokens.includes(term)
+  );
+
+  return hasGenericCue && specificAllergenTermsForExpandedTerms(expandedTerms).length > 0;
+}
+
 export function searchTextMatchesQuery(searchText: string, query: string): boolean {
   const normalizedQuery = normalizeSearchText(query);
   if (!normalizedQuery) {
@@ -289,7 +347,16 @@ export function searchTextMatchesQuery(searchText: string, query: string): boole
     return false;
   }
 
-  return expandSearchQuery(query).some((term) => termMatchesText(term, normalizedText));
+  const expandedTerms = expandSearchQuery(query);
+
+  if (
+    requiresSpecificAllergenMatch(query, expandedTerms) &&
+    !specificAllergenTermsForExpandedTerms(expandedTerms).some((term) => termMatchesText(term, normalizedText))
+  ) {
+    return false;
+  }
+
+  return expandedTerms.some((term) => termMatchesText(term, normalizedText));
 }
 
 export function matchesMultilingualSearch(record: RecallSearchTextRecord, query: string): boolean {
