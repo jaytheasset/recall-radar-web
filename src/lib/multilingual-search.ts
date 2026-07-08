@@ -89,6 +89,7 @@ const SPECIFIC_ALIAS_GROUP_SUPPRESSIONS: Record<string, string[]> = {
 const SPECIFIC_ALIAS_TOKEN_SUPPRESSIONS: Record<string, string[]> = {
   'baby-sleep': ['baby']
 };
+const NON_EXPANDING_ALIAS_GROUP_IDS = new Set(['recall-alert']);
 
 export function normalizeSearchText(value: string): string {
   return value
@@ -186,6 +187,10 @@ export function expandSearchQuery(query: string): string[] {
       continue;
     }
 
+    if (NON_EXPANDING_ALIAS_GROUP_IDS.has(group.id)) {
+      continue;
+    }
+
     for (const term of [...group.terms, ...group.aliases]) {
       add(term);
     }
@@ -207,7 +212,6 @@ export function buildRecallSearchText(record: RecallSearchTextRecord): string {
     record.id,
     record.source,
     record.sourceLabel,
-    record.sourceUrl,
     record.title,
     record.primaryBrand,
     record.primaryBrandRawName,

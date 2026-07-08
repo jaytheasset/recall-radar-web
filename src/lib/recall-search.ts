@@ -250,7 +250,6 @@ function relatedFields(recall: SiteRecall): string {
     recall.description,
     recall.affectedUnits,
     recall.source,
-    recall.sourceUrl,
     recall.sourceLabel,
     ...(recall.taxonomyHazardTags ?? []),
     ...(recall.taxonomyAudienceLabels ?? []),
@@ -401,7 +400,7 @@ function hazardFields(recall: SiteRecall): string[] {
 }
 
 function sourceFields(recall: SiteRecall): string[] {
-  return [recall.source, recall.sourceLabel, recall.sourceUrl];
+  return [recall.source, recall.sourceLabel];
 }
 
 function scoreTextMatch(normalizedQuery: string, queryTokens: string[], values: string[], weight: number): number {

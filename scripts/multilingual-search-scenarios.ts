@@ -292,8 +292,7 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     group: 'French/source terms',
     query: 'rappel',
     minMatches: 1,
-    maxMatches: 850,
-    expectedAliases: ['safety alert'],
+    maxMatches: 150,
     expectedSources: ['FR_RAPPELCONSO']
   },
   {
