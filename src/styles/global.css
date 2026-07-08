@@ -2017,10 +2017,28 @@ button:disabled {
   margin-top: 0.85rem;
 }
 
-.refine-label {
+.result-refine.is-broad {
+  align-items: flex-start;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 18px;
+  padding: 0.85rem;
+  background: var(--surface);
+  box-shadow: 0 10px 28px rgba(17, 24, 39, 0.055);
+}
+
+.refine-intro {
+  display: grid;
+  flex: 1 1 100%;
+  gap: 0.18rem;
   color: var(--muted);
-  font-size: 0.82rem;
-  font-weight: 850;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.refine-intro strong {
+  color: var(--ink);
+  font-size: 0.94rem;
+  font-weight: 900;
 }
 
 .refine-chip {
@@ -2036,6 +2054,7 @@ button:disabled {
   box-shadow: 0 8px 20px rgba(17, 24, 39, 0.05);
   font-size: 0.84rem;
   font-weight: 820;
+  line-height: 1.2;
 }
 
 .refine-chip:hover {

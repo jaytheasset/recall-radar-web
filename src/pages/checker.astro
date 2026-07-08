@@ -574,6 +574,7 @@ const sourceCardDetails = {
       const hazardFilterLabels: Record<string, string> = hazardFilter
         ? Object.fromEntries([...hazardFilter.options].map((option) => [option.value, option.label]))
         : { all: 'all issues' };
+      const BROAD_RESULT_THRESHOLD = 80;
 
       function isOneOf<T extends string>(value: string | null, values: readonly T[], fallback: T): T {
         return value && values.includes(value as T) ? (value as T) : fallback;
@@ -736,6 +737,35 @@ const sourceCardDetails = {
         return button;
       }
 
+      function countItemsByDate(items: SearchItem[], days: DateFilter): number {
+        if (days === 'all') {
+          return items.length;
+        }
+
+        const cutoff = Date.now() - Number(days) * 24 * 60 * 60 * 1000;
+        return items.filter(({ recall }) => {
+          const recallTime = Date.parse(recall.recallDate);
+          return Number.isFinite(recallTime) && recallTime >= cutoff;
+        }).length;
+      }
+
+      function createRefineIntro(isBroad: boolean): HTMLElement {
+        const intro = document.createElement('div');
+        intro.className = 'refine-intro';
+
+        const label = document.createElement('strong');
+        label.textContent = isBroad ? uiMessage('checker.broadResultsTitle') : uiMessage('checker.narrowResults');
+        intro.append(label);
+
+        if (isBroad) {
+          const copy = document.createElement('span');
+          copy.textContent = uiMessage('checker.broadResultsCopy');
+          intro.append(copy);
+        }
+
+        return intro;
+      }
+
       function renderRefineChips(items: SearchItem[], state: SearchState): void {
         if (!refine) {
           return;
@@ -753,12 +783,14 @@ const sourceCardDetails = {
 
         const chips: HTMLButtonElement[] = [];
 
+        const isBroad = items.length >= BROAD_RESULT_THRESHOLD;
+
         if (state.source === 'all') {
-          topSuggestions(sourceSuggestions, 2).forEach((suggestion) => {
+          topSuggestions(sourceSuggestions, isBroad ? 3 : 2).forEach((suggestion) => {
             if (!sourceValues.includes(suggestion.value as SourceFilter)) {
               return;
             }
-            chips.push(createRefineChip(suggestion.label, suggestion.count, () => {
+            chips.push(createRefineChip(uiTemplate('checker.refineSource', { label: suggestion.label }), suggestion.count, () => {
               if (sourceFilter) {
                 sourceFilter.value = suggestion.value;
               }
@@ -771,11 +803,11 @@ const sourceCardDetails = {
         }
 
         if (state.category === 'all') {
-          topSuggestions(categorySuggestions, 2).forEach((suggestion) => {
+          topSuggestions(categorySuggestions, isBroad ? 3 : 2).forEach((suggestion) => {
             if (!categoryValues.includes(suggestion.value as CategoryFilter)) {
               return;
             }
-            chips.push(createRefineChip(suggestion.label, suggestion.count, () => {
+            chips.push(createRefineChip(uiTemplate('checker.refineProductType', { label: suggestion.label }), suggestion.count, () => {
               if (categoryFilter) {
                 categoryFilter.value = suggestion.value;
               }
@@ -788,13 +820,33 @@ const sourceCardDetails = {
         }
 
         if (state.hazard === 'all') {
-          topSuggestions(hazardSuggestions, 3).forEach((suggestion) => {
+          topSuggestions(hazardSuggestions, isBroad ? 4 : 3).forEach((suggestion) => {
             if (!hazardValues.includes(suggestion.value)) {
               return;
             }
-            chips.push(createRefineChip(suggestion.label, suggestion.count, () => {
+            chips.push(createRefineChip(uiTemplate('checker.refineIssue', { label: suggestion.label }), suggestion.count, () => {
               if (hazardFilter) {
                 hazardFilter.value = suggestion.value;
+              }
+              if (advancedFilters) {
+                advancedFilters.open = true;
+              }
+              updateSearch();
+            }));
+          });
+        }
+
+        if (state.date === 'all' && isBroad) {
+          (['30', '90'] as DateFilter[]).forEach((days) => {
+            const count = countItemsByDate(items, days);
+            if (count <= 0 || count >= items.length) {
+              return;
+            }
+
+            const label = uiTemplate('checker.lastDays', { days });
+            chips.push(createRefineChip(uiTemplate('checker.refineDate', { label }), count, () => {
+              if (dateFilter) {
+                dateFilter.value = days;
               }
               if (advancedFilters) {
                 advancedFilters.open = true;
@@ -810,10 +862,8 @@ const sourceCardDetails = {
           return;
         }
 
-        const label = document.createElement('span');
-        label.className = 'refine-label';
-        label.textContent = uiMessage('checker.narrowResults');
-        refine.replaceChildren(label, ...chips);
+        refine.classList.toggle('is-broad', isBroad);
+        refine.replaceChildren(createRefineIntro(isBroad), ...chips);
         refine.hidden = false;
       }
 
