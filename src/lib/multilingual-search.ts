@@ -121,6 +121,9 @@ const SPECIFIC_ALLERGEN_TERMS = new Set(
     'soya'
   ].map(normalizeSearchText)
 );
+const GENERIC_ALLERGEN_QUERY_TERMS = SEARCH_ALIAS_GROUPS.filter((group) => group.id === 'allergen')
+  .flatMap((group) => [...group.terms, ...group.aliases])
+  .map(normalizeSearchText);
 const SPECIFIC_ALIAS_GROUP_SUPPRESSIONS: Record<string, string[]> = {
   'baby-sleep': ['baby-kids'],
   'clothing-sleepwear': ['baby-kids'],
@@ -336,6 +339,45 @@ function requiresSpecificAllergenMatch(query: string, expandedTerms: string[]): 
   return hasGenericCue && specificAllergenTermsForExpandedTerms(expandedTerms).length > 0;
 }
 
+function requiresGenericAllergenEvidence(query: string, expandedTerms: string[]): boolean {
+  const normalizedQuery = normalizeSearchText(query);
+  const queryTokens = tokenizeSearchQuery(query);
+  const expandedTokens = tokenizeExpandedSearchTerms(expandedTerms);
+  const hasGenericCue = GENERIC_ALLERGEN_TERMS.some(
+    (term) => normalizedQuery.includes(term) || queryTokens.includes(term) || expandedTokens.includes(term)
+  );
+
+  return hasGenericCue && specificAllergenTermsForExpandedTerms(expandedTerms).length === 0;
+}
+
+function queryHasGenericAllergenCue(query: string): boolean {
+  const normalizedQuery = normalizeSearchText(query);
+  const queryTokens = tokenizeSearchQuery(query);
+
+  return GENERIC_ALLERGEN_QUERY_TERMS.some(
+    (term) => normalizedQuery.includes(term) || queryTokens.includes(term)
+  );
+}
+
+function buildAllergenEvidenceText(record: RecallSearchTextRecord): string {
+  return [
+    record.title,
+    record.primaryProductName,
+    record.hazard,
+    record.reason ?? '',
+    record.remedy,
+    record.description,
+    record.classification ?? '',
+    record.taxonomyHazardType ?? '',
+    record.taxonomyHazardTypeLabel ?? '',
+    record.taxonomyReason ?? '',
+    ...(record.taxonomyHazardTags ?? []),
+    ...record.productNames,
+    ...record.brandNames,
+    ...record.displayBrandNames
+  ].join(' ');
+}
+
 export function searchTextMatchesQuery(searchText: string, query: string): boolean {
   const normalizedQuery = normalizeSearchText(query);
   if (!normalizedQuery) {
@@ -361,6 +403,15 @@ export function searchTextMatchesQuery(searchText: string, query: string): boole
 
 export function matchesMultilingualSearch(record: RecallSearchTextRecord, query: string): boolean {
   if (!normalizeSearchText(query)) {
+    return false;
+  }
+
+  const expandedTerms = queryHasGenericAllergenCue(query) ? expandSearchQuery(query) : [];
+  if (
+    expandedTerms.length > 0 &&
+    requiresGenericAllergenEvidence(query, expandedTerms) &&
+    !searchTextMatchesQuery(buildAllergenEvidenceText(record), query)
+  ) {
     return false;
   }
 
