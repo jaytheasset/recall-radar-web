@@ -4,6 +4,7 @@ export type MultilingualScenarioGroup =
   | 'Chinese'
   | 'Spanish'
   | 'German'
+  | 'Portuguese'
   | 'English controls'
   | 'French/source terms'
   | 'mixed-language'
@@ -191,6 +192,35 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     minMatches: 1,
     expectedAliases: ['smoke detector', 'smoke alarm'],
     rankingTerms: ['smoke detector', 'carbon monoxide']
+  },
+  {
+    id: 'pt-power-bank',
+    group: 'Portuguese',
+    query: 'banco de energia',
+    minMatches: 1,
+    expectedAliases: ['power bank', 'portable charger'],
+    rankingTerms: ['power bank', 'battery']
+  },
+  {
+    id: 'pt-fire',
+    group: 'Portuguese',
+    query: 'incendio',
+    minMatches: 1,
+    expectedAliases: ['fire', 'fire hazard']
+  },
+  {
+    id: 'pt-barcode',
+    group: 'Portuguese',
+    query: 'codigo de barras',
+    minMatches: 1,
+    expectedAliases: ['barcode', 'upc']
+  },
+  {
+    id: 'pt-toy',
+    group: 'Portuguese',
+    query: 'brinquedo',
+    minMatches: 1,
+    expectedAliases: ['toy']
   },
   {
     id: 'en-power-bank',

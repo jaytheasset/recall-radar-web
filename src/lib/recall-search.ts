@@ -565,6 +565,13 @@ export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchTy
     return 'possible';
   }
 
+  if (
+    hasAllergenQuery(normalizedQuery, expandedTokens) &&
+    !hasTextMatch(normalizedQuery, queryTokens, ingredientFields(recall), expandedTerms)
+  ) {
+    return 'none';
+  }
+
   const relatedText = relatedFields(recall);
   if (
     hasMeaningfulTokenMatch(queryTokens, relatedText) ||

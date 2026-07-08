@@ -250,7 +250,7 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
       '\u8FC7\u654F\u539F',
       '\u904E\u654F\u539F'
     ],
-    aliases: ['allergen', 'allergy', 'undeclared allergen', 'undeclared', 'contains', 'may contain', 'allergene']
+    aliases: ['allergen', 'allergy', 'undeclared allergen', 'undeclared', 'allergene']
   },
   {
     id: 'milk',
@@ -317,7 +317,9 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
       'feu',
       'incendio',
       'quemadura',
-      'brand',
+      'queimadura',
+      'sobreaquecimento',
+      'brandgefahr',
       'verbrennung',
       '\uD654\uC7AC',
       '\uD654\uC0C1',
@@ -395,12 +397,12 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
   },
   {
     id: 'baby-kids',
-    terms: ['baby', 'infant', 'nursery', 'child', 'children', 'kids', 'bebe', 'enfant', 'nino', 'kind', '\uC544\uAE30', '\uC720\uC544', '\uC5B4\uB9B0\uC774', '\u5B50\u4F9B', '\u513F\u7AE5'],
+    terms: ['baby', 'infant', 'nursery', 'child', 'children', 'kids', 'bebe', 'crianca', 'enfant', 'nino', 'kind', '\uC544\uAE30', '\uC720\uC544', '\uC5B4\uB9B0\uC774', '\u5B50\u4F9B', '\u513F\u7AE5'],
     aliases: ['baby', 'infant', 'nursery', 'child', 'children', 'kids']
   },
   {
     id: 'toy',
-    terms: ['toy', 'toys', 'jouet', 'juguete', 'spielzeug', '\uC7A5\uB09C\uAC10', '\u304A\u3082\u3061\u3083', '\u73A9\u5177'],
+    terms: ['toy', 'toys', 'brinquedo', 'jouet', 'juguete', 'spielzeug', '\uC7A5\uB09C\uAC10', '\u304A\u3082\u3061\u3083', '\u73A9\u5177'],
     aliases: ['toy', 'toys']
   },
   {
@@ -432,6 +434,7 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
       'expiry',
       'recall number',
       'numero de lot',
+      'codigo de barras',
       'codigo de lote',
       'modellnummer',
       '\uBC14\uCF54\uB4DC',

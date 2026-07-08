@@ -21,7 +21,7 @@ import {
 import { getRecallImageForContext } from '../lib/recall-images';
 import { cleanRecallDisplayText } from '../lib/recall-display-text';
 import { getSourceOptionsForCurrentCoverage } from '../lib/recall-sources';
-import { IDENTIFIER_SEARCH_PLACEHOLDER } from '../lib/identifier-guidance';
+import { IDENTIFIER_SEARCH_PLACEHOLDER, getNoResultIdentifierHint } from '../lib/identifier-guidance';
 import { getSourceLandingPageCards } from '../lib/source-landing-pages';
 import '../styles/global.css';
 
@@ -96,6 +96,7 @@ const checkerRecalls = siteRecalls.map((recall) => {
   };
 });
 const checkerRecallsJson = JSON.stringify(checkerRecalls);
+const noResultIdentifierHintJson = JSON.stringify(getNoResultIdentifierHint());
 const sourceOptions = [
   { value: 'all', label: 'All countries and sources' },
   ...getSourceOptionsForCurrentCoverage()
@@ -426,6 +427,7 @@ const sourceCardDetails = {
     </footer>
 
     <script id="recall-search-data" type="application/json" is:inline set:html={checkerRecallsJson}></script>
+    <script id="no-result-identifier-hint" type="application/json" is:inline set:html={noResultIdentifierHintJson}></script>
     <script>
       import { SEARCH_RESULTS_DISCLAIMER, searchRecalls, type RecallMatchType } from '../lib/recall-search';
       import {
@@ -450,9 +452,13 @@ const sourceCardDetails = {
       initImageFallbacks();
 
       const dataNode = document.querySelector<HTMLScriptElement>('#recall-search-data');
+      const noResultHintNode = document.querySelector<HTMLScriptElement>('#no-result-identifier-hint');
       const siteRecalls = dataNode?.textContent
         ? (JSON.parse(dataNode.textContent) as Parameters<typeof searchRecalls>[1])
         : [];
+      const sharedNoResultIdentifierHint = noResultHintNode?.textContent
+        ? (JSON.parse(noResultHintNode.textContent) as string)
+        : '';
       const form = document.querySelector<HTMLFormElement>('#recall-search-form');
       const input = document.querySelector<HTMLInputElement>('#recall-query');
       const sourceFilter = document.querySelector<HTMLSelectElement>('#source-filter');
@@ -1090,7 +1096,10 @@ const sourceCardDetails = {
         heading.textContent = uiMessage('checker.noClearMatch');
 
         const body = document.createElement('p');
-        body.textContent = uiMessage('checker.noResultSafety');
+        body.textContent =
+          getCurrentUiLanguage() === 'en' && sharedNoResultIdentifierHint
+            ? sharedNoResultIdentifierHint
+            : uiMessage('checker.noResultSafety');
 
         const suggestionList = document.createElement('ul');
         suggestionList.className = 'no-result-suggestions';
