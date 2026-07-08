@@ -57,6 +57,7 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     group: 'Korean',
     query: '\uC54C\uB808\uB974\uAE30',
     minMatches: 1,
+    maxMatches: 200,
     expectedAliases: ['allergen', 'undeclared']
   },
   {
@@ -134,6 +135,7 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     group: 'Japanese',
     query: '\u30A2\u30EC\u30EB\u30B2\u30F3',
     minMatches: 1,
+    maxMatches: 200,
     expectedAliases: ['allergen', 'undeclared']
   },
   {
@@ -162,6 +164,7 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     group: 'Chinese',
     query: '\u8FC7\u654F\u539F',
     minMatches: 1,
+    maxMatches: 200,
     expectedAliases: ['allergen', 'undeclared']
   },
   {
@@ -183,6 +186,7 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     group: 'Spanish',
     query: 'alergeno',
     minMatches: 1,
+    maxMatches: 200,
     expectedAliases: ['allergen', 'undeclared']
   },
   {
@@ -314,6 +318,7 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     group: 'French/source terms',
     query: 'allerg\u00E8ne',
     minMatches: 1,
+    maxMatches: 200,
     expectedAliases: ['allergen']
   },
   {
