@@ -91,9 +91,9 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 
     <main class="page-shell">
       <section class="section">
-        <p class="eyebrow">Browser watchlist</p>
-        <h1>Saved in this browser</h1>
-        <p class="lead">
+        <p class="eyebrow" data-i18n="watchlist.eyebrow">Browser watchlist</p>
+        <h1 data-i18n="watchlist.savedInBrowser">Saved in this browser</h1>
+        <p class="lead" data-i18n="watchlist.lead">
           Save searches and brands in this browser, then preview matching recall notices from official sources.
         </p>
         <div class="meta-row data-source-row">
@@ -121,28 +121,28 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       <section class="section">
         <div class="watchlist-layout">
           <article class="detail-card">
-            <h2>Email preview only</h2>
-            <p>
+            <h2 data-i18n="watchlist.emailPreviewTitle">Email preview only</h2>
+            <p data-i18n="watchlist.emailPreviewCopy">
               This non-submitting form previews a future preference. It does not send, store, or transmit an email address.
             </p>
             <form id="demo-alert-form" class="signup-form">
               <label>
-                Email preview
+                <span data-i18n="watchlist.emailPreviewLabel">Email preview</span>
                 <input type="email" placeholder="you@example.com" autocomplete="off" />
               </label>
-              <button class="btn btn-primary" type="submit">Preview preference</button>
+              <button class="btn btn-primary" type="submit" data-i18n="watchlist.previewPreference">Preview preference</button>
               <p id="demo-alert-status" class="form-note" hidden></p>
             </form>
           </article>
 
           <article class="detail-card">
-            <h2>Saved items</h2>
-            <p>
+            <h2 data-i18n="watchlist.savedItems">Saved items</h2>
+            <p data-i18n="watchlist.savedItemsCopy">
               Saved searches stay on this device. No account or email alerts are enabled yet.
             </p>
             <div class="meta-row data-source-row">
               <span id="watchlist-count" class="status-pill">0 saved items</span>
-              <button id="clear-watchlist" class="btn btn-secondary" type="button">Clear all</button>
+              <button id="clear-watchlist" class="btn btn-secondary" type="button" data-i18n="watchlist.clearAll">Clear all</button>
             </div>
           </article>
         </div>
@@ -151,24 +151,24 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       <section class="section">
         <div class="section-header">
           <div>
-            <p class="eyebrow">Saved recall previews</p>
-            <h2>Saved recall previews</h2>
-            <p class="section-note">Cards are matched in this browser from recall notices.</p>
+            <p class="eyebrow" data-i18n="watchlist.savedPreviewEyebrow">Saved recall previews</p>
+            <h2 data-i18n="watchlist.savedPreviewTitle">Saved recall previews</h2>
+            <p class="section-note" data-i18n="watchlist.savedPreviewCopy">Cards are matched in this browser from recall notices.</p>
           </div>
-          <a class="btn btn-secondary" href="/checker">Save another search</a>
+          <a class="btn btn-secondary" href="/checker" data-i18n="watchlist.saveAnotherSearch">Save another search</a>
         </div>
-        <p class="disclaimer-copy">
+        <p class="disclaimer-copy" data-i18n="disclaimer.possibleMatches">
           Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
         </p>
         <div id="empty-watchlist" class="notice-panel">
-          <p>No saved searches or brands yet. Use Product Recalls or a brand page to add saved items.</p>
+          <p data-i18n="watchlist.empty">No saved searches or brands yet. Use Product Recalls or a brand page to add saved items.</p>
         </div>
         <div id="watchlist-items" class="watchlist-items"></div>
       </section>
     </main>
 
     <footer class="page-footer">
-      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
+      <span data-i18n="footer.disclaimer">Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.</span>
     </footer>
 
     <script id="watchlist-recall-data" type="application/json" is:inline set:html={watchlistRecallsJson}></script>

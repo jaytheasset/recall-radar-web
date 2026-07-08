@@ -206,7 +206,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
     <main class="page-shell detail-report-page">
       <section class="section detail-report-hero">
         <div class="detail-hero-topline">
-          <p class="eyebrow">Recall notice</p>
+          <p class="eyebrow" data-i18n="detail.recallNotice">Recall notice</p>
           <div class="meta-row data-source-row">
             <span class="badge-source">{view.sourceBadge}</span>
             <span class="badge-date">{view.recallDate}</span>
@@ -218,7 +218,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
       </section>
 
       <section class="section detail-grid detail-main-grid">
-        <article class="detail-gallery-card" aria-label="Product images" data-detail-gallery-image-count={view.productImages.length}>
+        <article class="detail-gallery-card" aria-label="Product images" data-i18n-aria-label="detail.productImages" data-detail-gallery-image-count={view.productImages.length}>
           <div class="detail-gallery">
             <figure class="detail-image-figure">
               <div class="image-shell image-shell-large">
@@ -281,7 +281,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         </article>
 
         <aside class="detail-card recall-summary-card compact-summary-card v2-report-card" aria-label="Recall report summary">
-          <p class="eyebrow">Quick check</p>
+          <p class="eyebrow" data-i18n="detail.quickCheck">Quick check</p>
           <h2>{displayProductName}</h2>
           <p class="summary-brand">{view.brandName || 'Brand or company not listed'}</p>
           <div class="v2-summary-priority-grid">
@@ -302,26 +302,26 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
           </div>
           {taxonomyNeedsReview ? (
             <div class="classification-confidence-card needs-review">
-              <strong>Category needs review</strong>
+              <strong data-i18n="detail.categoryNeedsReview">Category needs review</strong>
               <p>{TAXONOMY_REVIEW_NOTICE}</p>
             </div>
           ) : null}
           <div class="summary-alert">
-            <strong>Risk / issue</strong>
+            <strong data-i18n="detail.riskIssue">Risk / issue</strong>
             <p>{view.reason}</p>
           </div>
           {summaryActionItems.length ? (
             <div class="summary-action">
-              <strong>What to do</strong>
+              <strong data-i18n="detail.whatToDo">What to do</strong>
               <ul class="detail-action-list compact">
                 {summaryActionItems.map((item) => <li>{item}</li>)}
               </ul>
             </div>
           ) : null}
           <div class="link-row">
-            <a class="btn btn-primary" href="#what-to-check">What to check</a>
+            <a class="btn btn-primary" href="#what-to-check" data-i18n="detail.whatToCheck">What to check</a>
             {view.officialSourceUrl ? (
-              <a class="btn btn-secondary" href={view.officialSourceUrl} target="_blank" rel="noopener noreferrer">
+              <a class="btn btn-secondary" href={view.officialSourceUrl} target="_blank" rel="noopener noreferrer" data-i18n="common.officialNotice">
                 Official notice
               </a>
             ) : null}
@@ -333,9 +333,9 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         <article id="what-to-check" class="detail-card detail-section-card identification-guide-card">
           <div class="section-header">
             <div>
-              <p class="eyebrow">What to check</p>
-              <h2>Check these product details</h2>
-              <p class="section-note">
+              <p class="eyebrow" data-i18n="detail.whatToCheck">What to check</p>
+              <h2 data-i18n="detail.checkProductDetails">Check these product details</h2>
+              <p class="section-note" data-i18n="detail.checkProductDetailsCopy">
                 Match these details against the product label, packaging, receipt, seller information, and official notice.
               </p>
             </div>
@@ -368,8 +368,8 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
           <article class="detail-card detail-section-card supporting-notice-card">
             <div class="section-header">
               <div>
-                <p class="eyebrow">Notice details</p>
-                <h2>Contact, seller, and company details</h2>
+                <p class="eyebrow" data-i18n="detail.noticeDetails">Notice details</p>
+                <h2 data-i18n="detail.contactCompanyDetails">Contact, seller, and company details</h2>
               </div>
             </div>
             <div class="detail-fact-grid supporting-notice-grid">
@@ -394,20 +394,20 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
         <article class="detail-card official-source-card">
           <div class="official-source-card-header">
             <div>
-              <p class="eyebrow">Official source</p>
-              <h2>Verify against the source notice</h2>
+              <p class="eyebrow" data-i18n="detail.officialSource">Official source</p>
+              <h2 data-i18n="detail.verifySourceNotice">Verify against the source notice</h2>
               <p>{view.officialVerificationCopy}</p>
               <p class="official-recall-number">Source: {view.officialSourceLabel}</p>
               {view.recallNumber ? <p class="official-recall-number">Recall number: {view.recallNumber}</p> : null}
             </div>
             {view.officialSourceUrl ? (
               <a class="source-link source-link-small" href={view.officialSourceUrl} target="_blank" rel="noopener noreferrer">
-                View official notice
+                <span data-i18n="detail.viewOfficialNotice">View official notice</span>
               </a>
             ) : null}
           </div>
           <details class="source-fields-accordion">
-            <summary>Official source fields</summary>
+            <summary data-i18n="detail.officialSourceFields">Official source fields</summary>
             <div class="detail-fact-grid">
               {officialSourceFacts.map((fact) => (
                 <div class="detail-fact">
@@ -429,8 +429,8 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
       <section class="section">
         <div class="section-header">
           <div>
-            <p class="eyebrow">Brand history</p>
-            <h2>Other recalls from this brand or company</h2>
+            <p class="eyebrow" data-i18n="detail.brandHistory">Brand history</p>
+            <h2 data-i18n="detail.otherBrandRecalls">Other recalls from this brand or company</h2>
           </div>
         </div>
         {view.companyRecallHistory.length ? (
@@ -465,7 +465,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
                   </div>
                   <h3><a href={historyRecall.detailPath}>{historyRecall.title}</a></h3>
                   <p>{historyRecall.hazard || historyRecall.reason || 'Issue not listed'}</p>
-                  <a class="btn btn-primary" href={historyRecall.detailPath}>View recall</a>
+                  <a class="btn btn-primary" href={historyRecall.detailPath} data-i18n="common.viewRecall">View recall</a>
                 </div>
               </article>
               );
@@ -473,7 +473,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No other recalls from this brand or company were found.</p>
+            <p data-i18n="detail.noBrandRecalls">No other recalls from this brand or company were found.</p>
           </div>
         )}
       </section>
@@ -481,9 +481,9 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
       <section class="section">
         <div class="section-header">
           <div>
-            <p class="eyebrow">Related recalls</p>
-            <h2>Similar recalls</h2>
-            <p class="section-note">Based on product type and issue labels.</p>
+            <p class="eyebrow" data-i18n="detail.relatedRecalls">Related recalls</p>
+            <h2 data-i18n="detail.similarRecalls">Similar recalls</h2>
+            <p class="section-note" data-i18n="detail.relatedRecallsCopy">Based on product type and issue labels.</p>
           </div>
         </div>
         {view.relatedRecalls.length ? (
@@ -518,7 +518,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
                   </div>
                   <h3><a href={relatedRecall.detailPath}>{relatedRecall.title}</a></h3>
                   <p>{relatedRecall.hazard || relatedRecall.reason || 'Issue not listed'}</p>
-                  <a class="btn btn-primary" href={relatedRecall.detailPath}>View recall</a>
+                  <a class="btn btn-primary" href={relatedRecall.detailPath} data-i18n="common.viewRecall">View recall</a>
                 </div>
               </article>
               );
@@ -526,7 +526,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No similar recalls were found.</p>
+            <p data-i18n="detail.noSimilarRecalls">No similar recalls were found.</p>
             <a class="btn btn-secondary" href={categoryFallbackPath}>Browse {view.taxonomyProductFamilyLabel} recalls</a>
           </div>
         )}
@@ -534,9 +534,9 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
 
       <section class="section">
         <div class="link-row">
-          <a class="btn btn-primary" href="/checker">Check another product</a>
+          <a class="btn btn-primary" href="/checker" data-i18n="common.checkAnotherProduct">Check another product</a>
           {recall.primaryBrandSlug ? (
-            <a class="btn btn-secondary" href={`/brands/${recall.primaryBrandSlug}`}>
+            <a class="btn btn-secondary" href={`/brands/${recall.primaryBrandSlug}`} data-i18n="detail.viewBrandPage">
               View this brand page
             </a>
           ) : null}
@@ -546,7 +546,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
     )}
 
     <footer class="page-footer">
-      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
+      <span data-i18n="footer.disclaimer">Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.</span>
     </footer>
     <script>
       import { initImageFallbacks } from '../../lib/image-fallback';

@@ -37,8 +37,14 @@ const identifierGuidance =
       <section class="section">
         <p class="eyebrow">{page.eyebrow}</p>
         <div class="meta-row data-source-row">
-          <span class="badge-source">Country / source</span>
-          <span class="badge-date">{recalls.length} recall notice{recalls.length === 1 ? '' : 's'}</span>
+          <span class="badge-source" data-i18n="common.countrySource">Country / source</span>
+          <span
+            class="badge-date"
+            data-i18n-template="common.recallNoticesCount"
+            data-i18n-values={JSON.stringify({ count: recalls.length })}
+          >
+            {recalls.length} recall notice{recalls.length === 1 ? '' : 's'}
+          </span>
           {sourceLabels.map((label) => <span class="tag">{label}</span>)}
         </div>
         <h1>{page.heading}</h1>
@@ -48,8 +54,8 @@ const identifierGuidance =
       <section class="section source-filter-panel" aria-labelledby="source-product-type-filter">
         <div class="section-header">
           <div>
-            <h2 id="source-product-type-filter">Filter by product family</h2>
-            <p class="section-note">Narrow this source group without leaving the page.</p>
+            <h2 id="source-product-type-filter" data-i18n="category.filterByProductFamily">Filter by product family</h2>
+            <p class="section-note" data-i18n="category.filterSourceCopy">Narrow this source group without leaving the page.</p>
           </div>
         </div>
         <div class="source-filter-row" data-source-category-filters>
@@ -73,8 +79,8 @@ const identifierGuidance =
             {page.searchLabel}
             <input data-category-search-input type="search" placeholder={page.searchPlaceholder} autocomplete="off" />
           </label>
-          <button class="btn btn-primary" type="submit">Search this source</button>
-          <button class="btn btn-secondary" type="button" data-category-search-clear hidden>Clear</button>
+          <button class="btn btn-primary" type="submit" data-i18n="common.searchThisSource">Search this source</button>
+          <button class="btn btn-secondary" type="button" data-category-search-clear data-i18n="common.clear" hidden>Clear</button>
         </form>
         <p class="form-note search-guidance-note">{identifierGuidance}</p>
         <div class="category-search-status">
@@ -82,7 +88,7 @@ const identifierGuidance =
             {recalls.length} of {recalls.length} recall notice{recalls.length === 1 ? '' : 's'} shown
           </span>
         </div>
-        <p class="disclaimer-copy">
+        <p class="disclaimer-copy" data-i18n="disclaimer.possibleMatches">
           Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
         </p>
         <div class="notice-panel category-no-results" data-category-no-results hidden>
@@ -93,8 +99,8 @@ const identifierGuidance =
       <section class="section" data-category-group>
         <div class="section-header">
           <div>
-            <h2>Recall notices</h2>
-            <p class="section-note">Shown from this official source group.</p>
+            <h2 data-i18n="common.recallNotices">Recall notices</h2>
+            <p class="section-note" data-i18n="category.sourceGroupCopy">Shown from this official source group.</p>
           </div>
         </div>
         {recalls.length ? (
@@ -110,14 +116,14 @@ const identifierGuidance =
           </div>
         ) : (
           <div class="notice-panel">
-            <p>No recall notices are currently available for this source group.</p>
+            <p data-i18n="category.noSourceGroupNotices">No recall notices are currently available for this source group.</p>
           </div>
         )}
       </section>
     </main>
 
     <footer class="page-footer">
-      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
+      <span data-i18n="footer.disclaimer">Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.</span>
     </footer>
     <script>
       import { initCategoryPageSearch } from '../lib/category-page-search';

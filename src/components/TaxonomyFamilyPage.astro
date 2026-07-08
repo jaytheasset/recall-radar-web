@@ -31,10 +31,16 @@ const issueFilters = [
 
 <main class="page-shell taxonomy-family-page">
   <section class="section">
-    <p class="eyebrow">Product family</p>
+    <p class="eyebrow" data-i18n="common.productFamily">Product family</p>
     <div class="meta-row data-source-row">
       <span class="badge-source">Taxonomy V2</span>
-      <span class="badge-date">{recalls.length} recall notice{recalls.length === 1 ? '' : 's'}</span>
+      <span
+        class="badge-date"
+        data-i18n-template="common.recallNoticesCount"
+        data-i18n-values={JSON.stringify({ count: recalls.length })}
+      >
+        {recalls.length} recall notice{recalls.length === 1 ? '' : 's'}
+      </span>
     </div>
     <h1>{page.label} recalls</h1>
     <p class="lead">{page.description}</p>
@@ -54,8 +60,8 @@ const issueFilters = [
           autocomplete="off"
         />
       </label>
-      <button class="btn btn-primary" type="submit">Search this family</button>
-      <button class="btn btn-secondary" type="button" data-category-search-clear hidden>Clear</button>
+      <button class="btn btn-primary" type="submit" data-i18n="common.searchThisFamily">Search this family</button>
+      <button class="btn btn-secondary" type="button" data-category-search-clear data-i18n="common.clear" hidden>Clear</button>
     </form>
 
     <div class="source-category-filter" aria-label="Filter by issue type">
@@ -85,10 +91,10 @@ const issueFilters = [
   <section class="section" data-category-group>
     <div class="section-header">
       <div>
-        <h2>Recall notices</h2>
-        <p class="section-note">Recall notices related to this product type and issue area.</p>
+        <h2 data-i18n="common.recallNotices">Recall notices</h2>
+        <p class="section-note" data-i18n="category.productFamilyCopy">Recall notices related to this product type and issue area.</p>
       </div>
-      <a class="btn btn-secondary" href="/checker">Search all notices</a>
+      <a class="btn btn-secondary" href="/checker" data-i18n="common.searchAllNotices">Search all notices</a>
     </div>
     {recalls.length ? (
       <div class="product-grid">
@@ -102,7 +108,7 @@ const issueFilters = [
       </div>
     ) : (
       <div class="notice-panel">
-        <p>No recall notices are currently listed for this product type.</p>
+        <p data-i18n="category.noProductTypeNotices">No recall notices are currently listed for this product type.</p>
       </div>
     )}
   </section>

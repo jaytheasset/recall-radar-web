@@ -19,20 +19,20 @@ const description = 'The requested Recall Radar page could not be found.';
 
     <main class="page-shell">
       <section class="section">
-        <p class="eyebrow">Page not found</p>
-        <h1>Page not found</h1>
+        <p class="eyebrow" data-i18n="error.pageNotFoundEyebrow">Page not found</p>
+        <h1 data-i18n="error.pageNotFound">Page not found</h1>
         <p class="lead">
           We could not find that page. Search recall notices or return to the homepage.
         </p>
         <div class="link-row">
-          <a class="btn btn-primary" href="/checker">Search recalls</a>
+          <a class="btn btn-primary" href="/checker" data-i18n="home.searchButton">Search recalls</a>
           <a class="btn btn-secondary" href="/">Go home</a>
         </div>
       </section>
 
       <section class="section">
         <div class="notice-panel">
-          <p>
+          <p data-i18n="disclaimer.possibleMatches">
             Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
           </p>
         </div>
@@ -40,7 +40,7 @@ const description = 'The requested Recall Radar page could not be found.';
     </main>
 
     <footer class="page-footer">
-      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
+      <span data-i18n="footer.disclaimer">Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.</span>
     </footer>
   </body>
 </html>
