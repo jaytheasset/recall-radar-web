@@ -1,7 +1,6 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import { getSourceLandingPageCards } from '../lib/source-landing-pages';
-import { processedLocalRecordCount } from '../lib/recall-data';
 import '../styles/global.css';
 
 const title = 'Countries | Recall Radar';
@@ -78,7 +77,7 @@ const sourceCardDetails = {
       <section class="directory-hero">
         <p class="eyebrow">Countries</p>
         <h1>Browse recalls by country</h1>
-        <p class="lead">Choose a country or official source to review matching recall notices from the {processedLocalRecordCount} notices currently searchable in Recall Radar.</p>
+        <p class="lead">Choose a country or source to review official recall notices searchable in Recall Radar.</p>
       </section>
 
       <section class="section">

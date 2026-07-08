@@ -142,6 +142,13 @@ function sentenceFragment(value: string): string {
   return cleanText(value).replace(/[.!?]+$/g, '');
 }
 
+function phraseKey(value: string): string {
+  return cleanText(value)
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .trim();
+}
+
 function uniqueNonEmpty(values: string[]): string[] {
   return [...new Set(values.map(cleanText).filter(Boolean))];
 }
@@ -1154,16 +1161,19 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
                     : recall.source === 'FSANZ_FOOD_RECALLS'
                       ? buildFsanzFoodRecallView(recall, raw)
                       : buildCpscView(recall, raw);
-  const productIntro = sentenceFragment(sourceSpecificView.productName)
-    ? `This recall involves ${sentenceFragment(sourceSpecificView.productName)}`
-    : 'This recall involves a recalled product';
-  const brandIntro = sentenceFragment(sourceSpecificView.brandName) ? ` from ${sentenceFragment(sourceSpecificView.brandName)}` : '';
+  const productIntro = sentenceFragment(sourceSpecificView.productName) || 'this product';
+  const brandIntro = sentenceFragment(sourceSpecificView.brandName);
+  const shouldShowBrandIntro =
+    Boolean(brandIntro) &&
+    !/^(brand|firm|supplier).+not listed$/i.test(brandIntro) &&
+    !phraseKey(productIntro).includes(phraseKey(brandIntro));
+  const introLead = `This notice is for ${productIntro}${shouldShowBrandIntro ? ` from ${brandIntro}` : ''}.`;
   const introSentence =
     recall.source === 'UK_FSA'
-      ? `${productIntro}${brandIntro}. Compare the package, batch, date, allergen, and action details with the official FSA notice before eating, serving, selling, or returning it.`
+      ? `${introLead} Compare the package, batch, date, allergen, and action details with the official FSA notice before eating, serving, selling, or returning it.`
       : recall.source === 'FSANZ_FOOD_RECALLS'
-        ? `${productIntro}${brandIntro}. Compare the package, date marking, batch, distribution, and action details with the official FSANZ notice before eating, serving, selling, or returning it.`
-        : `${productIntro}${brandIntro}. Review the photos and details below before using, keeping, selling, or giving it away.`;
+        ? `${introLead} Compare the package, date marking, batch, distribution, and action details with the official FSANZ notice before eating, serving, selling, or returning it.`
+        : `${introLead} Review the photos and listed product details before using, keeping, selling, or giving it away.`;
 
   return {
     ...sourceSpecificView,

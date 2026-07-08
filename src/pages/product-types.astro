@@ -1,6 +1,6 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
-import { categoryRoutes, getRecallsByCategory, processedLocalRecordCount } from '../lib/recall-data';
+import { categoryRoutes, getRecallsByCategory } from '../lib/recall-data';
 import '../styles/global.css';
 
 const title = 'Product Types | Recall Radar';
@@ -65,7 +65,7 @@ const productTypes = productFamilyRoutes.map((route) => ({
       <section class="directory-hero">
         <p class="eyebrow">Product types</p>
         <h1>Find recalls by product type</h1>
-        <p class="lead">Browse {processedLocalRecordCount} official recall notices by the kind of product involved.</p>
+        <p class="lead">Explore official recall notices by the kind of product involved.</p>
       </section>
 
       <section class="section">

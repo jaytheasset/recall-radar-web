@@ -25,7 +25,7 @@ import { IDENTIFIER_SEARCH_PLACEHOLDER } from '../lib/identifier-guidance';
 import { getSourceLandingPageCards } from '../lib/source-landing-pages';
 import '../styles/global.css';
 
-const title = 'Product Recall Checker | Recall Radar';
+const title = 'Product Recalls | Recall Radar';
 const description =
   'Search product recalls by keyword, product, brand, model number, barcode, lot or batch code, date mark, recall number, ingredient, allergen, or official source.';
 const activeSourceCount = [
@@ -40,7 +40,7 @@ const activeSourceCount = [
   processedHongKongCfsRecordCount,
   processedFsanzFoodRecallRecordCount
 ].filter((count) => count > 0).length;
-const checkerCountLine = `Search ${processedLocalRecordCount} recall notices from ${activeSourceCount} official sources.`;
+const checkerCountLine = `Search ${processedLocalRecordCount} recalls from ${activeSourceCount} official sources.`;
 const featuredBrands = brandGroups.slice(0, 18);
 const checkerRecalls = siteRecalls.map((recall) => {
   const cardImage = getRecallImageForContext(recall, 'list');
@@ -317,7 +317,7 @@ const sourceCardDetails = {
           <p class="checker-browse-hint" hidden>
             Browse instead:
             <a href="/product-types">Product types</a>
-            <span aria-hidden="true">·</span>
+            <span aria-hidden="true">/</span>
             <a href="/countries">Countries</a>
           </p>
           <button id="save-search-watchlist" class="save-search-link" type="button" hidden>Save this search</button>
@@ -880,7 +880,7 @@ const sourceCardDetails = {
           return product;
         }
 
-        return `${product} · ${brand}`;
+        return `${product} / ${brand}`;
       }
 
       function createCardLine(label: string, value: string, className = 'result-card-line'): HTMLElement {

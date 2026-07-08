@@ -94,12 +94,12 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         <p class="eyebrow">Browser watchlist</p>
         <h1>Saved in this browser</h1>
         <p class="lead">
-          Save searches and brands in this browser, then preview matching recall notices from indexed sources.
+          Save searches and brands in this browser, then preview matching recall notices from official sources.
         </p>
         <div class="meta-row data-source-row">
           <span class="status-pill">{dataSourceLabel}</span>
           <span class="tag">
-            {usingProcessedLocalData ? `${processedLocalRecordCount} recall notices` : 'Sample notices'}
+            {usingProcessedLocalData ? `${processedLocalRecordCount} recall notices` : 'Example notices'}
           </span>
           {usingProcessedLocalData ? (
             <>
@@ -161,7 +161,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
           Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
         </p>
         <div id="empty-watchlist" class="notice-panel">
-          <p>No saved searches or brands yet. Use the Product Recall Checker or a brand page to add saved items.</p>
+          <p>No saved searches or brands yet. Use Product Recalls or a brand page to add saved items.</p>
         </div>
         <div id="watchlist-items" class="watchlist-items"></div>
       </section>

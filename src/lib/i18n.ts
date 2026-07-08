@@ -21,13 +21,13 @@ export const messages = {
     'checker.searchPlaceholder': 'Search by product, brand, model, UPC, lot code, or keyword',
     'checker.noClearMatch': 'No clear match found',
     'checker.noResultSafety':
-      'We did not find a clear match in the indexed recall notices. This does not mean the product is safe or recall-free. Try searching by brand name, model number, UPC/barcode, lot code, ingredient, allergen, or product type.',
+      'We did not find a clear match in the recall notices. This does not mean the product is safe or recall-free. Try searching by brand name, model number, UPC/barcode, lot code, ingredient, allergen, or product type.',
     'disclaimer.possibleMatches':
       'Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.',
     'watchlist.savedInBrowser': 'Saved in this browser',
     'detail.howToVerify': 'How to verify',
     'detail.viewOfficialNotice': 'View official notice',
-    'category.indexedNotices': 'Indexed notices',
+    'category.indexedNotices': 'Recall notices',
     'error.pageNotFound': 'Page not found'
   }
 } as const;
