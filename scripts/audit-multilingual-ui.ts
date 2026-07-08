@@ -6,6 +6,7 @@ import {
   localeOptions,
   messages,
   productFamilyI18nKeys,
+  sourceLandingTitleI18nKeys,
   type MessageKey,
   type SupportedLocale
 } from '../src/lib/i18n.ts';
@@ -24,7 +25,8 @@ const requiredUiKeys: MessageKey[] = [
   'home.trust',
   'directory.productTypesTitle',
   'directory.countriesTitle',
-  ...Object.values(productFamilyI18nKeys)
+  ...Object.values(productFamilyI18nKeys),
+  ...Object.values(sourceLandingTitleI18nKeys)
 ];
 
 const cjkLocales: SupportedLocale[] = ['ko', 'ja', 'zh'];
@@ -63,6 +65,7 @@ for (const locale of cjkLocales) {
   const title = messages[locale]['directory.productTypesTitle'];
   const countryTitle = messages[locale]['directory.countriesTitle'];
   const familyLabels = Object.values(productFamilyI18nKeys).map((key) => messages[locale][key]);
+  const sourceMarketLabels = Object.values(sourceLandingTitleI18nKeys).map((key) => messages[locale][key]);
 
   if (!hasCjk(title)) {
     failures.push(`${locale}.directory.productTypesTitle does not contain CJK text.`);
@@ -75,6 +78,12 @@ for (const locale of cjkLocales) {
   for (const label of familyLabels) {
     if (!hasCjk(label)) {
       warnings.push(`${locale} product family label remains non-CJK: ${label}`);
+    }
+  }
+
+  for (const label of sourceMarketLabels) {
+    if (!hasCjk(label)) {
+      warnings.push(`${locale} source market label remains non-CJK: ${label}`);
     }
   }
 }
@@ -116,6 +125,7 @@ const summary = {
   locales: SUPPORTED_LOCALES,
   auditedKeys: unique(requiredUiKeys).length,
   productFamilyLabels: Object.keys(productFamilyI18nKeys).length,
+  sourceMarketLabels: Object.keys(sourceLandingTitleI18nKeys).length,
   warnings,
   failures
 };

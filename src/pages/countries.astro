@@ -1,6 +1,7 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import { getSourceLandingPageCards } from '../lib/source-landing-pages';
+import { getSourceLandingTitleI18nKey } from '../lib/i18n';
 import '../styles/global.css';
 
 const title = 'Countries | Recall Radar';
@@ -98,7 +99,7 @@ const sourceCardDetails = {
                   )}
                 </span>
                 <span class="category-card-body">
-                  <h3>{card.title}</h3>
+                  <h3 data-i18n={getSourceLandingTitleI18nKey(page.route)}>{card.title}</h3>
                   <span class="source-card-kicker">{card.agencyLabel}</span>
                 </span>
                 <span

@@ -23,7 +23,7 @@ import { cleanRecallDisplayText } from '../lib/recall-display-text';
 import { getSourceOptionsForCurrentCoverage } from '../lib/recall-sources';
 import { IDENTIFIER_SEARCH_PLACEHOLDER, getNoResultIdentifierHint } from '../lib/identifier-guidance';
 import { getSourceLandingPageCards } from '../lib/source-landing-pages';
-import { getProductFamilyI18nKey } from '../lib/i18n';
+import { getProductFamilyI18nKey, getSourceLandingTitleI18nKey } from '../lib/i18n';
 import '../styles/global.css';
 
 const title = 'Product Recalls | Recall Radar';
@@ -387,7 +387,7 @@ const sourceCardDetails = {
                   <img class="source-flag" src={details.flagSrc} alt={details.flagAlt} loading="lazy" decoding="async" />
                 </span>
                 <span class="category-card-body">
-                  <h3>{card.title}</h3>
+                  <h3 data-i18n={getSourceLandingTitleI18nKey(page.route)}>{card.title}</h3>
                   <span class="source-card-kicker">{card.agencyLabel}</span>
                 </span>
                 <span
