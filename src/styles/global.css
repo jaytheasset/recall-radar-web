@@ -500,7 +500,8 @@ code {
   font-weight: 740;
 }
 
-.home-trust-line span {
+.home-trust-icon {
+  flex: 0 0 auto;
   display: grid;
   width: 1.35rem;
   height: 1.35rem;
@@ -509,6 +510,17 @@ code {
   background: #E8F7EE;
   color: #12853D;
   font-size: 0.84rem;
+}
+
+.home-trust-line [data-i18n="home.trust"] {
+  min-width: 0;
+  width: auto;
+  height: auto;
+  display: inline;
+  background: transparent;
+  color: inherit;
+  overflow-wrap: normal;
+  white-space: normal;
 }
 
 .home-hero-visual {
