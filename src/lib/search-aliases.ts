@@ -24,7 +24,17 @@ export const REQUIRED_SEARCH_ALIAS_TERMS: Record<string, string[]> = {
   'labeling-quality': ['labeling error', 'quality defect', 'rotulagem', '\uD45C\uC2DC\uC624\uB958', '\u6807\u7B7E\u9519\u8BEF'],
   toy: ['toy', 'brinquedo', '\uC7A5\uB09C\uAC10', '\u304A\u3082\u3061\u3083', '\u73A9\u5177'],
   stroller: ['stroller', 'pram', 'carrinho de bebe', '\uC720\uBAA8\uCC28', '\u30D9\u30D3\u30FC\u30AB\u30FC', '\u5A74\u513F\u8F66'],
-  'helmet-bike': ['helmet', 'bike helmet', 'capacete', '\uD5EC\uBA67', '\u30D8\u30EB\u30E1\u30C3\u30C8', '\u5934\u76D4']
+  'helmet-bike': [
+    'helmet',
+    'bike helmet',
+    'casque',
+    'casco',
+    'capacete',
+    'fahrradhelm',
+    '\uD5EC\uBA67',
+    '\u30D8\u30EB\u30E1\u30C3\u30C8',
+    '\u5934\u76D4'
+  ]
 };
 
 export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [

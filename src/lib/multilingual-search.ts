@@ -297,7 +297,7 @@ function tokenInText(token: string, normalizedText: string): boolean {
   }
 
   const words = normalizedText.split(' ').filter(Boolean);
-  return words.some((word) => word === token || (token.length >= 4 && word.startsWith(token)));
+  return words.some((word) => word === token || (token.length >= 5 && word.startsWith(token)));
 }
 
 function termMatchesText(term: string, normalizedText: string): boolean {
@@ -311,7 +311,7 @@ function termMatchesText(term: string, normalizedText: string): boolean {
     return false;
   }
 
-  if (normalizedText.includes(normalizedTerm)) {
+  if (termTokens.length >= 2 && normalizedText.includes(normalizedTerm)) {
     return true;
   }
 

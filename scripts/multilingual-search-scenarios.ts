@@ -103,6 +103,14 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     expectedAliases: ['choking', 'suffocation']
   },
   {
+    id: 'ko-bike-helmet',
+    group: 'Korean',
+    query: '\uD5EC\uBA67',
+    minMatches: 1,
+    maxMatches: 50,
+    expectedAliases: ['helmet', 'bike helmet']
+  },
+  {
     id: 'ja-power-bank',
     group: 'Japanese',
     query: '\u30E2\u30D0\u30A4\u30EB\u30D0\u30C3\u30C6\u30EA\u30FC',
@@ -153,6 +161,14 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     expectedAliases: ['toy']
   },
   {
+    id: 'ja-bike-helmet',
+    group: 'Japanese',
+    query: '\u30D8\u30EB\u30E1\u30C3\u30C8',
+    minMatches: 1,
+    maxMatches: 50,
+    expectedAliases: ['helmet', 'bike helmet']
+  },
+  {
     id: 'zh-power-bank',
     group: 'Chinese',
     query: '\u5145\u7535\u5B9D',
@@ -175,6 +191,14 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     expectedAliases: ['barcode', 'upc']
   },
   {
+    id: 'zh-bike-helmet',
+    group: 'Chinese',
+    query: '\u5934\u76D4',
+    minMatches: 1,
+    maxMatches: 50,
+    expectedAliases: ['helmet', 'bike helmet']
+  },
+  {
     id: 'es-charger',
     group: 'Spanish',
     query: 'cargador',
@@ -190,12 +214,28 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     expectedAliases: ['allergen', 'undeclared']
   },
   {
+    id: 'es-bike-helmet',
+    group: 'Spanish',
+    query: 'casco',
+    minMatches: 1,
+    maxMatches: 50,
+    expectedAliases: ['helmet', 'bike helmet']
+  },
+  {
     id: 'de-smoke-detector',
     group: 'German',
     query: 'rauchmelder',
     minMatches: 1,
     expectedAliases: ['smoke detector', 'smoke alarm'],
     rankingTerms: ['smoke detector', 'carbon monoxide']
+  },
+  {
+    id: 'de-bike-helmet',
+    group: 'German',
+    query: 'fahrradhelm',
+    minMatches: 1,
+    maxMatches: 50,
+    expectedAliases: ['helmet', 'bike helmet']
   },
   {
     id: 'pt-power-bank',
@@ -246,6 +286,14 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     query: 'detector de fumaca',
     minMatches: 1,
     expectedAliases: ['smoke detector', 'smoke alarm']
+  },
+  {
+    id: 'pt-bike-helmet',
+    group: 'Portuguese',
+    query: 'capacete',
+    minMatches: 1,
+    maxMatches: 50,
+    expectedAliases: ['helmet', 'bike helmet']
   },
   {
     id: 'en-power-bank',
@@ -327,6 +375,14 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     query: 'lait',
     minMatches: 1,
     expectedAliases: ['milk']
+  },
+  {
+    id: 'fr-bike-helmet',
+    group: 'French/source terms',
+    query: 'casque',
+    minMatches: 1,
+    maxMatches: 50,
+    expectedAliases: ['helmet', 'bike helmet']
   },
   {
     id: 'mixed-ko-allergen-milk',
