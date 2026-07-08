@@ -1,6 +1,7 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import { categoryRoutes, getRecallsByCategory } from '../lib/recall-data';
+import { getProductFamilyI18nKey } from '../lib/i18n';
 import '../styles/global.css';
 
 const title = 'Product Types | Recall Radar';
@@ -78,7 +79,7 @@ const productTypes = productFamilyRoutes.map((route) => ({
                 </svg>
               </span>
               <span class="category-card-body">
-                <h3>{type.label}</h3>
+                <h3 data-i18n={getProductFamilyI18nKey(type.category)}>{type.label}</h3>
                 <span
                   class="category-count"
                   data-i18n-template="common.recallsCount"

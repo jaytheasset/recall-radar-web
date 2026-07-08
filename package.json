@@ -69,6 +69,7 @@
     "audit:homepage-recent": "node --experimental-strip-types scripts/audit-homepage-recent.ts",
     "audit:search-aliases": "node --experimental-strip-types scripts/audit-search-aliases.ts",
     "audit:multilingual-search": "node --experimental-strip-types scripts/audit-multilingual-search.ts",
+    "audit:multilingual-ui": "node --experimental-strip-types scripts/audit-multilingual-ui.ts",
     "audit:recall-taxonomy-v2-design": "node --experimental-strip-types scripts/audit-recall-taxonomy-v2-design.ts",
     "audit:taxonomy-v2-ui-preview": "node --experimental-strip-types scripts/audit-taxonomy-v2-ui-preview.ts",
     "audit:taxonomy-v2-results-preview": "node --experimental-strip-types scripts/audit-taxonomy-v2-results-preview.ts",

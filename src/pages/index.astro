@@ -21,6 +21,7 @@ import { getImageLoadingAttributes, getRecallImageForContext } from '../lib/reca
 import { getRecallSourcePlaceholder } from '../lib/recall-sources';
 import { getBalancedRecentRecalls } from '../lib/homepage-recent';
 import { getSourceLandingPageCards } from '../lib/source-landing-pages';
+import { getProductFamilyI18nKey } from '../lib/i18n';
 import '../styles/global.css';
 
 const title = 'Recall Radar | Global product recall search';
@@ -266,7 +267,7 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
                     </svg>
                   </span>
                   <span class="category-card-body">
-                    <h3>{type.label}</h3>
+                    <h3 data-i18n={getProductFamilyI18nKey(type.category)}>{type.label}</h3>
                     <span class="home-card-link"><span data-i18n="common.viewRecalls">View recalls</span> <span aria-hidden="true">&rarr;</span></span>
                   </span>
                 </a>
