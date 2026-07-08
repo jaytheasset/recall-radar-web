@@ -12,7 +12,8 @@ export const REQUIRED_SEARCH_ALIAS_TERMS: Record<string, string[]> = {
   'power-bank': ['power bank', 'portable charger', 'banco de energia', '\uBCF4\uC870\uBC30\uD130\uB9AC', '\u30E2\u30D0\u30A4\u30EB\u30D0\u30C3\u30C6\u30EA\u30FC', '\u5145\u7535\u5B9D'],
   'smoke-detector': ['smoke detector', 'smoke alarm', 'detector de fumaca', '\uC5F0\uAE30\uAC10\uC9C0\uAE30', '\u7159\u63A2\u77E5\u5668'],
   allergen: ['allergen', 'allergy', 'alergeno', '\uC54C\uB808\uB974\uAE30', '\u30A2\u30EC\u30EB\u30B2\u30F3', '\u8FC7\u654F\u539F'],
-  identifiers: ['barcode', 'upc', 'lot', 'batch', 'model number', 'codigo de barras', '\uBC14\uCF54\uB4DC', '\u6761\u5F62\u7801'],
+  'barcode-identifiers': ['barcode', 'upc', 'gtin', 'ean', 'codigo de barras', '\uBC14\uCF54\uB4DC', '\u6761\u5F62\u7801'],
+  identifiers: ['lot', 'batch', 'model number', 'recall number', '\uBAA8\uB378\uBC88\uD638', '\u578B\u53F7', '\u6279\u6B21'],
   'pathogen-contamination': ['salmonella', 'listeria', 'bacteria', 'contaminacao', '\uC138\uADE0', '\u7EC6\u83CC'],
   'foreign-matter': ['foreign matter', 'metal', 'glass', 'corpo estranho', '\uC774\uBB3C\uC9C8', '\u7570\u7269'],
   'chemical-contamination': ['chemical contamination', 'ethylene oxide', 'contaminacao quimica', '\uD654\uD559\uC624\uC5FC', '\u5316\u5B66\u6C61\u67D3'],
@@ -114,7 +115,7 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
       '\u5145\u96FB\u5668',
       '\u5145\u7535\u5668'
     ],
-    aliases: ['charger', 'adapter', 'power adapter', 'charging cable', 'portable charger', 'power bank']
+    aliases: ['charger', 'adapter', 'power adapter', 'charging cable', 'portable charger']
   },
   {
     id: 'battery',
@@ -475,13 +476,22 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
     aliases: ['helmet', 'bicycle', 'bike', 'bike helmet']
   },
   {
-    id: 'identifiers',
+    id: 'barcode-identifiers',
     terms: [
       'barcode',
       'bar code',
       'upc',
       'gtin',
       'ean',
+      'codigo de barras',
+      '\uBC14\uCF54\uB4DC',
+      '\u6761\u5F62\u7801'
+    ],
+    aliases: ['barcode', 'bar code', 'upc', 'gtin', 'ean']
+  },
+  {
+    id: 'identifiers',
+    terms: [
       'lot',
       'batch',
       'model',
@@ -495,19 +505,16 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
       'vencimento',
       'recall number',
       'numero de lot',
-      'codigo de barras',
       'codigo de lote',
       'modellnummer',
-      '\uBC14\uCF54\uB4DC',
       '\uBAA8\uB378\uBC88\uD638',
       '\uB85C\uD2B8\uBC88\uD638',
       '\u88FD\u9020\u756A\u53F7',
       '\u578B\u756A',
-      '\u6761\u5F62\u7801',
       '\u578B\u53F7',
       '\u6279\u6B21'
     ],
-    aliases: ['barcode', 'upc', 'lot', 'batch', 'model number', 'serial number', 'date code', 'recall number']
+    aliases: ['lot', 'batch', 'model number', 'serial number', 'date code', 'recall number']
   },
   {
     id: 'recall-alert',

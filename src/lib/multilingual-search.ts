@@ -52,6 +52,24 @@ const SEARCH_STOP_WORDS = new Set([
   'no',
   'qwerty',
   'zzzz',
+  'de',
+  'la',
+  'le',
+  'les',
+  'des',
+  'du',
+  'el',
+  'los',
+  'las',
+  'y',
+  'e',
+  'da',
+  'do',
+  'dos',
+  'das',
+  'para',
+  'por',
+  'con',
   'recall',
   'recalls',
   'recalled',
@@ -67,6 +85,9 @@ const SPECIFIC_ALIAS_GROUP_SUPPRESSIONS: Record<string, string[]> = {
   'clothing-sleepwear': ['baby-kids'],
   charger: ['appliance-electric'],
   'power-bank': ['battery']
+};
+const SPECIFIC_ALIAS_TOKEN_SUPPRESSIONS: Record<string, string[]> = {
+  'baby-sleep': ['baby']
 };
 
 export function normalizeSearchText(value: string): string {
@@ -112,24 +133,37 @@ export function expandSearchQuery(query: string): string[] {
     }
   }
 
+  function aliasTermMatchesQuery(rawTerm: string): boolean {
+    const term = normalizeSearchText(rawTerm);
+    const rawNeedle = rawTerm.trim().toLowerCase();
+    const termTokens = term.split(' ').filter(Boolean);
+    const isNonAscii = /[^\x00-\x7F]/.test(rawNeedle);
+
+    if (!normalizedQuery || !term) {
+      return false;
+    }
+
+    if (normalizedQuery === term || baseTokens.includes(term)) {
+      return true;
+    }
+
+    if (termTokens.length > 1) {
+      return normalizedQuery.includes(term) || termTokens.every((token) => baseTokens.includes(token));
+    }
+
+    if (isNonAscii && rawNeedle.length > 1) {
+      return rawQuery.includes(rawNeedle);
+    }
+
+    return false;
+  }
+
   const matchingGroups = SEARCH_ALIAS_GROUPS.filter((group) => {
     if ((group.id === 'recall-alert' || group.id === 'identifiers') && hasNoiseStopWord) {
       return false;
     }
 
-    return [...group.terms, ...group.aliases].some((rawTerm) => {
-      const term = normalizeSearchText(rawTerm);
-      const rawNeedle = rawTerm.trim().toLowerCase();
-
-      if (!normalizedQuery || !term) {
-        return false;
-      }
-
-      return (
-        (term.length > 1 && (normalizedQuery.includes(term) || baseTokens.includes(term))) ||
-        (rawNeedle.length > 1 && rawQuery.includes(rawNeedle))
-      );
-    });
+    return [...group.terms, ...group.aliases].some((rawTerm) => aliasTermMatchesQuery(rawTerm));
   });
 
   for (const group of matchingGroups) {
@@ -139,6 +173,13 @@ export function expandSearchQuery(query: string): string[] {
   const suppressedGroupIds = new Set(
     [...matchedGroupIds].flatMap((groupId) => SPECIFIC_ALIAS_GROUP_SUPPRESSIONS[groupId] ?? [])
   );
+  const suppressedTokens = new Set(
+    [...matchedGroupIds].flatMap((groupId) => SPECIFIC_ALIAS_TOKEN_SUPPRESSIONS[groupId] ?? []).map(normalizeSearchText)
+  );
+
+  for (const token of suppressedTokens) {
+    expanded.delete(token);
+  }
 
   for (const group of matchingGroups) {
     if (suppressedGroupIds.has(group.id)) {
