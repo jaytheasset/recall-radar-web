@@ -1,4 +1,4 @@
-import { SEARCH_ALIAS_GROUPS } from '../src/lib/search-aliases.ts';
+import { REQUIRED_SEARCH_ALIAS_TERMS, SEARCH_ALIAS_GROUPS } from '../src/lib/search-aliases.ts';
 
 type AliasIssue = {
   groupId: string;
@@ -64,11 +64,32 @@ for (const group of SEARCH_ALIAS_GROUPS) {
   }
 }
 
+const groupsById = new Map(SEARCH_ALIAS_GROUPS.map((group) => [group.id, group]));
+
+for (const [groupId, requiredTerms] of Object.entries(REQUIRED_SEARCH_ALIAS_TERMS)) {
+  const group = groupsById.get(groupId);
+
+  if (!group) {
+    issues.push({ groupId, field: 'id', value: groupId, issue: 'Required alias coverage group is missing.' });
+    continue;
+  }
+
+  const availableTerms = new Set([...group.terms, ...group.aliases].map(normalized));
+
+  for (const term of requiredTerms) {
+    if (!availableTerms.has(normalized(term))) {
+      issues.push({ groupId, field: 'terms', value: term, issue: 'Required multilingual alias term is missing.' });
+    }
+  }
+}
+
 const summary = {
   passed: issues.length === 0,
   groups: SEARCH_ALIAS_GROUPS.length,
   termCount: SEARCH_ALIAS_GROUPS.reduce((total, group) => total + group.terms.length, 0),
   aliasCount: SEARCH_ALIAS_GROUPS.reduce((total, group) => total + group.aliases.length, 0),
+  requiredCoverageGroups: Object.keys(REQUIRED_SEARCH_ALIAS_TERMS).length,
+  requiredCoverageTerms: Object.values(REQUIRED_SEARCH_ALIAS_TERMS).reduce((total, terms) => total + terms.length, 0),
   issues
 };
 

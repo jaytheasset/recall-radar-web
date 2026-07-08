@@ -4,6 +4,28 @@ export type SearchAliasGroup = {
   aliases: string[];
 };
 
+export const REQUIRED_SEARCH_ALIAS_TERMS: Record<string, string[]> = {
+  'food-grocery': ['food', 'grocery', 'alimentation', 'alimento', '\uC2DD\uD488', '\u98DF\u54C1'],
+  'baby-kids': ['baby', 'child', 'crianca', '\uC544\uAE30', '\uC5B4\uB9B0\uC774', '\u513F\u7AE5'],
+  'baby-sleep': ['crib', 'baby sleeper', 'berco', '\uC544\uAE30\uCE68\uB300', '\u30D9\u30D3\u30FC\u30D9\u30C3\u30C9', '\u5A74\u513F\u5E8A'],
+  battery: ['battery', 'bateria', '\uBC30\uD130\uB9AC', '\u96FB\u6C60', '\u7535\u6C60'],
+  'power-bank': ['power bank', 'portable charger', 'banco de energia', '\uBCF4\uC870\uBC30\uD130\uB9AC', '\u30E2\u30D0\u30A4\u30EB\u30D0\u30C3\u30C6\u30EA\u30FC', '\u5145\u7535\u5B9D'],
+  'smoke-detector': ['smoke detector', 'smoke alarm', 'detector de fumaca', '\uC5F0\uAE30\uAC10\uC9C0\uAE30', '\u7159\u63A2\u77E5\u5668'],
+  allergen: ['allergen', 'allergy', 'alergeno', '\uC54C\uB808\uB974\uAE30', '\u30A2\u30EC\u30EB\u30B2\u30F3', '\u8FC7\u654F\u539F'],
+  identifiers: ['barcode', 'upc', 'lot', 'batch', 'model number', 'codigo de barras', '\uBC14\uCF54\uB4DC', '\u6761\u5F62\u7801'],
+  'pathogen-contamination': ['salmonella', 'listeria', 'bacteria', 'contaminacao', '\uC138\uADE0', '\u7EC6\u83CC'],
+  'foreign-matter': ['foreign matter', 'metal', 'glass', 'corpo estranho', '\uC774\uBB3C\uC9C8', '\u7570\u7269'],
+  'chemical-contamination': ['chemical contamination', 'ethylene oxide', 'contaminacao quimica', '\uD654\uD559\uC624\uC5FC', '\u5316\u5B66\u6C61\u67D3'],
+  'fire-burn-overheat': ['fire', 'fire hazard', 'overheating', 'incendio', '\uD654\uC7AC', '\u706B\u707D'],
+  'electric-shock': ['electric shock', 'shock hazard', 'choque eletrico', '\uAC10\uC804', '\u611F\u96FB'],
+  'choking-suffocation': ['choking', 'suffocation', 'asfixia', '\uC9C8\uC2DD', '\u7A92\u606F'],
+  'fall-injury': ['fall', 'injury', 'queda', '\uB0D9\uC0C1', '\u8DCC\u5012'],
+  'labeling-quality': ['labeling error', 'quality defect', 'rotulagem', '\uD45C\uC2DC\uC624\uB958', '\u6807\u7B7E\u9519\u8BEF'],
+  toy: ['toy', 'brinquedo', '\uC7A5\uB09C\uAC10', '\u304A\u3082\u3061\u3083', '\u73A9\u5177'],
+  stroller: ['stroller', 'pram', 'carrinho de bebe', '\uC720\uBAA8\uCC28', '\u30D9\u30D3\u30FC\u30AB\u30FC', '\u5A74\u513F\u8F66'],
+  'helmet-bike': ['helmet', 'bike helmet', 'capacete', '\uD5EC\uBA67', '\u30D8\u30EB\u30E1\u30C3\u30C8', '\u5934\u76D4']
+};
+
 export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
   {
     id: 'food-grocery',
@@ -19,6 +41,8 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
       'comida',
       'alimento',
       'alimentos',
+      'produto alimentar',
+      'mercearia',
       'lebensmittel',
       '\uC2DD\uD488',
       '\uC74C\uC2DD',
@@ -39,7 +63,23 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
   },
   {
     id: 'infant-food',
-    terms: ['infant food', 'baby food', 'formula', 'infant formula', 'lait infantile', 'comida para bebe', 'babynahrung', '\uC774\uC720\uC2DD', '\uBD84\uC720', '\u5A74\u5150\u98DF\u54C1'],
+    terms: [
+      'infant food',
+      'baby food',
+      'formula',
+      'infant formula',
+      'lait infantile',
+      'comida para bebe',
+      'alimento infantil',
+      'formula infantil',
+      'babynahrung',
+      '\uC774\uC720\uC2DD',
+      '\uBD84\uC720',
+      '\u30D9\u30D3\u30FC\u30D5\u30FC\u30C9',
+      '\u7C89\u30DF\u30EB\u30AF',
+      '\u5A74\u5150\u98DF\u54C1',
+      '\u5976\u7C89'
+    ],
     aliases: ['infant food', 'baby food', 'formula', 'infant formula']
   },
   {
@@ -103,6 +143,8 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
       'co detector',
       'detecteur de fumee',
       'detector de humo',
+      'detector de fumaca',
+      'alarme de fumaca',
       'rauchmelder',
       '\uC5F0\uAE30\uAC10\uC9C0\uAE30',
       '\u7159\u63A2\u77E5\u5668',
@@ -204,7 +246,22 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
   },
   {
     id: 'health-personal-care',
-    terms: ['cosmetic', 'personal care', 'medical device', 'hygiene', 'cosmetique', 'cosmetico', 'kosmetik', '\uD654\uC7A5\uD488', '\uC704\uC0DD\uC6A9\uD488', '\u5316\u7CA7\u54C1'],
+    terms: [
+      'cosmetic',
+      'personal care',
+      'medical device',
+      'hygiene',
+      'cosmetique',
+      'cosmetico',
+      'dispositivo medico',
+      'kosmetik',
+      '\uD654\uC7A5\uD488',
+      '\uC704\uC0DD\uC6A9\uD488',
+      '\uC758\uB8CC\uAE30\uAE30',
+      '\u5316\u7CA7\u54C1',
+      '\u533B\u7642\u6A5F\u5668',
+      '\u533B\u7597\u5668\u68B0'
+    ],
     aliases: ['cosmetic', 'personal care', 'medical device', 'hygiene product']
   },
   {
@@ -254,22 +311,22 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
   },
   {
     id: 'milk',
-    terms: ['milk', 'dairy', 'lait', 'leche', 'milch', '\uC6B0\uC720', '\u4E73', '\u725B\u5976'],
+    terms: ['milk', 'dairy', 'lait', 'leche', 'leite', 'milch', '\uC6B0\uC720', '\u4E73', '\u725B\u5976'],
     aliases: ['milk', 'dairy', 'lait']
   },
   {
     id: 'egg',
-    terms: ['egg', 'oeuf', 'huevo', 'ei', '\uACC4\uB780', '\u5375', '\u9E21\u86CB'],
+    terms: ['egg', 'oeuf', 'huevo', 'ovo', 'ei', '\uACC4\uB780', '\u5375', '\u9E21\u86CB'],
     aliases: ['egg', 'oeuf']
   },
   {
     id: 'peanut',
-    terms: ['peanut', 'arachide', 'cacahuete', 'cacahuate', 'erdnuss', '\uB545\uCF69', '\u843D\u82B1\u751F', '\u82B1\u751F'],
+    terms: ['peanut', 'arachide', 'cacahuete', 'cacahuate', 'amendoim', 'erdnuss', '\uB545\uCF69', '\u843D\u82B1\u751F', '\u82B1\u751F'],
     aliases: ['peanut', 'arachide']
   },
   {
     id: 'tree-nut',
-    terms: ['tree nut', 'nuts', 'almond', 'walnut', 'cashew', 'hazelnut', 'fruits a coque', 'nueces', 'nusse', '\uACAC\uACFC\uB958', '\u6728\u306E\u5B9F', '\u6811\u575A\u679C'],
+    terms: ['tree nut', 'nuts', 'almond', 'walnut', 'cashew', 'hazelnut', 'fruits a coque', 'nueces', 'castanha', 'nozes', 'nusse', '\uACAC\uACFC\uB958', '\u6728\u306E\u5B9F', '\u6811\u575A\u679C'],
     aliases: ['tree nut', 'nuts', 'almond', 'walnut', 'cashew', 'hazelnut']
   },
   {
@@ -284,22 +341,22 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
   },
   {
     id: 'sesame',
-    terms: ['sesame', 'sesamo', 'sesam', '\uCC38\uAE68', '\u80E1\u9EBB', '\u829D\u9EBB'],
+    terms: ['sesame', 'sesamo', 'gergelim', 'sesam', '\uCC38\uAE68', '\u80E1\u9EBB', '\u829D\u9EBB'],
     aliases: ['sesame']
   },
   {
     id: 'pathogen-contamination',
-    terms: ['salmonella', 'listeria', 'e coli', 'ecoli', 'pathogen', 'bacteria', 'bacterial', 'contamination', 'contaminacion', 'kontamination', '\uC0B4\uBAA8\uB12C\uB77C', '\uC138\uADE0', '\u7EC6\u83CC'],
+    terms: ['salmonella', 'listeria', 'e coli', 'ecoli', 'pathogen', 'bacteria', 'bacterial', 'contamination', 'contaminacion', 'contaminacao', 'kontamination', '\uC0B4\uBAA8\uB12C\uB77C', '\uC138\uADE0', '\u7EC6\u83CC'],
     aliases: ['pathogen contamination', 'salmonella', 'listeria', 'e coli', 'bacteria', 'contamination']
   },
   {
     id: 'foreign-matter',
-    terms: ['foreign matter', 'metal', 'glass', 'plastic fragment', 'piece of metal', 'corps etranger', 'cuerpo extrano', 'fremdkorper', '\uC774\uBB3C\uC9C8', '\uAE08\uC18D\uC870\uAC01', '\u7570\u7269', '\u5F02\u7269'],
+    terms: ['foreign matter', 'metal', 'glass', 'plastic fragment', 'piece of metal', 'corps etranger', 'cuerpo extrano', 'corpo estranho', 'fremdkorper', '\uC774\uBB3C\uC9C8', '\uAE08\uC18D\uC870\uAC01', '\u7570\u7269', '\u5F02\u7269'],
     aliases: ['foreign matter', 'metal', 'glass', 'plastic fragment']
   },
   {
     id: 'chemical-contamination',
-    terms: ['chemical contamination', 'ethylene oxide', 'pesticide residue', 'lead', 'cadmium', 'chemical exposure', 'contamination chimique', 'contaminacion quimica', '\uD654\uD559\uC624\uC5FC', '\u5316\u5B66\u6C61\u67D3'],
+    terms: ['chemical contamination', 'ethylene oxide', 'pesticide residue', 'lead', 'cadmium', 'chemical exposure', 'contamination chimique', 'contaminacion quimica', 'contaminacao quimica', '\uD654\uD559\uC624\uC5FC', '\u5316\u5B66\u6C61\u67D3'],
     aliases: ['chemical contamination', 'chemical exposure', 'ethylene oxide', 'pesticide residue']
   },
   {
@@ -332,7 +389,7 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
   },
   {
     id: 'electric-shock',
-    terms: ['electric shock', 'shock hazard', 'electrocution', 'choc electrique', 'descarga electrica', 'stromschlag', '\uAC10\uC804', '\u611F\u96FB', '\u89E6\u7535'],
+    terms: ['electric shock', 'shock hazard', 'electrocution', 'choc electrique', 'descarga electrica', 'choque eletrico', 'stromschlag', '\uAC10\uC804', '\u611F\u96FB', '\u89E6\u7535'],
     aliases: ['electric shock', 'shock hazard', 'electrocution']
   },
   {
@@ -347,7 +404,7 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
   },
   {
     id: 'fall-injury',
-    terms: ['fall', 'fall hazard', 'injury', 'injury hazard', 'chute', 'blessure', 'caida', 'lesion', 'verletzung', '\uB0D9\uC0C1', '\uBD80\uC0C1', '\u8DCC\u5012', '\u4F24\u5BB3'],
+    terms: ['fall', 'fall hazard', 'injury', 'injury hazard', 'chute', 'blessure', 'caida', 'lesion', 'queda', 'ferimento', 'verletzung', '\uB0D9\uC0C1', '\uBD80\uC0C1', '\u8DCC\u5012', '\u4F24\u5BB3'],
     aliases: ['fall', 'fall hazard', 'injury', 'injury hazard']
   },
   {
@@ -357,17 +414,17 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
   },
   {
     id: 'entrapment',
-    terms: ['entrapment', 'pinch', 'pinching', 'trapped', 'coincement', 'atrapamiento', 'einklemmung', '\uB07C\uC784', '\u5939\u4F24'],
+    terms: ['entrapment', 'pinch', 'pinching', 'trapped', 'coincement', 'atrapamiento', 'aprisionamento', 'einklemmung', '\uB07C\uC784', '\u5939\u4F24'],
     aliases: ['entrapment', 'pinch', 'trapped']
   },
   {
     id: 'poisoning',
-    terms: ['poisoning', 'toxic', 'toxicity', 'intoxication', 'envenenamiento', 'vergiftung', '\uC911\uB3C5', '\u4E2D\u6BD2'],
+    terms: ['poisoning', 'toxic', 'toxicity', 'intoxication', 'envenenamiento', 'envenenamento', 'vergiftung', '\uC911\uB3C5', '\u4E2D\u6BD2'],
     aliases: ['poisoning', 'toxic', 'toxicity']
   },
   {
     id: 'crash-drowning',
-    terms: ['crash', 'collision', 'drowning', 'accident', 'noyade', 'choque', 'ahogamiento', 'unfall', 'ertrinken', '\uCDA9\uB3CC', '\uC775\uC0AC', '\u649E\u8F66', '\u6EBA\u6C34'],
+    terms: ['crash', 'collision', 'drowning', 'accident', 'noyade', 'choque', 'ahogamiento', 'acidente', 'afogamento', 'unfall', 'ertrinken', '\uCDA9\uB3CC', '\uC775\uC0AC', '\u649E\u8F66', '\u6EBA\u6C34'],
     aliases: ['crash', 'collision', 'drowning']
   },
   {
@@ -382,6 +439,8 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
       'packaging defect',
       'etiquetage',
       'etiquetado',
+      'rotulagem',
+      'defeito de embalagem',
       'kennzeichnung',
       '\uD45C\uC2DC\uC624\uB958',
       '\uD488\uC9C8\uACB0\uD568',
@@ -392,12 +451,12 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
   },
   {
     id: 'baby-sleep',
-    terms: ['crib', 'cot', 'baby sleeper', 'bassinet', 'lit bebe', 'cuna', 'babybett', '\uC544\uAE30\uCE68\uB300', '\u30D9\u30D3\u30FC\u30D9\u30C3\u30C9', '\u5A74\u513F\u5E8A'],
+    terms: ['crib', 'cot', 'baby sleeper', 'bassinet', 'lit bebe', 'cuna', 'berco', 'babybett', '\uC544\uAE30\uCE68\uB300', '\u30D9\u30D3\u30FC\u30D9\u30C3\u30C9', '\u5A74\u513F\u5E8A'],
     aliases: ['crib', 'cot', 'baby sleeper', 'bassinet']
   },
   {
     id: 'baby-kids',
-    terms: ['baby', 'infant', 'nursery', 'child', 'children', 'kids', 'bebe', 'crianca', 'enfant', 'nino', 'kind', '\uC544\uAE30', '\uC720\uC544', '\uC5B4\uB9B0\uC774', '\u5B50\u4F9B', '\u513F\u7AE5'],
+    terms: ['baby', 'infant', 'nursery', 'child', 'children', 'kids', 'bebe', 'crianca', 'criancas', 'enfant', 'nino', 'kind', '\uC544\uAE30', '\uC720\uC544', '\uC5B4\uB9B0\uC774', '\u5B50\u4F9B', '\u513F\u7AE5'],
     aliases: ['baby', 'infant', 'nursery', 'child', 'children', 'kids']
   },
   {
@@ -407,12 +466,12 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
   },
   {
     id: 'stroller',
-    terms: ['stroller', 'pram', 'pushchair', 'poussette', 'cochecito', 'kinderwagen', '\uC720\uBAA8\uCC28', '\u30D9\u30D3\u30FC\u30AB\u30FC', '\u5A74\u513F\u8F66'],
+    terms: ['stroller', 'pram', 'pushchair', 'poussette', 'cochecito', 'carrinho de bebe', 'kinderwagen', '\uC720\uBAA8\uCC28', '\u30D9\u30D3\u30FC\u30AB\u30FC', '\u5A74\u513F\u8F66'],
     aliases: ['stroller', 'pram', 'pushchair']
   },
   {
     id: 'helmet-bike',
-    terms: ['helmet', 'bicycle', 'bike', 'bike helmet', 'casque', 'velo', 'casco', 'bicicleta', 'fahrradhelm', '\uD5EC\uBA67', '\uC790\uC804\uAC70', '\u30D8\u30EB\u30E1\u30C3\u30C8', '\u5934\u76D4'],
+    terms: ['helmet', 'bicycle', 'bike', 'bike helmet', 'casque', 'velo', 'casco', 'bicicleta', 'capacete', 'fahrradhelm', '\uD5EC\uBA67', '\uC790\uC804\uAC70', '\u30D8\u30EB\u30E1\u30C3\u30C8', '\u5934\u76D4'],
     aliases: ['helmet', 'bicycle', 'bike', 'bike helmet']
   },
   {
@@ -432,6 +491,8 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
       'best before',
       'use by',
       'expiry',
+      'validade',
+      'vencimento',
       'recall number',
       'numero de lot',
       'codigo de barras',

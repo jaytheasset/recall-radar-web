@@ -223,6 +223,27 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     expectedAliases: ['toy']
   },
   {
+    id: 'pt-milk',
+    group: 'Portuguese',
+    query: 'leite',
+    minMatches: 1,
+    expectedAliases: ['milk', 'dairy']
+  },
+  {
+    id: 'pt-baby-sleeper',
+    group: 'Portuguese',
+    query: 'berco',
+    minMatches: 1,
+    expectedAliases: ['crib', 'baby sleeper']
+  },
+  {
+    id: 'pt-smoke-detector',
+    group: 'Portuguese',
+    query: 'detector de fumaca',
+    minMatches: 1,
+    expectedAliases: ['smoke detector', 'smoke alarm']
+  },
+  {
     id: 'en-power-bank',
     group: 'English controls',
     query: 'power bank',
