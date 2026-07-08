@@ -153,6 +153,14 @@ export function expandSearchQuery(query: string): string[] {
   return [...expanded];
 }
 
+function categorySearchLabel(category: string, categoryLabel: string): string {
+  if (category === 'food-allergy' || normalizeSearchText(categoryLabel) === 'food allergy') {
+    return 'food grocery packaged food';
+  }
+
+  return `${category} ${categoryLabel}`;
+}
+
 export function buildRecallSearchText(record: RecallSearchTextRecord): string {
   return [
     record.id,
@@ -163,9 +171,8 @@ export function buildRecallSearchText(record: RecallSearchTextRecord): string {
     record.primaryBrand,
     record.primaryBrandRawName,
     record.primaryProductName,
-    record.category,
     record.rawCategory,
-    record.categoryLabel,
+    categorySearchLabel(record.category, record.categoryLabel),
     record.taxonomyProductFamily ?? '',
     record.taxonomyProductFamilyLabel ?? '',
     record.taxonomyProductType ?? '',
