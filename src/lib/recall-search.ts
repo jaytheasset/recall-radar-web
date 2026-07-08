@@ -162,6 +162,19 @@ function isUsefulExpandedTerm(term: string): boolean {
   return term.length > 2 || term.includes(' ');
 }
 
+function hasExpandedTermMatch(term: string, text: string): boolean {
+  const normalizedTerm = normalize(term);
+  if (!isUsefulExpandedTerm(normalizedTerm)) {
+    return false;
+  }
+
+  if (text.includes(normalizedTerm)) {
+    return true;
+  }
+
+  return !normalizedTerm.includes(' ') && tokenMatchCount(tokensFor(normalizedTerm), text) > 0;
+}
+
 function hasTextMatch(
   normalizedQuery: string,
   queryTokens: string[],
@@ -176,9 +189,7 @@ function hasTextMatch(
   return (
     text.includes(normalizedQuery) ||
     tokenMatchCount(queryTokens, text) > 0 ||
-    expandedTerms.some(
-      (term) => isUsefulExpandedTerm(term) && (text.includes(term) || tokenMatchCount(tokensFor(term), text) > 0)
-    )
+    expandedTerms.some((term) => hasExpandedTermMatch(term, text))
   );
 }
 
@@ -560,7 +571,7 @@ export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchTy
   if (
     hasMeaningfulTokenMatch(queryTokens, possibleText) ||
     hasMeaningfulTokenMatch(expandedTokens, possibleText) ||
-    expandedTerms.some((term) => isUsefulExpandedTerm(term) && possibleText.includes(term))
+    expandedTerms.some((term) => hasExpandedTermMatch(term, possibleText))
   ) {
     return 'possible';
   }
@@ -576,7 +587,7 @@ export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchTy
   if (
     hasMeaningfulTokenMatch(queryTokens, relatedText) ||
     hasMeaningfulTokenMatch(expandedTokens, relatedText) ||
-    expandedTerms.some((term) => isUsefulExpandedTerm(term) && relatedText.includes(term))
+    expandedTerms.some((term) => hasExpandedTermMatch(term, relatedText))
   ) {
     return 'related';
   }
