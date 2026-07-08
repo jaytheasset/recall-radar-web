@@ -35,8 +35,16 @@ const enMessages = {
   'common.officialNotice': 'Official notice',
   'common.verifyOfficialNotice': 'Verify with the official notice',
   'common.clear': 'Clear',
+  'common.remove': 'Remove',
   'common.countrySource': 'Country / source',
   'common.productFamily': 'Product family',
+  'common.product': 'Product',
+  'common.brandCompany': 'Brand/company',
+  'common.classification': 'Classification',
+  'common.matchReason': 'Match reason',
+  'common.allCategories': 'All categories',
+  'common.allMarkets': 'All markets',
+  'common.general': 'General',
   'common.recallNotices': 'Recall notices',
   'common.searchThisSource': 'Search this source',
   'common.searchThisFamily': 'Search this family',
@@ -46,6 +54,8 @@ const enMessages = {
   'common.examples': 'Examples:',
   'common.recallsCount': '{count} recalls',
   'common.recallNoticesCount': '{count} recall notices',
+  'common.savedItemsCount': '{count} saved items',
+  'common.viewRecallFor': 'View recall for {title}',
   'home.hero.line1': 'Stay informed.',
   'home.hero.line2': 'Shop and live with confidence.',
   'home.lead': 'Search official recall notices from trusted sources around the world.',
@@ -77,9 +87,42 @@ const enMessages = {
   'checker.sort': 'Sort',
   'checker.warning': 'Results are possible matches. Always check the official notice.',
   'checker.browseInstead': 'Browse instead:',
+  'checker.narrowResults': 'Narrow results',
+  'checker.productBrand': 'Product / brand',
+  'checker.whyShown': 'Why shown',
+  'checker.notListedInNotice': 'Not listed in the recall notice.',
+  'checker.groupStrongMatches': 'Strong matches',
+  'checker.groupPossibleMatches': 'Possible matches',
+  'checker.groupRelatedNotices': 'Related notices',
+  'checker.groupMatchingRecallNotices': 'Matching recall notices',
+  'checker.groupSortedRecallResults': 'Sorted recall results',
+  'checker.filteredNotices': 'Filtered notices',
+  'checker.allCountriesSources': 'All countries and sources',
+  'checker.allIssues': 'all issues',
+  'checker.allTime': 'all time',
+  'checker.lastDays': 'last {days} days',
+  'checker.bestMatch': 'best match',
+  'checker.newestFirst': 'newest first',
+  'checker.oldestFirst': 'oldest first',
+  'checker.showingFor': 'Showing recall notices for {filters}.',
+  'checker.possibleMatchesFor': 'Possible recall matches for "{query}".',
+  'checker.saveSearchMissing': 'Enter a search term before saving it in this browser.',
+  'checker.saveSearchSaved': 'Saved "{query}" in this browser.',
   'checker.noClearMatch': 'No clear match found',
   'checker.noResultSafety':
     'We did not find a clear match in the recall notices. This does not mean the product is safe or recall-free. Try searching by brand name, model number, UPC/barcode, lot code, ingredient, allergen, or product type.',
+  'checker.suggestionBrand': 'Brand or company name',
+  'checker.suggestionModel': 'Model number or item number',
+  'checker.suggestionBarcode': 'Barcode, UPC, GTIN, or EAN when listed',
+  'checker.suggestionLot': 'Lot, batch, or date mark',
+  'checker.suggestionPack': 'Pack size, certification number, or recall number',
+  'checker.suggestionIngredient': 'Ingredient or allergen',
+  'checker.suggestionProductType': 'Product type or family',
+  'search.matchStrong': 'Strong match',
+  'search.matchPossible': 'Possible match',
+  'search.matchRelated': 'Related notice',
+  'search.matchNone': 'No clear match',
+  'search.matchedByBrand': 'Matched by brand/company',
   'disclaimer.possibleMatches':
     'Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.',
   'directory.productTypesEyebrow': 'Product types',
@@ -103,6 +146,8 @@ const enMessages = {
   'watchlist.savedPreviewCopy': 'Cards are matched in this browser from recall notices.',
   'watchlist.saveAnotherSearch': 'Save another search',
   'watchlist.empty': 'No saved searches or brands yet. Use Product Recalls or a brand page to add saved items.',
+  'watchlist.brandPagePath': 'Brand page: {path}',
+  'watchlist.noEmailStored': 'No email is sent or stored. The value stays only in this browser field.',
   'detail.howToVerify': 'How to verify',
   'detail.recallNotice': 'Recall notice',
   'detail.productImages': 'Product images',
@@ -542,7 +587,7 @@ export function getMessage(key: MessageKey, locale: SupportedLocale = DEFAULT_LO
   return messages[locale]?.[key] ?? messages[DEFAULT_LOCALE][key];
 }
 
-function isSupportedLocale(value: string | null | undefined): value is SupportedLocale {
+export function isSupportedLocale(value: string | null | undefined): value is SupportedLocale {
   return Boolean(value && (SUPPORTED_LOCALES as readonly string[]).includes(value));
 }
 
@@ -562,6 +607,36 @@ function getInitialLocale(): SupportedLocale {
 
 function formatMessage(template: string, values: Record<string, string>): string {
   return template.replace(/\{([a-zA-Z0-9_]+)\}/g, (_, key: string) => values[key] ?? '');
+}
+
+export function getCurrentUiLanguage(): SupportedLocale {
+  if (typeof window === 'undefined') {
+    return DEFAULT_LOCALE;
+  }
+
+  const storedLocale = window.localStorage.getItem(UI_LANGUAGE_STORAGE_KEY);
+  if (isSupportedLocale(storedLocale)) {
+    return storedLocale;
+  }
+
+  const documentLocale = document.documentElement.lang.split('-')[0];
+  if (isSupportedLocale(documentLocale)) {
+    return documentLocale;
+  }
+
+  const browserLocale = window.navigator.language.split('-')[0];
+  return isSupportedLocale(browserLocale) ? browserLocale : DEFAULT_LOCALE;
+}
+
+export function formatUiMessage(
+  key: MessageKey,
+  values: Record<string, string | number>,
+  locale: SupportedLocale = getCurrentUiLanguage()
+): string {
+  return formatMessage(
+    getMessage(key, locale),
+    Object.fromEntries(Object.entries(values).map(([valueKey, value]) => [valueKey, String(value)]))
+  );
 }
 
 function readTemplateValues(element: HTMLElement): Record<string, string> {

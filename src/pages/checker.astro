@@ -427,8 +427,7 @@ const sourceCardDetails = {
 
     <script id="recall-search-data" type="application/json" is:inline set:html={checkerRecallsJson}></script>
     <script>
-      import { MATCH_LABELS, SEARCH_RESULTS_DISCLAIMER, searchRecalls } from '../lib/recall-search';
-      import { getNoResultIdentifierHint } from '../lib/identifier-guidance';
+      import { SEARCH_RESULTS_DISCLAIMER, searchRecalls, type RecallMatchType } from '../lib/recall-search';
       import {
         TAXONOMY_REVIEW_LABEL,
         TAXONOMY_REVIEW_NOTICE,
@@ -445,6 +444,7 @@ const sourceCardDetails = {
       import { initImageFallbacks } from '../lib/image-fallback';
       import { initProgressiveCardImages } from '../lib/progressive-detail-image';
       import { upsertWatchlistSearch, type WatchlistCategoryFilter } from '../lib/watchlist';
+      import { formatUiMessage, getCurrentUiLanguage, getMessage, type MessageKey } from '../lib/i18n';
 
       initProgressiveCardImages();
       initImageFallbacks();
@@ -540,10 +540,10 @@ const sourceCardDetails = {
         : ['all'];
       const sortValues: SortFilter[] = ['best', 'newest', 'oldest'];
       const dateValues: DateFilter[] = ['all', '30', '90'];
-      const groupTitles = {
-        exact: 'Strong matches',
-        possible: 'Possible matches',
-        related: 'Related notices'
+      const groupTitleKeys: Record<SearchItem['match'], MessageKey> = {
+        exact: 'checker.groupStrongMatches',
+        possible: 'checker.groupPossibleMatches',
+        related: 'checker.groupRelatedNotices'
       };
       const categoryFilterLabels: Record<string, string> = {
         all: 'all product types',
@@ -570,6 +570,25 @@ const sourceCardDetails = {
 
       function isOneOf<T extends string>(value: string | null, values: readonly T[], fallback: T): T {
         return value && values.includes(value as T) ? (value as T) : fallback;
+      }
+
+      function uiMessage(key: MessageKey): string {
+        return getMessage(key, getCurrentUiLanguage());
+      }
+
+      function uiTemplate(key: MessageKey, values: Record<string, string | number>): string {
+        return formatUiMessage(key, values, getCurrentUiLanguage());
+      }
+
+      function matchLabelFor(match: RecallMatchType): string {
+        const matchKeys: Record<RecallMatchType, MessageKey> = {
+          exact: 'search.matchStrong',
+          possible: 'search.matchPossible',
+          related: 'search.matchRelated',
+          none: 'search.matchNone'
+        };
+
+        return uiMessage(matchKeys[match]);
       }
 
       function filterRecalls(state: SearchState): typeof siteRecalls {
@@ -786,7 +805,7 @@ const sourceCardDetails = {
 
         const label = document.createElement('span');
         label.className = 'refine-label';
-        label.textContent = 'Narrow results';
+        label.textContent = uiMessage('checker.narrowResults');
         refine.replaceChildren(label, ...chips);
         refine.hidden = false;
       }
@@ -795,7 +814,7 @@ const sourceCardDetails = {
         const link = document.createElement('a');
         link.className = 'image-shell';
         link.href = recall.detailPath;
-        link.setAttribute('aria-label', `View recall for ${recall.title}`);
+        link.setAttribute('aria-label', uiTemplate('common.viewRecallFor', { title: recall.title }));
         const fallbackLabel = getRecallSourcePlaceholder(recall.source);
 
         const imageUrl = recall.cardImageUrl || recall.primaryImageUrl;
@@ -836,7 +855,7 @@ const sourceCardDetails = {
       }
 
       function reasonTextFor(recall: SearchItem['recall']): string {
-        return cleanRecallDisplayText(recall.hazard || recall.reason || 'Not listed in the recall notice.');
+        return cleanRecallDisplayText(recall.hazard || recall.reason || uiMessage('checker.notListedInNotice'));
       }
 
       function actionTextFor(recall: SearchItem['recall']): string {
@@ -950,7 +969,7 @@ const sourceCardDetails = {
         meta.className = 'meta-row result-card-badges result-card-topline';
 
         if (match) {
-          meta.append(createTag(MATCH_LABELS[match], `match-badge match-${match}`));
+          meta.append(createTag(matchLabelFor(match), `match-badge match-${match}`));
         }
 
         if (priorityLabel) {
@@ -982,13 +1001,13 @@ const sourceCardDetails = {
         detailLink.textContent = recall.title;
         heading.append(detailLink);
 
-        const productSummary = createCardLine('Product / brand', productBrandSummaryFor(recall), 'result-card-line result-card-product-summary');
+        const productSummary = createCardLine(uiMessage('checker.productBrand'), productBrandSummaryFor(recall), 'result-card-line result-card-product-summary');
         const taxonomy = createTaxonomyChips(recall);
         const reason = createCardLine(reasonLabelFor(recall), shortText(reasonTextFor(recall), 180), 'result-card-line result-card-reason');
         const action = createCardLine(getRecallActionLabel(recall.source), shortText(actionTextFor(recall), 170), 'result-card-line result-card-action');
         const taxonomyReviewNote = createTaxonomyReviewNote(recall);
         const matchReason = createCardLine(
-          'Why shown',
+          uiMessage('checker.whyShown'),
           item.evidenceLabels.length ? item.evidenceLabels.join(' / ') : item.matchReasonLabel,
           'result-card-line match-reason-line'
         );
@@ -1002,7 +1021,7 @@ const sourceCardDetails = {
         const details = document.createElement('a');
         details.className = 'btn btn-primary';
         details.href = recall.detailPath;
-        details.textContent = 'View recall';
+        details.textContent = uiMessage('common.viewRecall');
 
         links.append(details);
         body.append(meta, heading, productSummary);
@@ -1034,7 +1053,7 @@ const sourceCardDetails = {
         detailLink.textContent = recall.title;
         heading.append(detailLink);
 
-        const productSummary = createCardLine('Product / brand', productBrandSummaryFor(recall), 'result-card-line result-card-product-summary');
+        const productSummary = createCardLine(uiMessage('checker.productBrand'), productBrandSummaryFor(recall), 'result-card-line result-card-product-summary');
         const taxonomy = createTaxonomyChips(recall);
         const reason = createCardLine(reasonLabelFor(recall), shortText(reasonTextFor(recall), 180), 'result-card-line result-card-reason');
         const action = createCardLine(getRecallActionLabel(recall.source), shortText(actionTextFor(recall), 170), 'result-card-line result-card-action');
@@ -1046,7 +1065,7 @@ const sourceCardDetails = {
         const details = document.createElement('a');
         details.className = 'btn btn-primary';
         details.href = recall.detailPath;
-        details.textContent = 'View recall';
+        details.textContent = uiMessage('common.viewRecall');
 
         links.append(details);
         body.append(meta, heading, productSummary);
@@ -1068,21 +1087,21 @@ const sourceCardDetails = {
         emptyState.className = 'no-result-state';
 
         const heading = document.createElement('h3');
-        heading.textContent = 'No clear match found';
+        heading.textContent = uiMessage('checker.noClearMatch');
 
         const body = document.createElement('p');
-        body.textContent = getNoResultIdentifierHint();
+        body.textContent = uiMessage('checker.noResultSafety');
 
         const suggestionList = document.createElement('ul');
         suggestionList.className = 'no-result-suggestions';
         [
-          'Brand or company name',
-          'Model number or item number',
-          'Barcode, UPC, GTIN, or EAN when listed',
-          'Lot, batch, or date mark',
-          'Pack size, certification number, or recall number',
-          'Ingredient or allergen',
-          'Product type or family'
+          uiMessage('checker.suggestionBrand'),
+          uiMessage('checker.suggestionModel'),
+          uiMessage('checker.suggestionBarcode'),
+          uiMessage('checker.suggestionLot'),
+          uiMessage('checker.suggestionPack'),
+          uiMessage('checker.suggestionIngredient'),
+          uiMessage('checker.suggestionProductType')
         ].forEach((text) => {
           const item = document.createElement('li');
           item.textContent = text;
@@ -1147,11 +1166,11 @@ const sourceCardDetails = {
 
       function describeFilters(state: SearchState): string {
         const parts = [
-          state.source === 'all' ? 'All countries and sources' : getRecallSourceLabel(state.source),
+          state.source === 'all' ? uiMessage('checker.allCountriesSources') : getRecallSourceLabel(state.source),
           categoryFilterLabels[state.category],
-          hazardFilterLabels[state.hazard] ?? 'all issues',
-          state.date === 'all' ? 'all time' : `last ${state.date} days`,
-          state.sort === 'best' ? 'best match' : state.sort === 'newest' ? 'newest first' : 'oldest first'
+          hazardFilterLabels[state.hazard] ?? uiMessage('checker.allIssues'),
+          state.date === 'all' ? uiMessage('checker.allTime') : uiTemplate('checker.lastDays', { days: state.date }),
+          state.sort === 'best' ? uiMessage('checker.bestMatch') : state.sort === 'newest' ? uiMessage('checker.newestFirst') : uiMessage('checker.oldestFirst')
         ];
 
         return parts.join(' / ');
@@ -1180,18 +1199,16 @@ const sourceCardDetails = {
             state.source !== 'all' || state.category !== 'all' || state.hazard !== 'all' || state.date !== 'all';
 
           panel.dataset.match = 'none';
-          matchLabel.textContent = shouldShowBrowseResults ? 'Filtered notices' : 'Recall notices';
-          countLabel.textContent = `${browseRecalls.length} recall notice${
-            browseRecalls.length === 1 ? '' : 's'
-          }`;
+          matchLabel.textContent = shouldShowBrowseResults ? uiMessage('checker.filteredNotices') : uiMessage('common.recallNotices');
+          countLabel.textContent = uiTemplate('common.recallNoticesCount', { count: browseRecalls.length });
           summary.textContent =
             shouldShowBrowseResults
-              ? `Showing recall notices for ${describeFilters(state)}.`
-              : 'Search by product, brand, model, barcode, lot, date, ingredient, or recall number.';
+              ? uiTemplate('checker.showingFor', { filters: describeFilters(state) })
+              : uiMessage('checker.lead');
           list.replaceChildren(
             ...(shouldShowBrowseResults
               ? browseRecalls.length
-                ? [createBrowseGroup('Matching recall notices', browseRecalls)]
+                ? [createBrowseGroup(uiMessage('checker.groupMatchingRecallNotices'), browseRecalls)]
                 : [createNoResultState()]
               : [])
           );
@@ -1202,10 +1219,10 @@ const sourceCardDetails = {
         const result = searchRecalls(state.query, filteredRecalls);
         const sortedItems = sortItems(result.items, state.sort);
         panel.dataset.match = result.match;
-        matchLabel.textContent = MATCH_LABELS[result.match];
-        countLabel.textContent = `${sortedItems.length} recall notice${sortedItems.length === 1 ? '' : 's'}`;
+        matchLabel.textContent = matchLabelFor(result.match);
+        countLabel.textContent = uiTemplate('common.recallNoticesCount', { count: sortedItems.length });
         summary.textContent =
-          result.match === 'none' ? 'No clear match found.' : `Possible recall matches for "${state.query}".`;
+          result.match === 'none' ? `${uiMessage('checker.noClearMatch')}.` : uiTemplate('checker.possibleMatchesFor', { query: state.query });
 
         if (result.match === 'none') {
           if (refine) {
@@ -1226,11 +1243,11 @@ const sourceCardDetails = {
               items: sortedItems.filter((item) => item.match === match)
             }))
             .filter((group) => group.items.length > 0)
-            .map((group) => createResultGroup(groupTitles[group.match], group.items));
+            .map((group) => createResultGroup(uiMessage(groupTitleKeys[group.match]), group.items));
           list.replaceChildren(...groupedResults);
         } else {
           list.replaceChildren(
-            ...(sortedItems.length ? [createResultGroup('Sorted recall results', sortedItems)] : [])
+            ...(sortedItems.length ? [createResultGroup(uiMessage('checker.groupSortedRecallResults'), sortedItems)] : [])
           );
         }
         initProgressiveCardImages();
@@ -1250,7 +1267,7 @@ const sourceCardDetails = {
 
         saveSearchStatus.hidden = false;
         if (!state.query) {
-          saveSearchStatus.textContent = 'Enter a search term before saving it in this browser.';
+          saveSearchStatus.textContent = uiMessage('checker.saveSearchMissing');
           return;
         }
 
@@ -1259,7 +1276,7 @@ const sourceCardDetails = {
           source: state.source,
           category: state.category
         });
-        saveSearchStatus.textContent = `Saved "${item.query}" in this browser.`;
+        saveSearchStatus.textContent = uiTemplate('checker.saveSearchSaved', { query: item.query });
       }
 
       form?.addEventListener('submit', (event) => {
@@ -1271,6 +1288,14 @@ const sourceCardDetails = {
         filter?.addEventListener('change', updateSearch);
       });
       saveSearchButton?.addEventListener('click', saveCurrentSearch);
+      document.querySelectorAll<HTMLSelectElement>('[data-ui-language-select]').forEach((select) => {
+        select.addEventListener('change', () => {
+          const state = readState();
+          if (hasActiveState(state) || !panel?.hidden) {
+            renderSearch(state);
+          }
+        });
+      });
 
       const initialState = writeStateFromUrl();
       if (
