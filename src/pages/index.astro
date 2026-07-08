@@ -164,10 +164,10 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
         <div class="home-hero-intro">
           <div class="home-hero-copy">
             <h1>
-              <span>Stay informed.</span>
-              <span>Shop and live with confidence.</span>
+              <span data-i18n="home.hero.line1">Stay informed.</span>
+              <span data-i18n="home.hero.line2">Shop and live with confidence.</span>
             </h1>
-            <p class="lead">
+            <p class="lead" data-i18n="home.lead">
               Search official recall notices from trusted sources around the world.
             </p>
           </div>
@@ -188,9 +188,9 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
           </div>
         </div>
 
-        <div class="home-search-panel" aria-label="Search product recalls">
+        <div class="home-search-panel" aria-label="Search product recalls" data-i18n-aria-label="home.searchButton">
           <form class="home-search-module" action="/checker" method="get">
-            <label class="sr-only" for="home-recall-search">Brand, product, model, barcode, lot, date, or recall number</label>
+            <label class="sr-only" for="home-recall-search" data-i18n="home.searchLabel">Brand, product, model, barcode, lot, date, or recall number</label>
             <span class="home-search-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" focusable="false">
                 <circle cx="11" cy="11" r="7" />
@@ -202,11 +202,12 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
               name="q"
               type="search"
               placeholder="Search by brand, product, model, barcode, lot code, or recall number"
+              data-i18n-placeholder="home.searchPlaceholder"
             />
-            <button class="btn btn-primary" type="submit">Search recalls</button>
+            <button class="btn btn-primary" type="submit" data-i18n="home.searchButton">Search recalls</button>
           </form>
           <div class="home-example-links" aria-label="Example searches">
-            <span>Try:</span>
+            <span data-i18n="common.try">Try:</span>
             <a href="/checker?q=baby%20sleeper">baby sleeper</a>
             <a href="/checker?q=power%20bank">power bank</a>
             <a href="/checker?q=pistachio&source=FDA">pistachio</a>
@@ -219,16 +220,22 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
                 <path d="M6.4 10.8 3.5 7.9l-1 1 3.9 3.9 7.1-8.5-1.1-.9-6 7.4Z" />
               </svg>
             </span>
-            Official recalls. Trusted sources. Global coverage.
+            <span data-i18n="home.trust">Official recalls. Trusted sources. Global coverage.</span>
           </p>
-          <p class="data-count-line">{countLine}</p>
+          <p
+            class="data-count-line"
+            data-i18n-template="home.countLine"
+            data-i18n-values={JSON.stringify({ total: processedLocalRecordCount, sources: activeSourceCount })}
+          >
+            {countLine}
+          </p>
         </div>
       </section>
 
       <section id="browse-recalls" class="section home-category-section">
         <div class="section-header">
           <div>
-            <h2>Explore by product type</h2>
+            <h2 data-i18n="home.productTypesHeading">Explore by product type</h2>
           </div>
           <button
             class="section-link home-expand-button"
@@ -236,7 +243,7 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
             data-home-expand="product-types"
             aria-expanded="false"
           >
-            View all product types <span aria-hidden="true">&rsaquo;</span>
+            <span data-i18n="common.viewAllProductTypes">View all product types</span> <span aria-hidden="true">&rsaquo;</span>
           </button>
         </div>
         <div class="home-carousel" data-home-carousel>
@@ -260,7 +267,7 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
                   </span>
                   <span class="category-card-body">
                     <h3>{type.label}</h3>
-                    <span class="home-card-link">View recalls <span aria-hidden="true">&rarr;</span></span>
+                    <span class="home-card-link"><span data-i18n="common.viewRecalls">View recalls</span> <span aria-hidden="true">&rarr;</span></span>
                   </span>
                 </a>
               ))}
@@ -277,9 +284,9 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
       <section id="official-sources" class="section home-source-section">
         <div class="section-header">
           <div>
-            <h2>Browse by source</h2>
+            <h2 data-i18n="home.sourcesHeading">Browse by source</h2>
           </div>
-          <a class="section-link" href="/countries">View all sources <span aria-hidden="true">&rsaquo;</span></a>
+          <a class="section-link" href="/countries"><span data-i18n="common.viewAllSources">View all sources</span> <span aria-hidden="true">&rsaquo;</span></a>
         </div>
         <div class="home-carousel" data-home-carousel>
           <button class="home-carousel-button home-carousel-button-prev" type="button" aria-label="Scroll sources left" data-home-carousel-prev>
@@ -308,7 +315,13 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
                     <h3>{card.title}</h3>
                     <span class="source-card-kicker">{card.agencyLabel}</span>
                   </span>
-                  <span class="source-card-count">{page.count} recalls</span>
+                  <span
+                    class="source-card-count"
+                    data-i18n-template="common.recallsCount"
+                    data-i18n-values={JSON.stringify({ count: page.count })}
+                  >
+                    {page.count} recalls
+                  </span>
                 </a>
                 );
               })}
@@ -325,9 +338,9 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
       <section class="section home-latest-section">
         <div class="section-header">
           <div>
-            <h2>Latest recalls</h2>
+            <h2 data-i18n="home.latestHeading">Latest recalls</h2>
           </div>
-          <a class="section-link" href="/checker">View all recalls <span aria-hidden="true">&rsaquo;</span></a>
+          <a class="section-link" href="/checker"><span data-i18n="common.viewAllRecalls">View all recalls</span> <span aria-hidden="true">&rsaquo;</span></a>
         </div>
         <div class="product-grid home-latest-grid">
           {recentRecalls.map((recall, index) => {
@@ -370,20 +383,21 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
       <section class="section home-watchlist-section">
         <div class="signup-panel compact-cta home-watchlist-cta">
           <div>
-            <h2>Keep an eye on products you care about</h2>
-            <p>Save searches in this browser only. No account, email, or alerts yet.</p>
+            <h2 data-i18n="home.watchlistHeading">Keep an eye on products you care about</h2>
+            <p data-i18n="home.watchlistCopy">Save searches in this browser only. No account, email, or alerts yet.</p>
           </div>
           <div class="link-row">
-            <a class="btn btn-primary" href="/watchlist">Open saved searches</a>
+            <a class="btn btn-primary" href="/watchlist" data-i18n="home.openSavedSearches">Open saved searches</a>
           </div>
         </div>
       </section>
     </main>
 
     <footer class="page-footer">
-      Recall Radar helps you find possible recalls. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
+      <span data-i18n="footer.disclaimer">Recall Radar helps you find possible recalls. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.</span>
     </footer>
     <script>
+      import { applyUiLanguage, DEFAULT_LOCALE, SUPPORTED_LOCALES, type SupportedLocale } from '../lib/i18n';
       import { initImageFallbacks } from '../lib/image-fallback';
       import { initProgressiveCardImages } from '../lib/progressive-detail-image';
 
@@ -454,6 +468,7 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
       if (productTypeSection && productTypeButton instanceof HTMLButtonElement) {
         productTypeButton.addEventListener('click', () => {
           const willExpand = productTypeButton.getAttribute('aria-expanded') !== 'true';
+          const label = productTypeButton.querySelector('[data-i18n]');
 
           extraProductTypeCards.forEach((card) => {
             if (card instanceof HTMLElement) {
@@ -464,9 +479,14 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
           productTypeSection.classList.toggle('is-expanded', willExpand);
           productTypeButton.setAttribute('aria-expanded', String(willExpand));
           productTypeSection.querySelector('[data-home-carousel-viewport]')?.scrollTo({ left: 0, behavior: 'smooth' });
-          productTypeButton.innerHTML = willExpand
-            ? 'Show fewer product types <span aria-hidden="true">&rsaquo;</span>'
-            : 'View all product types <span aria-hidden="true">&rsaquo;</span>';
+          label?.setAttribute(
+            'data-i18n',
+            willExpand ? 'common.showFewerProductTypes' : 'common.viewAllProductTypes'
+          );
+          const currentLocale = (SUPPORTED_LOCALES as readonly string[]).includes(document.documentElement.lang)
+            ? document.documentElement.lang
+            : DEFAULT_LOCALE;
+          applyUiLanguage(currentLocale as SupportedLocale);
         });
       }
     </script>

@@ -63,9 +63,9 @@ const productTypes = productFamilyRoutes.map((route) => ({
 
     <main class="page-shell directory-page">
       <section class="directory-hero">
-        <p class="eyebrow">Product types</p>
-        <h1>Find recalls by product type</h1>
-        <p class="lead">Explore official recall notices by the kind of product involved.</p>
+        <p class="eyebrow" data-i18n="directory.productTypesEyebrow">Product types</p>
+        <h1 data-i18n="directory.productTypesTitle">Find recalls by product type</h1>
+        <p class="lead" data-i18n="directory.productTypesLead">Explore official recall notices by the kind of product involved.</p>
       </section>
 
       <section class="section">
@@ -79,8 +79,14 @@ const productTypes = productFamilyRoutes.map((route) => ({
               </span>
               <span class="category-card-body">
                 <h3>{type.label}</h3>
-                <span class="category-count">{type.count} recalls</span>
-                <span class="home-card-link">View recalls <span aria-hidden="true">&rarr;</span></span>
+                <span
+                  class="category-count"
+                  data-i18n-template="common.recallsCount"
+                  data-i18n-values={JSON.stringify({ count: type.count })}
+                >
+                  {type.count} recalls
+                </span>
+                <span class="home-card-link"><span data-i18n="common.viewRecalls">View recalls</span> <span aria-hidden="true">&rarr;</span></span>
               </span>
             </a>
           ))}
@@ -89,7 +95,7 @@ const productTypes = productFamilyRoutes.map((route) => ({
     </main>
 
     <footer class="page-footer">
-      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
+      <span data-i18n="footer.disclaimer">Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.</span>
     </footer>
   </body>
 </html>

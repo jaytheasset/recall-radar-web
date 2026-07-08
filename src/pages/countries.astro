@@ -75,9 +75,9 @@ const sourceCardDetails = {
 
     <main class="page-shell directory-page">
       <section class="directory-hero">
-        <p class="eyebrow">Countries</p>
-        <h1>Browse recalls by country</h1>
-        <p class="lead">Choose a country or source to review official recall notices searchable in Recall Radar.</p>
+        <p class="eyebrow" data-i18n="directory.countriesEyebrow">Countries</p>
+        <h1 data-i18n="directory.countriesTitle">Browse recalls by country or source</h1>
+        <p class="lead" data-i18n="directory.countriesLead">Choose a country or source to review official recall notices searchable in Recall Radar.</p>
       </section>
 
       <section class="section">
@@ -101,7 +101,13 @@ const sourceCardDetails = {
                   <h3>{card.title}</h3>
                   <span class="source-card-kicker">{card.agencyLabel}</span>
                 </span>
-                <span class="source-card-count">{page.count} recalls</span>
+                <span
+                  class="source-card-count"
+                  data-i18n-template="common.recallsCount"
+                  data-i18n-values={JSON.stringify({ count: page.count })}
+                >
+                  {page.count} recalls
+                </span>
               </a>
             );
           })}
@@ -110,7 +116,7 @@ const sourceCardDetails = {
     </main>
 
     <footer class="page-footer">
-      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
+      <span data-i18n="footer.disclaimer">Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.</span>
     </footer>
   </body>
 </html>

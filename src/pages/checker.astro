@@ -249,54 +249,61 @@ const sourceCardDetails = {
     <main class="page-shell checker-page">
       <section class="section">
         <div class="checker-hero">
-          <h1>Search recalls</h1>
-          <p class="lead">Search by product, brand, model, barcode, lot, date, ingredient, or recall number.</p>
-          <p class="checker-count-line">{checkerCountLine}</p>
+          <h1 data-i18n="checker.title">Search recalls</h1>
+          <p class="lead" data-i18n="checker.lead">Search by product, brand, model, barcode, lot, date, ingredient, or recall number.</p>
+          <p
+            class="checker-count-line"
+            data-i18n-template="checker.countLine"
+            data-i18n-values={JSON.stringify({ total: processedLocalRecordCount, sources: activeSourceCount })}
+          >
+            {checkerCountLine}
+          </p>
         </div>
 
         <section class="search-board" aria-labelledby="checker-form-title">
-          <h2 id="checker-form-title" class="sr-only">Recall search</h2>
+          <h2 id="checker-form-title" class="sr-only" data-i18n="checker.searchTitle">Recall search</h2>
           <form id="recall-search-form" class="search-form checker-search-form">
             <label class="search-query-field">
-              <span class="sr-only">Search term</span>
+              <span class="sr-only" data-i18n="checker.searchTerm">Search term</span>
               <input
                 id="recall-query"
                 name="q"
                 type="search"
                 placeholder={IDENTIFIER_SEARCH_PLACEHOLDER}
+                data-i18n-placeholder="checker.searchPlaceholder"
                 autocomplete="off"
               />
             </label>
-            <button class="btn btn-primary" type="submit">Search</button>
+            <button class="btn btn-primary" type="submit" data-i18n="checker.searchButton">Search</button>
             <details id="advanced-filters" class="advanced-filters">
-              <summary>More filters</summary>
+              <summary data-i18n="checker.moreFilters">More filters</summary>
               <div class="filter-grid" aria-label="Recall search filters">
                 <label>
-                  Country or source
+                  <span data-i18n="checker.countrySource">Country or source</span>
                   <select id="source-filter" name="source">
                     {sourceOptions.map((option) => <option value={option.value}>{option.label}</option>)}
                   </select>
                 </label>
                 <label>
-                  Product type
+                  <span data-i18n="checker.productType">Product type</span>
                   <select id="category-filter" name="category">
                     {categoryOptions.map((option) => <option value={option.value}>{option.label}</option>)}
                   </select>
                 </label>
                 <label>
-                  Issue or hazard
+                  <span data-i18n="checker.issueHazard">Issue or hazard</span>
                   <select id="hazard-filter" name="hazard">
                     {hazardOptions.map((option) => <option value={option.value}>{option.label}</option>)}
                   </select>
                 </label>
                 <label>
-                  Date
+                  <span data-i18n="checker.date">Date</span>
                   <select id="date-filter" name="date">
                     {dateOptions.map((option) => <option value={option.value}>{option.label}</option>)}
                   </select>
                 </label>
                 <label>
-                  Sort
+                  <span data-i18n="checker.sort">Sort</span>
                   <select id="sort-filter" name="sort">
                     {sortOptions.map((option) => <option value={option.value}>{option.label}</option>)}
                   </select>
@@ -305,20 +312,20 @@ const sourceCardDetails = {
             </details>
           </form>
           <div class="example-searches" aria-label="Example searches">
-            <span>Examples:</span>
+            <span data-i18n="common.examples">Examples:</span>
             <a class="tag" href="/checker?q=baby%20sleeper">baby sleeper</a>
             <a class="tag" href="/checker?q=power%20bank">power bank</a>
             <a class="tag" href="/checker?q=pistachio">pistachio</a>
             <a class="tag" href="/checker?q=smoke%20detector">smoke detector</a>
           </div>
-          <p class="disclaimer-copy">
+          <p class="disclaimer-copy" data-i18n="checker.warning">
             Results are possible matches. Always check the official notice.
           </p>
           <p class="checker-browse-hint" hidden>
-            Browse instead:
-            <a href="/product-types">Product types</a>
+            <span data-i18n="checker.browseInstead">Browse instead:</span>
+            <a href="/product-types" data-i18n="nav.productTypes">Product types</a>
             <span aria-hidden="true">/</span>
-            <a href="/countries">Countries</a>
+            <a href="/countries" data-i18n="nav.countries">Countries</a>
           </p>
           <button id="save-search-watchlist" class="save-search-link" type="button" hidden>Save this search</button>
           <p id="save-search-status" class="form-note" hidden></p>
@@ -341,7 +348,7 @@ const sourceCardDetails = {
           <div>
             <h2>Product types</h2>
           </div>
-          <a class="section-link" href="/product-types">View all product types <span aria-hidden="true">&rsaquo;</span></a>
+          <a class="section-link" href="/product-types"><span data-i18n="common.viewAllProductTypes">View all product types</span> <span aria-hidden="true">&rsaquo;</span></a>
         </div>
         <div class="category-grid checker-browse-grid checker-product-type-grid">
           {productFamilyRoutes.map((category) => (
@@ -353,7 +360,7 @@ const sourceCardDetails = {
               </span>
               <span class="category-card-body">
                 <h3>{category.label}</h3>
-                <span class="home-card-link">View recalls <span aria-hidden="true">&rarr;</span></span>
+                <span class="home-card-link"><span data-i18n="common.viewRecalls">View recalls</span> <span aria-hidden="true">&rarr;</span></span>
               </span>
             </a>
           ))}
@@ -363,9 +370,9 @@ const sourceCardDetails = {
       <section class="section checker-browse-section">
         <div class="section-header">
           <div>
-            <h2>Countries</h2>
+            <h2 data-i18n="nav.countries">Countries</h2>
           </div>
-          <a class="section-link" href="/countries">View all sources <span aria-hidden="true">&rsaquo;</span></a>
+          <a class="section-link" href="/countries"><span data-i18n="common.viewAllSources">View all sources</span> <span aria-hidden="true">&rsaquo;</span></a>
         </div>
         <div class="category-grid checker-browse-grid checker-source-grid">
           {checkerSourcePages.map((page) => {
@@ -381,7 +388,13 @@ const sourceCardDetails = {
                   <h3>{card.title}</h3>
                   <span class="source-card-kicker">{card.agencyLabel}</span>
                 </span>
-                <span class="source-card-count">{page.count} recalls</span>
+                <span
+                  class="source-card-count"
+                  data-i18n-template="common.recallsCount"
+                  data-i18n-values={JSON.stringify({ count: page.count })}
+                >
+                  {page.count} recalls
+                </span>
               </a>
             );
           })}
@@ -409,7 +422,7 @@ const sourceCardDetails = {
     </main>
 
     <footer class="page-footer">
-      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
+      <span data-i18n="footer.disclaimer">Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.</span>
     </footer>
 
     <script id="recall-search-data" type="application/json" is:inline set:html={checkerRecallsJson}></script>

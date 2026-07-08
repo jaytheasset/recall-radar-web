@@ -1,9 +1,31 @@
+---
+import { localeOptions } from '../lib/i18n';
+---
+
 <header class="site-header">
   <a class="brand" href="/">Recall Radar</a>
   <nav class="site-nav" aria-label="Primary">
-    <a href="/checker">Product Recalls</a>
-    <a href="/product-types">Product Types</a>
-    <a href="/countries">Countries</a>
-    <a href="/watchlist">Watchlist</a>
+    <a href="/checker" data-i18n="nav.checker">Product Recalls</a>
+    <a href="/product-types" data-i18n="nav.productTypes">Product Types</a>
+    <a href="/countries" data-i18n="nav.countries">Countries</a>
+    <a href="/watchlist" data-i18n="nav.watchlist">Watchlist</a>
   </nav>
+  <div class="site-actions">
+    <label class="sr-only" for="ui-language-select" data-i18n="language.label">Language</label>
+    <select
+      id="ui-language-select"
+      class="language-select"
+      data-ui-language-select
+      data-i18n-aria-label="language.label"
+      aria-label="Language"
+    >
+      {localeOptions.map((locale) => <option value={locale.value}>{locale.label}</option>)}
+    </select>
+  </div>
 </header>
+
+<script>
+  import { initUiLanguageSwitcher } from '../lib/i18n';
+
+  initUiLanguageSwitcher();
+</script>
