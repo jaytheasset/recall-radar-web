@@ -78,8 +78,10 @@ type RankingNote = {
   expectedTerms: string[];
   topResultTermMatches: number;
   minimumTopResultTermMatches: number | null;
+  unexpectedTopMatchReasons: string[];
   topResults: string[];
   warnings: string[];
+  failures: string[];
 };
 
 const EXPECTED_SOURCE_COUNTS: Record<SourceId, number> = {
@@ -578,6 +580,10 @@ function runRankingNote(records: SiteRecall[], scenario: (typeof MULTILINGUAL_SE
     return expectedTerms.some((term) => itemSearchText.includes(term));
   }).length;
   const warnings: string[] = [];
+  const failures: string[] = [];
+  const unexpectedTopMatchReasons = topItems
+    .filter((item) => scenario.disallowedTopMatchReasons?.includes(item.matchReason))
+    .map((item) => `${item.matchReason}:${item.recall.id}`);
 
   if (!expectedTerms.some((term) => topSearchText.includes(term))) {
     warnings.push(`Top results do not visibly contain expected terms: ${scenario.rankingTerms.join(', ')}.`);
@@ -592,6 +598,12 @@ function runRankingNote(records: SiteRecall[], scenario: (typeof MULTILINGUAL_SE
     );
   }
 
+  if (unexpectedTopMatchReasons.length > 0) {
+    failures.push(
+      `Top results used disallowed match reasons: ${unexpectedTopMatchReasons.join(', ')}.`
+    );
+  }
+
   return {
     id: scenario.id,
     query: scenario.query,
@@ -599,8 +611,10 @@ function runRankingNote(records: SiteRecall[], scenario: (typeof MULTILINGUAL_SE
     expectedTerms: scenario.rankingTerms,
     topResultTermMatches,
     minimumTopResultTermMatches: scenario.minTopResultTermMatches ?? null,
+    unexpectedTopMatchReasons,
     topResults: topItems.map((item) => `${item.match}:${item.matchReason}:${item.recall.id}:${item.recall.title}`),
-    warnings
+    warnings,
+    failures
   };
 }
 
@@ -632,7 +646,8 @@ const failCount =
   sourceCountFailures.length +
   scenarioResults.reduce((total, result) => total + result.failures.length, 0) +
   exactIdentifierChecks.reduce((total, result) => total + result.failures.length, 0) +
-  sourceCategoryChecks.reduce((total, result) => total + result.failures.length, 0);
+  sourceCategoryChecks.reduce((total, result) => total + result.failures.length, 0) +
+  rankingNotes.reduce((total, result) => total + result.failures.length, 0);
 
 const summary = {
   passed: failCount === 0,

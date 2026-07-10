@@ -577,14 +577,15 @@ function getMatchReason(query: string, recall: SiteRecall): RecallMatchReason {
   }
 
   if (
-    hasStrongMatch(normalizedQuery, queryTokens, recallNumberFields) ||
-    hasTextMatch(normalizedQuery, queryTokens, recallNumberFields)
+    hasIdentifierCue(normalizedQuery) &&
+    (hasStrongMatch(normalizedQuery, queryTokens, recallNumberFields) ||
+      hasTextMatch(normalizedQuery, queryTokens, recallNumberFields))
   ) {
     return 'recall-number';
   }
 
   if (
-    (hasIdentifierCue(normalizedQuery) || looksLikeIdentifier(query, normalizedQuery)) &&
+    hasIdentifierCue(normalizedQuery) &&
     hasTextMatch(normalizedQuery, queryTokens, identifierFields(recall))
   ) {
     return 'identifier';

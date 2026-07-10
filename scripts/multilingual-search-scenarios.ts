@@ -20,6 +20,7 @@ export type MultilingualSearchScenario = {
   expectedSources?: string[];
   rankingTerms?: string[];
   minTopResultTermMatches?: number;
+  disallowedTopMatchReasons?: string[];
 };
 
 export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
@@ -303,7 +304,8 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     minMatches: 1,
     expectedAliases: ['portable charger'],
     rankingTerms: ['power bank', 'powerbank', 'portable charger'],
-    minTopResultTermMatches: 5
+    minTopResultTermMatches: 5,
+    disallowedTopMatchReasons: ['recall-number']
   },
   {
     id: 'en-pistachio',
@@ -312,7 +314,8 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     minMatches: 1,
     expectedAliases: ['pistache'],
     rankingTerms: ['pistachio', 'pistache'],
-    minTopResultTermMatches: 5
+    minTopResultTermMatches: 5,
+    disallowedTopMatchReasons: ['recall-number']
   },
   {
     id: 'en-baby-sleeper',
@@ -321,7 +324,8 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     minMatches: 1,
     expectedAliases: ['crib'],
     rankingTerms: ['baby sleeper', 'crib', 'cot', 'bassinet'],
-    minTopResultTermMatches: 3
+    minTopResultTermMatches: 3,
+    disallowedTopMatchReasons: ['recall-number']
   },
   {
     id: 'en-smoke-detector',
@@ -329,7 +333,8 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     query: 'smoke detector',
     minMatches: 1,
     rankingTerms: ['smoke detector', 'smoke alarm', 'carbon monoxide', 'co detector'],
-    minTopResultTermMatches: 4
+    minTopResultTermMatches: 4,
+    disallowedTopMatchReasons: ['recall-number']
   },
   {
     id: 'en-bike-helmet',
@@ -338,7 +343,8 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     minMatches: 1,
     expectedAliases: ['helmet'],
     rankingTerms: ['bike helmet', 'bicycle helmet', 'helmet'],
-    minTopResultTermMatches: 5
+    minTopResultTermMatches: 5,
+    disallowedTopMatchReasons: ['recall-number']
   },
   {
     id: 'en-charger',
