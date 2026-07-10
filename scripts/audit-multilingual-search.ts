@@ -45,11 +45,14 @@ type ScenarioResult = {
 type ExactIdentifierCheck = {
   source: SourceId;
   query: string;
+  labelledQuery: string;
   expectedRecordId: string;
   expectedTitle: string;
   matchedCount: number;
   expectedRank: number | null;
   expectedMatchType: string | null;
+  labelledExpectedRank: number | null;
+  labelledExpectedMatchType: string | null;
   unexpectedExactMatches: string[];
   topResults: string[];
   warnings: string[];
@@ -468,6 +471,26 @@ function identifierQueryFor(record: SiteRecall): string {
   return record.recallNumber || record.id;
 }
 
+function labelledIdentifierQueryFor(source: SourceId, query: string): string {
+  if (source === 'NZ_PRODUCT_SAFETY') {
+    return `barcode ${query}`;
+  }
+
+  if (source === 'EU_SAFETY_GATE') {
+    return `Safety Gate reference ${query}`;
+  }
+
+  if (source === 'UK_FSA') {
+    return `FSA reference ${query}`;
+  }
+
+  if (source === 'HK_CFS') {
+    return `Food alert reference ${query}`;
+  }
+
+  return `recall number ${query}`;
+}
+
 function runExactIdentifierCheck(records: SiteRecall[], source: SourceId): ExactIdentifierCheck {
   const candidate = findIdentifierCandidate(records, source);
   const warnings: string[] = [];
@@ -478,11 +501,14 @@ function runExactIdentifierCheck(records: SiteRecall[], source: SourceId): Exact
     return {
       source,
       query: '',
+      labelledQuery: '',
       expectedRecordId: '',
       expectedTitle: '',
       matchedCount: 0,
       expectedRank: null,
       expectedMatchType: null,
+      labelledExpectedRank: null,
+      labelledExpectedMatchType: null,
       unexpectedExactMatches: [],
       topResults: [],
       warnings,
@@ -492,9 +518,13 @@ function runExactIdentifierCheck(records: SiteRecall[], source: SourceId): Exact
   }
 
   const query = identifierQueryFor(candidate);
+  const labelledQuery = labelledIdentifierQueryFor(source, query);
   const result = searchRecalls(query, records);
+  const labelledResult = searchRecalls(labelledQuery, records);
   const expectedRank = result.items.findIndex((item) => item.recall.id === candidate.id);
   const expectedItem = expectedRank >= 0 ? result.items[expectedRank] : null;
+  const labelledExpectedRank = labelledResult.items.findIndex((item) => item.recall.id === candidate.id);
+  const labelledExpectedItem = labelledExpectedRank >= 0 ? labelledResult.items[labelledExpectedRank] : null;
   const unexpectedExactMatches = result.items
     .filter((item) => item.match === 'exact' && item.recall.id !== candidate.id)
     .map((item) => item.recall.id);
@@ -503,6 +533,12 @@ function runExactIdentifierCheck(records: SiteRecall[], source: SourceId): Exact
     failures.push(`Identifier ${query} did not return expected record ${candidate.id}.`);
   } else if (expectedRank > 2) {
     warnings.push(`Identifier ${query} returned expected record at rank ${expectedRank + 1}.`);
+  }
+
+  if (labelledExpectedRank < 0) {
+    failures.push(`Labelled identifier ${labelledQuery} did not return expected record ${candidate.id}.`);
+  } else if (labelledExpectedRank > 2) {
+    warnings.push(`Labelled identifier ${labelledQuery} returned expected record at rank ${labelledExpectedRank + 1}.`);
   }
 
   if (result.items.length > 15) {
@@ -518,11 +554,14 @@ function runExactIdentifierCheck(records: SiteRecall[], source: SourceId): Exact
   return {
     source,
     query,
+    labelledQuery,
     expectedRecordId: candidate.id,
     expectedTitle: candidate.title,
     matchedCount: result.items.length,
     expectedRank: expectedRank >= 0 ? expectedRank + 1 : null,
     expectedMatchType: expectedItem?.match ?? null,
+    labelledExpectedRank: labelledExpectedRank >= 0 ? labelledExpectedRank + 1 : null,
+    labelledExpectedMatchType: labelledExpectedItem?.match ?? null,
     unexpectedExactMatches,
     topResults: result.items.slice(0, 5).map((item) => `${item.match}:${item.recall.id}:${item.recall.title}`),
     warnings,

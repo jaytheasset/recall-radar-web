@@ -118,6 +118,8 @@ const IDENTIFIER_TERMS = [
   'use by'
 ];
 
+const IDENTIFIER_QUERY_LABEL_PATTERN = /\b(?:cpsc\s+recall\s+number|fda\s+recall\s+number|eu\s+safety\s+gate\s+reference|safety\s+gate\s+reference|fsa\s+reference|food\s+alert\s+reference|recall\s+number|recall\s+no|recall\s+id|record\s+id|alert\s+id|reference\s+number|model\s+number|model\s+no|serial\s+number|lot\s+code|lot\s+number|batch\s+code|batch\s+number|barcode|upc|gtin|ean|sku|serial|lot|batch|reference|ref)\b/g;
+
 const ALLERGEN_TERMS = [
   'milk',
   'dairy',
@@ -342,15 +344,26 @@ function compactIdentifier(value: string): string {
   return normalize(value).replace(/\s+/g, '');
 }
 
+function identifierQueryNeedles(normalizedQuery: string): string[] {
+  const stripped = normalizedQuery
+    .replace(IDENTIFIER_QUERY_LABEL_PATTERN, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return [...new Set([normalizedQuery, stripped].map(compactIdentifier).filter((needle) => needle.length >= 4))];
+}
+
 function hasExactIdentifierMatch(normalizedQuery: string, values: string[]): boolean {
-  const compactQuery = compactIdentifier(normalizedQuery);
-  if (!compactQuery || compactQuery.length < 4) {
+  const compactQueries = identifierQueryNeedles(normalizedQuery);
+  if (compactQueries.length === 0) {
     return false;
   }
 
   return values.some((value) => {
     const compactValue = compactIdentifier(value);
-    return compactValue.length >= compactQuery.length && compactValue.includes(compactQuery);
+    return compactQueries.some(
+      (compactQuery) => compactValue.length >= compactQuery.length && compactValue.includes(compactQuery)
+    );
   });
 }
 
