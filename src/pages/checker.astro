@@ -863,11 +863,21 @@ const sourceCardDetails = {
         const sourceSuggestions = new Map<string, { label: string; count: number }>();
         const categorySuggestions = new Map<string, { label: string; count: number }>();
         const hazardSuggestions = new Map<string, { label: string; count: number }>();
+        const domainSuggestions = new Map<string, { label: string; count: number }>();
+        const audienceSuggestions = new Map<string, { label: string; count: number }>();
 
         items.forEach(({ recall }) => {
           incrementSuggestion(sourceSuggestions, recall.source, recall.sourceLabel);
           incrementSuggestion(categorySuggestions, recall.taxonomyProductFamily, recall.taxonomyProductFamilyLabel);
           incrementSuggestion(hazardSuggestions, recall.taxonomyHazardType, recall.taxonomyHazardTypeLabel);
+          incrementSuggestion(
+            domainSuggestions,
+            recall.taxonomyRecallDomain,
+            domainFilterLabels[recall.taxonomyRecallDomain ?? '']
+          );
+          (recall.taxonomyAudience ?? []).forEach((audience) => {
+            incrementSuggestion(audienceSuggestions, audience, audienceFilterLabels[audience]);
+          });
         });
 
         const chips: HTMLButtonElement[] = [];
@@ -916,6 +926,40 @@ const sourceCardDetails = {
             chips.push(createRefineChip(uiTemplate('checker.refineIssue', { label: suggestion.label }), suggestion.count, () => {
               if (hazardFilter) {
                 hazardFilter.value = suggestion.value;
+              }
+              if (advancedFilters) {
+                advancedFilters.open = true;
+              }
+              updateSearch();
+            }));
+          });
+        }
+
+        if (state.domain === 'all') {
+          topSuggestions(domainSuggestions, isBroad ? 2 : 1).forEach((suggestion) => {
+            if (!domainValues.includes(suggestion.value as RecallDomainFilter)) {
+              return;
+            }
+            chips.push(createRefineChip(uiTemplate('checker.refineRecallArea', { label: suggestion.label }), suggestion.count, () => {
+              if (domainFilter) {
+                domainFilter.value = suggestion.value;
+              }
+              if (advancedFilters) {
+                advancedFilters.open = true;
+              }
+              updateSearch();
+            }));
+          });
+        }
+
+        if (state.audience === 'all') {
+          topSuggestions(audienceSuggestions, isBroad ? 2 : 1).forEach((suggestion) => {
+            if (!audienceValues.includes(suggestion.value as AudienceFilter)) {
+              return;
+            }
+            chips.push(createRefineChip(uiTemplate('checker.refineAudience', { label: suggestion.label }), suggestion.count, () => {
+              if (audienceFilter) {
+                audienceFilter.value = suggestion.value;
               }
               if (advancedFilters) {
                 advancedFilters.open = true;
