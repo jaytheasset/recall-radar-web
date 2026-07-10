@@ -384,7 +384,7 @@ const sourceCardDetails = {
             <div class="meta-row">
               <span id="result-match" class="status-pill">No clear match</span>
               <span id="result-count" class="tag">0 recalls</span>
-              <span id="result-filter-summary" class="tag">All markets</span>
+              <div id="result-filter-summary" class="active-filter-summary" hidden></div>
               <button id="clear-search-filters" class="clear-filters-link" type="button" hidden data-i18n="checker.clearFilters">
                 Clear filters
               </button>
@@ -1384,18 +1384,51 @@ const sourceCardDetails = {
         return group;
       }
 
-      function describeFilters(state: SearchState): string {
-        const parts = [
-          state.source === 'all' ? uiMessage('checker.allCountriesSources') : getRecallSourceLabel(state.source),
-          categoryFilterLabels[state.category],
-          hazardFilterLabels[state.hazard] ?? uiMessage('checker.allIssues'),
-          ...(state.domain === 'all' ? [] : [domainFilterLabels[state.domain]]),
-          ...(state.audience === 'all' ? [] : [audienceFilterLabels[state.audience]]),
-          state.date === 'all' ? uiMessage('checker.allTime') : uiTemplate('checker.lastDays', { days: state.date }),
-          state.sort === 'best' ? uiMessage('checker.bestMatch') : state.sort === 'newest' ? uiMessage('checker.newestFirst') : uiMessage('checker.oldestFirst')
-        ];
+      function activeFilterLabels(state: SearchState): string[] {
+        const labels: string[] = [];
 
-        return parts.join(' / ');
+        if (state.source !== 'all') {
+          labels.push(uiTemplate('checker.refineSource', { label: getRecallSourceLabel(state.source) }));
+        }
+        if (state.category !== 'all') {
+          labels.push(uiTemplate('checker.refineProductType', { label: categoryFilterLabels[state.category] }));
+        }
+        if (state.hazard !== 'all') {
+          labels.push(uiTemplate('checker.refineIssue', { label: hazardFilterLabels[state.hazard] ?? state.hazard }));
+        }
+        if (state.domain !== 'all') {
+          labels.push(uiTemplate('checker.refineRecallArea', { label: domainFilterLabels[state.domain] }));
+        }
+        if (state.audience !== 'all') {
+          labels.push(uiTemplate('checker.refineAudience', { label: audienceFilterLabels[state.audience] }));
+        }
+        if (state.date !== 'all') {
+          labels.push(uiTemplate('checker.refineDate', { label: uiTemplate('checker.lastDays', { days: state.date }) }));
+        }
+        if (state.sort !== 'best') {
+          labels.push(
+            uiTemplate('checker.refineSort', {
+              label: state.sort === 'newest' ? uiMessage('checker.newestFirst') : uiMessage('checker.oldestFirst')
+            })
+          );
+        }
+
+        return labels;
+      }
+
+      function describeFilters(state: SearchState): string {
+        return activeFilterLabels(state).join(' / ') || uiMessage('common.recallNotices');
+      }
+
+      function renderActiveFilters(state: SearchState): void {
+        if (!filterSummary) {
+          return;
+        }
+
+        const labels = activeFilterLabels(state);
+        filterSummary.replaceChildren(...labels.map((label) => createTag(label)));
+        filterSummary.hidden = labels.length === 0;
+        filterSummary.setAttribute('aria-label', uiMessage('checker.appliedFilters'));
       }
 
       function renderSearch(state: SearchState): void {
@@ -1405,7 +1438,7 @@ const sourceCardDetails = {
 
         const filteredRecalls = filterRecalls(state);
         panel.hidden = false;
-        filterSummary.textContent = describeFilters(state);
+        renderActiveFilters(state);
         if (clearFiltersButton) {
           clearFiltersButton.hidden = !hasActiveFilters(state);
         }

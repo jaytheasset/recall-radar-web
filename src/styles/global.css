@@ -1971,6 +1971,13 @@ button:disabled {
   box-shadow: none;
 }
 
+.active-filter-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.38rem;
+  align-items: center;
+}
+
 .category-search-panel {
   display: grid;
   gap: 0.8rem;
