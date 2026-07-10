@@ -24,6 +24,14 @@ The current placement deliberately excludes recall detail pages and the recall c
 
 Google distinguishes the publisher-wide AdSense code from the code for each ad unit. See the [Google AdSense code guide](https://support.google.com/adsense/answer/9274019?hl=en-GB) and [consent requirements for publishers](https://support.google.com/adsense/answer/13554116?hl=en-GB).
 
+## Approval prep checklist
+
+1. Review `/about`, `/privacy`, and `/contact` on the production domain.
+2. Set `PUBLIC_CONTACT_EMAIL` to a real monitored address before submitting the site for approval.
+3. Keep the footer links to About, Privacy, and Contact visible on public pages.
+4. Confirm public pages do not present development-only wording such as local demo, sample, mock, or test content.
+5. Keep AdSense disabled until the account is approved and both AdSense variables are configured.
+
 ## Amazon Associates
 
 Do not place Amazon links directly beside a recall action or label an item as a safe replacement. Product suitability must not be inferred from a recall notice.

@@ -1,5 +1,6 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 import { categoryRoutes, getRecallsByCategory } from '../lib/recall-data';
 import { getProductFamilyI18nKey } from '../lib/i18n';
 import '../styles/global.css';
@@ -95,8 +96,6 @@ const productTypes = productFamilyRoutes.map((route) => ({
       </section>
     </main>
 
-    <footer class="page-footer">
-      <span data-i18n="footer.disclaimer">Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.</span>
-    </footer>
+    <SiteFooter />
   </body>
 </html>

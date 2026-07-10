@@ -78,6 +78,10 @@ const enMessages = {
   'home.openSavedSearches': 'Open saved searches',
   'footer.disclaimer':
     'Recall Radar helps you find possible recalls. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.',
+  'footer.linksLabel': 'Footer links',
+  'footer.about': 'About',
+  'footer.privacy': 'Privacy',
+  'footer.contact': 'Contact',
   'checker.title': 'Search recalls',
   'checker.lead': 'Search by product, brand, model, barcode, lot, date, ingredient, or recall number.',
   'checker.countLine': 'Search {total} recalls from {sources} official sources.',

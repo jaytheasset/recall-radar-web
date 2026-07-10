@@ -1,0 +1,52 @@
+---
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import '../styles/global.css';
+
+const title = 'Privacy | Recall Radar';
+const description = 'Recall Radar privacy information for browsing, saved searches, and future advertising.';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <SiteHeader />
+
+    <main class="page-shell information-page">
+      <section class="information-hero">
+        <p class="eyebrow">Privacy</p>
+        <h1>How Recall Radar handles information.</h1>
+        <p class="lead">Recall Radar is designed for public recall search. It does not require an account to search notices.</p>
+      </section>
+
+      <section class="section information-stack" aria-label="Privacy information">
+        <article class="notice-panel information-card">
+          <h2>Saved searches</h2>
+          <p>
+            Saved searches and watched brands are stored in your browser using local storage. They are not sent to a Recall Radar server by this feature.
+          </p>
+        </article>
+        <article class="notice-panel information-card">
+          <h2>Official recall notices</h2>
+          <p>
+            Recall notices include information published by the relevant official source. Opening an official notice takes you to that source's website, which has its own privacy practices.
+          </p>
+        </article>
+        <article class="notice-panel information-card">
+          <h2>Advertising</h2>
+          <p>
+            Advertising is disabled unless Recall Radar is configured with an approved advertising account. Before personalised advertising is enabled for applicable regions, the required consent controls and disclosures will be put in place.
+          </p>
+        </article>
+      </section>
+    </main>
+
+    <SiteFooter />
+  </body>
+</html>

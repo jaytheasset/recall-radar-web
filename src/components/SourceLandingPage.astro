@@ -1,5 +1,6 @@
 ---
 import SiteHeader from './SiteHeader.astro';
+import SiteFooter from './SiteFooter.astro';
 import EuImageResourceHints from './EuImageResourceHints.astro';
 import RecallListCard from './RecallListCard.astro';
 import { getSourceLandingProductTypeFilters, type SourceLandingPageConfig } from '../lib/source-landing-pages';
@@ -122,9 +123,7 @@ const identifierGuidance =
       </section>
     </main>
 
-    <footer class="page-footer">
-      <span data-i18n="footer.disclaimer">Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.</span>
-    </footer>
+    <SiteFooter />
     <script>
       import { initCategoryPageSearch } from '../lib/category-page-search';
       import { initImageFallbacks } from '../lib/image-fallback';

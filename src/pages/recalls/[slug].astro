@@ -1,5 +1,6 @@
 ---
 import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
 import EuImageResourceHints from '../../components/EuImageResourceHints.astro';
 import TaxonomyFamilyPage from '../../components/TaxonomyFamilyPage.astro';
 import { categoryRoutes, siteRecalls } from '../../lib/recall-data';
@@ -545,9 +546,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
     </main>
     )}
 
-    <footer class="page-footer">
-      <span data-i18n="footer.disclaimer">Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.</span>
-    </footer>
+    <SiteFooter />
     <script>
       import { initImageFallbacks } from '../../lib/image-fallback';
       import { initDetailImageGallery, initProgressiveCardImages, initProgressiveDetailImages } from '../../lib/progressive-detail-image';

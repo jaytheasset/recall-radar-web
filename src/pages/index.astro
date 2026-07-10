@@ -1,5 +1,6 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 import EuImageResourceHints from '../components/EuImageResourceHints.astro';
 import AdSenseSlot from '../components/AdSenseSlot.astro';
 import {
@@ -397,9 +398,7 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
       </section>
     </main>
 
-    <footer class="page-footer">
-      <span data-i18n="footer.disclaimer">Recall Radar helps you find possible recalls. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.</span>
-    </footer>
+    <SiteFooter />
     <script>
       import { applyUiLanguage, DEFAULT_LOCALE, SUPPORTED_LOCALES, type SupportedLocale } from '../lib/i18n';
       import { initImageFallbacks } from '../lib/image-fallback';

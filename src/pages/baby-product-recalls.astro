@@ -1,5 +1,6 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 import EuImageResourceHints from '../components/EuImageResourceHints.astro';
 import RecallListCard from '../components/RecallListCard.astro';
 import { getRecallsByCategory } from '../lib/recall-data';
@@ -78,9 +79,7 @@ const noResultCopy = getNoResultIdentifierHint();
       </section>
     </main>
 
-    <footer class="page-footer">
-      Recall Radar helps you find possible recall notices. Search results are not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
-    </footer>
+    <SiteFooter />
     <script>
       import { initCategoryPageSearch } from '../lib/category-page-search';
       import { initImageFallbacks } from '../lib/image-fallback';

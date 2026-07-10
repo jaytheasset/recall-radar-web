@@ -1,0 +1,53 @@
+---
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { publicContactEmail } from '../lib/site-contact.ts';
+import '../styles/global.css';
+
+const title = 'Contact | Recall Radar';
+const description = 'Find the right place to ask about an official recall notice or contact Recall Radar.';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <SiteHeader />
+
+    <main class="page-shell information-page">
+      <section class="information-hero">
+        <p class="eyebrow">Contact</p>
+        <h1>Questions about a recall?</h1>
+        <p class="lead">For product-specific advice, remedies, or urgent safety questions, use the contact details in the official recall notice.</p>
+      </section>
+
+      <section class="section information-stack" aria-label="Contact information">
+        <article class="notice-panel information-card">
+          <h2>Official recall questions</h2>
+          <p>
+            Manufacturers and government agencies can confirm affected models, lots, dates, refunds, repairs, and next steps. Use the official notice link on the recall report to contact the right source.
+          </p>
+        </article>
+        <article class="notice-panel information-card">
+          <h2>Recall Radar feedback</h2>
+          {publicContactEmail ? (
+            <p>
+              For a site issue or correction, email <a href={`mailto:${publicContactEmail}`}>{publicContactEmail}</a>. Include the Recall Radar page URL and the official source URL when available.
+            </p>
+          ) : (
+            <p>
+              Recall Radar does not provide product-specific advice. For a correction to a recall notice, verify the notice with the source agency or manufacturer first.
+            </p>
+          )}
+        </article>
+      </section>
+    </main>
+
+    <SiteFooter />
+  </body>
+</html>

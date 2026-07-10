@@ -1,0 +1,54 @@
+---
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import '../styles/global.css';
+
+const title = 'About Recall Radar | Recall Radar';
+const description = 'Learn how Recall Radar helps people search official product recall notices from public safety sources.';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <SiteHeader />
+
+    <main class="page-shell information-page">
+      <section class="information-hero">
+        <p class="eyebrow">About Recall Radar</p>
+        <h1>Official recall notices, easier to search.</h1>
+        <p class="lead">
+          Recall Radar brings together recall notices from selected public safety sources so people can search by product, brand, model, identifier, issue, and source.
+        </p>
+      </section>
+
+      <section class="section information-grid" aria-label="About Recall Radar">
+        <article class="notice-panel information-card">
+          <h2>What we do</h2>
+          <p>
+            We organize official recall notices into a searchable product-safety service and keep a link back to the official notice for verification.
+          </p>
+        </article>
+        <article class="notice-panel information-card">
+          <h2>What we do not do</h2>
+          <p>
+            A search result is not a safety confirmation. Recall Radar does not determine whether a specific item is affected or replace instructions from an official source.
+          </p>
+        </article>
+        <article class="notice-panel information-card">
+          <h2>Coverage</h2>
+          <p>
+            Sources are added and reviewed individually. Coverage is useful but not complete, so always verify model, lot, date, distribution, and remedy details with the official notice.
+          </p>
+        </article>
+      </section>
+    </main>
+
+    <SiteFooter />
+  </body>
+</html>
