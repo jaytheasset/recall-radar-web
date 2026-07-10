@@ -87,6 +87,20 @@ type RankingNote = {
   failures: string[];
 };
 
+type SourceSearchIntentCheck = {
+  id: string;
+  query: string;
+  expectedSources: SourceId[];
+  expectedCount: number;
+  matchedCount: number;
+  matchedSources: string[];
+  mixedQuery?: string;
+  mixedQueryMatchCount?: number;
+  warnings: string[];
+  failures: string[];
+  status: AuditStatus;
+};
+
 const EXPECTED_SOURCE_COUNTS: Record<SourceId, number> = {
   CPSC: 301,
   FDA: 100,
@@ -99,6 +113,34 @@ const EXPECTED_SOURCE_COUNTS: Record<SourceId, number> = {
   HK_CFS: 100,
   FSANZ_FOOD_RECALLS: 100
 };
+
+const SOURCE_SEARCH_INTENT_CHECKS: Array<{
+  id: string;
+  query: string;
+  expectedSources: SourceId[];
+  mixedQuery?: string;
+}> = [
+  { id: 'united-states', query: 'United States', expectedSources: ['CPSC', 'FDA'] },
+  { id: 'united-states-korean', query: '\uBBF8\uAD6D', expectedSources: ['CPSC', 'FDA'] },
+  { id: 'fda-korean', query: '\uBBF8\uAD6D\uC2DD\uD488\uC758\uC57D\uAD6D', expectedSources: ['FDA'] },
+  { id: 'canada', query: 'Canada', expectedSources: ['CA_RECALLS'] },
+  { id: 'canada-korean', query: '\uCE90\uB098\uB2E4', expectedSources: ['CA_RECALLS'] },
+  { id: 'eu-safety-gate', query: 'EU Safety Gate', expectedSources: ['EU_SAFETY_GATE'] },
+  { id: 'eu-korean', query: '\uC720\uB7FD\uC5F0\uD569', expectedSources: ['EU_SAFETY_GATE'] },
+  { id: 'france', query: 'France', expectedSources: ['FR_RAPPELCONSO'] },
+  { id: 'uk-fsa', query: 'United Kingdom FSA', expectedSources: ['UK_FSA'] },
+  { id: 'uk-fsa-korean', query: '\uC601\uAD6D\uC2DD\uD488\uAE30\uC900\uCCAD', expectedSources: ['UK_FSA'] },
+  { id: 'australia-product-safety', query: 'Product Safety Australia', expectedSources: ['AU_PRODUCT_SAFETY'] },
+  { id: 'new-zealand-product-safety', query: 'New Zealand Product Safety', expectedSources: ['NZ_PRODUCT_SAFETY'] },
+  { id: 'hong-kong-cfs', query: '\uD64D\uCF69\uC2DD\uD488\uC548\uC804\uC13C\uD130', expectedSources: ['HK_CFS'] },
+  { id: 'fsanz', query: 'FSANZ', expectedSources: ['FSANZ_FOOD_RECALLS'] },
+  {
+    id: 'fda-with-product',
+    query: 'FDA',
+    expectedSources: ['FDA'],
+    mixedQuery: 'pistachio FDA'
+  }
+];
 
 const SOURCE_CATEGORY_CHECKS: Array<{
   id: string;
@@ -657,6 +699,63 @@ function runRankingNote(records: SiteRecall[], scenario: (typeof MULTILINGUAL_SE
   };
 }
 
+function runSourceSearchIntentCheck(
+  records: SiteRecall[],
+  check: (typeof SOURCE_SEARCH_INTENT_CHECKS)[number]
+): SourceSearchIntentCheck {
+  const result = searchRecalls(check.query, records);
+  const expectedCount = check.expectedSources.reduce((total, source) => total + EXPECTED_SOURCE_COUNTS[source], 0);
+  const matchedSources = [...new Set(result.items.map((item) => item.recall.source))].sort();
+  const expectedSources = [...check.expectedSources].sort();
+  const warnings: string[] = [];
+  const failures: string[] = [];
+  const mixedResult = check.mixedQuery ? searchRecalls(check.mixedQuery, records) : null;
+
+  if (result.items.length !== expectedCount) {
+    failures.push(`Expected ${expectedCount} source-only results, found ${result.items.length}.`);
+  }
+
+  if (matchedSources.join(',') !== expectedSources.join(',')) {
+    failures.push(
+      `Expected source-only results from ${expectedSources.join(', ')}, found ${matchedSources.join(', ') || 'none'}.`
+    );
+  }
+
+  if (result.items.some((item) => item.matchReason !== 'source' || item.match !== 'related')) {
+    failures.push('Source-only results must be marked as related source matches.');
+  }
+
+  if (mixedResult) {
+    const mixedSources = [...new Set(mixedResult.items.map((item) => item.recall.source))].sort();
+    if (mixedResult.items.length === 0) {
+      failures.push(`Mixed source/product query ${check.mixedQuery} returned no results.`);
+    }
+    if (mixedSources.join(',') !== expectedSources.join(',')) {
+      failures.push(
+        `Mixed source/product query ${check.mixedQuery} returned unexpected sources: ${mixedSources.join(', ') || 'none'}.`
+      );
+    }
+  }
+
+  if (result.items.length > 500) {
+    warnings.push('Source-only result group is broad; the checker should continue to support follow-up product searches.');
+  }
+
+  return {
+    id: check.id,
+    query: check.query,
+    expectedSources,
+    expectedCount,
+    matchedCount: result.items.length,
+    matchedSources,
+    mixedQuery: check.mixedQuery,
+    mixedQueryMatchCount: mixedResult?.items.length,
+    warnings,
+    failures,
+    status: statusFor(warnings, failures)
+  };
+}
+
 const processedFile = JSON.parse(await readFile(canonicalProcessedPath, 'utf8')) as ProcessedRecallFile;
 const records = processedFile.records.map(toSiteRecall);
 const counts = sourceCounts(records);
@@ -674,19 +773,24 @@ const sourceCategoryChecks = SOURCE_CATEGORY_CHECKS.map((check) => runSourceCate
 const rankingNotes = MULTILINGUAL_SEARCH_SCENARIOS.map((scenario) => runRankingNote(records, scenario)).filter(
   (note): note is RankingNote => Boolean(note)
 );
+const sourceSearchIntentChecks = SOURCE_SEARCH_INTENT_CHECKS.map((check) =>
+  runSourceSearchIntentCheck(records, check)
+);
 const negativeQueryChecks = scenarioResults.filter((result) => result.group === 'negative/noise');
 
 const warningCount =
   scenarioResults.reduce((total, result) => total + result.warnings.length, 0) +
   exactIdentifierChecks.reduce((total, result) => total + result.warnings.length, 0) +
   sourceCategoryChecks.reduce((total, result) => total + result.warnings.length, 0) +
-  rankingNotes.reduce((total, result) => total + result.warnings.length, 0);
+  rankingNotes.reduce((total, result) => total + result.warnings.length, 0) +
+  sourceSearchIntentChecks.reduce((total, result) => total + result.warnings.length, 0);
 const failCount =
   sourceCountFailures.length +
   scenarioResults.reduce((total, result) => total + result.failures.length, 0) +
   exactIdentifierChecks.reduce((total, result) => total + result.failures.length, 0) +
   sourceCategoryChecks.reduce((total, result) => total + result.failures.length, 0) +
-  rankingNotes.reduce((total, result) => total + result.failures.length, 0);
+  rankingNotes.reduce((total, result) => total + result.failures.length, 0) +
+  sourceSearchIntentChecks.reduce((total, result) => total + result.failures.length, 0);
 
 const summary = {
   passed: failCount === 0,
@@ -702,6 +806,7 @@ const summary = {
   scenarioResults,
   exactIdentifierChecks,
   sourceCategoryChecks,
+  sourceSearchIntentChecks,
   negativeQueryChecks,
   rankingNotes
 };

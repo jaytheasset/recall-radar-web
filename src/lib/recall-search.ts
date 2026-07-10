@@ -6,6 +6,7 @@ import {
   tokenizeSearchQuery
 } from './multilingual-search.ts';
 import { getSourceIdentifierGuidance } from './identifier-guidance.ts';
+import { getRecallSourceSearchIntent } from './recall-sources.ts';
 
 export type RecallMatchType = 'exact' | 'possible' | 'related' | 'none';
 export type RecallMatchReason =
@@ -727,11 +728,21 @@ function compareRecalls(
 }
 
 export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearchResult {
-  const matches = recalls
+  const sourceIntent = getRecallSourceSearchIntent(query);
+  const searchQuery = sourceIntent?.remainingQuery || query;
+  const scopedRecalls = sourceIntent
+    ? recalls.filter((recall) => sourceIntent.sourceIds.includes(recall.source as (typeof sourceIntent.sourceIds)[number]))
+    : recalls;
+  const matches = scopedRecalls
     .map((recall) => {
-      const match = getRecallMatch(query, recall);
-      const matchReason = getMatchReason(query, recall);
-      const score = match === 'none' ? 0 : getMatchScore(query, recall, match, matchReason);
+      const match = sourceIntent?.isSourceOnly ? 'related' : getRecallMatch(searchQuery, recall);
+      const matchReason = sourceIntent?.isSourceOnly ? 'source' : getMatchReason(searchQuery, recall);
+      const score =
+        match === 'none'
+          ? 0
+          : sourceIntent?.isSourceOnly
+            ? MATCH_BASE_SCORES.related + MATCH_REASON_SCORES.source
+            : getMatchScore(searchQuery, recall, match, matchReason);
       return {
         recall,
         match,

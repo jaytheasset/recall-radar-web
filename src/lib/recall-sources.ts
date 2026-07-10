@@ -18,6 +18,12 @@ export type RecallSourceOption = {
   label: string;
 };
 
+export type RecallSourceSearchIntent = {
+  sourceIds: CurrentCoverageSourceId[];
+  remainingQuery: string;
+  isSourceOnly: boolean;
+};
+
 export type RecallSourceConfig = {
   id: RecallSourceId;
   marketCode: string;
@@ -534,6 +540,253 @@ const currentCoverageSources: CurrentCoverageSourceId[] = [
   'HK_CFS',
   'FSANZ_FOOD_RECALLS'
 ];
+
+type RecallSourceSearchScope = {
+  sourceIds: CurrentCoverageSourceId[];
+  aliases: string[];
+};
+
+const SOURCE_QUERY_CONTEXT_WORDS = new Set([
+  'recall',
+  'recalls',
+  'notice',
+  'notices',
+  'alert',
+  'alerts',
+  'official',
+  'officials',
+  'source',
+  'sources'
+]);
+
+const SOURCE_IDENTIFIER_QUERY_PATTERN = /\b(?:cpsc\s+recall\s+number|fda\s+recall\s+number|eu\s+safety\s+gate\s+reference|safety\s+gate\s+reference|fsa\s+reference|food\s+alert\s+reference|recall\s+number|recall\s+no|recall\s+id|record\s+id|alert\s+id|reference\s+number|model\s+number|model\s+no|serial\s+number|lot\s+code|lot\s+number|batch\s+code|batch\s+number|barcode|upc|gtin|ean|sku|serial|lot|batch|reference|ref)\b/;
+
+// These aliases describe the ten official sources already indexed by the site.
+// They only shape local search; they do not imply coverage beyond those sources.
+const sourceSearchScopes: RecallSourceSearchScope[] = [
+  {
+    sourceIds: ['CPSC', 'FDA'],
+    aliases: [
+      'united states',
+      'united states of america',
+      'usa',
+      '\uBBF8\uAD6D',
+      '\u7F8E\u56FD',
+      '\u30A2\u30E1\u30EA\u30AB'
+    ]
+  },
+  {
+    sourceIds: ['CPSC'],
+    aliases: [
+      'cpsc',
+      'consumer product safety commission',
+      'us consumer product safety commission',
+      '\uBBF8\uAD6D \uC18C\uBE44\uC790 \uC81C\uD488 \uC548\uC804 \uC704\uC6D0\uD68C',
+      '\uBBF8\uAD6D\uC18C\uBE44\uC790\uC81C\uD488\uC548\uC804\uC704\uC6D0\uD68C'
+    ]
+  },
+  {
+    sourceIds: ['FDA'],
+    aliases: [
+      'fda',
+      'openfda',
+      'food and drug administration',
+      'us food and drug administration',
+      '\uBBF8\uAD6D \uC2DD\uD488 \uC758\uC57D\uAD6D',
+      '\uBBF8\uAD6D\uC2DD\uD488\uC758\uC57D\uAD6D'
+    ]
+  },
+  {
+    sourceIds: ['CA_RECALLS'],
+    aliases: [
+      'canada',
+      'health canada',
+      'canada recalls',
+      '\uCE90\uB098\uB2E4',
+      '\uCE90\uB098\uB2E4\uBCF4\uAC74\uBD80',
+      '\u52A0\u62FF\u5927',
+      '\u30AB\u30CA\u30C0'
+    ]
+  },
+  {
+    sourceIds: ['EU_SAFETY_GATE'],
+    aliases: [
+      'european union',
+      'eu',
+      'safety gate',
+      'eu safety gate',
+      '\uC720\uB7FD',
+      '\uC720\uB7FD\uC5F0\uD569',
+      '\uC548\uC804\uAC8C\uC774\uD2B8',
+      '\u6B27\u76DF',
+      '\u6B27\u6D32\u8054\u76DF',
+      '\u30BB\u30FC\u30D5\u30C6\u30A3\u30B2\u30FC\u30C8'
+    ]
+  },
+  {
+    sourceIds: ['FR_RAPPELCONSO'],
+    aliases: [
+      'france',
+      'rappelconso',
+      'rappel conso',
+      '\uD504\uB791\uC2A4',
+      '\u6CD5\u56FD',
+      '\u30D5\u30E9\u30F3\u30B9'
+    ]
+  },
+  {
+    sourceIds: ['UK_FSA'],
+    aliases: [
+      'united kingdom',
+      'uk',
+      'great britain',
+      'britain',
+      'fsa',
+      'fsa food alerts',
+      'food standards agency',
+      '\uC601\uAD6D',
+      '\uC601\uAD6D\uC2DD\uD488\uAE30\uC900\uCCAD',
+      '\u82F1\u56FD',
+      '\u30A4\u30AE\u30EA\u30B9'
+    ]
+  },
+  {
+    sourceIds: ['AU_PRODUCT_SAFETY'],
+    aliases: [
+      'australia',
+      'australian',
+      'product safety australia',
+      'australia product safety',
+      '\uD638\uC8FC',
+      '\uD638\uC8FC\uC81C\uD488\uC548\uC804',
+      '\u6FB3\u5927\u5229\u4E9A',
+      '\u30AA\u30FC\u30B9\u30C8\u30E9\u30EA\u30A2'
+    ]
+  },
+  {
+    sourceIds: ['NZ_PRODUCT_SAFETY'],
+    aliases: [
+      'new zealand',
+      'nz',
+      'product safety new zealand',
+      'new zealand product safety',
+      '\uB274\uC9C8\uB79C\uB4DC',
+      '\uB274\uC9C8\uB79C\uB4DC\uC81C\uD488\uC548\uC804',
+      '\u65B0\u897F\u5170',
+      '\u30CB\u30E5\u30FC\u30B8\u30FC\u30E9\u30F3\u30C9'
+    ]
+  },
+  {
+    sourceIds: ['HK_CFS'],
+    aliases: [
+      'hong kong',
+      'hk',
+      'cfs',
+      'hong kong cfs',
+      'centre for food safety',
+      'center for food safety',
+      '\uD64D\uCF69',
+      '\uD64D\uCF69 \uC2DD\uD488 \uC548\uC804',
+      '\uD64D\uCF69\uC2DD\uD488\uC548\uC804\uC13C\uD130',
+      '\u9999\u6E2F',
+      '\u9999\u6E2F\u98DF\u54C1\u5B89\u5168\u4E2D\u5FC3'
+    ]
+  },
+  {
+    sourceIds: ['FSANZ_FOOD_RECALLS'],
+    aliases: [
+      'fsanz',
+      'food standards australia new zealand',
+      'food standards australia',
+      'australia new zealand food standards',
+      '\uD638\uC8FC \uB274\uC9C8\uB79C\uB4DC \uC2DD\uD488\uAE30\uC900\uCCAD',
+      '\uD638\uC8FC\uB274\uC9C8\uB79C\uB4DC\uC2DD\uD488\uAE30\uC900\uCCAD'
+    ]
+  }
+];
+
+function normalizeSourceSearchText(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .normalize('NFC')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function sourceAliasMatchesQuery(normalizedQuery: string, normalizedAlias: string): boolean {
+  if (!normalizedQuery || !normalizedAlias) {
+    return false;
+  }
+
+  const hasNonAscii = /[^\x00-\x7F]/.test(normalizedAlias);
+  if (hasNonAscii || normalizedAlias.includes(' ')) {
+    return normalizedQuery.includes(normalizedAlias);
+  }
+
+  return normalizedQuery.split(' ').includes(normalizedAlias);
+}
+
+function removeSourceAliasesFromQuery(normalizedQuery: string, aliases: string[]): string {
+  let remaining = normalizedQuery;
+
+  for (const alias of [...new Set(aliases.map(normalizeSourceSearchText))].sort((a, b) => b.length - a.length)) {
+    if (!alias) {
+      continue;
+    }
+
+    if (/[^\x00-\x7F]/.test(alias) || alias.includes(' ')) {
+      remaining = remaining.split(alias).join(' ');
+      continue;
+    }
+
+    remaining = remaining
+      .split(' ')
+      .filter((token) => token !== alias)
+      .join(' ');
+  }
+
+  return remaining
+    .split(' ')
+    .filter((token) => token && !SOURCE_QUERY_CONTEXT_WORDS.has(token))
+    .join(' ');
+}
+
+export function getRecallSourceSearchIntent(query: string): RecallSourceSearchIntent | null {
+  const normalizedQuery = normalizeSourceSearchText(query);
+  if (!normalizedQuery || SOURCE_IDENTIFIER_QUERY_PATTERN.test(normalizedQuery)) {
+    return null;
+  }
+
+  const matchedScopes = sourceSearchScopes
+    .map((scope) => ({
+      scope,
+      matchedAliases: scope.aliases.filter((alias) =>
+        sourceAliasMatchesQuery(normalizedQuery, normalizeSourceSearchText(alias))
+      )
+    }))
+    .filter(({ matchedAliases }) => matchedAliases.length > 0);
+
+  if (matchedScopes.length === 0) {
+    return null;
+  }
+
+  const mostSpecificSourceCount = Math.min(...matchedScopes.map(({ scope }) => scope.sourceIds.length));
+  const selectedScopes = matchedScopes.filter(({ scope }) => scope.sourceIds.length === mostSpecificSourceCount);
+  const sourceIds = [...new Set(selectedScopes.flatMap(({ scope }) => scope.sourceIds))];
+  const remainingQuery = removeSourceAliasesFromQuery(
+    normalizedQuery,
+    matchedScopes.flatMap(({ matchedAliases }) => matchedAliases)
+  );
+
+  return {
+    sourceIds,
+    remainingQuery,
+    isSourceOnly: !remainingQuery
+  };
+}
 
 function normalizeSourceId(source: string): RecallSourceId {
   return source === 'CPSC' ||
