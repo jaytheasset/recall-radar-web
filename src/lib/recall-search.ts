@@ -547,12 +547,25 @@ function getMatchReason(query: string, recall: SiteRecall): RecallMatchReason {
   const expandedTerms = expandedTermsFor(query);
   const expandedTokens = expandedTokensFor(query);
   const specificAllergenTerms = specificAllergenTermsForQuery(expandedTerms);
+  const identifierLikeQuery = looksLikeIdentifier(query, normalizedQuery);
 
   if (!normalizedQuery || (queryTokens.length === 0 && expandedTokens.length === 0)) {
     return 'keyword';
   }
 
   const recallNumberFields = [recall.id, recall.recallNumber ?? ''];
+  if (identifierLikeQuery) {
+    if (hasExactIdentifierMatch(normalizedQuery, recallNumberFields)) {
+      return 'recall-number';
+    }
+
+    if (hasExactIdentifierMatch(normalizedQuery, identifierFields(recall))) {
+      return 'identifier';
+    }
+
+    return 'keyword';
+  }
+
   if (
     hasStrongMatch(normalizedQuery, queryTokens, recallNumberFields) ||
     hasTextMatch(normalizedQuery, queryTokens, recallNumberFields)
@@ -623,12 +636,16 @@ export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchTy
     return 'none';
   }
 
-  if (exactFields(recall).some((field) => isStrongFieldMatch(normalizedQuery, queryTokens, field))) {
-    return 'exact';
+  if (looksLikeIdentifier(query, normalizedQuery)) {
+    if (hasExactIdentifierMatch(normalizedQuery, [recall.id, recall.recallNumber ?? ''])) {
+      return 'exact';
+    }
+
+    return hasExactIdentifierMatch(normalizedQuery, identifierFields(recall)) ? 'possible' : 'none';
   }
 
-  if (looksLikeIdentifier(query, normalizedQuery)) {
-    return hasExactIdentifierMatch(normalizedQuery, identifierFields(recall)) ? 'possible' : 'none';
+  if (exactFields(recall).some((field) => isStrongFieldMatch(normalizedQuery, queryTokens, field))) {
+    return 'exact';
   }
 
   if (

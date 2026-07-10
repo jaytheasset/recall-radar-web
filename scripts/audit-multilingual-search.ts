@@ -50,6 +50,7 @@ type ExactIdentifierCheck = {
   matchedCount: number;
   expectedRank: number | null;
   expectedMatchType: string | null;
+  unexpectedExactMatches: string[];
   topResults: string[];
   warnings: string[];
   failures: string[];
@@ -465,6 +466,7 @@ function runExactIdentifierCheck(records: SiteRecall[], source: SourceId): Exact
       matchedCount: 0,
       expectedRank: null,
       expectedMatchType: null,
+      unexpectedExactMatches: [],
       topResults: [],
       warnings,
       failures,
@@ -476,6 +478,9 @@ function runExactIdentifierCheck(records: SiteRecall[], source: SourceId): Exact
   const result = searchRecalls(query, records);
   const expectedRank = result.items.findIndex((item) => item.recall.id === candidate.id);
   const expectedItem = expectedRank >= 0 ? result.items[expectedRank] : null;
+  const unexpectedExactMatches = result.items
+    .filter((item) => item.match === 'exact' && item.recall.id !== candidate.id)
+    .map((item) => item.recall.id);
 
   if (expectedRank < 0) {
     failures.push(`Identifier ${query} did not return expected record ${candidate.id}.`);
@@ -487,6 +492,12 @@ function runExactIdentifierCheck(records: SiteRecall[], source: SourceId): Exact
     warnings.push(`Identifier ${query} returned ${result.items.length} matches; monitor for source-token noise.`);
   }
 
+  if (unexpectedExactMatches.length > 0) {
+    failures.push(
+      `Identifier ${query} marked unrelated records as exact: ${unexpectedExactMatches.join(', ')}.`
+    );
+  }
+
   return {
     source,
     query,
@@ -495,6 +506,7 @@ function runExactIdentifierCheck(records: SiteRecall[], source: SourceId): Exact
     matchedCount: result.items.length,
     expectedRank: expectedRank >= 0 ? expectedRank + 1 : null,
     expectedMatchType: expectedItem?.match ?? null,
+    unexpectedExactMatches,
     topResults: result.items.slice(0, 5).map((item) => `${item.match}:${item.recall.id}:${item.recall.title}`),
     warnings,
     failures,
