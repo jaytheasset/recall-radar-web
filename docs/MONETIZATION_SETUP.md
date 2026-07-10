@@ -11,6 +11,8 @@ PUBLIC_ADSENSE_HOME_SLOT=...
 
 Without both values, the site emits no AdSense script, ad markup, or empty ad container. This keeps local development and unconfigured deployments free of ad placeholders.
 
+Cloudflare Pages uses `npm run build` and publishes `dist`. Do not configure either AdSense environment variable before the approval step.
+
 The current placement deliberately excludes recall detail pages and the recall checker. Do not put ads beside official notices, consumer-action instructions, or the `What to check` section.
 
 ## AdSense activation checklist

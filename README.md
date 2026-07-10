@@ -56,6 +56,12 @@ npm run preview
 
 Preview also uses `127.0.0.1:5179`.
 
+## Deployment Build
+
+The production build command is `npm run build`. It creates the static site in `dist`.
+
+See `docs/DEPLOYMENT.md` for Cloudflare Pages setup and post-deploy checks.
+
 ## Data Refresh Guardrail
 
 Normal validation and build commands do not fetch fresh source data. Network fetch/update scripts should be run only during an intentional data-refresh phase.
