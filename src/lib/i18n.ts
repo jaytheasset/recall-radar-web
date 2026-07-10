@@ -103,6 +103,7 @@ const enMessages = {
   'checker.refineRecallArea': 'Area: {label}',
   'checker.refineAudience': 'For: {label}',
   'checker.refineDate': 'Date: {label}',
+  'checker.clearFilters': 'Clear filters',
   'checker.productBrand': 'Product / brand',
   'checker.whyShown': 'Why shown',
   'checker.notListedInNotice': 'Not listed in the recall notice.',

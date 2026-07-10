@@ -1953,6 +1953,24 @@ button:disabled {
   box-shadow: none;
 }
 
+.clear-filters-link {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--muted);
+  box-shadow: none;
+  font-size: 0.85rem;
+  font-weight: 780;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.clear-filters-link:hover {
+  background: transparent;
+  color: var(--black);
+  box-shadow: none;
+}
+
 .category-search-panel {
   display: grid;
   gap: 0.8rem;

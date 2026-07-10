@@ -384,7 +384,10 @@ const sourceCardDetails = {
             <div class="meta-row">
               <span id="result-match" class="status-pill">No clear match</span>
               <span id="result-count" class="tag">0 recalls</span>
-            <span id="result-filter-summary" class="tag">All markets</span>
+              <span id="result-filter-summary" class="tag">All markets</span>
+              <button id="clear-search-filters" class="clear-filters-link" type="button" hidden data-i18n="checker.clearFilters">
+                Clear filters
+              </button>
             </div>
             <p id="result-summary"></p>
             <div id="result-refine" class="result-refine" hidden></div>
@@ -530,6 +533,7 @@ const sourceCardDetails = {
       const matchLabel = document.querySelector<HTMLElement>('#result-match');
       const countLabel = document.querySelector<HTMLElement>('#result-count');
       const filterSummary = document.querySelector<HTMLElement>('#result-filter-summary');
+      const clearFiltersButton = document.querySelector<HTMLButtonElement>('#clear-search-filters');
       const summary = document.querySelector<HTMLElement>('#result-summary');
       const refine = document.querySelector<HTMLElement>('#result-refine');
       const disclaimer = document.querySelector<HTMLElement>('#result-disclaimer');
@@ -781,6 +785,29 @@ const sourceCardDetails = {
             state.sort !== 'best' ||
             state.date !== 'all'
         );
+      }
+
+      function hasActiveFilters(state: SearchState): boolean {
+        return Boolean(
+          state.source !== 'all' ||
+            state.category !== 'all' ||
+            state.hazard !== 'all' ||
+            state.domain !== 'all' ||
+            state.audience !== 'all' ||
+            state.sort !== 'best' ||
+            state.date !== 'all'
+        );
+      }
+
+      function clearFilters(): void {
+        if (sourceFilter) sourceFilter.value = 'all';
+        if (categoryFilter) categoryFilter.value = 'all';
+        if (hazardFilter) hazardFilter.value = 'all';
+        if (domainFilter) domainFilter.value = 'all';
+        if (audienceFilter) audienceFilter.value = 'all';
+        if (sortFilter) sortFilter.value = 'best';
+        if (dateFilter) dateFilter.value = 'all';
+        updateSearch();
       }
 
       function createTag(text: string, className = 'tag'): HTMLElement {
@@ -1379,6 +1406,9 @@ const sourceCardDetails = {
         const filteredRecalls = filterRecalls(state);
         panel.hidden = false;
         filterSummary.textContent = describeFilters(state);
+        if (clearFiltersButton) {
+          clearFiltersButton.hidden = !hasActiveFilters(state);
+        }
         disclaimer.textContent = SEARCH_RESULTS_DISCLAIMER;
         if (saveSearchButton) {
           saveSearchButton.hidden = !state.query;
@@ -1489,6 +1519,7 @@ const sourceCardDetails = {
       [sourceFilter, categoryFilter, hazardFilter, domainFilter, audienceFilter, sortFilter, dateFilter].forEach((filter) => {
         filter?.addEventListener('change', updateSearch);
       });
+      clearFiltersButton?.addEventListener('click', clearFilters);
       saveSearchButton?.addEventListener('click', saveCurrentSearch);
       document.querySelectorAll<HTMLSelectElement>('[data-ui-language-select]').forEach((select) => {
         select.addEventListener('change', () => {
