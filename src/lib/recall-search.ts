@@ -1,4 +1,4 @@
-import type { HazardType } from '../data/recall-taxonomy-v2.ts';
+import type { HazardType, ProductType } from '../data/recall-taxonomy-v2.ts';
 import type { SiteRecall } from './recall-data';
 import {
   expandSearchQuery,
@@ -9,6 +9,7 @@ import {
 import { getSourceIdentifierGuidance } from './identifier-guidance.ts';
 import { getHazardSearchIntent } from './hazard-search-intent.ts';
 import { getProductFamilySearchIntent, getProductFamilySearchLabels } from './i18n.ts';
+import { getProductTypeSearchIntent } from './product-type-search-intent.ts';
 import { getRecallSourceSearchIntent } from './recall-sources.ts';
 
 export type RecallMatchType = 'exact' | 'possible' | 'related' | 'none';
@@ -738,7 +739,9 @@ export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearc
   const productFamilyIntent = getProductFamilySearchIntent(sourceQuery);
   const productFamilyQuery = productFamilyIntent?.remainingQuery || sourceQuery;
   const hazardIntent = getHazardSearchIntent(productFamilyQuery);
-  const searchQuery = hazardIntent?.remainingQuery || productFamilyQuery;
+  const hazardQuery = hazardIntent?.remainingQuery || productFamilyQuery;
+  const productTypeIntent = getProductTypeSearchIntent(hazardQuery);
+  const searchQuery = productTypeIntent?.remainingQuery || hazardQuery;
   const scopedRecalls = recalls.filter((recall) => {
     const sourceMatches =
       !sourceIntent || sourceIntent.sourceIds.includes(recall.source as (typeof sourceIntent.sourceIds)[number]);
@@ -746,15 +749,20 @@ export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearc
       !productFamilyIntent || productFamilyIntent.productFamilies.includes(recall.taxonomyProductFamily ?? '');
     const hazardMatches =
       !hazardIntent || hazardIntent.hazardTypes.includes((recall.taxonomyHazardType ?? 'unknown') as HazardType);
-    return sourceMatches && productFamilyMatches && hazardMatches;
+    const productTypeMatches =
+      !productTypeIntent ||
+      productTypeIntent.productTypes.includes((recall.taxonomyProductType ?? 'unknown') as ProductType);
+    return sourceMatches && productFamilyMatches && hazardMatches && productTypeMatches;
   });
-  const scopedOnlyReason = hazardIntent?.isHazardOnly
-    ? 'hazard'
-    : productFamilyIntent?.isProductFamilyOnly
-      ? 'product-type'
-      : sourceIntent?.isSourceOnly
-        ? 'source'
-        : null;
+  const scopedOnlyReason = productTypeIntent?.isProductTypeOnly
+    ? 'product-type'
+    : hazardIntent?.isHazardOnly
+      ? 'hazard'
+      : productFamilyIntent?.isProductFamilyOnly
+        ? 'product-type'
+        : sourceIntent?.isSourceOnly
+          ? 'source'
+          : null;
   const matches = scopedRecalls
     .map((recall) => {
       const match = scopedOnlyReason ? 'related' : getRecallMatch(searchQuery, recall);
