@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { NormalizedRecall, ProcessedRecallFile } from '../src/data/recall-types.ts';
-import type { RecallClassificationV2 } from '../src/data/recall-taxonomy-v2.ts';
+import { HAZARD_TYPE_VALUES, type RecallClassificationV2 } from '../src/data/recall-taxonomy-v2.ts';
 import type { SiteRecall, SiteRecallCategory } from '../src/lib/recall-data.ts';
 import {
   buildRecallSearchText,
@@ -13,6 +13,7 @@ import {
 } from '../src/lib/multilingual-search.ts';
 import { searchRecalls } from '../src/lib/recall-search.ts';
 import { getMessage, getProductFamilyI18nKey, SUPPORTED_LOCALES } from '../src/lib/i18n.ts';
+import { getHazardTypeLabel } from '../src/lib/taxonomy-v2-display.ts';
 import { MULTILINGUAL_SEARCH_SCENARIOS } from './multilingual-search-scenarios.ts';
 
 type AuditStatus = 'pass' | 'warning' | 'fail';
@@ -115,6 +116,19 @@ type ProductFamilySearchCheck = {
   status: AuditStatus;
 };
 
+type HazardSearchCheck = {
+  id: string;
+  query: string;
+  expectedHazardTypes: string[];
+  expectedSources?: string[];
+  matchedCount: number;
+  matchedHazardTypes: string[];
+  matchedSources: string[];
+  warnings: string[];
+  failures: string[];
+  status: AuditStatus;
+};
+
 type ClassificationV2File = {
   records?: Array<{
     recordId: string;
@@ -180,6 +194,27 @@ const SEARCHABLE_PRODUCT_FAMILIES = [
   'pet-products',
   'industrial-workplace'
 ] as const;
+
+const MULTILINGUAL_HAZARD_SEARCH_CHECKS: Array<{
+  id: string;
+  query: string;
+  expectedHazardTypes: string[];
+  expectedSources?: string[];
+}> = [
+  { id: 'ko-fire', query: '\uD654\uC7AC', expectedHazardTypes: ['fire', 'burn', 'battery-overheat'] },
+  { id: 'ko-electric-shock', query: '\uAC10\uC804', expectedHazardTypes: ['electric-shock'] },
+  { id: 'ko-allergen', query: '\uC54C\uB808\uB974\uAE30', expectedHazardTypes: ['allergen'] },
+  { id: 'ko-pathogen', query: '\uC138\uADE0', expectedHazardTypes: ['contamination-pathogen'] },
+  { id: 'ko-foreign-matter', query: '\uC774\uBB3C\uC9C8', expectedHazardTypes: ['foreign-matter'] },
+  { id: 'ko-chemical', query: '\uD654\uD559\uC624\uC5FC', expectedHazardTypes: ['contamination-chemical', 'chemical-exposure'] },
+  { id: 'ja-poisoning', query: '\u4E2D\u6BD2', expectedHazardTypes: ['poisoning'] },
+  { id: 'zh-burn', query: '\u70E7\u4F24', expectedHazardTypes: ['fire', 'burn', 'battery-overheat'] },
+  { id: 'fr-strangulation', query: 'etranglement', expectedHazardTypes: ['strangulation'] },
+  { id: 'es-suffocation', query: 'asfixia', expectedHazardTypes: ['choking', 'suffocation'] },
+  { id: 'de-electric-shock', query: 'stromschlag', expectedHazardTypes: ['electric-shock'] },
+  { id: 'pt-fall', query: 'queda', expectedHazardTypes: ['fall', 'injury'] },
+  { id: 'cpsc-fire', query: 'CPSC Fire', expectedHazardTypes: ['fire'], expectedSources: ['CPSC'] }
+];
 
 const SOURCE_CATEGORY_CHECKS: Array<{
   id: string;
@@ -837,6 +872,48 @@ function runProductFamilySearchCheck(
   };
 }
 
+function runHazardSearchCheck(
+  records: SiteRecall[],
+  check: (typeof MULTILINGUAL_HAZARD_SEARCH_CHECKS)[number]
+): HazardSearchCheck {
+  const result = searchRecalls(check.query, records);
+  const matchedHazardTypes = [...new Set(result.items.map((item) => item.recall.taxonomyHazardType ?? 'unclassified'))].sort();
+  const matchedSources = [...new Set(result.items.map((item) => item.recall.source))].sort();
+  const expectedHazardTypes = [...check.expectedHazardTypes].sort();
+  const warnings: string[] = [];
+  const failures: string[] = [];
+
+  if (result.items.length === 0) {
+    failures.push('Hazard query returned no results.');
+  }
+
+  const unexpectedHazardTypes = matchedHazardTypes.filter((hazardType) => !expectedHazardTypes.includes(hazardType));
+  if (unexpectedHazardTypes.length > 0) {
+    failures.push(
+      `Expected only hazards ${expectedHazardTypes.join(', ')}, found unexpected ${unexpectedHazardTypes.join(', ')}.`
+    );
+  }
+
+  if (check.expectedSources && matchedSources.join(',') !== [...check.expectedSources].sort().join(',')) {
+    failures.push(
+      `Expected sources ${check.expectedSources.join(', ')}, found ${matchedSources.join(', ') || 'none'}.`
+    );
+  }
+
+  return {
+    id: check.id,
+    query: check.query,
+    expectedHazardTypes,
+    expectedSources: check.expectedSources,
+    matchedCount: result.items.length,
+    matchedHazardTypes,
+    matchedSources,
+    warnings,
+    failures,
+    status: statusFor(warnings, failures)
+  };
+}
+
 const processedFile = JSON.parse(await readFile(canonicalProcessedPath, 'utf8')) as ProcessedRecallFile;
 const classificationFile = JSON.parse(await readFile(classificationProcessedPath, 'utf8')) as ClassificationV2File;
 const classificationsByRecordId = new Map(
@@ -870,6 +947,16 @@ const productFamilySearchChecks = SEARCHABLE_PRODUCT_FAMILIES
   .flatMap((productFamily) =>
     SUPPORTED_LOCALES.map((locale) => runProductFamilySearchCheck(records, productFamily, locale))
   );
+const directHazardSearchChecks = HAZARD_TYPE_VALUES
+  .filter((hazardType) => hazardType !== 'unknown' && records.some((record) => record.taxonomyHazardType === hazardType))
+  .map((hazardType) => ({
+    id: `hazard-${hazardType}`,
+    query: getHazardTypeLabel(hazardType),
+    expectedHazardTypes: [hazardType]
+  }));
+const hazardSearchChecks = [...directHazardSearchChecks, ...MULTILINGUAL_HAZARD_SEARCH_CHECKS].map((check) =>
+  runHazardSearchCheck(records, check)
+);
 const negativeQueryChecks = scenarioResults.filter((result) => result.group === 'negative/noise');
 
 const warningCount =
@@ -878,7 +965,8 @@ const warningCount =
   sourceCategoryChecks.reduce((total, result) => total + result.warnings.length, 0) +
   rankingNotes.reduce((total, result) => total + result.warnings.length, 0) +
   sourceSearchIntentChecks.reduce((total, result) => total + result.warnings.length, 0) +
-  productFamilySearchChecks.reduce((total, result) => total + result.warnings.length, 0);
+  productFamilySearchChecks.reduce((total, result) => total + result.warnings.length, 0) +
+  hazardSearchChecks.reduce((total, result) => total + result.warnings.length, 0);
 const failCount =
   sourceCountFailures.length +
   scenarioResults.reduce((total, result) => total + result.failures.length, 0) +
@@ -886,7 +974,8 @@ const failCount =
   sourceCategoryChecks.reduce((total, result) => total + result.failures.length, 0) +
   rankingNotes.reduce((total, result) => total + result.failures.length, 0) +
   sourceSearchIntentChecks.reduce((total, result) => total + result.failures.length, 0) +
-  productFamilySearchChecks.reduce((total, result) => total + result.failures.length, 0);
+  productFamilySearchChecks.reduce((total, result) => total + result.failures.length, 0) +
+  hazardSearchChecks.reduce((total, result) => total + result.failures.length, 0);
 
 const summary = {
   passed: failCount === 0,
@@ -904,6 +993,7 @@ const summary = {
   sourceCategoryChecks,
   sourceSearchIntentChecks,
   productFamilySearchChecks,
+  hazardSearchChecks,
   negativeQueryChecks,
   rankingNotes
 };

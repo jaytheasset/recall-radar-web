@@ -1,3 +1,4 @@
+import type { HazardType } from '../data/recall-taxonomy-v2.ts';
 import type { SiteRecall } from './recall-data';
 import {
   expandSearchQuery,
@@ -6,6 +7,7 @@ import {
   tokenizeSearchQuery
 } from './multilingual-search.ts';
 import { getSourceIdentifierGuidance } from './identifier-guidance.ts';
+import { getHazardSearchIntent } from './hazard-search-intent.ts';
 import { getProductFamilySearchIntent, getProductFamilySearchLabels } from './i18n.ts';
 import { getRecallSourceSearchIntent } from './recall-sources.ts';
 
@@ -734,19 +736,25 @@ export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearc
   const sourceIntent = getRecallSourceSearchIntent(query);
   const sourceQuery = sourceIntent?.remainingQuery || query;
   const productFamilyIntent = getProductFamilySearchIntent(sourceQuery);
-  const searchQuery = productFamilyIntent?.remainingQuery || sourceQuery;
+  const productFamilyQuery = productFamilyIntent?.remainingQuery || sourceQuery;
+  const hazardIntent = getHazardSearchIntent(productFamilyQuery);
+  const searchQuery = hazardIntent?.remainingQuery || productFamilyQuery;
   const scopedRecalls = recalls.filter((recall) => {
     const sourceMatches =
       !sourceIntent || sourceIntent.sourceIds.includes(recall.source as (typeof sourceIntent.sourceIds)[number]);
     const productFamilyMatches =
       !productFamilyIntent || productFamilyIntent.productFamilies.includes(recall.taxonomyProductFamily ?? '');
-    return sourceMatches && productFamilyMatches;
+    const hazardMatches =
+      !hazardIntent || hazardIntent.hazardTypes.includes((recall.taxonomyHazardType ?? 'unknown') as HazardType);
+    return sourceMatches && productFamilyMatches && hazardMatches;
   });
-  const scopedOnlyReason = productFamilyIntent?.isProductFamilyOnly
-    ? 'product-type'
-    : sourceIntent?.isSourceOnly
-      ? 'source'
-      : null;
+  const scopedOnlyReason = hazardIntent?.isHazardOnly
+    ? 'hazard'
+    : productFamilyIntent?.isProductFamilyOnly
+      ? 'product-type'
+      : sourceIntent?.isSourceOnly
+        ? 'source'
+        : null;
   const matches = scopedRecalls
     .map((recall) => {
       const match = scopedOnlyReason ? 'related' : getRecallMatch(searchQuery, recall);
