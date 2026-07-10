@@ -5,6 +5,7 @@ import type { NormalizedRecall, ProcessedRecallFile } from '../src/data/recall-t
 import {
   HAZARD_TYPE_VALUES,
   PRODUCT_TYPE_VALUES,
+  RECALL_AUDIENCE_VALUES,
   RECALL_DOMAIN_VALUES,
   type RecallClassificationV2
 } from '../src/data/recall-taxonomy-v2.ts';
@@ -18,7 +19,12 @@ import {
 } from '../src/lib/multilingual-search.ts';
 import { searchRecalls } from '../src/lib/recall-search.ts';
 import { getMessage, getProductFamilyI18nKey, SUPPORTED_LOCALES } from '../src/lib/i18n.ts';
-import { getHazardTypeLabel, getProductTypeLabel, getRecallDomainLabel } from '../src/lib/taxonomy-v2-display.ts';
+import {
+  getAudienceLabel,
+  getHazardTypeLabel,
+  getProductTypeLabel,
+  getRecallDomainLabel
+} from '../src/lib/taxonomy-v2-display.ts';
 import { MULTILINGUAL_SEARCH_SCENARIOS } from './multilingual-search-scenarios.ts';
 
 type AuditStatus = 'pass' | 'warning' | 'fail';
@@ -160,6 +166,19 @@ type RecallDomainSearchCheck = {
   status: AuditStatus;
 };
 
+type RecallAudienceSearchCheck = {
+  id: string;
+  query: string;
+  expectedAudiences: string[];
+  expectedSources?: string[];
+  matchedCount: number;
+  matchedAudiences: string[];
+  matchedSources: string[];
+  warnings: string[];
+  failures: string[];
+  status: AuditStatus;
+};
+
 type ClassificationV2File = {
   records?: Array<{
     recordId: string;
@@ -278,6 +297,25 @@ const MULTILINGUAL_RECALL_DOMAIN_SEARCH_CHECKS: Array<{
     id: 'cpsc-consumer-product-recall',
     query: 'CPSC consumer product recall',
     expectedRecallDomains: ['consumer-product'],
+    expectedSources: ['CPSC']
+  }
+];
+
+const MULTILINGUAL_RECALL_AUDIENCE_SEARCH_CHECKS: Array<{
+  id: string;
+  query: string;
+  expectedAudiences: string[];
+  expectedSources?: string[];
+}> = [
+  { id: 'ko-children-recall', query: '\uC5B4\uB9B0\uC774 \uB9AC\uCF5C', expectedAudiences: ['children'] },
+  { id: 'fr-infants-recall', query: 'rappel pour nourrissons', expectedAudiences: ['infants'] },
+  { id: 'en-older-adults-recall', query: 'older adults recall', expectedAudiences: ['elderly'] },
+  { id: 'en-pregnant-people-recall', query: 'for pregnant people', expectedAudiences: ['pregnant-people'] },
+  { id: 'ja-vehicle-users-recall', query: '\u8ECA\u4E21\u5229\u7528\u8005\u5411\u3051\u30EA\u30B3\u30FC\u30EB', expectedAudiences: ['vehicle-users'] },
+  {
+    id: 'cpsc-children-recall',
+    query: 'CPSC for children',
+    expectedAudiences: ['children'],
     expectedSources: ['CPSC']
   }
 ];
@@ -509,6 +547,7 @@ function toSiteRecall(record: NormalizedRecall, taxonomyV2?: RecallClassificatio
     taxonomyHazardType: taxonomyV2?.hazardType,
     taxonomyHazardTags: taxonomyV2?.hazardTags ?? [],
     taxonomyRecallDomain: taxonomyV2?.recallDomain,
+    taxonomyAudience: taxonomyV2?.audience ?? [],
     taxonomyAudienceLabels: taxonomyV2?.audience ?? [],
     taxonomyReason: taxonomyV2?.reason,
     hazard: record.hazard,
@@ -1068,6 +1107,56 @@ function runRecallDomainSearchCheck(
   };
 }
 
+function runRecallAudienceSearchCheck(
+  records: SiteRecall[],
+  check: (typeof MULTILINGUAL_RECALL_AUDIENCE_SEARCH_CHECKS)[number]
+): RecallAudienceSearchCheck {
+  const result = searchRecalls(check.query, records);
+  const matchedAudiences = [
+    ...new Set(result.items.flatMap((item) => item.recall.taxonomyAudience ?? []))
+  ].sort();
+  const matchedSources = [...new Set(result.items.map((item) => item.recall.source))].sort();
+  const expectedAudiences = [...check.expectedAudiences].sort();
+  const warnings: string[] = [];
+  const failures: string[] = [];
+
+  if (result.items.length === 0) {
+    failures.push('Audience query returned no results.');
+  }
+
+  if (result.items.some((item) => item.matchReason !== 'audience' || item.match !== 'related')) {
+    failures.push('Audience-only results must be marked as related audience matches.');
+  }
+
+  const recordsMissingExpectedAudience = result.items.filter(
+    (item) => !(item.recall.taxonomyAudience ?? []).some((audience) => expectedAudiences.includes(audience))
+  );
+  if (recordsMissingExpectedAudience.length > 0) {
+    failures.push(
+      `${recordsMissingExpectedAudience.length} results did not include one of the requested audiences ${expectedAudiences.join(', ')}.`
+    );
+  }
+
+  if (check.expectedSources && matchedSources.join(',') !== [...check.expectedSources].sort().join(',')) {
+    failures.push(
+      `Expected sources ${check.expectedSources.join(', ')}, found ${matchedSources.join(', ') || 'none'}.`
+    );
+  }
+
+  return {
+    id: check.id,
+    query: check.query,
+    expectedAudiences,
+    expectedSources: check.expectedSources,
+    matchedCount: result.items.length,
+    matchedAudiences,
+    matchedSources,
+    warnings,
+    failures,
+    status: statusFor(warnings, failures)
+  };
+}
+
 const processedFile = JSON.parse(await readFile(canonicalProcessedPath, 'utf8')) as ProcessedRecallFile;
 const classificationFile = JSON.parse(await readFile(classificationProcessedPath, 'utf8')) as ClassificationV2File;
 const classificationsByRecordId = new Map(
@@ -1134,6 +1223,18 @@ const recallDomainSearchChecks = [
   ...directRecallDomainSearchChecks,
   ...MULTILINGUAL_RECALL_DOMAIN_SEARCH_CHECKS
 ].map((check) => runRecallDomainSearchCheck(records, check));
+const directRecallAudienceSearchChecks = RECALL_AUDIENCE_VALUES
+  .filter((audience) => audience !== 'general' && audience !== 'unknown')
+  .filter((audience) => records.some((record) => record.taxonomyAudience?.includes(audience)))
+  .map((audience) => ({
+    id: `audience-${audience}`,
+    query: `${getAudienceLabel(audience)} recall`,
+    expectedAudiences: [audience]
+  }));
+const recallAudienceSearchChecks = [
+  ...directRecallAudienceSearchChecks,
+  ...MULTILINGUAL_RECALL_AUDIENCE_SEARCH_CHECKS
+].map((check) => runRecallAudienceSearchCheck(records, check));
 const negativeQueryChecks = scenarioResults.filter((result) => result.group === 'negative/noise');
 
 const warningCount =
@@ -1145,7 +1246,8 @@ const warningCount =
   productFamilySearchChecks.reduce((total, result) => total + result.warnings.length, 0) +
   hazardSearchChecks.reduce((total, result) => total + result.warnings.length, 0) +
   productTypeSearchChecks.reduce((total, result) => total + result.warnings.length, 0) +
-  recallDomainSearchChecks.reduce((total, result) => total + result.warnings.length, 0);
+  recallDomainSearchChecks.reduce((total, result) => total + result.warnings.length, 0) +
+  recallAudienceSearchChecks.reduce((total, result) => total + result.warnings.length, 0);
 const failCount =
   sourceCountFailures.length +
   scenarioResults.reduce((total, result) => total + result.failures.length, 0) +
@@ -1156,7 +1258,8 @@ const failCount =
   productFamilySearchChecks.reduce((total, result) => total + result.failures.length, 0) +
   hazardSearchChecks.reduce((total, result) => total + result.failures.length, 0) +
   productTypeSearchChecks.reduce((total, result) => total + result.failures.length, 0) +
-  recallDomainSearchChecks.reduce((total, result) => total + result.failures.length, 0);
+  recallDomainSearchChecks.reduce((total, result) => total + result.failures.length, 0) +
+  recallAudienceSearchChecks.reduce((total, result) => total + result.failures.length, 0);
 
 const summary = {
   passed: failCount === 0,
@@ -1177,6 +1280,7 @@ const summary = {
   hazardSearchChecks,
   productTypeSearchChecks,
   recallDomainSearchChecks,
+  recallAudienceSearchChecks,
   negativeQueryChecks,
   rankingNotes
 };

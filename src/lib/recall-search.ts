@@ -1,4 +1,4 @@
-import type { HazardType, ProductType, RecallDomain } from '../data/recall-taxonomy-v2.ts';
+import type { HazardType, ProductType, RecallAudience, RecallDomain } from '../data/recall-taxonomy-v2.ts';
 import type { SiteRecall } from './recall-data';
 import {
   expandSearchQuery,
@@ -10,6 +10,7 @@ import { getSourceIdentifierGuidance } from './identifier-guidance.ts';
 import { getHazardSearchIntent } from './hazard-search-intent.ts';
 import { getProductFamilySearchIntent, getProductFamilySearchLabels } from './i18n.ts';
 import { getProductTypeSearchIntent } from './product-type-search-intent.ts';
+import { getRecallAudienceSearchIntent } from './recall-audience-search-intent.ts';
 import { getRecallDomainSearchIntent } from './recall-domain-search-intent.ts';
 import { getRecallSourceSearchIntent } from './recall-sources.ts';
 
@@ -22,6 +23,7 @@ export type RecallMatchReason =
   | 'ingredient'
   | 'product-type'
   | 'hazard'
+  | 'audience'
   | 'recall-domain'
   | 'source'
   | 'keyword';
@@ -63,6 +65,7 @@ export const MATCH_REASON_LABELS: Record<RecallMatchReason, string> = {
   ingredient: 'Matched by ingredient or allergen',
   'product-type': 'Related by product family',
   hazard: 'Related by hazard or reason',
+  audience: 'Related by intended audience',
   'recall-domain': 'Related by recall area',
   source: 'Related by market/source',
   keyword: 'Matched by keyword'
@@ -82,6 +85,7 @@ const MATCH_REASON_SCORES: Record<RecallMatchReason, number> = {
   ingredient: 230,
   'product-type': 150,
   hazard: 140,
+  audience: 115,
   'recall-domain': 105,
   source: 70,
   keyword: 40
@@ -95,6 +99,7 @@ const EVIDENCE_LABELS: Record<RecallMatchReason, string> = {
   ingredient: 'Ingredient or allergen',
   'product-type': 'Product type',
   hazard: 'Issue or hazard',
+  audience: 'Intended audience',
   'recall-domain': 'Recall area',
   source: 'Country or source',
   keyword: 'Keyword'
@@ -739,8 +744,10 @@ function compareRecalls(
 }
 
 export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearchResult {
-  const recallDomainIntent = getRecallDomainSearchIntent(query);
-  const recallDomainQuery = recallDomainIntent?.remainingQuery ?? query;
+  const audienceIntent = getRecallAudienceSearchIntent(query);
+  const audienceQuery = audienceIntent?.remainingQuery ?? query;
+  const recallDomainIntent = getRecallDomainSearchIntent(audienceQuery);
+  const recallDomainQuery = recallDomainIntent?.remainingQuery ?? audienceQuery;
   const sourceIntent = getRecallSourceSearchIntent(recallDomainQuery);
   const sourceQuery = sourceIntent?.remainingQuery ?? recallDomainQuery;
   const productFamilyIntent = getProductFamilySearchIntent(sourceQuery);
@@ -762,20 +769,25 @@ export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearc
     const recallDomainMatches =
       !recallDomainIntent ||
       recallDomainIntent.recallDomains.includes((recall.taxonomyRecallDomain ?? 'unknown') as RecallDomain);
-    return sourceMatches && productFamilyMatches && hazardMatches && productTypeMatches && recallDomainMatches;
+    const audienceMatches =
+      !audienceIntent ||
+      (recall.taxonomyAudience ?? []).some((audience) => audienceIntent.audiences.includes(audience as RecallAudience));
+    return sourceMatches && productFamilyMatches && hazardMatches && productTypeMatches && recallDomainMatches && audienceMatches;
   });
   const scopedOnlyReason = !searchQuery
-    ? recallDomainIntent
-      ? 'recall-domain'
-      : productTypeIntent
-        ? 'product-type'
-        : hazardIntent
-          ? 'hazard'
-          : productFamilyIntent
-            ? 'product-type'
-            : sourceIntent
-              ? 'source'
-              : null
+    ? audienceIntent
+      ? 'audience'
+      : recallDomainIntent
+        ? 'recall-domain'
+        : productTypeIntent
+          ? 'product-type'
+          : hazardIntent
+            ? 'hazard'
+            : productFamilyIntent
+              ? 'product-type'
+              : sourceIntent
+                ? 'source'
+                : null
     : null;
   const matches = scopedRecalls
     .map((recall) => {

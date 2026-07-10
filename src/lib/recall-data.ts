@@ -1,6 +1,6 @@
 import processedRecallData from '../../data/processed/recalls.json';
 import { mockRecalls, type MockRecall, type RecallCategory } from '../data/mock-recalls';
-import type { RecallClassificationV2 } from '../data/recall-taxonomy-v2';
+import type { RecallAudience, RecallClassificationV2 } from '../data/recall-taxonomy-v2';
 import type { NormalizedRecall, ProcessedRecallFile, RecallImage } from '../data/recall-types';
 import { normalizeBrandName } from './brand-normalize';
 import {
@@ -47,6 +47,7 @@ export type SiteRecall = {
   taxonomyHazardTags?: string[];
   taxonomyRecallDomain?: string;
   taxonomyRecallDomainLabel?: string;
+  taxonomyAudience?: RecallAudience[];
   taxonomyAudienceLabels?: string[];
   taxonomyConfidence?: number;
   taxonomyNeedsReview?: boolean;
@@ -671,6 +672,7 @@ function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
     taxonomyHazardTags: taxonomyV2?.hazardTags ?? [],
     taxonomyRecallDomain: taxonomyV2?.recallDomain,
     taxonomyRecallDomainLabel: taxonomyV2 ? getRecallDomainLabel(taxonomyV2.recallDomain) : undefined,
+    taxonomyAudience: taxonomyV2?.audience ?? [],
     taxonomyAudienceLabels: taxonomyV2?.audience.map(getAudienceLabel) ?? [],
     taxonomyConfidence: taxonomyV2?.confidence,
     taxonomyNeedsReview: taxonomyV2?.needsReview,
