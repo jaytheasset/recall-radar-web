@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { NormalizedRecall, ProcessedRecallFile } from '../src/data/recall-types.ts';
+import type { RecallClassificationV2 } from '../src/data/recall-taxonomy-v2.ts';
 import type { SiteRecall, SiteRecallCategory } from '../src/lib/recall-data.ts';
 import {
   buildRecallSearchText,
@@ -11,6 +12,7 @@ import {
   searchTextMatchesQuery
 } from '../src/lib/multilingual-search.ts';
 import { searchRecalls } from '../src/lib/recall-search.ts';
+import { getMessage, getProductFamilyI18nKey, SUPPORTED_LOCALES } from '../src/lib/i18n.ts';
 import { MULTILINGUAL_SEARCH_SCENARIOS } from './multilingual-search-scenarios.ts';
 
 type AuditStatus = 'pass' | 'warning' | 'fail';
@@ -101,6 +103,27 @@ type SourceSearchIntentCheck = {
   status: AuditStatus;
 };
 
+type ProductFamilySearchCheck = {
+  productFamily: string;
+  locale: string;
+  query: string;
+  availableRecordCount: number;
+  matchingRecordCount: number;
+  topResultFamilies: string[];
+  warnings: string[];
+  failures: string[];
+  status: AuditStatus;
+};
+
+type ClassificationV2File = {
+  records?: Array<{
+    recordId: string;
+    success?: boolean;
+    failed?: boolean;
+    classification?: RecallClassificationV2;
+  }>;
+};
+
 const EXPECTED_SOURCE_COUNTS: Record<SourceId, number> = {
   CPSC: 301,
   FDA: 100,
@@ -141,6 +164,22 @@ const SOURCE_SEARCH_INTENT_CHECKS: Array<{
     mixedQuery: 'pistachio FDA'
   }
 ];
+
+const SEARCHABLE_PRODUCT_FAMILIES = [
+  'food-grocery',
+  'baby-kids',
+  'electronics-batteries',
+  'home-appliances',
+  'furniture-household',
+  'vehicles-mobility',
+  'sports-outdoor',
+  'tools-equipment',
+  'clothing-accessories',
+  'health-personal-care',
+  'chemicals-cleaning',
+  'pet-products',
+  'industrial-workplace'
+] as const;
 
 const SOURCE_CATEGORY_CHECKS: Array<{
   id: string;
@@ -226,6 +265,7 @@ const SOURCE_CATEGORY_CHECKS: Array<{
 
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const canonicalProcessedPath = resolve(projectRoot, 'data/processed/recalls.json');
+const classificationProcessedPath = resolve(projectRoot, 'data/processed/recall-classifications-v2.json');
 
 function unique(values: string[]): string[] {
   return [...new Set(values.filter(Boolean))];
@@ -341,7 +381,7 @@ function inferAuditCategory(record: NormalizedRecall): SiteRecallCategory {
   return 'general-consumer-product';
 }
 
-function toSiteRecall(record: NormalizedRecall): SiteRecall {
+function toSiteRecall(record: NormalizedRecall, taxonomyV2?: RecallClassificationV2): SiteRecall {
   const primaryBrand = record.brandNames[0] ?? 'Unknown brand';
   const primaryProductName = record.productNames[0] ?? record.title;
   const category = inferAuditCategory(record);
@@ -362,6 +402,14 @@ function toSiteRecall(record: NormalizedRecall): SiteRecall {
     category,
     rawCategory: record.category,
     categoryLabel: category,
+    taxonomyV2,
+    taxonomyProductFamily: taxonomyV2?.productFamily,
+    taxonomyProductType: taxonomyV2?.productType,
+    taxonomyHazardType: taxonomyV2?.hazardType,
+    taxonomyHazardTags: taxonomyV2?.hazardTags ?? [],
+    taxonomyRecallDomain: taxonomyV2?.recallDomain,
+    taxonomyAudienceLabels: taxonomyV2?.audience ?? [],
+    taxonomyReason: taxonomyV2?.reason,
     hazard: record.hazard,
     remedy: record.remedy,
     recallDate: record.recallDate,
@@ -756,8 +804,49 @@ function runSourceSearchIntentCheck(
   };
 }
 
+function runProductFamilySearchCheck(
+  records: SiteRecall[],
+  productFamily: (typeof SEARCHABLE_PRODUCT_FAMILIES)[number],
+  locale: (typeof SUPPORTED_LOCALES)[number]
+): ProductFamilySearchCheck {
+  const query = getMessage(getProductFamilyI18nKey(productFamily), locale);
+  const expectedRecords = records.filter((record) => record.taxonomyProductFamily === productFamily);
+  const result = searchRecalls(query, records);
+  const matchingItems = result.items.filter((item) => item.recall.taxonomyProductFamily === productFamily);
+  const warnings: string[] = [];
+  const failures: string[] = [];
+
+  if (matchingItems.length === 0) {
+    failures.push(`Translated product-family query did not return a ${productFamily} record.`);
+  }
+
+  if (result.items.length > 0 && result.items[0].recall.taxonomyProductFamily !== productFamily) {
+    failures.push(`Top result belongs to ${result.items[0].recall.taxonomyProductFamily ?? 'an unclassified family'}.`);
+  }
+
+  return {
+    productFamily,
+    locale,
+    query,
+    availableRecordCount: expectedRecords.length,
+    matchingRecordCount: matchingItems.length,
+    topResultFamilies: result.items.slice(0, 5).map((item) => item.recall.taxonomyProductFamily ?? 'unclassified'),
+    warnings,
+    failures,
+    status: statusFor(warnings, failures)
+  };
+}
+
 const processedFile = JSON.parse(await readFile(canonicalProcessedPath, 'utf8')) as ProcessedRecallFile;
-const records = processedFile.records.map(toSiteRecall);
+const classificationFile = JSON.parse(await readFile(classificationProcessedPath, 'utf8')) as ClassificationV2File;
+const classificationsByRecordId = new Map(
+  (classificationFile.records ?? [])
+    .filter((record): record is { recordId: string; classification: RecallClassificationV2 } =>
+      Boolean(record.success && !record.failed && record.classification)
+    )
+    .map((record) => [record.recordId, record.classification])
+);
+const records = processedFile.records.map((record) => toSiteRecall(record, classificationsByRecordId.get(record.id)));
 const counts = sourceCounts(records);
 
 const sourceCountFailures = Object.entries(EXPECTED_SOURCE_COUNTS).flatMap(([source, expected]) => {
@@ -776,6 +865,11 @@ const rankingNotes = MULTILINGUAL_SEARCH_SCENARIOS.map((scenario) => runRankingN
 const sourceSearchIntentChecks = SOURCE_SEARCH_INTENT_CHECKS.map((check) =>
   runSourceSearchIntentCheck(records, check)
 );
+const productFamilySearchChecks = SEARCHABLE_PRODUCT_FAMILIES
+  .filter((productFamily) => records.some((record) => record.taxonomyProductFamily === productFamily))
+  .flatMap((productFamily) =>
+    SUPPORTED_LOCALES.map((locale) => runProductFamilySearchCheck(records, productFamily, locale))
+  );
 const negativeQueryChecks = scenarioResults.filter((result) => result.group === 'negative/noise');
 
 const warningCount =
@@ -783,14 +877,16 @@ const warningCount =
   exactIdentifierChecks.reduce((total, result) => total + result.warnings.length, 0) +
   sourceCategoryChecks.reduce((total, result) => total + result.warnings.length, 0) +
   rankingNotes.reduce((total, result) => total + result.warnings.length, 0) +
-  sourceSearchIntentChecks.reduce((total, result) => total + result.warnings.length, 0);
+  sourceSearchIntentChecks.reduce((total, result) => total + result.warnings.length, 0) +
+  productFamilySearchChecks.reduce((total, result) => total + result.warnings.length, 0);
 const failCount =
   sourceCountFailures.length +
   scenarioResults.reduce((total, result) => total + result.failures.length, 0) +
   exactIdentifierChecks.reduce((total, result) => total + result.failures.length, 0) +
   sourceCategoryChecks.reduce((total, result) => total + result.failures.length, 0) +
   rankingNotes.reduce((total, result) => total + result.failures.length, 0) +
-  sourceSearchIntentChecks.reduce((total, result) => total + result.failures.length, 0);
+  sourceSearchIntentChecks.reduce((total, result) => total + result.failures.length, 0) +
+  productFamilySearchChecks.reduce((total, result) => total + result.failures.length, 0);
 
 const summary = {
   passed: failCount === 0,
@@ -807,6 +903,7 @@ const summary = {
   exactIdentifierChecks,
   sourceCategoryChecks,
   sourceSearchIntentChecks,
+  productFamilySearchChecks,
   negativeQueryChecks,
   rankingNotes
 };

@@ -6,6 +6,7 @@ import {
   tokenizeSearchQuery
 } from './multilingual-search.ts';
 import { getSourceIdentifierGuidance } from './identifier-guidance.ts';
+import { getProductFamilySearchIntent, getProductFamilySearchLabels } from './i18n.ts';
 import { getRecallSourceSearchIntent } from './recall-sources.ts';
 
 export type RecallMatchType = 'exact' | 'possible' | 'related' | 'none';
@@ -271,6 +272,7 @@ function relatedFields(recall: SiteRecall): string {
     recall.categoryLabel,
     recall.taxonomyProductFamily ?? '',
     recall.taxonomyProductFamilyLabel ?? '',
+    ...getProductFamilySearchLabels(recall.taxonomyProductFamily ?? ''),
     recall.taxonomyProductType ?? '',
     recall.taxonomyProductTypeLabel ?? '',
     recall.taxonomyHazardType ?? '',
@@ -459,6 +461,7 @@ function productTypeFields(recall: SiteRecall): string[] {
     recall.categoryLabel,
     recall.taxonomyProductFamily ?? '',
     recall.taxonomyProductFamilyLabel ?? '',
+    ...getProductFamilySearchLabels(recall.taxonomyProductFamily ?? ''),
     recall.taxonomyProductType ?? '',
     recall.taxonomyProductTypeLabel ?? ''
   ];
@@ -729,19 +732,30 @@ function compareRecalls(
 
 export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearchResult {
   const sourceIntent = getRecallSourceSearchIntent(query);
-  const searchQuery = sourceIntent?.remainingQuery || query;
-  const scopedRecalls = sourceIntent
-    ? recalls.filter((recall) => sourceIntent.sourceIds.includes(recall.source as (typeof sourceIntent.sourceIds)[number]))
-    : recalls;
+  const sourceQuery = sourceIntent?.remainingQuery || query;
+  const productFamilyIntent = getProductFamilySearchIntent(sourceQuery);
+  const searchQuery = productFamilyIntent?.remainingQuery || sourceQuery;
+  const scopedRecalls = recalls.filter((recall) => {
+    const sourceMatches =
+      !sourceIntent || sourceIntent.sourceIds.includes(recall.source as (typeof sourceIntent.sourceIds)[number]);
+    const productFamilyMatches =
+      !productFamilyIntent || productFamilyIntent.productFamilies.includes(recall.taxonomyProductFamily ?? '');
+    return sourceMatches && productFamilyMatches;
+  });
+  const scopedOnlyReason = productFamilyIntent?.isProductFamilyOnly
+    ? 'product-type'
+    : sourceIntent?.isSourceOnly
+      ? 'source'
+      : null;
   const matches = scopedRecalls
     .map((recall) => {
-      const match = sourceIntent?.isSourceOnly ? 'related' : getRecallMatch(searchQuery, recall);
-      const matchReason = sourceIntent?.isSourceOnly ? 'source' : getMatchReason(searchQuery, recall);
+      const match = scopedOnlyReason ? 'related' : getRecallMatch(searchQuery, recall);
+      const matchReason = scopedOnlyReason ?? getMatchReason(searchQuery, recall);
       const score =
         match === 'none'
           ? 0
-          : sourceIntent?.isSourceOnly
-            ? MATCH_BASE_SCORES.related + MATCH_REASON_SCORES.source
+          : scopedOnlyReason
+            ? MATCH_BASE_SCORES.related + MATCH_REASON_SCORES[scopedOnlyReason]
             : getMatchScore(searchQuery, recall, match, matchReason);
       return {
         recall,

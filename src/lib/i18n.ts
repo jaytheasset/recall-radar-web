@@ -4,6 +4,12 @@ export const SUPPORTED_LOCALES = ['en', 'ko', 'ja', 'zh', 'fr', 'es', 'de', 'pt'
 
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
+export type ProductFamilySearchIntent = {
+  productFamilies: string[];
+  remainingQuery: string;
+  isProductFamilyOnly: boolean;
+};
+
 export const UI_LANGUAGE_STORAGE_KEY = 'recall-radar-ui-language-v1';
 
 export const localeOptions: Array<{ value: SupportedLocale; label: string }> = [
@@ -940,6 +946,98 @@ export const messages: Record<SupportedLocale, Record<MessageKey, string>> = {
 
 export function getMessage(key: MessageKey, locale: SupportedLocale = DEFAULT_LOCALE): string {
   return messages[locale]?.[key] ?? messages[DEFAULT_LOCALE][key];
+}
+
+const productFamilySearchLabelCache = new Map<string, string[]>();
+
+export function getProductFamilySearchLabels(productFamily: string): string[] {
+  const cached = productFamilySearchLabelCache.get(productFamily);
+  if (cached) {
+    return cached;
+  }
+
+  const key = getProductFamilyI18nKey(productFamily);
+  const labels = [...new Set([productFamily, ...SUPPORTED_LOCALES.map((locale) => getMessage(key, locale))])];
+  productFamilySearchLabelCache.set(productFamily, labels);
+  return labels;
+}
+
+function normalizeProductFamilySearchText(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .normalize('NFC')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function productFamilyLabelMatchesQuery(normalizedQuery: string, normalizedLabel: string): boolean {
+  if (!normalizedQuery || !normalizedLabel) {
+    return false;
+  }
+
+  const hasNonAscii = /[^\x00-\x7F]/.test(normalizedLabel);
+  if (hasNonAscii || normalizedLabel.includes(' ')) {
+    return normalizedQuery.includes(normalizedLabel);
+  }
+
+  return normalizedQuery.split(' ').includes(normalizedLabel);
+}
+
+function removeProductFamilyLabelsFromQuery(normalizedQuery: string, labels: string[]): string {
+  let remaining = normalizedQuery;
+
+  for (const label of [...new Set(labels.map(normalizeProductFamilySearchText))].sort((a, b) => b.length - a.length)) {
+    if (!label) {
+      continue;
+    }
+
+    if (/[^\x00-\x7F]/.test(label) || label.includes(' ')) {
+      remaining = remaining.split(label).join(' ');
+      continue;
+    }
+
+    remaining = remaining
+      .split(' ')
+      .filter((token) => token !== label)
+      .join(' ');
+  }
+
+  return remaining.replace(/\s+/g, ' ').trim();
+}
+
+export function getProductFamilySearchIntent(query: string): ProductFamilySearchIntent | null {
+  const normalizedQuery = normalizeProductFamilySearchText(query);
+  if (!normalizedQuery) {
+    return null;
+  }
+
+  const matchedFamilies = Object.keys(productFamilyI18nKeys)
+    .filter((productFamily) => productFamily !== 'other' && productFamily !== 'unknown')
+    .map((productFamily) => ({
+      productFamily,
+      matchedLabels: getProductFamilySearchLabels(productFamily).filter((label) =>
+        productFamilyLabelMatchesQuery(normalizedQuery, normalizeProductFamilySearchText(label))
+      )
+    }))
+    .filter(({ matchedLabels }) => matchedLabels.length > 0);
+
+  if (matchedFamilies.length === 0) {
+    return null;
+  }
+
+  const remainingQuery = removeProductFamilyLabelsFromQuery(
+    normalizedQuery,
+    matchedFamilies.flatMap(({ matchedLabels }) => matchedLabels)
+  );
+
+  return {
+    productFamilies: matchedFamilies.map(({ productFamily }) => productFamily),
+    remainingQuery,
+    isProductFamilyOnly: !remainingQuery
+  };
 }
 
 export function isSupportedLocale(value: string | null | undefined): value is SupportedLocale {
