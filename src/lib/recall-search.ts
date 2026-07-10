@@ -195,6 +195,21 @@ function hasExpandedTermMatch(term: string, text: string): boolean {
   return !normalizedTerm.includes(' ') && tokenMatchCount(tokensFor(normalizedTerm), text) > 0;
 }
 
+function hasDirectQueryTokenMatch(queryTokens: string[], text: string): boolean {
+  if (queryTokens.length === 0) {
+    return false;
+  }
+
+  if (queryTokens.length === 1) {
+    return tokenMatchCount(queryTokens, text) > 0;
+  }
+
+  const words = text.split(' ').filter(Boolean);
+  return queryTokens.every((token) =>
+    words.some((word) => word === token || word === `${token}s` || token === `${word}s`)
+  );
+}
+
 function hasTextMatch(
   normalizedQuery: string,
   queryTokens: string[],
@@ -208,7 +223,7 @@ function hasTextMatch(
 
   return (
     text.includes(normalizedQuery) ||
-    tokenMatchCount(queryTokens, text) > 0 ||
+    hasDirectQueryTokenMatch(queryTokens, text) ||
     expandedTerms.some((term) => hasExpandedTermMatch(term, text))
   );
 }
@@ -302,11 +317,6 @@ function tokenMatchCount(tokens: string[], text: string): number {
 
     return words.some((word) => word === token || (token.length >= 4 && word.startsWith(token)));
   }).length;
-}
-
-function hasMeaningfulTokenMatch(tokens: string[], text: string): boolean {
-  const count = tokenMatchCount(tokens, text);
-  return tokens.length >= 3 ? count >= 2 : count > 0;
 }
 
 function hasIdentifierCue(normalizedQuery: string): boolean {
@@ -657,8 +667,7 @@ export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchTy
 
   const possibleText = possibleFields(recall);
   if (
-    hasMeaningfulTokenMatch(queryTokens, possibleText) ||
-    hasMeaningfulTokenMatch(expandedTokens, possibleText) ||
+    hasDirectQueryTokenMatch(queryTokens, possibleText) ||
     expandedTerms.some((term) => hasExpandedTermMatch(term, possibleText))
   ) {
     return 'possible';
@@ -673,8 +682,7 @@ export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchTy
 
   const relatedText = relatedFields(recall);
   if (
-    hasMeaningfulTokenMatch(queryTokens, relatedText) ||
-    hasMeaningfulTokenMatch(expandedTokens, relatedText) ||
+    hasDirectQueryTokenMatch(queryTokens, relatedText) ||
     expandedTerms.some((term) => hasExpandedTermMatch(term, relatedText))
   ) {
     return 'related';

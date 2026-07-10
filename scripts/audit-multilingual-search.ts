@@ -76,6 +76,8 @@ type RankingNote = {
   query: string;
   topResultsChecked: number;
   expectedTerms: string[];
+  topResultTermMatches: number;
+  minimumTopResultTermMatches: number | null;
   topResults: string[];
   warnings: string[];
 };
@@ -354,6 +356,19 @@ function sampleSources(records: SiteRecall[]): string[] {
   return unique(records.slice(0, 10).map((recall) => recall.source));
 }
 
+function visibleResultText(recall: SiteRecall): string {
+  return normalizeSearchText(
+    [
+      recall.title,
+      recall.primaryProductName,
+      recall.primaryBrand,
+      ...recall.productNames,
+      ...recall.brandNames,
+      ...recall.displayBrandNames
+    ].join(' ')
+  );
+}
+
 function recordMatchesQuery(record: SiteRecall, query: string): boolean {
   return matchesMultilingualSearch(record, query);
 }
@@ -558,10 +573,23 @@ function runRankingNote(records: SiteRecall[], scenario: (typeof MULTILINGUAL_SE
   const topItems = result.items.slice(0, 5);
   const topSearchText = normalizeSearchText(topItems.map((item) => buildRecallSearchText(item.recall)).join(' '));
   const expectedTerms = scenario.rankingTerms.map((term) => normalizeSearchText(term));
+  const topResultTermMatches = topItems.filter((item) => {
+    const itemSearchText = visibleResultText(item.recall);
+    return expectedTerms.some((term) => itemSearchText.includes(term));
+  }).length;
   const warnings: string[] = [];
 
   if (!expectedTerms.some((term) => topSearchText.includes(term))) {
     warnings.push(`Top results do not visibly contain expected terms: ${scenario.rankingTerms.join(', ')}.`);
+  }
+
+  if (
+    scenario.minTopResultTermMatches &&
+    topResultTermMatches < scenario.minTopResultTermMatches
+  ) {
+    warnings.push(
+      `Only ${topResultTermMatches} of the top ${topItems.length} results contain a primary term; expected at least ${scenario.minTopResultTermMatches}.`
+    );
   }
 
   return {
@@ -569,6 +597,8 @@ function runRankingNote(records: SiteRecall[], scenario: (typeof MULTILINGUAL_SE
     query: scenario.query,
     topResultsChecked: topItems.length,
     expectedTerms: scenario.rankingTerms,
+    topResultTermMatches,
+    minimumTopResultTermMatches: scenario.minTopResultTermMatches ?? null,
     topResults: topItems.map((item) => `${item.match}:${item.matchReason}:${item.recall.id}:${item.recall.title}`),
     warnings
   };

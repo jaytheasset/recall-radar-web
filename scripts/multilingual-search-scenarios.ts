@@ -19,6 +19,7 @@ export type MultilingualSearchScenario = {
   expectedAliases?: string[];
   expectedSources?: string[];
   rankingTerms?: string[];
+  minTopResultTermMatches?: number;
 };
 
 export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
@@ -301,7 +302,8 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     query: 'power bank',
     minMatches: 1,
     expectedAliases: ['portable charger'],
-    rankingTerms: ['power bank', 'charger', 'battery']
+    rankingTerms: ['power bank', 'powerbank', 'portable charger'],
+    minTopResultTermMatches: 5
   },
   {
     id: 'en-pistachio',
@@ -309,21 +311,34 @@ export const MULTILINGUAL_SEARCH_SCENARIOS: MultilingualSearchScenario[] = [
     query: 'pistachio',
     minMatches: 1,
     expectedAliases: ['pistache'],
-    rankingTerms: ['pistachio']
+    rankingTerms: ['pistachio', 'pistache'],
+    minTopResultTermMatches: 5
   },
   {
     id: 'en-baby-sleeper',
     group: 'English controls',
     query: 'baby sleeper',
     minMatches: 1,
-    expectedAliases: ['crib']
+    expectedAliases: ['crib'],
+    rankingTerms: ['baby sleeper', 'crib', 'cot', 'bassinet'],
+    minTopResultTermMatches: 3
   },
   {
     id: 'en-smoke-detector',
     group: 'English controls',
     query: 'smoke detector',
     minMatches: 1,
-    rankingTerms: ['smoke detector', 'carbon monoxide']
+    rankingTerms: ['smoke detector', 'smoke alarm', 'carbon monoxide', 'co detector'],
+    minTopResultTermMatches: 4
+  },
+  {
+    id: 'en-bike-helmet',
+    group: 'English controls',
+    query: 'bike helmet',
+    minMatches: 1,
+    expectedAliases: ['helmet'],
+    rankingTerms: ['bike helmet', 'bicycle helmet', 'helmet'],
+    minTopResultTermMatches: 5
   },
   {
     id: 'en-charger',

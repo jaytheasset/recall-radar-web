@@ -128,7 +128,8 @@ const SPECIFIC_ALIAS_GROUP_SUPPRESSIONS: Record<string, string[]> = {
   'baby-sleep': ['baby-kids'],
   'clothing-sleepwear': ['baby-kids'],
   charger: ['appliance-electric'],
-  'power-bank': ['battery']
+  'power-bank': ['battery'],
+  'helmet-bike': ['vehicles-mobility']
 };
 const SPECIFIC_ALIAS_TOKEN_SUPPRESSIONS: Record<string, string[]> = {
   'baby-sleep': ['baby']
@@ -172,11 +173,6 @@ export function expandSearchQuery(query: string): string[] {
   }
 
   add(normalizedQuery);
-  for (const token of baseTokens) {
-    if (token.length > 1) {
-      add(token);
-    }
-  }
 
   function aliasTermMatchesQuery(rawTerm: string): boolean {
     const term = normalizeSearchText(rawTerm);

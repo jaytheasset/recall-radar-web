@@ -99,8 +99,6 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
       'power bank',
       'powerbank',
       'portable charger',
-      'battery pack',
-      'external battery',
       'batterie externe',
       'bateria externa',
       'banco de energia',
@@ -109,7 +107,7 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
       '\u5145\u7535\u5B9D',
       '\u884C\u52D5\u96FB\u6E90'
     ],
-    aliases: ['power bank', 'powerbank', 'portable charger', 'battery pack', 'external battery']
+    aliases: ['power bank', 'powerbank', 'portable charger']
   },
   {
     id: 'charger',
@@ -482,8 +480,23 @@ export const SEARCH_ALIAS_GROUPS: SearchAliasGroup[] = [
   },
   {
     id: 'helmet-bike',
-    terms: ['helmet', 'bicycle', 'bike', 'bike helmet', 'casque', 'velo', 'casco', 'bicicleta', 'capacete', 'fahrradhelm', '\uD5EC\uBA67', '\uC790\uC804\uAC70', '\u30D8\u30EB\u30E1\u30C3\u30C8', '\u5934\u76D4'],
-    aliases: ['helmet', 'bicycle', 'bike', 'bike helmet']
+    terms: [
+      'helmet',
+      'bike helmet',
+      'bicycle helmet',
+      'casque',
+      'casque velo',
+      'casco',
+      'casco de bicicleta',
+      'capacete',
+      'capacete de bicicleta',
+      'fahrradhelm',
+      '\uD5EC\uBA67',
+      '\uC790\uC804\uAC70 \uD5EC\uBA67',
+      '\u30D8\u30EB\u30E1\u30C3\u30C8',
+      '\u5934\u76D4'
+    ],
+    aliases: ['helmet', 'bike helmet', 'bicycle helmet']
   },
   {
     id: 'barcode-identifiers',
