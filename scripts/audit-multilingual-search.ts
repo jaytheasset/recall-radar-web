@@ -171,9 +171,13 @@ type RecallAudienceSearchCheck = {
   query: string;
   expectedAudiences: string[];
   expectedSources?: string[];
+  expectedRecallDomains?: string[];
+  expectedHazardTypes?: string[];
   matchedCount: number;
   matchedAudiences: string[];
   matchedSources: string[];
+  matchedRecallDomains: string[];
+  matchedHazardTypes: string[];
   warnings: string[];
   failures: string[];
   status: AuditStatus;
@@ -306,6 +310,8 @@ const MULTILINGUAL_RECALL_AUDIENCE_SEARCH_CHECKS: Array<{
   query: string;
   expectedAudiences: string[];
   expectedSources?: string[];
+  expectedRecallDomains?: string[];
+  expectedHazardTypes?: string[];
 }> = [
   { id: 'ko-children-recall', query: '\uC5B4\uB9B0\uC774 \uB9AC\uCF5C', expectedAudiences: ['children'] },
   { id: 'fr-infants-recall', query: 'rappel pour nourrissons', expectedAudiences: ['infants'] },
@@ -317,6 +323,27 @@ const MULTILINGUAL_RECALL_AUDIENCE_SEARCH_CHECKS: Array<{
     query: 'CPSC for children',
     expectedAudiences: ['children'],
     expectedSources: ['CPSC']
+  },
+  {
+    id: 'fda-food-allergy-sensitive',
+    query: 'FDA food recall for allergy-sensitive consumers',
+    expectedAudiences: ['allergy-sensitive-consumers'],
+    expectedSources: ['FDA'],
+    expectedRecallDomains: ['food']
+  },
+  {
+    id: 'fsanz-food-older-adults',
+    query: 'FSANZ food recall for older adults',
+    expectedAudiences: ['elderly'],
+    expectedSources: ['FSANZ_FOOD_RECALLS'],
+    expectedRecallDomains: ['food']
+  },
+  {
+    id: 'cpsc-children-choking',
+    query: 'CPSC for children choking',
+    expectedAudiences: ['children'],
+    expectedSources: ['CPSC'],
+    expectedHazardTypes: ['choking', 'suffocation']
   }
 ];
 
@@ -1116,6 +1143,8 @@ function runRecallAudienceSearchCheck(
     ...new Set(result.items.flatMap((item) => item.recall.taxonomyAudience ?? []))
   ].sort();
   const matchedSources = [...new Set(result.items.map((item) => item.recall.source))].sort();
+  const matchedRecallDomains = [...new Set(result.items.map((item) => item.recall.taxonomyRecallDomain ?? 'unclassified'))].sort();
+  const matchedHazardTypes = [...new Set(result.items.map((item) => item.recall.taxonomyHazardType ?? 'unclassified'))].sort();
   const expectedAudiences = [...check.expectedAudiences].sort();
   const warnings: string[] = [];
   const failures: string[] = [];
@@ -1143,14 +1172,40 @@ function runRecallAudienceSearchCheck(
     );
   }
 
+  if (check.expectedRecallDomains) {
+    const unexpectedRecallDomains = matchedRecallDomains.filter(
+      (recallDomain) => !check.expectedRecallDomains?.includes(recallDomain)
+    );
+    if (unexpectedRecallDomains.length > 0) {
+      failures.push(
+        `Expected only recall areas ${check.expectedRecallDomains.join(', ')}, found unexpected ${unexpectedRecallDomains.join(', ')}.`
+      );
+    }
+  }
+
+  if (check.expectedHazardTypes) {
+    const unexpectedHazardTypes = matchedHazardTypes.filter(
+      (hazardType) => !check.expectedHazardTypes?.includes(hazardType)
+    );
+    if (unexpectedHazardTypes.length > 0) {
+      failures.push(
+        `Expected only hazards ${check.expectedHazardTypes.join(', ')}, found unexpected ${unexpectedHazardTypes.join(', ')}.`
+      );
+    }
+  }
+
   return {
     id: check.id,
     query: check.query,
     expectedAudiences,
     expectedSources: check.expectedSources,
+    expectedRecallDomains: check.expectedRecallDomains,
+    expectedHazardTypes: check.expectedHazardTypes,
     matchedCount: result.items.length,
     matchedAudiences,
     matchedSources,
+    matchedRecallDomains,
+    matchedHazardTypes,
     warnings,
     failures,
     status: statusFor(warnings, failures)
