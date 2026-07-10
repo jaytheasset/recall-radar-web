@@ -1,6 +1,7 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import EuImageResourceHints from '../components/EuImageResourceHints.astro';
+import AdSenseSlot from '../components/AdSenseSlot.astro';
 import {
   categoryRoutes,
   getRecallsByCategory,
@@ -380,6 +381,8 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
           })}
         </div>
       </section>
+
+      <AdSenseSlot placement="home" />
 
       <section class="section home-watchlist-section">
         <div class="signup-panel compact-cta home-watchlist-cta">

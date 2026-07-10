@@ -1978,6 +1978,17 @@ button:disabled {
   align-items: center;
 }
 
+.adsense-slot {
+  width: min(100%, var(--page-max));
+  margin: 0 auto 2rem;
+  overflow: clip;
+}
+
+.adsense-slot .adsbygoogle {
+  display: block;
+  max-width: 100%;
+}
+
 .category-search-panel {
   display: grid;
   gap: 0.8rem;
