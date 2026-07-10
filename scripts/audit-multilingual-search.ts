@@ -2,7 +2,12 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { NormalizedRecall, ProcessedRecallFile } from '../src/data/recall-types.ts';
-import { HAZARD_TYPE_VALUES, PRODUCT_TYPE_VALUES, type RecallClassificationV2 } from '../src/data/recall-taxonomy-v2.ts';
+import {
+  HAZARD_TYPE_VALUES,
+  PRODUCT_TYPE_VALUES,
+  RECALL_DOMAIN_VALUES,
+  type RecallClassificationV2
+} from '../src/data/recall-taxonomy-v2.ts';
 import type { SiteRecall, SiteRecallCategory } from '../src/lib/recall-data.ts';
 import {
   buildRecallSearchText,
@@ -13,7 +18,7 @@ import {
 } from '../src/lib/multilingual-search.ts';
 import { searchRecalls } from '../src/lib/recall-search.ts';
 import { getMessage, getProductFamilyI18nKey, SUPPORTED_LOCALES } from '../src/lib/i18n.ts';
-import { getHazardTypeLabel, getProductTypeLabel } from '../src/lib/taxonomy-v2-display.ts';
+import { getHazardTypeLabel, getProductTypeLabel, getRecallDomainLabel } from '../src/lib/taxonomy-v2-display.ts';
 import { MULTILINGUAL_SEARCH_SCENARIOS } from './multilingual-search-scenarios.ts';
 
 type AuditStatus = 'pass' | 'warning' | 'fail';
@@ -142,6 +147,19 @@ type ProductTypeSearchCheck = {
   status: AuditStatus;
 };
 
+type RecallDomainSearchCheck = {
+  id: string;
+  query: string;
+  expectedRecallDomains: string[];
+  expectedSources?: string[];
+  matchedCount: number;
+  matchedRecallDomains: string[];
+  matchedSources: string[];
+  warnings: string[];
+  failures: string[];
+  status: AuditStatus;
+};
+
 type ClassificationV2File = {
   records?: Array<{
     recordId: string;
@@ -243,6 +261,25 @@ const MULTILINGUAL_PRODUCT_TYPE_SEARCH_CHECKS: Array<{
   { id: 'fr-dairy', query: 'lait', expectedProductTypes: ['dairy'] },
   { id: 'ko-cleaner', query: '\uC138\uC81C', expectedProductTypes: ['cleaning-product', 'detergent'] },
   { id: 'cpsc-power-bank', query: 'CPSC Power bank', expectedProductTypes: ['power-bank'], expectedSources: ['CPSC'] }
+];
+
+const MULTILINGUAL_RECALL_DOMAIN_SEARCH_CHECKS: Array<{
+  id: string;
+  query: string;
+  expectedRecallDomains: string[];
+  expectedSources?: string[];
+}> = [
+  { id: 'ko-food-recall', query: '\uC2DD\uD488 \uB9AC\uCF5C', expectedRecallDomains: ['food'] },
+  { id: 'fr-food-recall', query: 'rappel alimentaire', expectedRecallDomains: ['food'] },
+  { id: 'ja-vehicle-recall', query: '\u8ECA\u4E21\u30EA\u30B3\u30FC\u30EB', expectedRecallDomains: ['vehicle'] },
+  { id: 'zh-medical-device-recall', query: '\u533B\u7597\u5668\u68B0\u53EC\u56DE', expectedRecallDomains: ['medical-health'] },
+  { id: 'de-consumer-product-recall', query: 'verbraucherproduktruckruf', expectedRecallDomains: ['consumer-product'] },
+  {
+    id: 'cpsc-consumer-product-recall',
+    query: 'CPSC consumer product recall',
+    expectedRecallDomains: ['consumer-product'],
+    expectedSources: ['CPSC']
+  }
 ];
 
 const SOURCE_CATEGORY_CHECKS: Array<{
@@ -985,6 +1022,52 @@ function runProductTypeSearchCheck(
   };
 }
 
+function runRecallDomainSearchCheck(
+  records: SiteRecall[],
+  check: (typeof MULTILINGUAL_RECALL_DOMAIN_SEARCH_CHECKS)[number]
+): RecallDomainSearchCheck {
+  const result = searchRecalls(check.query, records);
+  const matchedRecallDomains = [...new Set(result.items.map((item) => item.recall.taxonomyRecallDomain ?? 'unclassified'))].sort();
+  const matchedSources = [...new Set(result.items.map((item) => item.recall.source))].sort();
+  const expectedRecallDomains = [...check.expectedRecallDomains].sort();
+  const warnings: string[] = [];
+  const failures: string[] = [];
+
+  if (result.items.length === 0) {
+    failures.push('Recall-domain query returned no results.');
+  }
+
+  if (result.items.some((item) => item.matchReason !== 'recall-domain' || item.match !== 'related')) {
+    failures.push('Recall-domain-only results must be marked as related recall-area matches.');
+  }
+
+  const unexpectedRecallDomains = matchedRecallDomains.filter((recallDomain) => !expectedRecallDomains.includes(recallDomain));
+  if (unexpectedRecallDomains.length > 0) {
+    failures.push(
+      `Expected only recall areas ${expectedRecallDomains.join(', ')}, found unexpected ${unexpectedRecallDomains.join(', ')}.`
+    );
+  }
+
+  if (check.expectedSources && matchedSources.join(',') !== [...check.expectedSources].sort().join(',')) {
+    failures.push(
+      `Expected sources ${check.expectedSources.join(', ')}, found ${matchedSources.join(', ') || 'none'}.`
+    );
+  }
+
+  return {
+    id: check.id,
+    query: check.query,
+    expectedRecallDomains,
+    expectedSources: check.expectedSources,
+    matchedCount: result.items.length,
+    matchedRecallDomains,
+    matchedSources,
+    warnings,
+    failures,
+    status: statusFor(warnings, failures)
+  };
+}
+
 const processedFile = JSON.parse(await readFile(canonicalProcessedPath, 'utf8')) as ProcessedRecallFile;
 const classificationFile = JSON.parse(await readFile(classificationProcessedPath, 'utf8')) as ClassificationV2File;
 const classificationsByRecordId = new Map(
@@ -1039,6 +1122,18 @@ const directProductTypeSearchChecks = PRODUCT_TYPE_VALUES
 const productTypeSearchChecks = [...directProductTypeSearchChecks, ...MULTILINGUAL_PRODUCT_TYPE_SEARCH_CHECKS].map((check) =>
   runProductTypeSearchCheck(records, check)
 );
+const directRecallDomainSearchChecks = RECALL_DOMAIN_VALUES
+  .filter((recallDomain) => recallDomain !== 'unknown')
+  .filter((recallDomain) => records.some((record) => record.taxonomyRecallDomain === recallDomain))
+  .map((recallDomain) => ({
+    id: `recall-domain-${recallDomain}`,
+    query: `${getRecallDomainLabel(recallDomain)} recall`,
+    expectedRecallDomains: [recallDomain]
+  }));
+const recallDomainSearchChecks = [
+  ...directRecallDomainSearchChecks,
+  ...MULTILINGUAL_RECALL_DOMAIN_SEARCH_CHECKS
+].map((check) => runRecallDomainSearchCheck(records, check));
 const negativeQueryChecks = scenarioResults.filter((result) => result.group === 'negative/noise');
 
 const warningCount =
@@ -1049,7 +1144,8 @@ const warningCount =
   sourceSearchIntentChecks.reduce((total, result) => total + result.warnings.length, 0) +
   productFamilySearchChecks.reduce((total, result) => total + result.warnings.length, 0) +
   hazardSearchChecks.reduce((total, result) => total + result.warnings.length, 0) +
-  productTypeSearchChecks.reduce((total, result) => total + result.warnings.length, 0);
+  productTypeSearchChecks.reduce((total, result) => total + result.warnings.length, 0) +
+  recallDomainSearchChecks.reduce((total, result) => total + result.warnings.length, 0);
 const failCount =
   sourceCountFailures.length +
   scenarioResults.reduce((total, result) => total + result.failures.length, 0) +
@@ -1059,7 +1155,8 @@ const failCount =
   sourceSearchIntentChecks.reduce((total, result) => total + result.failures.length, 0) +
   productFamilySearchChecks.reduce((total, result) => total + result.failures.length, 0) +
   hazardSearchChecks.reduce((total, result) => total + result.failures.length, 0) +
-  productTypeSearchChecks.reduce((total, result) => total + result.failures.length, 0);
+  productTypeSearchChecks.reduce((total, result) => total + result.failures.length, 0) +
+  recallDomainSearchChecks.reduce((total, result) => total + result.failures.length, 0);
 
 const summary = {
   passed: failCount === 0,
@@ -1079,6 +1176,7 @@ const summary = {
   productFamilySearchChecks,
   hazardSearchChecks,
   productTypeSearchChecks,
+  recallDomainSearchChecks,
   negativeQueryChecks,
   rankingNotes
 };
