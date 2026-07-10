@@ -1,3 +1,5 @@
+import type { RecallAudience, RecallDomain } from '../data/recall-taxonomy-v2.ts';
+
 export const WATCHLIST_STORAGE_KEY = 'recall-radar-watchlist-v1';
 
 export type WatchlistSourceFilter =
@@ -35,12 +37,17 @@ export type WatchlistCategoryFilter =
   | 'other'
   | 'unknown';
 
+export type WatchlistRecallDomainFilter = 'all' | Exclude<RecallDomain, 'unknown'>;
+export type WatchlistAudienceFilter = 'all' | Exclude<RecallAudience, 'general' | 'unknown'>;
+
 export type WatchlistSearchItem = {
   id: string;
   type: 'search';
   query: string;
   source: WatchlistSourceFilter;
   category: WatchlistCategoryFilter;
+  domain?: WatchlistRecallDomainFilter;
+  audience?: WatchlistAudienceFilter;
   createdAt: string;
 };
 
@@ -135,16 +142,22 @@ export function upsertWatchlistSearch(input: {
   query: string;
   source?: WatchlistSourceFilter;
   category?: WatchlistCategoryFilter;
+  domain?: WatchlistRecallDomainFilter;
+  audience?: WatchlistAudienceFilter;
 }): WatchlistSearchItem {
   const query = input.query.trim();
   const source = input.source ?? 'all';
   const category = input.category ?? 'all';
+  const domain = input.domain ?? 'all';
+  const audience = input.audience ?? 'all';
   const item: WatchlistSearchItem = {
-    id: `search:${normalizeId(query)}:${source}:${category}`,
+    id: `search:${normalizeId(query)}:${source}:${category}:${domain}:${audience}`,
     type: 'search',
     query,
     source,
     category,
+    domain,
+    audience,
     createdAt: new Date().toISOString()
   };
 

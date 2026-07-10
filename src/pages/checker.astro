@@ -24,6 +24,7 @@ import { getSourceOptionsForCurrentCoverage } from '../lib/recall-sources';
 import { IDENTIFIER_SEARCH_PLACEHOLDER, getNoResultIdentifierHint } from '../lib/identifier-guidance';
 import { getSourceLandingPageCards } from '../lib/source-landing-pages';
 import { getProductFamilyI18nKey, getSourceLandingTitleI18nKey } from '../lib/i18n';
+import { getAudienceLabel, getRecallDomainLabel } from '../lib/taxonomy-v2-display';
 import '../styles/global.css';
 
 const title = 'Product Recalls | Recall Radar';
@@ -145,6 +146,41 @@ for (const recall of siteRecalls) {
 const hazardOptions = [
   { value: 'all', label: 'All issues' },
   ...[...hazardOptionMap.entries()]
+    .sort((a, b) => b[1].count - a[1].count || a[1].label.localeCompare(b[1].label))
+    .map(([value, option]) => ({ value, label: option.label }))
+];
+const recallDomainOptionMap = new Map<string, { label: string; count: number }>();
+const audienceOptionMap = new Map<string, { label: string; count: number }>();
+for (const recall of siteRecalls) {
+  if (recall.taxonomyRecallDomain && recall.taxonomyRecallDomain !== 'unknown') {
+    const existing = recallDomainOptionMap.get(recall.taxonomyRecallDomain);
+    recallDomainOptionMap.set(recall.taxonomyRecallDomain, {
+      label: recall.taxonomyRecallDomainLabel || getRecallDomainLabel(recall.taxonomyRecallDomain),
+      count: (existing?.count ?? 0) + 1
+    });
+  }
+
+  for (const audience of recall.taxonomyAudience ?? []) {
+    if (audience === 'general' || audience === 'unknown') {
+      continue;
+    }
+
+    const existing = audienceOptionMap.get(audience);
+    audienceOptionMap.set(audience, {
+      label: getAudienceLabel(audience),
+      count: (existing?.count ?? 0) + 1
+    });
+  }
+}
+const recallDomainOptions = [
+  { value: 'all', label: 'All recall areas' },
+  ...[...recallDomainOptionMap.entries()]
+    .sort((a, b) => b[1].count - a[1].count || a[1].label.localeCompare(b[1].label))
+    .map(([value, option]) => ({ value, label: option.label }))
+];
+const audienceOptions = [
+  { value: 'all', label: 'All audiences' },
+  ...[...audienceOptionMap.entries()]
     .sort((a, b) => b[1].count - a[1].count || a[1].label.localeCompare(b[1].label))
     .map(([value, option]) => ({ value, label: option.label }))
 ];
@@ -300,6 +336,18 @@ const sourceCardDetails = {
                   </select>
                 </label>
                 <label>
+                  <span>Recall area</span>
+                  <select id="domain-filter" name="domain">
+                    {recallDomainOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                  </select>
+                </label>
+                <label>
+                  <span>Who should check</span>
+                  <select id="audience-filter" name="audience">
+                    {audienceOptions.map((option) => <option value={option.value}>{option.label}</option>)}
+                  </select>
+                </label>
+                <label>
                   <span data-i18n="checker.date">Date</span>
                   <select id="date-filter" name="date">
                     {dateOptions.map((option) => <option value={option.value}>{option.label}</option>)}
@@ -447,7 +495,12 @@ const sourceCardDetails = {
       } from '../lib/recall-sources';
       import { initImageFallbacks } from '../lib/image-fallback';
       import { initProgressiveCardImages } from '../lib/progressive-detail-image';
-      import { upsertWatchlistSearch, type WatchlistCategoryFilter } from '../lib/watchlist';
+      import {
+        upsertWatchlistSearch,
+        type WatchlistAudienceFilter,
+        type WatchlistCategoryFilter,
+        type WatchlistRecallDomainFilter
+      } from '../lib/watchlist';
       import { formatUiMessage, getCurrentUiLanguage, getMessage, type MessageKey } from '../lib/i18n';
 
       initProgressiveCardImages();
@@ -466,6 +519,8 @@ const sourceCardDetails = {
       const sourceFilter = document.querySelector<HTMLSelectElement>('#source-filter');
       const categoryFilter = document.querySelector<HTMLSelectElement>('#category-filter');
       const hazardFilter = document.querySelector<HTMLSelectElement>('#hazard-filter');
+      const domainFilter = document.querySelector<HTMLSelectElement>('#domain-filter');
+      const audienceFilter = document.querySelector<HTMLSelectElement>('#audience-filter');
       const sortFilter = document.querySelector<HTMLSelectElement>('#sort-filter');
       const dateFilter = document.querySelector<HTMLSelectElement>('#date-filter');
       const advancedFilters = document.querySelector<HTMLDetailsElement>('#advanced-filters');
@@ -500,6 +555,8 @@ const sourceCardDetails = {
         | 'FSANZ_FOOD_RECALLS';
       type CategoryFilter = WatchlistCategoryFilter;
       type HazardFilter = string;
+      type RecallDomainFilter = WatchlistRecallDomainFilter;
+      type AudienceFilter = WatchlistAudienceFilter;
       type SortFilter = 'best' | 'newest' | 'oldest';
       type DateFilter = 'all' | '30' | '90';
       type SearchState = {
@@ -507,6 +564,8 @@ const sourceCardDetails = {
         source: SourceFilter;
         category: CategoryFilter;
         hazard: HazardFilter;
+        domain: RecallDomainFilter;
+        audience: AudienceFilter;
         sort: SortFilter;
         date: DateFilter;
       };
@@ -546,6 +605,12 @@ const sourceCardDetails = {
       const hazardValues: HazardFilter[] = hazardFilter
         ? [...hazardFilter.options].map((option) => option.value)
         : ['all'];
+      const domainValues: RecallDomainFilter[] = domainFilter
+        ? [...domainFilter.options].map((option) => option.value as RecallDomainFilter)
+        : ['all'];
+      const audienceValues: AudienceFilter[] = audienceFilter
+        ? [...audienceFilter.options].map((option) => option.value as AudienceFilter)
+        : ['all'];
       const sortValues: SortFilter[] = ['best', 'newest', 'oldest'];
       const dateValues: DateFilter[] = ['all', '30', '90'];
       const groupTitleKeys: Record<SearchItem['match'], MessageKey> = {
@@ -575,6 +640,12 @@ const sourceCardDetails = {
       const hazardFilterLabels: Record<string, string> = hazardFilter
         ? Object.fromEntries([...hazardFilter.options].map((option) => [option.value, option.label]))
         : { all: 'all issues' };
+      const domainFilterLabels: Record<string, string> = domainFilter
+        ? Object.fromEntries([...domainFilter.options].map((option) => [option.value, option.label]))
+        : { all: 'all recall areas' };
+      const audienceFilterLabels: Record<string, string> = audienceFilter
+        ? Object.fromEntries([...audienceFilter.options].map((option) => [option.value, option.label]))
+        : { all: 'all audiences' };
       const BROAD_RESULT_THRESHOLD = 80;
 
       function isOneOf<T extends string>(value: string | null, values: readonly T[], fallback: T): T {
@@ -609,6 +680,9 @@ const sourceCardDetails = {
           const sourceMatches = state.source === 'all' || recall.source === state.source;
           const family = recall.taxonomyProductFamily ?? '';
           const hazardMatches = state.hazard === 'all' || recall.taxonomyHazardType === state.hazard;
+          const domainMatches = state.domain === 'all' || recall.taxonomyRecallDomain === state.domain;
+          const audienceMatches =
+            state.audience === 'all' || (recall.taxonomyAudience ?? []).includes(state.audience);
           const categoryMatches =
             state.category === 'all' ||
             family === state.category ||
@@ -622,7 +696,7 @@ const sourceCardDetails = {
           const recallTime = Date.parse(recall.recallDate);
           const dateMatches = state.date === 'all' || (Number.isFinite(recallTime) && recallTime >= cutoff);
 
-          return sourceMatches && categoryMatches && hazardMatches && dateMatches;
+          return sourceMatches && categoryMatches && hazardMatches && domainMatches && audienceMatches && dateMatches;
         });
       }
 
@@ -632,6 +706,8 @@ const sourceCardDetails = {
           source: isOneOf(sourceFilter?.value ?? null, sourceValues, 'all'),
           category: isOneOf(categoryFilter?.value ?? null, categoryValues, 'all'),
           hazard: isOneOf(hazardFilter?.value ?? null, hazardValues, 'all'),
+          domain: isOneOf(domainFilter?.value ?? null, domainValues, 'all'),
+          audience: isOneOf(audienceFilter?.value ?? null, audienceValues, 'all'),
           sort: isOneOf(sortFilter?.value ?? null, sortValues, 'best'),
           date: isOneOf(dateFilter?.value ?? null, dateValues, 'all')
         };
@@ -644,6 +720,8 @@ const sourceCardDetails = {
           source: isOneOf(params.get('source'), sourceValues, 'all'),
           category: isOneOf(params.get('category'), categoryValues, 'all'),
           hazard: isOneOf(params.get('hazard'), hazardValues, 'all'),
+          domain: isOneOf(params.get('domain'), domainValues, 'all'),
+          audience: isOneOf(params.get('audience'), audienceValues, 'all'),
           sort: isOneOf(params.get('sort'), sortValues, 'best'),
           date: isOneOf(params.get('date'), dateValues, 'all')
         };
@@ -659,6 +737,12 @@ const sourceCardDetails = {
         }
         if (hazardFilter) {
           hazardFilter.value = state.hazard;
+        }
+        if (domainFilter) {
+          domainFilter.value = state.domain;
+        }
+        if (audienceFilter) {
+          audienceFilter.value = state.audience;
         }
         if (sortFilter) {
           sortFilter.value = state.sort;
@@ -678,6 +762,8 @@ const sourceCardDetails = {
         state.source === 'all' ? params.delete('source') : params.set('source', state.source);
         state.category === 'all' ? params.delete('category') : params.set('category', state.category);
         state.hazard === 'all' ? params.delete('hazard') : params.set('hazard', state.hazard);
+        state.domain === 'all' ? params.delete('domain') : params.set('domain', state.domain);
+        state.audience === 'all' ? params.delete('audience') : params.set('audience', state.audience);
         state.sort === 'best' ? params.delete('sort') : params.set('sort', state.sort);
         state.date === 'all' ? params.delete('date') : params.set('date', state.date);
 
@@ -690,6 +776,8 @@ const sourceCardDetails = {
             state.source !== 'all' ||
             state.category !== 'all' ||
             state.hazard !== 'all' ||
+            state.domain !== 'all' ||
+            state.audience !== 'all' ||
             state.sort !== 'best' ||
             state.date !== 'all'
         );
@@ -1230,6 +1318,8 @@ const sourceCardDetails = {
           state.source === 'all' ? uiMessage('checker.allCountriesSources') : getRecallSourceLabel(state.source),
           categoryFilterLabels[state.category],
           hazardFilterLabels[state.hazard] ?? uiMessage('checker.allIssues'),
+          ...(state.domain === 'all' ? [] : [domainFilterLabels[state.domain]]),
+          ...(state.audience === 'all' ? [] : [audienceFilterLabels[state.audience]]),
           state.date === 'all' ? uiMessage('checker.allTime') : uiTemplate('checker.lastDays', { days: state.date }),
           state.sort === 'best' ? uiMessage('checker.bestMatch') : state.sort === 'newest' ? uiMessage('checker.newestFirst') : uiMessage('checker.oldestFirst')
         ];
@@ -1257,7 +1347,12 @@ const sourceCardDetails = {
           }
           const browseRecalls = sortBrowseRecalls(filteredRecalls, state.sort);
           const shouldShowBrowseResults =
-            state.source !== 'all' || state.category !== 'all' || state.hazard !== 'all' || state.date !== 'all';
+            state.source !== 'all' ||
+            state.category !== 'all' ||
+            state.hazard !== 'all' ||
+            state.domain !== 'all' ||
+            state.audience !== 'all' ||
+            state.date !== 'all';
 
           panel.dataset.match = 'none';
           matchLabel.textContent = shouldShowBrowseResults ? uiMessage('checker.filteredNotices') : uiMessage('common.recallNotices');
@@ -1335,7 +1430,9 @@ const sourceCardDetails = {
         const item = upsertWatchlistSearch({
           query: state.query,
           source: state.source,
-          category: state.category
+          category: state.category,
+          domain: state.domain,
+          audience: state.audience
         });
         saveSearchStatus.textContent = uiTemplate('checker.saveSearchSaved', { query: item.query });
       }
@@ -1345,7 +1442,7 @@ const sourceCardDetails = {
         updateSearch();
       });
 
-      [sourceFilter, categoryFilter, hazardFilter, sortFilter, dateFilter].forEach((filter) => {
+      [sourceFilter, categoryFilter, hazardFilter, domainFilter, audienceFilter, sortFilter, dateFilter].forEach((filter) => {
         filter?.addEventListener('change', updateSearch);
       });
       saveSearchButton?.addEventListener('click', saveCurrentSearch);
@@ -1364,6 +1461,8 @@ const sourceCardDetails = {
         (initialState.source !== 'all' ||
           initialState.category !== 'all' ||
           initialState.hazard !== 'all' ||
+          initialState.domain !== 'all' ||
+          initialState.audience !== 'all' ||
           initialState.date !== 'all' ||
           initialState.sort !== 'best')
       ) {

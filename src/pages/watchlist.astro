@@ -186,13 +186,16 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       import { initImageFallbacks } from '../lib/image-fallback';
       import { initProgressiveCardImages } from '../lib/progressive-detail-image';
       import { formatUiMessage, getCurrentUiLanguage, getMessage, type MessageKey } from '../lib/i18n';
+      import { getAudienceLabel, getRecallDomainLabel } from '../lib/taxonomy-v2-display';
       import {
         clearWatchlist,
         loadWatchlist,
         removeWatchlistItem,
+        type WatchlistAudienceFilter,
         type WatchlistBrandItem,
         type WatchlistCategoryFilter,
         type WatchlistItem,
+        type WatchlistRecallDomainFilter,
         type WatchlistSearchItem
       } from '../lib/watchlist';
 
@@ -231,9 +234,14 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
       }
 
       function filterRecallsForSearch(item: WatchlistSearchItem): typeof siteRecalls {
+        const domain = item.domain ?? 'all';
+        const audience = item.audience ?? 'all';
+
         return siteRecalls.filter((recall) => {
           const sourceMatches = item.source === 'all' || recall.source === item.source;
           const family = recall.taxonomyProductFamily ?? '';
+          const domainMatches = domain === 'all' || recall.taxonomyRecallDomain === domain;
+          const audienceMatches = audience === 'all' || (recall.taxonomyAudience ?? []).includes(audience);
           const categoryMatches =
             item.category === 'all' ||
             family === item.category ||
@@ -245,7 +253,7 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
             (item.category === 'general' && recall.category === 'general-consumer-product') ||
             recall.category === item.category;
 
-          return sourceMatches && categoryMatches;
+          return sourceMatches && categoryMatches && domainMatches && audienceMatches;
         });
       }
 
@@ -263,6 +271,14 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
 
       function sourceLabel(source: WatchlistSearchItem['source']): string {
         return source === 'all' ? uiMessage('common.allMarkets') : getRecallSourceLabel(source);
+      }
+
+      function domainLabel(domain: WatchlistRecallDomainFilter | undefined): string | null {
+        return domain && domain !== 'all' ? getRecallDomainLabel(domain) : null;
+      }
+
+      function audienceLabel(audience: WatchlistAudienceFilter | undefined): string | null {
+        return audience && audience !== 'all' ? getAudienceLabel(audience) : null;
       }
 
       function createTag(text: string, className = 'tag'): HTMLElement {
@@ -442,7 +458,14 @@ const watchlistRecallsJson = JSON.stringify(watchlistRecalls);
         const details = document.createElement('p');
         details.textContent =
           item.type === 'search'
-            ? `${sourceLabel(item.source)} / ${categoryLabel(item.category)}`
+            ? [
+                sourceLabel(item.source),
+                categoryLabel(item.category),
+                domainLabel(item.domain),
+                audienceLabel(item.audience)
+              ]
+                .filter((value): value is string => Boolean(value))
+                .join(' / ')
             : uiTemplate('watchlist.brandPagePath', { path: `/brands/${item.slug}` });
         title.append(heading, details);
 
