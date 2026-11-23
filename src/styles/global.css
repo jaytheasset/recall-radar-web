@@ -195,11 +195,23 @@ code {
   color: var(--source);
 }
 
-.site-nav a:hover {
+.site-nav a:hover,
+.site-nav a[aria-current='page'] {
   border-color: var(--line);
   background: var(--surface);
   color: var(--black);
   text-decoration: none;
+}
+
+.ui-icon {
+  width: 1.125em;
+  height: 1.125em;
+  flex: none;
+}
+
+.site-nav-mobile-label,
+.site-nav > a > .ui-icon {
+  display: none;
 }
 
 .site-actions {
@@ -1702,14 +1714,100 @@ button:disabled {
   white-space: nowrap;
 }
 
+.source-landing-intro {
+  display: grid;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+}
+
+.source-landing-intro h1 {
+  max-width: none;
+  font-size: clamp(2rem, 4vw, 3.125rem);
+  line-height: 1.15;
+}
+
+.source-landing-intro .lead {
+  max-width: none;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.source-landing-page .category-search-panel {
+  gap: 0.65rem;
+  border-top: 0;
+  padding-top: 0;
+  padding-bottom: 1rem;
+}
+
+.source-landing-page .category-search-form {
+  padding: 0.75rem;
+}
+
+.source-landing-page input[type='search'] {
+  margin-top: 0;
+  padding-block: 0.62rem;
+  font-size: 1rem;
+  font-weight: 450;
+}
+
+.source-landing-page .category-search-form .btn {
+  gap: 0.35rem;
+  min-height: 46px;
+}
+
 .source-filter-panel {
-  padding-top: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.source-filter-panel > summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.4;
+  list-style: none;
+}
+
+.source-filter-panel > summary::-webkit-details-marker {
+  display: none;
+}
+
+.source-filter-panel > summary::after {
+  width: 0.45rem;
+  height: 0.45rem;
+  margin: -0.2rem 0.15rem 0 0;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  content: '';
+  transform: rotate(45deg);
+}
+
+.source-filter-panel[open] > summary::after {
+  margin-top: 0.2rem;
+  transform: rotate(225deg);
+}
+
+.source-filter-selection {
+  max-width: 11rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .source-filter-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.65rem;
+  gap: 0.38rem;
+  padding: 0 0.75rem 0.75rem;
 }
 
 .source-filter-chip {
@@ -1719,12 +1817,13 @@ button:disabled {
   max-width: 100%;
   border: 1px solid var(--line);
   border-radius: 999px;
-  padding: 0.58rem 0.78rem;
+  min-height: 36px;
+  padding: 0.38rem 0.62rem;
   background: var(--surface);
   color: var(--ink);
   font-size: 0.9rem;
-  font-weight: 820;
-  box-shadow: 0 8px 22px rgba(17, 24, 39, 0.05);
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 .source-filter-chip:hover {
@@ -1746,6 +1845,48 @@ button:disabled {
   opacity: 0.72;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.source-search-meta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.35rem 0.5rem;
+}
+
+.source-search-help {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.source-search-help[open] {
+  grid-column: 1 / -1;
+}
+
+.source-search-help > summary {
+  padding-block: 0.3rem;
+  cursor: pointer;
+  color: var(--blue);
+  font-weight: 650;
+}
+
+.source-results-section {
+  padding-top: 1rem;
+}
+
+.source-safety-note.disclaimer-copy {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 450;
+  line-height: 1.5;
+}
+
+.source-safety-note > .ui-icon {
+  margin-top: 0.12em;
+  color: var(--source);
 }
 
 .step-card {
@@ -2035,6 +2176,16 @@ button:disabled {
   font-size: 1.04rem;
 }
 
+.recall-list-card-heading {
+  display: grid;
+  gap: 0.62rem;
+  min-width: 0;
+}
+
+.recall-list-card-short-title {
+  display: none;
+}
+
 .result-card-line {
   display: -webkit-box;
   overflow: hidden;
@@ -2077,41 +2228,36 @@ button:disabled {
   line-height: 1.15;
 }
 
-.result-taxonomy-facts {
+.recall-card-summary {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.recall-card-summary-row {
+  display: flex;
+  align-items: flex-start;
   gap: 0.5rem;
-  margin: 0;
 }
 
-.result-taxonomy-facts div {
-  min-width: 0;
-  min-height: 4.65rem;
-  border-radius: 16px;
-  padding: 0.68rem 0.72rem;
-  background: #F5F6F8;
-  box-shadow: inset 0 0 0 1px rgba(17, 24, 39, 0.055);
-}
-
-.result-taxonomy-facts dt {
-  margin: 0 0 0.18rem;
+.recall-card-summary-row > .ui-icon {
+  margin-top: 0.12em;
   color: var(--source);
-  font-size: 0.68rem;
-  font-weight: 860;
-  text-transform: uppercase;
-  letter-spacing: 0.035em;
 }
 
-.result-taxonomy-facts dd {
-  display: -webkit-box;
+.recall-card-risk > .ui-icon {
+  color: var(--danger);
+}
+
+.recall-card-summary-row .result-card-line {
+  min-width: 0;
   margin: 0;
-  overflow: hidden;
-  color: var(--ink);
-  font-size: 0.86rem;
-  font-weight: 800;
-  line-height: 1.24;
-  -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+
+.recall-list-card .photo-submission-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .result-card-reason,
@@ -3075,24 +3221,42 @@ button:disabled {
   }
 
   .site-nav {
+    display: grid;
     grid-column: 1 / -1;
-    justify-content: flex-start;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     justify-self: stretch;
     width: 100%;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    gap: 0.28rem;
-    padding-bottom: 0.04rem;
-    scrollbar-width: none;
-  }
-
-  .site-nav::-webkit-scrollbar {
-    display: none;
+    gap: 0.2rem;
+    font-size: 0.75rem;
+    line-height: 1.22;
   }
 
   .site-nav a {
-    padding: 0.3rem 0.46rem;
-    white-space: nowrap;
+    display: flex;
+    min-width: 0;
+    min-height: 44px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.16rem;
+    border-radius: 9px;
+    padding: 0.16rem 0.1rem;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  .site-nav > a > .ui-icon {
+    display: block;
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .site-nav-mobile-label {
+    display: block;
+  }
+
+  .site-nav-label {
+    display: none;
   }
 
   .site-actions {
@@ -3181,10 +3345,6 @@ button:disabled {
 
   .v2-summary-fact {
     min-height: 0;
-  }
-
-  .result-taxonomy-facts {
-    grid-template-columns: 1fr;
   }
 
   .detail-thumbnail-grid {
@@ -3321,5 +3481,137 @@ button:disabled {
 
   .home-watchlist-cta .btn {
     width: 100%;
+  }
+
+  .source-landing-intro.section {
+    padding-block: 1.15rem 0.75rem;
+  }
+
+  .source-landing-intro h1 {
+    font-size: clamp(1.65rem, 7.5vw, 2rem);
+  }
+
+  .source-landing-page .category-search-form {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.45rem;
+  }
+
+  .source-landing-page .category-search-form button {
+    width: auto;
+  }
+
+  .source-landing-page [data-category-search-clear] {
+    grid-column: 2;
+  }
+
+  .source-filter-selection {
+    max-width: min(9rem, 40vw);
+  }
+
+  .home-card-meta {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+
+  .recall-list-card {
+    grid-template-columns: clamp(5.25rem, 27vw, 7rem) minmax(0, 1fr);
+    grid-template-rows: auto;
+    align-items: start;
+    gap: 0.65rem;
+    padding: 0.75rem;
+  }
+
+  .recall-list-card-no-image {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .recall-list-card > .image-shell {
+    min-width: 0;
+    grid-row: 1;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    padding: 0.3rem;
+  }
+
+  .recall-list-card .image-placeholder {
+    width: 100%;
+    font-size: 0.6875rem;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .recall-list-card-no-image > .image-shell {
+    display: none;
+  }
+
+  .recall-list-card .card-body {
+    display: contents;
+  }
+
+  .recall-list-card .card-body > :not(.recall-list-card-heading) {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+
+  .recall-list-card-heading {
+    gap: 0.35rem;
+  }
+
+  .recall-list-card-heading h3 {
+    order: -1;
+    font-size: 1.0625rem;
+    line-height: 1.3;
+  }
+
+  .recall-list-card-heading h3 a {
+    -webkit-line-clamp: 3;
+  }
+
+  .recall-list-card-notice-title,
+  .recall-list-card .recall-list-card-products {
+    display: none;
+  }
+
+  .recall-list-card-short-title {
+    display: inline;
+  }
+
+  .recall-list-card .result-card-badges {
+    gap: 0.2rem 0.45rem;
+  }
+
+  .recall-list-card .result-card-badges > span {
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-size: 0.8125rem;
+    line-height: 1.35;
+  }
+
+  .recall-list-card .result-card-badges > .badge-review {
+    padding-inline: 0.35rem;
+    background: #FFFBEB;
+  }
+
+  .recall-list-card .result-card-line {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .recall-list-card .result-card-reason,
+  .recall-list-card .result-card-action {
+    -webkit-line-clamp: 2;
+  }
+
+  .recall-list-card .photo-submission-link {
+    padding-block: 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  .recall-list-card .link-row .btn {
+    min-height: 44px;
+    font-size: 0.875rem;
   }
 }

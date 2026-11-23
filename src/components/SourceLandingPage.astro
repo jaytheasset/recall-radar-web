@@ -4,11 +4,12 @@ import SiteHeader from './SiteHeader.astro';
 import SiteFooter from './SiteFooter.astro';
 import EuImageResourceHints from './EuImageResourceHints.astro';
 import RecallListCard from './RecallListCard.astro';
+import UiIcon from './UiIcon.astro';
 import { getSourceLandingProductTypeFilters, type SourceLandingPageConfig } from '../lib/source-landing-pages';
 import type { SiteRecall } from '../lib/recall-data';
 import { getGeneralIdentifierGuidance, getSourceIdentifierGuidance } from '../lib/identifier-guidance';
+import { formatUiMessage, getMessage, getProductFamilyI18nKey } from '../lib/i18n';
 import { sourcePageSearchTextFor } from '../lib/source-page-search';
-import { getRecallSourceLabel } from '../lib/recall-sources';
 import '../styles/global.css';
 
 type Props = {
@@ -17,10 +18,10 @@ type Props = {
 };
 
 const { page, recalls } = Astro.props;
-const sourceLabels = page.sourceIds.map((source) => getRecallSourceLabel(source));
 const productTypeFilters = getSourceLandingProductTypeFilters(page);
 const identifierGuidance =
   page.sourceIds.length === 1 ? getSourceIdentifierGuidance(page.sourceIds[0]) : getGeneralIdentifierGuidance();
+const initialCount = { count: recalls.length.toLocaleString('en-US') };
 ---
 
 <html lang="en">
@@ -37,75 +38,67 @@ const identifierGuidance =
     <SiteHeader />
 
     <main class="page-shell source-landing-page">
-      <section class="section">
-        <p class="eyebrow">{page.eyebrow}</p>
-        <div class="meta-row data-source-row">
-          <span class="badge-source" data-i18n="common.countrySource">Country / source</span>
-          <span
-            class="badge-date"
-            data-i18n-template="common.recallNoticesCount"
-            data-i18n-values={JSON.stringify({ count: recalls.length })}
-          >
-            {recalls.length} recall notice{recalls.length === 1 ? '' : 's'}
-          </span>
-          {sourceLabels.map((label) => <span class="tag">{label}</span>)}
-        </div>
+      <section class="section source-landing-intro">
         <h1>{page.heading}</h1>
-        <p class="lead">{page.description}</p>
-      </section>
-
-      <section class="section source-filter-panel" aria-labelledby="source-product-type-filter">
-        <div class="section-header">
-          <div>
-            <h2 id="source-product-type-filter" data-i18n="category.filterByProductFamily">Filter by product family</h2>
-            <p class="section-note" data-i18n="category.filterSourceCopy">Narrow this source group without leaving the page.</p>
-          </div>
-        </div>
-        <div class="source-filter-row" data-source-category-filters>
-          {productTypeFilters.map((filter) => (
-            <a
-              class="source-filter-chip"
-              href={filter.href}
-              data-source-category-option={filter.category}
-              data-source-category-label={filter.label}
-            >
-              <span>{filter.label}</span>
-              <span class="filter-count">{filter.count} recall notice{filter.count === 1 ? '' : 's'}</span>
-            </a>
-          ))}
-        </div>
+        <p class="lead">{page.card.agencyLabel}</p>
       </section>
 
       <section class="section category-search-panel" data-category-search-root data-category-total={recalls.length}>
-        <form class="category-search-form" data-category-search-form>
+        <form class="category-search-form" data-category-search-form role="search">
           <label>
-            {page.searchLabel}
+            <span class="sr-only" data-i18n="checker.title">Search recalls</span>
             <input data-category-search-input type="search" placeholder={page.searchPlaceholder} autocomplete="off" />
           </label>
-          <button class="btn btn-primary" type="submit" data-i18n="common.searchThisSource">Search this source</button>
+          <button class="btn btn-primary" type="submit">
+            <UiIcon name="search" />
+            <span data-i18n="home.searchSubmit">Search</span>
+          </button>
           <button class="btn btn-secondary" type="button" data-category-search-clear data-i18n="common.clear" hidden>Clear</button>
         </form>
-        <p class="form-note search-guidance-note">{identifierGuidance}</p>
-        <div class="category-search-status">
-          <span class="status-pill" data-category-result-count>
-            {recalls.length} of {recalls.length} recall notice{recalls.length === 1 ? '' : 's'} shown
-          </span>
+        <details class="source-filter-panel">
+          <summary>
+            <UiIcon name="filter" />
+            <span data-i18n="checker.productType">Product type</span>
+            <span class="source-filter-selection" data-source-category-selection data-i18n="category.allTypes">All</span>
+          </summary>
+          <div class="source-filter-row" data-source-category-filters>
+            {productTypeFilters.map((filter) => (
+              <a
+                class="source-filter-chip"
+                href={filter.href}
+                data-source-category-option={filter.category}
+                data-source-category-label={filter.label}
+              >
+                <span data-i18n={filter.category === 'all' ? 'category.allTypes' : getProductFamilyI18nKey(filter.category)}>
+                  {filter.label}
+                </span>
+                <span class="filter-count">{filter.count}</span>
+              </a>
+            ))}
+          </div>
+        </details>
+        <div class="source-search-meta">
+          <div class="category-search-status" role="status">
+            <span class="status-pill" data-category-result-count data-i18n-template="common.recallsCount" data-i18n-values={JSON.stringify(initialCount)}>
+              {formatUiMessage('common.recallsCount', initialCount, 'en')}
+            </span>
+          </div>
+          <details class="source-search-help">
+            <summary data-i18n="category.searchTips">Search tips</summary>
+            <p class="form-note search-guidance-note">{identifierGuidance}</p>
+          </details>
         </div>
-        <p class="disclaimer-copy" data-i18n="disclaimer.possibleMatches">
-          Search results are possible matches, not safety confirmations. Always verify affected models, lots, dates, distribution, and remedies with the official notice.
+        <p class="disclaimer-copy source-safety-note">
+          <UiIcon name="warning" />
+          <span data-i18n="category.officialCheck">{getMessage('category.officialCheck')}</span>
         </p>
         <div class="notice-panel category-no-results" data-category-no-results hidden>
-          <p>{page.noResultCopy}</p>
+          <p data-i18n="category.noMatches">{getMessage('category.noMatches')}</p>
         </div>
       </section>
 
-      <section class="section" data-category-group>
-        <div class="section-header">
-          <div>
-            <h2 data-i18n="common.recallNotices">Recall notices</h2>
-            <p class="section-note" data-i18n="category.sourceGroupCopy">Shown from this official source group.</p>
-          </div>
-        </div>
+      <section class="section source-results-section" data-category-group>
+        <h2 class="sr-only" data-i18n="common.recallNotices">Recall notices</h2>
         {recalls.length ? (
           <div class="product-grid">
             {recalls.map((recall) => (

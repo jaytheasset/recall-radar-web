@@ -1,4 +1,5 @@
 ---
+import UiIcon from './UiIcon.astro';
 import type { SiteRecall } from '../lib/recall-data';
 import { getMessage } from '../lib/i18n';
 import { cleanRecallDisplayText, formatRecallAction, getPhotoSubmissionNoticeUrl } from '../lib/recall-display-text';
@@ -40,36 +41,19 @@ const fallbackLabel = getRecallSourcePlaceholder(recall.source);
 const productText = recall.productNames.length
   ? recall.productNames.slice(0, 3).join(', ')
   : recall.primaryProductName;
+const shortTitle = recall.productNames.length ? productText : recall.title;
 const brandText = recall.displayBrandNames.length
   ? recall.displayBrandNames.slice(0, 3).join(', ')
   : recall.primaryBrand;
 const reasonText = cleanRecallDisplayText(recall.hazard || recall.reason || 'Not listed in the recall notice.');
 const action = formatRecallAction(recall.remedy || getRecallDefaultActionFallback(recall.source));
 const photoSubmissionNoticeUrl = getPhotoSubmissionNoticeUrl(recall.source, recall.sourceUrl, action.hasPhotoSubmission);
-const taxonomyFacts = [
-  {
-    label: 'Product family',
-    value: recall.taxonomyProductFamilyLabel || recall.categoryLabel
-  },
-  {
-    label: 'Product type',
-    value: recall.taxonomyProductTypeLabel
-  },
-  {
-    label: 'Issue',
-    value: recall.taxonomyHazardTypeLabel || reasonText
-  },
-  {
-    label: 'Audience',
-    value: (recall.taxonomyAudienceLabels ?? []).filter(Boolean).slice(0, 2).join(', ')
-  }
-].filter((fact): fact is { label: string; value: string } => Boolean(fact.value));
 const reviewNeeded = needsTaxonomyReview(recall);
 const allergens = searchText ? getOfficialAllergenTerms(recall) : [];
 ---
 
 <article
-  class:list={['product-card', 'result-card', 'recall-list-card', className]}
+  class:list={['product-card', 'result-card', 'recall-list-card', { 'recall-list-card-no-image': !image.url }, className]}
   data-category-card
   data-source-card={sourceCard ? true : undefined}
   data-card-category={cardCategory}
@@ -94,34 +78,38 @@ const allergens = searchText ? getOfficialAllergenTerms(recall) : [];
     )}
   </a>
   <div class="card-body">
-    <div class="meta-row result-card-badges result-card-topline">
-      <span class="badge-source">{recall.sourceLabel}</span>
-      <span class="badge-date">{recall.recallDate}</span>
-      {reviewNeeded ? <span class="badge-review">{TAXONOMY_REVIEW_LABEL}</span> : null}
+    <div class="recall-list-card-heading">
+      <div class="meta-row result-card-badges result-card-topline">
+        <span class="badge-source">{recall.sourceLabel}</span>
+        <span class="badge-date">{recall.recallDate}</span>
+        {reviewNeeded ? <span class="badge-review">{TAXONOMY_REVIEW_LABEL}</span> : null}
+      </div>
+      <h3><a href={recall.detailPath}>
+        <span class="recall-list-card-notice-title">{recall.title}</span>
+        <span class="recall-list-card-short-title">{shortTitle}</span>
+      </a></h3>
+      <p class="result-card-line recall-list-card-products"><strong>Product: </strong>{productText}</p>
+      {brandText && brandText !== 'Brand not listed' && <p class="result-card-line">{brandText}</p>}
     </div>
-    <h3><a href={recall.detailPath}>{recall.title}</a></h3>
-    <p class="result-card-line"><strong>Product: </strong>{productText}</p>
-    <p class="result-card-line"><strong>Brand/company: </strong>{brandText}</p>
-    {taxonomyFacts.length ? (
-      <dl class="result-taxonomy-facts">
-        {taxonomyFacts.slice(0, 4).map((fact) => (
-          <div>
-            <dt>{fact.label}</dt>
-            <dd>{fact.value}</dd>
-          </div>
-        ))}
-      </dl>
-    ) : null}
-    <p class="result-card-line result-card-reason"><strong>{getRecallReasonLabel(recall.source)}: </strong>{reasonText}</p>
-    <p class="result-card-line result-card-action"><strong>{getRecallActionLabel(recall.source)}: </strong>{action.text}</p>
+    <div class="recall-card-summary">
+      <div class="recall-card-summary-row recall-card-risk">
+        <UiIcon name="warning" />
+        <p class="result-card-line result-card-reason"><strong>{getRecallReasonLabel(recall.source)}: </strong>{reasonText}</p>
+      </div>
+      <div class="recall-card-summary-row">
+        <UiIcon name="checklist" />
+        <p class="result-card-line result-card-action"><strong>{getRecallActionLabel(recall.source)}: </strong>{action.text}</p>
+      </div>
+    </div>
     {photoSubmissionNoticeUrl ? (
-      <a class="source-link source-link-small photo-submission-link" href={photoSubmissionNoticeUrl} target="_blank" rel="noopener noreferrer" data-i18n="detail.photoSubmissionNotice">
-        {getMessage('detail.photoSubmissionNotice')}
+      <a class="source-link source-link-small photo-submission-link" href={photoSubmissionNoticeUrl} target="_blank" rel="noopener noreferrer">
+        <UiIcon name="camera" />
+        <span><span data-i18n="category.photoSubmission">{getMessage('category.photoSubmission')}</span> · CPSC <span aria-hidden="true">↗</span></span>
       </a>
     ) : null}
     {reviewNeeded ? <p class="taxonomy-review-note">{TAXONOMY_REVIEW_NOTICE}</p> : null}
     <div class="link-row">
-      <a class="btn btn-primary" href={recall.detailPath}>View recall</a>
+      <a class="btn btn-primary" href={recall.detailPath} data-i18n="common.viewRecall">View recall</a>
     </div>
   </div>
 </article>

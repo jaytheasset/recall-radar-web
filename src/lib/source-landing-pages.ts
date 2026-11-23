@@ -1,7 +1,6 @@
 import type { SiteRecall } from './recall-data';
 import { categoryRoutes, siteRecalls } from './recall-data';
 import { recallMatchesTaxonomyCategory } from './taxonomy-v2-pages';
-import { getNoResultIdentifierHint } from './identifier-guidance.ts';
 import { getRecallSourceLabel, type CurrentCoverageSourceId } from './recall-sources';
 
 export type SourceLandingPageConfig = {
@@ -20,9 +19,7 @@ export type SourceLandingPageConfig = {
     description: string;
     ctaLabel: string;
   };
-  searchLabel: string;
   searchPlaceholder: string;
-  noResultCopy: string;
 };
 
 export type SourceLandingPageCard = SourceLandingPageConfig & {
@@ -37,29 +34,24 @@ export type SourceLandingProductTypeFilter = {
   href: string;
 };
 
-const SOURCE_PAGE_NO_RESULT_COPY =
-  getNoResultIdentifierHint();
-
 export const sourceLandingPages: SourceLandingPageConfig[] = [
   {
     route: '/us-product-recalls',
     title: 'United States Product Recalls | Recall Radar',
-    heading: 'United States Product Recalls',
+    heading: 'U.S. Recalls',
     eyebrow: 'United States',
     description: 'Browse CPSC and FDA/openFDA recall notices.',
     metaDescription: 'Browse CPSC and FDA recall notices in Recall Radar.',
     sourceIds: ['CPSC', 'FDA'],
     card: {
       title: 'United States',
-      agencyLabel: 'CPSC + FDA/openFDA',
+      agencyLabel: 'CPSC · FDA',
       marketLabel: 'United States',
       domainLabel: 'Product + food notices',
       description: 'Product recalls from CPSC and food enforcement notices from FDA/openFDA.',
       ctaLabel: 'Browse US recalls'
     },
-    searchLabel: 'Search within United States notices',
-    searchPlaceholder: 'Search product, brand, model, lot, date, recall number, or barcode',
-    noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
+    searchPlaceholder: 'Brand, model or lot'
   },
   {
     route: '/canada-product-recalls',
@@ -77,9 +69,7 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
       description: 'Product recalls and safety alerts from Health Canada.',
       ctaLabel: 'Browse Canada recalls'
     },
-    searchLabel: 'Search within Canada notices',
-    searchPlaceholder: 'Search product, brand, model, item detail, alert id, or keyword',
-    noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
+    searchPlaceholder: 'Brand, model or lot'
   },
   {
     route: '/eu-safety-gate-recalls',
@@ -97,9 +87,7 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
       description: 'Non-food product safety alerts from Safety Gate.',
       ctaLabel: 'Browse EU alerts'
     },
-    searchLabel: 'Search within EU Safety Gate alerts',
-    searchPlaceholder: 'Search product, brand, model, batch, alert number, or barcode',
-    noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
+    searchPlaceholder: 'Brand, model or batch'
   },
   {
     route: '/france-product-recalls',
@@ -117,9 +105,7 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
       description: 'Consumer product and food recall notices from RappelConso.',
       ctaLabel: 'Browse France recalls'
     },
-    searchLabel: 'Search within France notices',
-    searchPlaceholder: 'Search product, brand, GTIN, lot, date, reference, or keyword',
-    noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
+    searchPlaceholder: 'Brand, GTIN or lot'
   },
   {
     route: '/uk-food-recalls',
@@ -137,9 +123,7 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
       description: 'Food alerts and allergy alerts from the UK FSA.',
       ctaLabel: 'Browse UK food alerts'
     },
-    searchLabel: 'Search within UK food alerts',
-    searchPlaceholder: 'Search food, brand, allergen, batch, date, alert reference, or keyword',
-    noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
+    searchPlaceholder: 'Brand, batch or allergen'
   },
   {
     route: '/australia-product-recalls',
@@ -157,9 +141,7 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
       description: 'General product recalls from Product Safety Australia.',
       ctaLabel: 'Browse Australia recalls'
     },
-    searchLabel: 'Search within Australia notices',
-    searchPlaceholder: 'Search product, brand, model, batch, supplier, or keyword',
-    noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
+    searchPlaceholder: 'Brand, model or batch'
   },
   {
     route: '/new-zealand-product-recalls',
@@ -177,9 +159,7 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
       description: 'General product recalls from Product Safety New Zealand.',
       ctaLabel: 'Browse New Zealand recalls'
     },
-    searchLabel: 'Search within New Zealand notices',
-    searchPlaceholder: 'Search product, brand, model, SKU, supplier, hazard, or keyword',
-    noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
+    searchPlaceholder: 'Brand, model or SKU'
   },
   {
     route: '/hong-kong-food-recalls',
@@ -197,9 +177,7 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
       description: 'Food alert notices from the Centre for Food Safety.',
       ctaLabel: 'Browse Hong Kong food alerts'
     },
-    searchLabel: 'Search within Hong Kong food alerts',
-    searchPlaceholder: 'Search food, brand, allergen, batch, best-before date, importer, retailer, or keyword',
-    noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
+    searchPlaceholder: 'Brand, batch or allergen'
   },
   {
     route: '/australia-new-zealand-food-recalls',
@@ -217,9 +195,7 @@ export const sourceLandingPages: SourceLandingPageConfig[] = [
       description: 'Food recall notices from Food Standards Australia New Zealand.',
       ctaLabel: 'Browse FSANZ food recalls'
     },
-    searchLabel: 'Search within FSANZ food recalls',
-    searchPlaceholder: 'Search food, brand, allergen, batch, date marking, state, retailer, or keyword',
-    noResultCopy: SOURCE_PAGE_NO_RESULT_COPY
+    searchPlaceholder: 'Brand, batch or allergen'
   }
 ];
 

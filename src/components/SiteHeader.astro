@@ -1,14 +1,26 @@
 ---
-import { localeOptions } from '../lib/i18n';
+import UiIcon from './UiIcon.astro';
+import { getMessage, localeOptions } from '../lib/i18n';
+
+const navigation = [
+  { href: '/checker', label: 'nav.checker', shortLabel: 'nav.mobileSearch', icon: 'search' },
+  { href: '/product-types', label: 'nav.productTypes', shortLabel: 'nav.mobileTypes', icon: 'grid' },
+  { href: '/countries', label: 'nav.countries', shortLabel: 'nav.mobileCountries', icon: 'globe' },
+  { href: '/watchlist', label: 'nav.watchlist', shortLabel: 'nav.mobileSaved', icon: 'bookmark' }
+] as const;
+const currentPath = Astro.url.pathname.replace(/\/$/, '');
 ---
 
 <header class="site-header">
   <a class="brand" href="/">Recall Radar</a>
   <nav class="site-nav" aria-label="Primary">
-    <a href="/checker" data-i18n="nav.checker">Product Recalls</a>
-    <a href="/product-types" data-i18n="nav.productTypes">Product Types</a>
-    <a href="/countries" data-i18n="nav.countries">Countries</a>
-    <a href="/watchlist" data-i18n="nav.watchlist">Watchlist</a>
+    {navigation.map(({ href, label, shortLabel, icon }) => (
+      <a href={href} aria-current={currentPath === href ? 'page' : undefined}>
+        <UiIcon name={icon} />
+        <span class="site-nav-label" data-i18n={label}>{getMessage(label)}</span>
+        <span class="site-nav-mobile-label" data-i18n={shortLabel}>{getMessage(shortLabel)}</span>
+      </a>
+    ))}
   </nav>
   <div class="site-actions">
     <label class="sr-only" for="ui-language-select" data-i18n="language.label">Language</label>

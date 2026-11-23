@@ -1,4 +1,5 @@
 import { getSpecificAllergenQueryTerms, normalizeSearchText, searchTextMatchesQuery } from './multilingual-search';
+import { formatUiMessage, getCurrentUiLanguage, getMessage, type MessageKey } from './i18n';
 
 function setUrlState(query: string, category: string): void {
   const url = new URL(window.location.href);
@@ -18,6 +19,8 @@ export function initCategoryPageSearch(): void {
   const cards = [...document.querySelectorAll<HTMLElement>('[data-category-card]')];
   const groups = [...document.querySelectorAll<HTMLElement>('[data-category-group]')];
   const categoryOptions = [...document.querySelectorAll<HTMLElement>('[data-source-category-option]')];
+  const categorySelection = root?.querySelector<HTMLElement>('[data-source-category-selection]');
+  const categoryDisclosure = categorySelection?.closest('details');
 
   if (!root || !form || !input || !countLabel) {
     return;
@@ -45,6 +48,14 @@ export function initCategoryPageSearch(): void {
   }
 
   function updateActiveCategoryOptions(): void {
+    if (categorySelection) {
+      const option = categoryOptions.find((item) => item.dataset.sourceCategoryOption === activeCategory);
+      const labelKey = option?.querySelector<HTMLElement>('[data-i18n]')?.dataset.i18n as MessageKey | undefined;
+      if (labelKey) {
+        categorySelection.dataset.i18n = labelKey;
+        categorySelection.textContent = getMessage(labelKey, getCurrentUiLanguage());
+      }
+    }
     for (const option of categoryOptions) {
       const isActive = option.dataset.sourceCategoryOption === activeCategory;
       option.classList.toggle('is-active', isActive);
@@ -81,9 +92,17 @@ export function initCategoryPageSearch(): void {
       group.hidden = (hasQuery || activeCategory !== 'all') && !hasVisibleCard;
     }
 
-    resultCountLabel.textContent = `${visibleCount} of ${total} recall notice${
-      total === 1 ? '' : 's'
-    } shown${activeCategory !== 'all' && categoryLabel ? ` for ${categoryLabel}` : ''}`;
+    if (categorySelection) {
+      const key = hasQuery || activeCategory !== 'all' ? 'category.resultCount' : 'common.recallsCount';
+      const values = { count: visibleCount.toLocaleString('en-US') };
+      resultCountLabel.dataset.i18nTemplate = key;
+      resultCountLabel.dataset.i18nValues = JSON.stringify(values);
+      resultCountLabel.textContent = formatUiMessage(key, values);
+    } else {
+      resultCountLabel.textContent = `${visibleCount} of ${total} recall notice${
+        total === 1 ? '' : 's'
+      } shown${activeCategory !== 'all' && categoryLabel ? ` for ${categoryLabel}` : ''}`;
+    }
 
     if (emptyState) {
       emptyState.hidden = visibleCount > 0;
@@ -115,6 +134,10 @@ export function initCategoryPageSearch(): void {
       activeCategory = option.dataset.sourceCategoryOption ?? 'all';
       updateActiveCategoryOptions();
       updateResults();
+      if (categoryDisclosure?.open) {
+        categoryDisclosure.open = false;
+        categoryDisclosure.querySelector('summary')?.focus();
+      }
     });
   }
 
