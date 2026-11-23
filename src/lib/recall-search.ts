@@ -2,6 +2,8 @@ import type { HazardType, ProductType, RecallAudience, RecallDomain } from '../d
 import type { SiteRecall } from './recall-data';
 import {
   expandSearchQuery,
+  getSpecificAllergenQueryTerms,
+  matchesOfficialAllergen,
   normalizeSearchText,
   tokenizeExpandedSearchTerms,
   tokenizeSearchQuery
@@ -183,12 +185,26 @@ function tokensFor(query: string): string[] {
   return tokenizeSearchQuery(query).filter((token) => token.length > 1);
 }
 
+let lastExpandedQuery: { query: string; terms: string[]; tokens: string[] } | undefined;
+
+function expandOnce(query: string) {
+  if (lastExpandedQuery?.query !== query) {
+    const terms = expandSearchQuery(query);
+    lastExpandedQuery = {
+      query,
+      terms,
+      tokens: tokenizeExpandedSearchTerms(terms).filter((token) => token.length > 1)
+    };
+  }
+  return lastExpandedQuery;
+}
+
 function expandedTermsFor(query: string): string[] {
-  return expandSearchQuery(query);
+  return expandOnce(query).terms;
 }
 
 function expandedTokensFor(query: string): string[] {
-  return tokenizeExpandedSearchTerms(expandedTermsFor(query)).filter((token) => token.length > 1);
+  return expandOnce(query).tokens;
 }
 
 function searchableText(values: string[]): string {
@@ -349,6 +365,10 @@ function looksLikeIdentifier(query: string, normalizedQuery: string): boolean {
     return true;
   }
 
+  if (/^[a-z]{1,4}\d{4,}$/i.test(compact)) {
+    return true;
+  }
+
   if (/^[a-z0-9]+-[a-z0-9-]+$/i.test(compact) && /\d/.test(compact)) {
     return true;
   }
@@ -428,6 +448,7 @@ function requiresSpecificAllergenMatch(
 
 function identifierFields(recall: SiteRecall): string[] {
   return [
+    ...(recall.verifiedIdentifiers ?? []),
     recall.id,
     recall.recallNumber ?? '',
     recall.title,
@@ -583,18 +604,8 @@ export function getRecallIdentifierHint(recall: Pick<SiteRecall, 'source'>): str
 
 function getMatchReason(query: string, recall: SiteRecall): RecallMatchReason {
   const normalizedQuery = normalize(query);
-  const queryTokens = tokensFor(query);
-  const expandedTerms = expandedTermsFor(query);
-  const expandedTokens = expandedTokensFor(query);
-  const specificAllergenTerms = specificAllergenTermsForQuery(expandedTerms);
-  const identifierLikeQuery = looksLikeIdentifier(query, normalizedQuery);
-
-  if (!normalizedQuery || (queryTokens.length === 0 && expandedTokens.length === 0)) {
-    return 'keyword';
-  }
-
   const recallNumberFields = [recall.id, recall.recallNumber ?? ''];
-  if (identifierLikeQuery) {
+  if (looksLikeIdentifier(query, normalizedQuery)) {
     if (hasExactIdentifierMatch(normalizedQuery, recallNumberFields)) {
       return 'recall-number';
     }
@@ -605,6 +616,12 @@ function getMatchReason(query: string, recall: SiteRecall): RecallMatchReason {
 
     return 'keyword';
   }
+
+  const queryTokens = tokensFor(query);
+  const expandedTerms = expandedTermsFor(query);
+  const expandedTokens = expandedTokensFor(query);
+  const specificAllergenTerms = specificAllergenTermsForQuery(expandedTerms);
+  if (!normalizedQuery || (queryTokens.length === 0 && expandedTokens.length === 0)) return 'keyword';
 
   if (
     hasIdentifierCue(normalizedQuery) &&
@@ -668,15 +685,6 @@ function getMatchReason(query: string, recall: SiteRecall): RecallMatchReason {
 
 export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchType {
   const normalizedQuery = normalize(query);
-  const queryTokens = tokensFor(query);
-  const expandedTerms = expandedTermsFor(query);
-  const expandedTokens = expandedTokensFor(query);
-  const specificAllergenTerms = specificAllergenTermsForQuery(expandedTerms);
-
-  if (!normalizedQuery || (queryTokens.length === 0 && expandedTokens.length === 0)) {
-    return 'none';
-  }
-
   if (looksLikeIdentifier(query, normalizedQuery)) {
     if (hasExactIdentifierMatch(normalizedQuery, [recall.id, recall.recallNumber ?? ''])) {
       return 'exact';
@@ -684,6 +692,12 @@ export function getRecallMatch(query: string, recall: SiteRecall): RecallMatchTy
 
     return hasExactIdentifierMatch(normalizedQuery, identifierFields(recall)) ? 'possible' : 'none';
   }
+
+  const queryTokens = tokensFor(query);
+  const expandedTerms = expandedTermsFor(query);
+  const expandedTokens = expandedTokensFor(query);
+  const specificAllergenTerms = specificAllergenTermsForQuery(expandedTerms);
+  if (!normalizedQuery || (queryTokens.length === 0 && expandedTokens.length === 0)) return 'none';
 
   if (exactFields(recall).some((field) => isStrongFieldMatch(normalizedQuery, queryTokens, field))) {
     return 'exact';
@@ -744,6 +758,7 @@ function compareRecalls(
 }
 
 export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearchResult {
+  const specificAllergens = getSpecificAllergenQueryTerms(query, expandedTermsFor(query));
   const audienceIntent = getRecallAudienceSearchIntent(query);
   const audienceQuery = audienceIntent?.remainingQuery ?? query;
   const recallDomainIntent = getRecallDomainSearchIntent(audienceQuery);
@@ -754,7 +769,7 @@ export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearc
   const productFamilyQuery = productFamilyIntent?.remainingQuery ?? sourceQuery;
   const hazardIntent = getHazardSearchIntent(productFamilyQuery);
   const hazardQuery = hazardIntent?.remainingQuery ?? productFamilyQuery;
-  const productTypeIntent = getProductTypeSearchIntent(hazardQuery);
+  const productTypeIntent = specificAllergens.length ? null : getProductTypeSearchIntent(hazardQuery);
   const searchQuery = productTypeIntent?.remainingQuery ?? hazardQuery;
   const scopedRecalls = recalls.filter((recall) => {
     const sourceMatches =
@@ -762,7 +777,9 @@ export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearc
     const productFamilyMatches =
       !productFamilyIntent || productFamilyIntent.productFamilies.includes(recall.taxonomyProductFamily ?? '');
     const hazardMatches =
-      !hazardIntent || hazardIntent.hazardTypes.includes((recall.taxonomyHazardType ?? 'unknown') as HazardType);
+      !hazardIntent ||
+      (specificAllergens.length > 0 && hazardIntent.hazardTypes.includes('allergen')) ||
+      hazardIntent.hazardTypes.includes((recall.taxonomyHazardType ?? 'unknown') as HazardType);
     const productTypeMatches =
       !productTypeIntent ||
       productTypeIntent.productTypes.includes((recall.taxonomyProductType ?? 'unknown') as ProductType);
@@ -774,7 +791,7 @@ export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearc
       (recall.taxonomyAudience ?? []).some((audience) => audienceIntent.audiences.includes(audience as RecallAudience));
     return sourceMatches && productFamilyMatches && hazardMatches && productTypeMatches && recallDomainMatches && audienceMatches;
   });
-  const scopedOnlyReason = !searchQuery
+  const scopedOnlyReason = !searchQuery && !specificAllergens.length
     ? audienceIntent
       ? 'audience'
       : recallDomainIntent
@@ -790,16 +807,17 @@ export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearc
                 : null
     : null;
   const matches = scopedRecalls
-    .map((recall) => {
-      const match = scopedOnlyReason ? 'related' : getRecallMatch(searchQuery, recall);
-      const matchReason = scopedOnlyReason ?? getMatchReason(searchQuery, recall);
-      const score =
-        match === 'none'
-          ? 0
-          : scopedOnlyReason
-            ? MATCH_BASE_SCORES.related + MATCH_REASON_SCORES[scopedOnlyReason]
-            : getMatchScore(searchQuery, recall, match, matchReason);
-      return {
+    .flatMap((recall) => {
+      const match: RecallMatchType = specificAllergens.length
+        ? matchesOfficialAllergen(recall, specificAllergens) ? 'possible' : 'none'
+        : scopedOnlyReason ? 'related' : getRecallMatch(searchQuery, recall);
+      if (match === 'none') return [];
+
+      const matchReason = specificAllergens.length ? 'ingredient' : scopedOnlyReason ?? getMatchReason(searchQuery, recall);
+      const score = scopedOnlyReason
+        ? MATCH_BASE_SCORES.related + MATCH_REASON_SCORES[scopedOnlyReason]
+        : getMatchScore(searchQuery, recall, match, matchReason);
+      return [{
         recall,
         match,
         matchReason,
@@ -809,9 +827,8 @@ export function searchRecalls(query: string, recalls: SiteRecall[]): RecallSearc
         searchPriorityLabel: getSearchPriorityLabel(score),
         evidenceLabels: getEvidenceLabels(query, recall, matchReason),
         identifierHint: getRecallIdentifierHint(recall)
-      };
+      }];
     })
-    .filter((result) => result.match !== 'none')
     .sort(compareRecalls) as RecallSearchItem[];
 
   return {

@@ -32,6 +32,8 @@ export type NormalizedRecall = {
   affectedUnits: string;
   description: string;
   slug: string;
+  siteSlug?: string;
+  previousSiteSlugs?: string[];
   classification?: string;
   reason?: string;
   distributionPattern?: string;
@@ -49,5 +51,6 @@ export type ProcessedRecallFile = {
   generatedAt: string;
   source: ProcessedRecallSource;
   count: number;
+  countsBySource?: Partial<Record<RecallSource, number>>;
   records: NormalizedRecall[];
 };

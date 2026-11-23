@@ -1,5 +1,5 @@
 import type { SiteRecall } from './recall-data';
-import { normalizeBrandName } from './brand-normalize';
+import { isKnownBrandName, normalizeBrandName } from './brand-normalize';
 
 const GENERIC_BRAND_TOKENS = new Set([
   'and',
@@ -103,7 +103,7 @@ function meaningfulBrandTokens(value: string): string[] {
 }
 
 function isMeaningfulBrandName(value: string): boolean {
-  return meaningfulBrandTokens(value).length > 0;
+  return isKnownBrandName(value) && meaningfulBrandTokens(value).length > 0;
 }
 
 function addIfMeaningful(set: Set<string>, value: string): void {
@@ -119,7 +119,13 @@ function addSlugIfMeaningful(set: Set<string>, value: string): void {
   }
 }
 
+const brandIdentities = new WeakMap<SiteRecall, BrandIdentity>();
+const hazardKeywords = new WeakMap<SiteRecall, Set<string>>();
+const productKeywords = new WeakMap<SiteRecall, Set<string>>();
+
 function brandIdentityFor(recall: SiteRecall): BrandIdentity {
+  const cached = brandIdentities.get(recall);
+  if (cached) return cached;
   const identity: BrandIdentity = {
     slugs: new Set<string>(),
     displayNames: new Set<string>(),
@@ -143,6 +149,7 @@ function brandIdentityFor(recall: SiteRecall): BrandIdentity {
   addIfMeaningful(identity.displayNames, recall.primaryBrand);
   addIfMeaningful(identity.rawNames, recall.primaryBrandRawName);
 
+  brandIdentities.set(recall, identity);
   return identity;
 }
 
@@ -205,6 +212,8 @@ export function getCompanyRecallHistory(
 }
 
 function hazardKeywordSet(recall: SiteRecall): Set<string> {
+  const cached = hazardKeywords.get(recall);
+  if (cached) return cached;
   const text = normalizeText(
     [
       recall.title,
@@ -215,18 +224,24 @@ function hazardKeywordSet(recall: SiteRecall): Set<string> {
     ].join(' ')
   );
 
-  return new Set(
+  const keywords = new Set(
     HAZARD_KEYWORDS.filter((keyword) => text.includes(normalizeText(keyword))).map(normalizeText)
   );
+  hazardKeywords.set(recall, keywords);
+  return keywords;
 }
 
 function productKeywordSet(recall: SiteRecall): Set<string> {
-  return new Set(
+  const cached = productKeywords.get(recall);
+  if (cached) return cached;
+  const keywords = new Set(
     tokens([recall.title, recall.primaryProductName, ...recall.productNames].join(' '))
       .filter((token) => token.length > 2)
       .filter((token) => !RELATED_STOP_WORDS.has(token))
       .slice(0, 40)
   );
+  productKeywords.set(recall, keywords);
+  return keywords;
 }
 
 function relatedScore(currentRecall: SiteRecall, candidate: SiteRecall): number {

@@ -1,4 +1,4 @@
-import { limitSlug, slugify } from './slug';
+import { limitSlug, slugify } from './slug.ts';
 
 export type NormalizedBrandName = {
   rawName: string;
@@ -6,6 +6,16 @@ export type NormalizedBrandName = {
   slug: string;
   normalized: boolean;
 };
+
+export function isKnownBrandName(value: unknown): value is string {
+  if (typeof value !== 'string') return false;
+  const name = value.trim().replace(/^[\s(\[]+|[\s)\].]+$/g, '');
+  return Boolean(name) && !/^(?:n\/?a|none|unknown|unknown brand|unbranded|no brand|sans marque|(?:brand(?: or company)? |firm |business )?not (?:available|provided|listed)(?: in english)?)$/i.test(name);
+}
+
+export function stripMissingEnglishName(value: string): string {
+  return value.replace(/\s*\(\s*not available in english\s*\)\s*$/i, '').trim();
+}
 
 function tidyBrandName(value: string): string {
   return value
@@ -48,12 +58,14 @@ function stripLegalSuffix(value: string): string {
 
 export function normalizeBrandName(rawName: string): NormalizedBrandName {
   const raw = tidyBrandName(rawName);
-  const dbaName = extractDbaName(raw);
-  const candidate = dbaName ?? raw;
+  const name = stripMissingEnglishName(raw);
+  const candidate = extractDbaName(name) ?? name;
   const withoutLocation = stripTrailingLocation(candidate);
   const withoutLegalSuffix = stripLegalSuffix(withoutLocation);
-  const displayName = withoutLegalSuffix.length >= 2 ? withoutLegalSuffix : raw;
-  const slug = limitSlug(displayName, 72) || limitSlug(raw, 72) || 'brand';
+  const displayName = withoutLegalSuffix.length >= 2 ? withoutLegalSuffix : name;
+  const slug = limitSlug(displayName, 72) || limitSlug(`brand-${[...displayName]
+    .filter((character) => /[\p{L}\p{N}]/u.test(character))
+    .map((character) => character.codePointAt(0)?.toString(16)).join('-')}`, 72);
 
   return {
     rawName: raw,

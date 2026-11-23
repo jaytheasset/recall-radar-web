@@ -2,6 +2,7 @@
 import type { SiteRecall } from '../lib/recall-data';
 import { cleanRecallDisplayText } from '../lib/recall-display-text';
 import { getRecallImageForContext, type RecallImageContext } from '../lib/recall-images';
+import { getOfficialAllergenTerms } from '../lib/multilingual-search';
 import {
   getRecallActionLabel,
   getRecallDefaultActionFallback,
@@ -62,6 +63,7 @@ const taxonomyFacts = [
   }
 ].filter((fact): fact is { label: string; value: string } => Boolean(fact.value));
 const reviewNeeded = needsTaxonomyReview(recall);
+const allergens = searchText ? getOfficialAllergenTerms(recall) : [];
 ---
 
 <article
@@ -71,6 +73,7 @@ const reviewNeeded = needsTaxonomyReview(recall);
   data-card-category={cardCategory}
   data-card-source={cardSource}
   data-search-text={searchText}
+  data-official-allergens={allergens.length ? allergens.join('|') : undefined}
 >
   <a class="image-shell" href={recall.detailPath} aria-label={`View recall for ${recall.title}`}>
     {image.url ? (

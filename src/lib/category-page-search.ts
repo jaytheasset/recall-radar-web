@@ -1,4 +1,4 @@
-import { normalizeSearchText, searchTextMatchesQuery } from './multilingual-search';
+import { getSpecificAllergenQueryTerms, normalizeSearchText, searchTextMatchesQuery } from './multilingual-search';
 
 function setUrlState(query: string, category: string): void {
   const url = new URL(window.location.href);
@@ -59,12 +59,15 @@ export function initCategoryPageSearch(): void {
   function updateResults(syncUrl = true): void {
     const query = input?.value.trim() ?? '';
     const hasQuery = normalizeSearchText(query).length > 0;
+    const allergens = hasQuery ? getSpecificAllergenQueryTerms(query) : [];
     const categoryLabel = activeCategoryLabel();
     let visibleCount = 0;
 
     for (const card of cards) {
       const categoryMatches = activeCategory === 'all' || card.dataset.cardCategory === activeCategory;
-      const queryMatches = !hasQuery || searchTextMatchesQuery(card.dataset.searchText ?? '', query);
+      const queryMatches = !hasQuery || (allergens.length
+        ? allergens.some((allergen) => (card.dataset.officialAllergens ?? '').split('|').includes(allergen))
+        : searchTextMatchesQuery(card.dataset.searchText ?? '', query));
       const visible = categoryMatches && queryMatches;
       card.hidden = !visible;
       if (visible) {

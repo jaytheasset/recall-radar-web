@@ -1,6 +1,8 @@
 import processedRecallData from '../../data/processed/recalls.json';
 import type { NormalizedRecall, ProcessedRecallFile, RecallImage } from '../data/recall-types';
 import type { SiteRecall } from './recall-data';
+import { isKnownBrandName, stripMissingEnglishName } from './brand-normalize';
+import { correctCpscRecallAction } from './recall-source-corrections';
 import { getDetailVerificationIdentifierHint } from './identifier-guidance.ts';
 import { getDisplayImageCaption } from './recall-images';
 import {
@@ -253,10 +255,12 @@ function formatDate(value: string): string {
     return '';
   }
 
-  const date =
-    /^\d{8}$/.test(text)
-      ? new Date(`${text.slice(0, 4)}-${text.slice(4, 6)}-${text.slice(6, 8)}T00:00:00Z`)
-      : new Date(text.includes('T') ? text : `${text}T00:00:00Z`);
+  const calendarDate = /^\d{8}$/.test(text)
+    ? `${text.slice(0, 4)}-${text.slice(4, 6)}-${text.slice(6, 8)}`
+    : text.match(/^\d{4}-\d{2}-\d{2}(?=T|$)/)?.[0];
+  if (!calendarDate) return text;
+
+  const date = new Date(`${calendarDate}T00:00:00Z`);
 
   if (Number.isNaN(date.getTime())) {
     return text;
@@ -379,9 +383,9 @@ function buildCpscView(recall: SiteRecall, raw: RawObject): SourceDetailView {
     recall.primaryBrand
   );
   const description = rawText(raw, 'Description') || recall.description;
-  const reason = firstNonEmpty([...valuesFrom(raw, 'Hazards'), recall.hazard], 'Reason not listed.');
+  const reason = firstNonEmpty([...valuesFrom(raw, 'Hazards'), recall.hazard].filter((value) => !/^none reported\.?$/i.test(value)), 'Reason not listed.');
   const remedyDetail = firstNonEmpty(
-    [...valuesFrom(raw, 'Remedies'), recall.remedy],
+    [...valuesFrom(raw, 'Remedies'), recall.remedy].map((action) => correctCpscRecallAction(recall.id, action)),
     getRecallDefaultActionFallback(recall.source)
   );
   const captions = imageCaptions(raw, recall);
@@ -435,11 +439,12 @@ function buildFdaView(recall: SiteRecall, raw: RawObject): SourceDetailView {
       : getRecallDefaultActionFallback(recall.source));
   const officialTitle = recall.title;
   const details: DetailFact[] = [];
-  const codeDetails = uniqueNonEmpty([rawText(raw, 'code_info'), rawText(raw, 'more_code_info'), ...identifierDetails(productName)]);
+  const codeDetails = uniqueNonEmpty([rawText(raw, 'code_info'), rawText(raw, 'more_code_info'), ...identifierDetails(productName)])
+    .filter((value) => !/^(?:n\/?a|t\.?b\.?a\.?|to be announced|none|unknown|not (?:available|provided|listed))[.\s]*$/i.test(value));
 
   addFact(details, 'Product description', productName);
   addFact(details, 'Recalling firm', brandName);
-  addFact(details, 'Lot, UPC, or code information', codeDetails);
+  addFact(details, 'Lot, UPC, or code information', codeDetails.length ? codeDetails : 'Not specified in the available FDA record');
   addFact(details, 'Classification', rawText(raw, 'classification') || recall.classification || '');
   addFact(details, 'Status', status);
   addFact(details, 'Quantity', rawText(raw, 'product_quantity') || recall.productQuantity || recall.affectedUnits);
@@ -534,11 +539,13 @@ function buildRappelConsoView(recall: SiteRecall, raw: RawObject): SourceDetailV
 }
 
 function buildCanadaView(recall: SiteRecall, raw: RawObject): SourceDetailView {
-  const productName = firstNonEmpty([rawText(raw, 'Product'), ...recall.productNames, recall.primaryProductName], 'Product');
+  const detail = rawObject(raw, 'Detail');
+  const summary = rawObject(detail, 'summary');
+  const productName = firstNonEmpty([rawText(summary, 'product'), rawText(raw, 'Product'), ...recall.productNames, recall.primaryProductName], 'Product');
   const brandName = firstNonEmpty([...recall.displayBrandNames, ...recall.brandNames], '');
   const officialTitle = rawText(raw, 'Title') || recall.title;
   const organization = rawText(raw, 'Organization');
-  const reason = firstNonEmpty([rawText(raw, 'Issue'), recall.reason ?? '', recall.hazard], 'Reason not listed.');
+  const reason = firstNonEmpty([rawText(summary, 'issue'), recall.reason ?? '', rawText(raw, 'Issue'), recall.hazard], 'Reason not listed.');
   const action = firstNonEmpty(
     [rawText(raw, 'What you should do'), recall.remedy],
     getRecallDefaultActionFallback(recall.source)
@@ -551,6 +558,16 @@ function buildCanadaView(recall: SiteRecall, raw: RawObject): SourceDetailView {
   addFact(details, 'Product', productName);
   addFact(details, 'Brand or company', brandName);
   addFact(details, 'UPC, barcode, model, item, lot, batch, date, DIN, or NPN details', identifiers);
+  for (const row of rawArray(detail, 'affectedProducts')) {
+    const fields = rawObject(row, 'fields');
+    const product = rawText(fields, 'productName') || rawText(row, 'product');
+    const authorisation = rawText(fields, 'marketAuthorization');
+    const lot = rawText(fields, 'lotNumber');
+    if (authorisation || lot) {
+      addFact(details, product ? `Affected lot or authorization for ${product}` : 'Affected lot or authorization',
+        uniqueNonEmpty([authorisation, lot]));
+    }
+  }
   addFact(details, 'Category', rawText(raw, 'Category') || recall.rawCategory);
   addFact(details, 'Published by', organization);
   addFact(details, 'Recall or alert id', rawText(raw, 'NID') || recall.recallNumber || '');
@@ -761,7 +778,7 @@ function buildHongKongCfsView(recall: SiteRecall, raw: RawObject): SourceDetailV
       pairs.distributor,
       ...recall.displayBrandNames,
       recall.primaryBrand
-    ],
+    ].filter(isKnownBrandName).map(stripMissingEnglishName),
     'Brand or company not listed'
   );
   const officialTitle = firstNonEmpty([rawText(detail, 'title'), rawText(raw, 'title'), recall.title], recall.title);
@@ -1173,13 +1190,13 @@ export function buildRecallDetailView(recall: SiteRecall, allRecalls: SiteRecall
       ? `${introLead} Compare the package, batch, date, allergen, and action details with the official FSA notice before eating, serving, selling, or returning it.`
       : recall.source === 'FSANZ_FOOD_RECALLS'
         ? `${introLead} Compare the package, date marking, batch, distribution, and action details with the official FSANZ notice before eating, serving, selling, or returning it.`
-        : `${introLead} Review the photos and listed product details before using, keeping, selling, or giving it away.`;
+        : `${introLead} Match the listed product details before using, keeping, selling, or giving it away.${recall.images.length ? ' Use the product photos to help identify your item.' : ''}`;
 
   return {
     ...sourceSpecificView,
     sourceBadge: getRecallSourceLabel(recall.source),
     categoryLabel: recall.categoryLabel,
-    taxonomyProductFamilyLabel: recall.taxonomyProductFamilyLabel ?? recall.categoryLabel,
+    taxonomyProductFamilyLabel: recall.taxonomyNeedsReview ? '' : recall.taxonomyProductFamilyLabel ?? recall.categoryLabel,
     taxonomyProductTypeLabel: recall.taxonomyProductTypeLabel ?? '',
     taxonomyHazardTypeLabel: recall.taxonomyHazardTypeLabel ?? '',
     taxonomyRecallDomainLabel: recall.taxonomyRecallDomainLabel ?? '',

@@ -121,30 +121,29 @@ export async function mergeProcessedRecalls(): Promise<MergeResult> {
     readProcessedFile(hongKongCfsProcessedPath),
     readProcessedFile(fsanzFoodRecallsProcessedPath)
   ]);
-  const cpscRecords = sourceRecords(cpscFile, 'CPSC').length
-    ? sourceRecords(cpscFile, 'CPSC')
-    : sourceRecords(canonicalFile, 'CPSC');
-  const fdaRecords = sourceRecords(fdaFile, 'FDA');
-  const rappelConsoRecords = sourceRecords(rappelConsoFile, 'FR_RAPPELCONSO');
-  const canadaRecords = sourceRecords(canadaFile, 'CA_RECALLS');
-  const euSafetyGateRecords = sourceRecords(euSafetyGateFile, 'EU_SAFETY_GATE');
-  const ukFsaRecords = sourceRecords(ukFsaFile, 'UK_FSA');
-  const australiaProductSafetyRecords = sourceRecords(australiaProductSafetyFile, 'AU_PRODUCT_SAFETY');
-  const newZealandProductSafetyRecords = sourceRecords(newZealandProductSafetyFile, 'NZ_PRODUCT_SAFETY');
-  const hongKongCfsRecords = sourceRecords(hongKongCfsFile, 'HK_CFS');
-  const fsanzFoodRecallRecords = sourceRecords(fsanzFoodRecallsFile, 'FSANZ_FOOD_RECALLS');
-  const records = mergeRecords([
-    ...cpscRecords,
-    ...fdaRecords,
-    ...rappelConsoRecords,
-    ...canadaRecords,
-    ...euSafetyGateRecords,
-    ...ukFsaRecords,
-    ...australiaProductSafetyRecords,
-    ...newZealandProductSafetyRecords,
-    ...hongKongCfsRecords,
-    ...fsanzFoodRecallRecords
-  ]);
+  const previous = canonicalFile?.records ?? [];
+  const archive = previous.some((record) => record.siteSlug);
+  const previousById = new Map(previous.map((record) => [record.id, record]));
+  const sources: Array<[ProcessedRecallFile | null, RecallSource]> = [
+    [cpscFile, 'CPSC'], [fdaFile, 'FDA'], [rappelConsoFile, 'FR_RAPPELCONSO'], [canadaFile, 'CA_RECALLS'],
+    [euSafetyGateFile, 'EU_SAFETY_GATE'], [ukFsaFile, 'UK_FSA'], [australiaProductSafetyFile, 'AU_PRODUCT_SAFETY'],
+    [newZealandProductSafetyFile, 'NZ_PRODUCT_SAFETY'], [hongKongCfsFile, 'HK_CFS'], [fsanzFoodRecallsFile, 'FSANZ_FOOD_RECALLS']
+  ];
+  const updates = sources.flatMap(([file, source]) => {
+    if (archive && (!file || file.generatedAt <= (canonicalFile?.generatedAt ?? ''))) return [];
+    const incoming = sourceRecords(file, source);
+    if (!archive && source === 'CPSC' && !incoming.length) return sourceRecords(canonicalFile, source);
+    return incoming.map((record) => {
+      const prior = previousById.get(record.id);
+      return archive && prior?.siteSlug
+        ? { ...record, siteSlug: prior.siteSlug, previousSiteSlugs: prior.previousSiteSlugs }
+        : record;
+    });
+  });
+  if (canonicalFile && archive && !updates.length) {
+    return { ...canonicalFile, countsBySource: countBySource(previous) };
+  }
+  const records = mergeRecords(archive ? [...previous, ...updates] : updates);
 
   if (records.length === 0) {
     throw new Error('Recall merge produced zero records; canonical processed data was not overwritten.');

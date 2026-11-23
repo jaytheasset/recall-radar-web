@@ -6,12 +6,12 @@ Use this checklist before a controlled public launch, staging deployment, or fin
 
 - Static Astro site.
 - Static processed JSON is bundled at build/runtime from `data/processed/recalls.json`.
-- 1201 indexed recall notices.
+- The current index count and date are published on the homepage and in Countries → Source coverage.
 - 10 official source feeds.
 - Active sources: `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, `AU_PRODUCT_SAFETY`, `NZ_PRODUCT_SAFETY`, `HK_CFS`, `FSANZ_FOOD_RECALLS`.
 - No backend, database, email service, runtime API, or account system.
 - No live alerting, product registration, affiliate/referral, or LLM feature.
-- No full source backfills yet.
+- The site indexes a dated snapshot from the source feeds. Historical coverage varies by source.
 - Cross-source dedupe is not implemented yet.
 
 ## B. Pre-Launch Commands
@@ -74,19 +74,8 @@ These commands perform network fetches or may update local data files. Run them 
 
 ## D. Data/Source Checklist
 
-Confirm current counts:
+Confirm the total and source counts against `data/processed/recalls.json` and the source coverage page. The November 23, 2026 snapshot contains 4,389 notices.
 
-- Total: 1201
-- CPSC: 301
-- FDA/openFDA: 100
-- FR_RAPPELCONSO: 100
-- CA_RECALLS: 100
-- EU_SAFETY_GATE: 100
-- UK_FSA: 100
-- AU_PRODUCT_SAFETY: 100
-- NZ_PRODUCT_SAFETY: 100
-- HK_CFS: 100
-- FSANZ_FOOD_RECALLS: 100
 - Duplicate ids: 0
 - Unknown source ids: 0
 - Active source filters: `all`, `CPSC`, `FDA`, `FR_RAPPELCONSO`, `CA_RECALLS`, `EU_SAFETY_GATE`, `UK_FSA`, `AU_PRODUCT_SAFETY`, `NZ_PRODUCT_SAFETY`, `HK_CFS`, `FSANZ_FOOD_RECALLS`
@@ -116,7 +105,7 @@ Required no-result warning substance:
 
 Allowed wording:
 
-- 1201 indexed recall notices
+- The published count of indexed recall notices
 - 10 official source feeds
 - official recall notices across markets
 - possible matches
@@ -213,13 +202,12 @@ Confirm:
 
 Sitemap status:
 
-- No sitemap tooling is currently configured.
-- Sitemap generation is deferred until a site URL/canonical deployment target is chosen.
+- `/sitemap.xml` lists the current recall detail URLs and key public navigation pages.
+- `robots.txt` points to the sitemap. Check that the sitemap URLs return 200 on the production domain.
 
 Canonical/site URL status:
 
-- `astro.config.mjs` does not currently set a `site` URL.
-- Add a canonical site URL only after the launch domain is known.
+- The Astro site URL and page canonical tags use `https://www.recall-radar.app`.
 
 ## J. Known Launch Limitations
 

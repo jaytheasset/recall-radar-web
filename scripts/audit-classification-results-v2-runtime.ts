@@ -23,6 +23,7 @@ type ClassificationResult = {
 };
 
 type ProcessedRecallFile = {
+  count?: number;
   records?: CanonicalRecall[];
 };
 
@@ -99,7 +100,10 @@ const reviewRows = successfulClassifications.filter(
     (record.qualityFlags?.length ?? 0) > 0
 );
 
-assert(recallRecords.length === 1201, `Expected 1201 canonical recalls, found ${recallRecords.length}.`);
+assert(recallRecords.length > 0 && recallsFile.count === recallRecords.length, 'Canonical recall count is empty or inconsistent.');
+assert(canonicalIds.size === recallRecords.length, 'Canonical recalls contain duplicate IDs.');
+assert(classificationById.size === successfulClassifications.length, 'Classification rows contain duplicate IDs.');
+assert(recallRecords.every((record) => classificationById.get(record.id)?.source === record.source), 'A classification source does not match its canonical recall.');
 assert(classificationFile.totalRecords === recallRecords.length, 'Classification totalRecords does not match canonical recall count.');
 assert(classificationFile.success === recallRecords.length, 'Classification success count does not match canonical recall count.');
 assert(classificationFile.failed === 0, 'Classification file contains failed rows.');

@@ -73,6 +73,7 @@ const RECALL_DOMAIN_TERMS: Record<SearchableRecallDomain, string[]> = {
     'chemikalienruckruf'
   ],
   'workplace-industrial': [
+    'workplace industrial recall',
     'workplace recall',
     'industrial recall',
     '\uC0B0\uC5C5\uC6A9 \uC81C\uD488 \uB9AC\uCF5C',

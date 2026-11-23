@@ -16,6 +16,8 @@ function isValidAdSenseSlot(value: string): boolean {
   return /^\d{8,20}$/.test(value);
 }
 
+export const adSensePublisherClient = isValidAdSenseClient(adSenseClient) ? adSenseClient : 'ca-pub-5307205698445279';
+
 export function getAdSenseSlotConfig(placement: AdSensePlacement): AdSenseSlotConfig | undefined {
   const slot = placement === 'home' ? homeAdSenseSlot : '';
 

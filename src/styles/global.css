@@ -2837,6 +2837,52 @@ button:disabled {
   gap: 0.75rem;
 }
 
+.recall-facts-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  line-height: 1.55;
+}
+
+.recall-facts-table th,
+.recall-facts-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 0.7rem 0.65rem;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.recall-facts-table thead {
+  background: #f5f6f8;
+}
+
+.recall-facts-table th[scope="row"] {
+  width: 30%;
+}
+
+.recall-facts-table ul {
+  margin: 0;
+  padding-inline-start: 1.25rem;
+}
+
+.recall-table-scroll {
+  overflow-x: auto;
+}
+
+.recall-table-scroll table {
+  min-width: 34rem;
+}
+
+.recall-guide-section .recall-facts-table + p {
+  margin-top: 1rem;
+}
+
+.home-joint-recall {
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
 .identification-guide-card .detail-fact-grid,
 .supporting-notice-grid {
   grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));

@@ -1,0 +1,66 @@
+---
+import CanonicalUrl from '../components/CanonicalUrl.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { siteRecalls } from '../lib/recall-data';
+import { jointPowerBankRecall, recallSearchExamples } from '../lib/recall-search-examples';
+import '../styles/global.css';
+
+const title = 'How to check a product recall | Recall Radar';
+const description = 'Use a model number, barcode, lot code, or recall number to check an item against official notices. Compare the US and Canadian notices for the same solar power bank.';
+const [model, barcode, lot, recallNumber] = recallSearchExamples;
+const us = siteRecalls.find((recall) => recall.id === jointPowerBankRecall.usId);
+const canada = siteRecalls.find((recall) => recall.id === jointPowerBankRecall.canadaId);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <CanonicalUrl />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <SiteHeader />
+    <main class="page-shell directory-page">
+      <section class="directory-hero">
+        <h1>How to check a product recall</h1>
+        <p class="lead">Keep the product or packaging nearby. Search for the most specific identifier you have, then match the details in the official notice to your item.</p>
+      </section>
+
+      <section class="section detail-card detail-section-card recall-guide-section" aria-labelledby="label-heading">
+        <h2 id="label-heading">What to look for on the label</h2>
+        <table class="recall-facts-table">
+          <thead><tr><th scope="col">Identifier</th><th scope="col">Where to look and how to compare</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Model number</th><td>Check the device label, box or manual. Match the full code, including a suffix if present. Try <a href={model.href}>{model.query}</a>.</td></tr>
+            <tr><th scope="row">Barcode</th><td>Copy the digits printed under the barcode, including any leading zeroes. Check the product size and package type as well. Try <a href={barcode.href}>{barcode.query}</a>.</td></tr>
+            <tr><th scope="row">Lot or batch code</th><td>Look near the date mark or seam. Compare the lot and any separate date range listed in the notice. Try lot <a href={lot.href}>{lot.query}</a>.</td></tr>
+            <tr><th scope="row">Recall number</th><td>Use the agency’s reference number to find the notice, then check the affected product description and distribution. Try <a href={recallNumber.href}>{recallNumber.query}</a>.</td></tr>
+          </tbody>
+        </table>
+        <p>If the first search yields no matches, try the brand and product name, then check the issuer’s website. A notice may omit the identifier printed on your item.</p>
+      </section>
+
+      {us && canada && (
+        <section id="super-off-road" class="section detail-card detail-section-card recall-guide-section" aria-labelledby="joint-heading">
+          <h2 id="joint-heading">A joint recall with two different notices</h2>
+          <p>On <time datetime="2026-06-25">June 25, 2026</time>, US CPSC and Health Canada published notices for the {jointPowerBankRecall.product}. Health Canada identifies model <strong>{jointPowerBankRecall.model}</strong>. The US notice describes a black power bank about 3.4 by 6.5 inches that companies distributed as a promotional item.</p>
+          <table class="recall-facts-table">
+            <thead><tr><th scope="col">Notice</th><th scope="col">Reported risk and what to do</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">United States<br /><a href={us.detailPath}>CPSC 26-575</a></th><td>The battery can swell and overheat, posing a burn risk. CPSC reported about 7,400 US units. Stop using the device and register for a refund, then follow the notice’s guidance for handling recalled lithium-ion batteries. <a href={us.sourceUrl}>Official CPSC notice</a>.</td></tr>
+              <tr><th scope="row">Canada<br /><a href={canada.detailPath}>Health Canada RA-82213</a></th><td>The battery can swell and overheat, posing a fire risk. Health Canada reported 4,964 Canadian units. Stop using the device and register with Spector and Co. for the refund and disposal instructions. <a href={canada.sourceUrl}>Official Health Canada notice</a>.</td></tr>
+            </tbody>
+          </table>
+          <p>If you received the power bank as a gift and don’t have a receipt, compare the model, appearance and photos in the notices. Follow the instructions for the market where the item was distributed.</p>
+          <p><a class="btn btn-primary" href={model.href}>Search for {model.query}</a></p>
+        </section>
+      )}
+    </main>
+    <SiteFooter />
+  </body>
+</html>

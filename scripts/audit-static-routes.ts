@@ -10,6 +10,7 @@ const requiredRoutes = [
   '/watchlist',
   '/product-types',
   '/countries',
+  '/recall-search-guide',
   '/baby-product-recalls',
   '/battery-recalls',
   '/food-allergy-recalls',
@@ -26,6 +27,9 @@ const requiredRoutes = [
   '/brands/aldi',
   '/404',
   '/robots.txt',
+  '/ads.txt',
+  '/sitemap.xml',
+  '/_redirects',
   '/recalls/17-stories-furniture-14-drawer-dressers-tip-over-and-entrapment-hazards-cpsc-26323',
   '/recalls/003020-sour-cream-and-onion-net-wt-10-lbs-jcb-flavors-1224-clark-st-fda-h-0887-2026',
   '/recalls/acps-oris-attelage-remorque-pour-citroen-berlingo-ou-peugeot-partner-fr-rappelconso-2026-06-0226',
@@ -47,7 +51,7 @@ function routeToDistPath(route: string): string {
     return join(distRoot, '404.html');
   }
 
-  if (route.endsWith('.txt')) {
+  if (/\.(?:txt|xml)$/.test(route) || route === '/_redirects') {
     return join(distRoot, route.slice(1));
   }
 

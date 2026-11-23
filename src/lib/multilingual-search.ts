@@ -335,6 +335,45 @@ function requiresSpecificAllergenMatch(query: string, expandedTerms: string[]): 
   return hasGenericCue && specificAllergenTermsForExpandedTerms(expandedTerms).length > 0;
 }
 
+export function getSpecificAllergenQueryTerms(query: string, expandedTerms = expandSearchQuery(query)): string[] {
+  return requiresSpecificAllergenMatch(query, expandedTerms) ? specificAllergenTermsForExpandedTerms(expandedTerms) : [];
+}
+
+function officialAllergenEvidence(record: Pick<RecallSearchTextRecord, 'hazard' | 'reason' | 'title'>): string[] {
+  const allergenCue = /\b(?:allergen\w*|allerg\w*|undeclared|unlabelled|unlabeled|non declare\w*|non mentionne\w*|sin declarar|nao declarado\w*|nicht deklariert)\b|알레르기|알레르겐|アレルゲン|过敏原|過敏原/u;
+  const titleCuePattern = /\b(?:undeclared|unlabelled|unlabeled|non declare\w*|non mentionne\w*|sin declarar|nao declarado\w*|nicht deklariert)\b/u;
+  const officialReason = normalizeSearchText([record.hazard, record.reason ?? ''].join(' '));
+  const title = normalizeSearchText(record.title);
+  const titleCue = title.search(titleCuePattern);
+  return [
+    allergenCue.test(officialReason) ? officialReason : '',
+    titleCue === -1 ? '' : title.slice(titleCue)
+  ].filter(Boolean).map((value) => value.replace(/\b(?:non (?:dairy|milk)|(?:dairy|milk) free|no (?:dairy|milk))\b/g, ' '));
+}
+
+const officialAllergenAliases = new Map([...SPECIFIC_ALLERGEN_TERMS].map((term) => {
+  const group = SEARCH_ALIAS_GROUPS.find((item) => item.id === term || (term === 'dairy' && item.id === 'milk'));
+  return [term, [...new Set([term, ...(group?.terms ?? [])].map(normalizeSearchText).filter(Boolean))]];
+}));
+
+function officialEvidenceNamesAllergen(evidence: string[], term: string): boolean {
+  return (officialAllergenAliases.get(term) ?? []).some((variant) => evidence.some((text) =>
+    /[\p{Script=Han}\p{Script=Hangul}\p{Script=Katakana}\p{Script=Hiragana}]/u.test(variant)
+      ? text.includes(variant)
+      : ` ${text} `.includes(` ${variant} `) || ` ${text} `.includes(` ${variant}s `)
+  ));
+}
+
+export function matchesOfficialAllergen(record: Pick<RecallSearchTextRecord, 'hazard' | 'reason' | 'title'>, terms: readonly string[]): boolean {
+  const evidence = officialAllergenEvidence(record);
+  return terms.some((term) => officialEvidenceNamesAllergen(evidence, term));
+}
+
+export function getOfficialAllergenTerms(record: Pick<RecallSearchTextRecord, 'hazard' | 'reason' | 'title'>): string[] {
+  const evidence = officialAllergenEvidence(record);
+  return evidence.length ? [...officialAllergenAliases.keys()].filter((term) => officialEvidenceNamesAllergen(evidence, term)) : [];
+}
+
 function requiresGenericAllergenEvidence(query: string, expandedTerms: string[]): boolean {
   const normalizedQuery = normalizeSearchText(query);
   const queryTokens = tokenizeSearchQuery(query);
@@ -403,6 +442,8 @@ export function matchesMultilingualSearch(record: RecallSearchTextRecord, query:
   }
 
   const expandedTerms = queryHasGenericAllergenCue(query) ? expandSearchQuery(query) : [];
+  const specificAllergens = expandedTerms.length ? getSpecificAllergenQueryTerms(query, expandedTerms) : [];
+  if (specificAllergens.length) return matchesOfficialAllergen(record, specificAllergens);
   if (
     expandedTerms.length > 0 &&
     requiresGenericAllergenEvidence(query, expandedTerms) &&

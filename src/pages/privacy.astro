@@ -1,4 +1,5 @@
 ---
+import CanonicalUrl from '../components/CanonicalUrl.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import '../styles/global.css';
@@ -9,6 +10,7 @@ const description = 'Recall Radar privacy information for browsing, saved search
 
 <html lang="en">
   <head>
+    <CanonicalUrl />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
@@ -41,7 +43,7 @@ const description = 'Recall Radar privacy information for browsing, saved search
         <article class="notice-panel information-card">
           <h2>Advertising</h2>
           <p>
-            Advertising is disabled unless Recall Radar is configured with an approved advertising account. Before personalised advertising is enabled for applicable regions, the required consent controls and disclosures will be put in place.
+            Recall Radar uses Google AdSense to verify site ownership. If advertising is enabled, Google and its partners may use cookies, web beacons, IP addresses or other identifiers to serve and measure ads. Where required, a consent interface will let you manage your advertising choices. <a href="https://policies.google.com/technologies/partner-sites">How Google uses data on its partners’ sites</a>.
           </p>
         </article>
       </section>

@@ -2,13 +2,15 @@ import processedRecallData from '../../data/processed/recalls.json';
 import { mockRecalls, type MockRecall, type RecallCategory } from '../data/mock-recalls';
 import type { RecallAudience, RecallClassificationV2 } from '../data/recall-taxonomy-v2';
 import type { NormalizedRecall, ProcessedRecallFile, RecallImage } from '../data/recall-types';
-import { normalizeBrandName } from './brand-normalize';
+import { isKnownBrandName, normalizeBrandName } from './brand-normalize';
 import {
   classificationV2RuntimeStats,
   getClassificationV2Result
 } from './classification-results-v2';
 import { getRecallSourceLabel } from './recall-sources';
 import { limitSlug, recallSlug } from './slug';
+import { isJointPowerBankRecall, jointPowerBankRecall } from './recall-search-examples';
+import { correctCpscRecallAction, isUnavailableEuRecallImage } from './recall-source-corrections';
 import {
   getAudienceLabel,
   getHazardTypeLabel,
@@ -17,6 +19,7 @@ import {
   getRecallDomainLabel
 } from './taxonomy-v2-display';
 import { recallMatchesTaxonomyCategory, taxonomyV2CategoryRoutes } from './taxonomy-v2-pages';
+import { needsTaxonomyReview } from './taxonomy-review';
 
 export type SiteRecallCategory = RecallCategory | 'general-consumer-product';
 export type SiteRecallSource = NormalizedRecall['source'] | 'Mock';
@@ -34,6 +37,7 @@ export type SiteRecall = {
   primaryBrandSlug: string;
   productNames: string[];
   primaryProductName: string;
+  verifiedIdentifiers?: string[];
   category: SiteRecallCategory;
   rawCategory: string;
   categoryLabel: string;
@@ -60,6 +64,7 @@ export type SiteRecall = {
   description: string;
   slug: string;
   detailPath: string;
+  previousSiteSlugs?: string[];
   classification?: string;
   reason?: string;
   distributionPattern?: string;
@@ -91,6 +96,7 @@ export const categoryLabels: Record<SiteRecallCategory, string> = {
 };
 
 const processedFile = processedRecallData as ProcessedRecallFile;
+export const recallSnapshotDate = processedFile.generatedAt?.slice(0, 10) ?? '';
 
 function categoryFromTaxonomyV2(classification: RecallClassificationV2 | undefined): SiteRecallCategory | undefined {
   if (!classification) {
@@ -581,7 +587,7 @@ function normalizeImage(value: unknown, fallbackAlt: string): RecallImage | null
   }
 
   const url = safeText(value.url) || safeText(value.URL);
-  if (!url || !isOfficialRecallImageUrl(url)) {
+  if (!url || !isOfficialRecallImageUrl(url) || isUnavailableEuRecallImage(url)) {
     return null;
   }
 
@@ -591,7 +597,7 @@ function normalizeImage(value: unknown, fallbackAlt: string): RecallImage | null
 
   return {
     url,
-    ...(thumbnailUrl && isOfficialRecallImageUrl(thumbnailUrl) ? { thumbnailUrl } : {}),
+    ...(thumbnailUrl && isOfficialRecallImageUrl(thumbnailUrl) && !isUnavailableEuRecallImage(thumbnailUrl) ? { thumbnailUrl } : {}),
     ...(caption ? { caption } : {}),
     ...(alt ? { alt } : {})
   };
@@ -630,16 +636,24 @@ function extractRecallImages(record: NormalizedRecall): RecallImage[] {
 
 function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
   const taxonomyV2Record = getClassificationV2Result(record.id);
-  const taxonomyV2 = taxonomyV2Record?.classification;
+  const recordedClassification = taxonomyV2Record?.classification;
+  const underReview = needsTaxonomyReview({
+    taxonomyNeedsReview: recordedClassification?.needsReview,
+    taxonomyConfidence: recordedClassification?.confidence,
+    taxonomyProductFamily: recordedClassification?.productFamily,
+    taxonomyHazardType: recordedClassification?.hazardType,
+    taxonomyQualityFlags: taxonomyV2Record?.qualityFlags
+  });
+  const taxonomyV2 = underReview ? undefined : recordedClassification;
   const category = categoryFromTaxonomyV2(taxonomyV2) ?? classifyRecall(record);
-  const brandNames = uniqueNonEmpty(record.brandNames);
+  const brandNames = uniqueNonEmpty(record.brandNames).filter(isKnownBrandName);
   const normalizedBrands = brandNames.map(normalizeBrandName);
   const displayBrandNames = uniqueNonEmpty(normalizedBrands.map((brand) => brand.displayName));
   const productNames = uniqueNonEmpty(record.productNames);
   const primaryBrandInfo = normalizedBrands[0];
-  const primaryBrand = primaryBrandInfo?.displayName ?? `${getRecallSourceLabel(record.source)} record`;
+  const primaryBrand = primaryBrandInfo?.displayName ?? 'Brand not listed';
   const primaryProductName = firstNonEmpty(productNames, 'Product not listed');
-  const slug = recallSlug(record.title, record.id, {
+  const slug = record.siteSlug ?? recallSlug(record.title, record.id, {
     productNames,
     brandNames: displayBrandNames
   });
@@ -659,6 +673,7 @@ function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
     primaryBrandSlug: primaryBrandInfo?.slug ?? '',
     productNames,
     primaryProductName,
+    verifiedIdentifiers: isJointPowerBankRecall(record.id) ? [jointPowerBankRecall.model] : undefined,
     category,
     rawCategory: record.category,
     categoryLabel: taxonomyV2 ? getProductFamilyLabel(taxonomyV2.productFamily) : categoryLabels[category],
@@ -675,16 +690,17 @@ function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
     taxonomyAudience: taxonomyV2?.audience ?? [],
     taxonomyAudienceLabels: taxonomyV2?.audience.map(getAudienceLabel) ?? [],
     taxonomyConfidence: taxonomyV2?.confidence,
-    taxonomyNeedsReview: taxonomyV2?.needsReview,
+    taxonomyNeedsReview: underReview,
     taxonomyReason: taxonomyV2?.reason,
     taxonomyQualityFlags: taxonomyV2Record?.qualityFlags ?? [],
     hazard: record.hazard,
-    remedy: record.remedy,
+    remedy: record.source === 'CPSC' ? correctCpscRecallAction(record.id, record.remedy) : record.remedy,
     recallDate: record.recallDate,
     affectedUnits: record.affectedUnits,
     description: record.description,
     slug,
     detailPath: `/recalls/${slug}`,
+    previousSiteSlugs: record.previousSiteSlugs,
     classification: record.classification,
     reason: record.reason,
     distributionPattern: record.distributionPattern,
@@ -693,7 +709,8 @@ function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {
     status: record.status,
     images,
     primaryImageUrl: primaryImage?.url,
-    primaryImageThumbnailUrl: primaryImage?.thumbnailUrl ?? record.primaryImageThumbnailUrl,
+    primaryImageThumbnailUrl: primaryImage?.thumbnailUrl ??
+      (isUnavailableEuRecallImage(record.primaryImageThumbnailUrl) ? undefined : record.primaryImageThumbnailUrl),
     primaryImageAlt: primaryImage?.alt ?? primaryImage?.caption
   };
 }
@@ -824,6 +841,7 @@ export function getBrandGroups(recalls = siteRecalls): BrandRecallGroup[] {
 
   for (const recall of recalls) {
     for (const brand of recall.brandNames) {
+      if (!isKnownBrandName(brand)) continue;
       const normalizedBrand = normalizeBrandName(brand);
       const slug = uniqueBrandSlug(
         normalizedBrand.slug,

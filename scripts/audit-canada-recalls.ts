@@ -271,13 +271,14 @@ async function readProcessedCanadaRecords(): Promise<NormalizedRecall[]> {
   return Array.isArray(payload.records) ? payload.records.filter((record) => record.source === 'CA_RECALLS') : [];
 }
 
-async function readCanonicalCounts(): Promise<SourceCounts> {
+async function readCanonicalCounts(): Promise<SourceCounts & { declared: Partial<SourceCounts> }> {
   const text = await readFile(canonicalProcessedPath, 'utf8');
   const payload = JSON.parse(text) as ProcessedRecallFile;
   const records = Array.isArray(payload.records) ? payload.records : [];
 
   return {
     total: records.length,
+    declared: { ...payload.countsBySource, total: payload.count },
     CPSC: records.filter((record) => record.source === 'CPSC').length,
     FDA: records.filter((record) => record.source === 'FDA').length,
     FR_RAPPELCONSO: records.filter((record) => record.source === 'FR_RAPPELCONSO').length,
@@ -395,7 +396,7 @@ function audit(records: NormalizedRecall[]): AuditSummary {
   };
 }
 
-function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sourceFilters: string[]): string[] {
+function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts & { declared: Partial<SourceCounts> }, sourceFilters: string[]): string[] {
   const expectedCounts: SourceCounts = {
     total: expectedNumber('EXPECTED_TOTAL_RECALL_COUNT', 1201),
     CPSC: expectedNumber('EXPECTED_CPSC_COUNT', 301),
@@ -409,41 +410,42 @@ function buildBlockers(summary: AuditSummary, canonicalCounts: SourceCounts, sou
     HK_CFS: expectedNumber('EXPECTED_HK_CFS_COUNT', 100),
     FSANZ_FOOD_RECALLS: expectedNumber('EXPECTED_FSANZ_FOOD_RECALLS_COUNT', 100)
   };
+  const expectedCanonicalCounts = { ...expectedCounts, ...canonicalCounts.declared };
   const severeMissingThreshold = Math.max(1, Math.floor(summary.total * 0.05));
   const blockers = [
     summary.total === 0 ? 'CA_RECALLS count is 0.' : '',
     summary.total !== expectedCounts.CA_RECALLS
       ? `CA_RECALLS count ${summary.total} does not match expected ${expectedCounts.CA_RECALLS}.`
       : '',
-    canonicalCounts.total !== expectedCounts.total
-      ? `Total processed count ${canonicalCounts.total} does not match expected ${expectedCounts.total}.`
+    canonicalCounts.total !== expectedCanonicalCounts.total
+      ? `Total processed count ${canonicalCounts.total} does not match expected ${expectedCanonicalCounts.total}.`
       : '',
-    canonicalCounts.CPSC !== expectedCounts.CPSC
-      ? `CPSC count ${canonicalCounts.CPSC} does not match expected ${expectedCounts.CPSC}.`
+    canonicalCounts.CPSC !== expectedCanonicalCounts.CPSC
+      ? `CPSC count ${canonicalCounts.CPSC} does not match expected ${expectedCanonicalCounts.CPSC}.`
       : '',
-    canonicalCounts.FDA !== expectedCounts.FDA
-      ? `FDA count ${canonicalCounts.FDA} does not match expected ${expectedCounts.FDA}.`
+    canonicalCounts.FDA !== expectedCanonicalCounts.FDA
+      ? `FDA count ${canonicalCounts.FDA} does not match expected ${expectedCanonicalCounts.FDA}.`
       : '',
-    canonicalCounts.FR_RAPPELCONSO !== expectedCounts.FR_RAPPELCONSO
-      ? `FR_RAPPELCONSO count ${canonicalCounts.FR_RAPPELCONSO} does not match expected ${expectedCounts.FR_RAPPELCONSO}.`
+    canonicalCounts.FR_RAPPELCONSO !== expectedCanonicalCounts.FR_RAPPELCONSO
+      ? `FR_RAPPELCONSO count ${canonicalCounts.FR_RAPPELCONSO} does not match expected ${expectedCanonicalCounts.FR_RAPPELCONSO}.`
       : '',
-    canonicalCounts.CA_RECALLS !== expectedCounts.CA_RECALLS
-      ? `Canonical CA_RECALLS count ${canonicalCounts.CA_RECALLS} does not match expected ${expectedCounts.CA_RECALLS}.`
+    canonicalCounts.CA_RECALLS !== expectedCanonicalCounts.CA_RECALLS
+      ? `Canonical CA_RECALLS count ${canonicalCounts.CA_RECALLS} does not match expected ${expectedCanonicalCounts.CA_RECALLS}.`
       : '',
-    canonicalCounts.EU_SAFETY_GATE !== expectedCounts.EU_SAFETY_GATE
-      ? `EU_SAFETY_GATE count ${canonicalCounts.EU_SAFETY_GATE} does not match expected ${expectedCounts.EU_SAFETY_GATE}.`
+    canonicalCounts.EU_SAFETY_GATE !== expectedCanonicalCounts.EU_SAFETY_GATE
+      ? `EU_SAFETY_GATE count ${canonicalCounts.EU_SAFETY_GATE} does not match expected ${expectedCanonicalCounts.EU_SAFETY_GATE}.`
       : '',
-    canonicalCounts.UK_FSA !== expectedCounts.UK_FSA
-      ? `UK_FSA count ${canonicalCounts.UK_FSA} does not match expected ${expectedCounts.UK_FSA}.`
+    canonicalCounts.UK_FSA !== expectedCanonicalCounts.UK_FSA
+      ? `UK_FSA count ${canonicalCounts.UK_FSA} does not match expected ${expectedCanonicalCounts.UK_FSA}.`
       : '',
-    canonicalCounts.AU_PRODUCT_SAFETY !== expectedCounts.AU_PRODUCT_SAFETY
-      ? `AU_PRODUCT_SAFETY count ${canonicalCounts.AU_PRODUCT_SAFETY} does not match expected ${expectedCounts.AU_PRODUCT_SAFETY}.`
+    canonicalCounts.AU_PRODUCT_SAFETY !== expectedCanonicalCounts.AU_PRODUCT_SAFETY
+      ? `AU_PRODUCT_SAFETY count ${canonicalCounts.AU_PRODUCT_SAFETY} does not match expected ${expectedCanonicalCounts.AU_PRODUCT_SAFETY}.`
       : '',
-    canonicalCounts.NZ_PRODUCT_SAFETY !== expectedCounts.NZ_PRODUCT_SAFETY
-      ? `NZ_PRODUCT_SAFETY count ${canonicalCounts.NZ_PRODUCT_SAFETY} does not match expected ${expectedCounts.NZ_PRODUCT_SAFETY}.`
+    canonicalCounts.NZ_PRODUCT_SAFETY !== expectedCanonicalCounts.NZ_PRODUCT_SAFETY
+      ? `NZ_PRODUCT_SAFETY count ${canonicalCounts.NZ_PRODUCT_SAFETY} does not match expected ${expectedCanonicalCounts.NZ_PRODUCT_SAFETY}.`
       : '',
-    canonicalCounts.HK_CFS !== expectedCounts.HK_CFS
-      ? `HK_CFS count ${canonicalCounts.HK_CFS} does not match expected ${expectedCounts.HK_CFS}.`
+    canonicalCounts.HK_CFS !== expectedCanonicalCounts.HK_CFS
+      ? `HK_CFS count ${canonicalCounts.HK_CFS} does not match expected ${expectedCanonicalCounts.HK_CFS}.`
       : '',
     summary.duplicateIds.length > 0 ? `Duplicate ids found: ${summary.duplicateIds.length}.` : '',
     summary.slugCollisions.length > 0 ? `Slug collisions found: ${summary.slugCollisions.length}.` : '',

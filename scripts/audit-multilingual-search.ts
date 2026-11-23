@@ -192,7 +192,7 @@ type ClassificationV2File = {
   }>;
 };
 
-const EXPECTED_SOURCE_COUNTS: Record<SourceId, number> = {
+const ORIGINAL_SOURCE_COUNTS: Record<SourceId, number> = {
   CPSC: 301,
   FDA: 100,
   FR_RAPPELCONSO: 100,
@@ -659,6 +659,27 @@ function runScenario(recordPool: SiteRecall[], scenario: (typeof MULTILINGUAL_SE
     failures.push(`Expected no more than ${scenario.maxMatches} match(es), found ${matches.length}.`);
   }
 
+  if (scenario.maxMatchShare !== undefined && matches.length > Math.ceil(recordPool.length * scenario.maxMatchShare)) {
+    failures.push(`Matched ${matches.length} of ${recordPool.length} notices, above the expected share.`);
+  }
+
+  if (scenario.maxOtherSourceMatches !== undefined) {
+    const otherMatches = matches.filter((record) => !scenario.expectedSources?.includes(record.source));
+    if (otherMatches.length > scenario.maxOtherSourceMatches) {
+      failures.push(`Matched ${otherMatches.length} notices outside the expected sources.`);
+    }
+  }
+
+  if (scenario.excludedRecordIds?.length) {
+    const ranked = searchRecalls(scenario.query, recordPool);
+    if (!ranked.items.length) failures.push('The public checker returned no matches.');
+    for (const id of scenario.excludedRecordIds) {
+      if (matches.some((record) => record.id === id) || ranked.items.some((result) => result.recall.id === id)) {
+        failures.push(`Returned notice ${id} for an allergen its official recall reason does not identify.`);
+      }
+    }
+  }
+
   if (missingAliases.length > 0) {
     failures.push(`Missing expected aliases: ${missingAliases.join(', ')}.`);
   }
@@ -919,7 +940,7 @@ function runSourceSearchIntentCheck(
   check: (typeof SOURCE_SEARCH_INTENT_CHECKS)[number]
 ): SourceSearchIntentCheck {
   const result = searchRecalls(check.query, records);
-  const expectedCount = check.expectedSources.reduce((total, source) => total + EXPECTED_SOURCE_COUNTS[source], 0);
+  const expectedCount = check.expectedSources.reduce((total, source) => total + expectedSourceCounts[source], 0);
   const matchedSources = [...new Set(result.items.map((item) => item.recall.source))].sort();
   const expectedSources = [...check.expectedSources].sort();
   const warnings: string[] = [];
@@ -1213,6 +1234,7 @@ function runRecallAudienceSearchCheck(
 }
 
 const processedFile = JSON.parse(await readFile(canonicalProcessedPath, 'utf8')) as ProcessedRecallFile;
+const expectedSourceCounts = { ...ORIGINAL_SOURCE_COUNTS, ...processedFile.countsBySource };
 const classificationFile = JSON.parse(await readFile(classificationProcessedPath, 'utf8')) as ClassificationV2File;
 const classificationsByRecordId = new Map(
   (classificationFile.records ?? [])
@@ -1224,13 +1246,13 @@ const classificationsByRecordId = new Map(
 const records = processedFile.records.map((record) => toSiteRecall(record, classificationsByRecordId.get(record.id)));
 const counts = sourceCounts(records);
 
-const sourceCountFailures = Object.entries(EXPECTED_SOURCE_COUNTS).flatMap(([source, expected]) => {
+const sourceCountFailures = Object.entries(expectedSourceCounts).flatMap(([source, expected]) => {
   const actual = counts[source] ?? 0;
   return actual === expected ? [] : [`${source} expected ${expected} records, found ${actual}.`];
 });
 
 const scenarioResults = MULTILINGUAL_SEARCH_SCENARIOS.map((scenario) => runScenario(records, scenario));
-const exactIdentifierChecks = (Object.keys(EXPECTED_SOURCE_COUNTS) as SourceId[]).map((source) =>
+const exactIdentifierChecks = (Object.keys(expectedSourceCounts) as SourceId[]).map((source) =>
   runExactIdentifierCheck(records, source)
 );
 const sourceCategoryChecks = SOURCE_CATEGORY_CHECKS.map((check) => runSourceCategoryCheck(records, check));
@@ -1321,7 +1343,7 @@ const summary = {
   generatedAt: new Date().toISOString(),
   totalRecords: records.length,
   sourceCounts: counts,
-  expectedSourceCounts: EXPECTED_SOURCE_COUNTS,
+  expectedSourceCounts,
   sourceCountFailures,
   scenariosTested: scenarioResults.length,
   passCount: scenarioResults.filter((result) => result.status === 'pass').length,

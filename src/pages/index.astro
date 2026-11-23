@@ -1,8 +1,10 @@
 ---
+import CanonicalUrl from '../components/CanonicalUrl.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import EuImageResourceHints from '../components/EuImageResourceHints.astro';
 import AdSenseSlot from '../components/AdSenseSlot.astro';
+import { adSensePublisherClient, getAdSenseSlotConfig } from '../lib/monetization';
 import {
   categoryRoutes,
   getRecallsByCategory,
@@ -17,8 +19,10 @@ import {
   processedLocalRecordCount,
   processedNewZealandProductSafetyRecordCount,
   processedUkFsaRecordCount,
+  recallSnapshotDate,
   siteRecalls
 } from '../lib/recall-data';
+import { jointPowerBankRecall, recallSearchExamples } from '../lib/recall-search-examples';
 import { getImageLoadingAttributes, getRecallImageForContext } from '../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../lib/recall-sources';
 import { getBalancedRecentRecalls } from '../lib/homepage-recent';
@@ -27,6 +31,7 @@ import { getProductFamilyI18nKey, getSourceLandingTitleI18nKey } from '../lib/i1
 import '../styles/global.css';
 
 const title = 'Recall Radar | Global product recall search';
+const homeAdSense = getAdSenseSlotConfig('home');
 const description =
   'Recall Radar helps consumers search official recall information across markets by brand, product name, model number, barcode, lot or batch code, date mark, recall number, ingredient, or keyword.';
 const recentRecalls = getBalancedRecentRecalls(siteRecalls, { limit: 4 });
@@ -152,14 +157,16 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
 
 <html lang="en">
   <head>
+    <CanonicalUrl />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script
+    <meta name="google-adsense-account" content={adSensePublisherClient} />
+    {homeAdSense && <script
       is:inline
       async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5307205698445279"
+      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${homeAdSense.client}`}
       crossorigin="anonymous"
-    ></script>
+    ></script>}
     <EuImageResourceHints />
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -173,8 +180,8 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
         <div class="home-hero-intro">
           <div class="home-hero-copy">
             <h1>
-              <span data-i18n="home.hero.line1">Stay informed.</span>
-              <span data-i18n="home.hero.line2">Shop and live with confidence.</span>
+              <span data-i18n="home.hero.line1">Find official product recalls</span>
+              <span data-i18n="home.hero.line2">by model, barcode or lot number.</span>
             </h1>
             <p class="lead" data-i18n="home.lead">
               Search official recall notices from trusted sources around the world.
@@ -217,11 +224,8 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
           </form>
           <div class="home-example-links" aria-label="Example searches">
             <span data-i18n="common.try">Try:</span>
-            <a href="/checker?q=baby%20sleeper">baby sleeper</a>
-            <a href="/checker?q=power%20bank">power bank</a>
-            <a href="/checker?q=pistachio&source=FDA">pistachio</a>
-            <a href="/checker?q=smoke%20detector&source=CPSC">smoke detector</a>
-            <a href="/checker?q=bike%20helmet">bike helmet</a>
+            {recallSearchExamples.map((example) => <a href={example.href} aria-label={`${example.label} ${example.query}`}>{example.query}</a>)}
+            <a href="/recall-search-guide/" data-i18n="home.searchGuide">How to check a recall</a>
           </div>
           <p class="home-trust-line">
             <span class="home-trust-icon" aria-hidden="true">
@@ -238,6 +242,17 @@ function getHomeIssueBadge(recall: (typeof recentRecalls)[number]): string {
           >
             {countLine}
           </p>
+          {recallSnapshotDate && <p class="data-count-line"><span data-i18n="home.snapshotDate">Data snapshot</span> <time datetime={recallSnapshotDate}>{recallSnapshotDate}</time> · <a href="/countries/#coverage" data-i18n="home.sourceCoverage">Source coverage</a></p>}
+        </div>
+      </section>
+
+      <section class="section home-joint-recall">
+        <div class="section-header">
+          <div>
+            <h2 data-i18n="home.jointRecallTitle">One product, two recall notices</h2>
+            <p class="section-note">{jointPowerBankRecall.product} · {jointPowerBankRecall.model}</p>
+          </div>
+          <a class="section-link" href={jointPowerBankRecall.guidePath} data-i18n="home.jointRecallLink">Compare the US and Canadian notices</a>
         </div>
       </section>
 

@@ -105,7 +105,8 @@ function affectedProductIdentifiers(raw: CanadaRecallRaw): string[] {
   return uniqueNonEmpty(
     detailAffectedProducts(raw).flatMap((product) => [
       product.partNumber ? `Part Number ${product.partNumber}` : '',
-      product.upc ? `UPC ${product.upc}` : ''
+      product.upc ? `UPC ${product.upc}` : '',
+      product.fields.lotNumber ? `Lot ${product.fields.lotNumber}` : ''
     ])
   );
 }

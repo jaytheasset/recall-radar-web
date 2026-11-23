@@ -1,4 +1,5 @@
 ---
+import CanonicalUrl from './CanonicalUrl.astro';
 import SiteHeader from './SiteHeader.astro';
 import SiteFooter from './SiteFooter.astro';
 import EuImageResourceHints from './EuImageResourceHints.astro';
@@ -24,6 +25,7 @@ const identifierGuidance =
 
 <html lang="en">
   <head>
+    <CanonicalUrl />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <EuImageResourceHints />

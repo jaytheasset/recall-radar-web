@@ -32,7 +32,6 @@ const expectedCounts: Record<RecallSource, number> = {
   FSANZ_FOOD_RECALLS: 100
 };
 
-const expectedTotal = Object.values(expectedCounts).reduce((total, count) => total + count, 0);
 const expectedSourceIds = Object.keys(expectedCounts) as RecallSource[];
 const expectedSourceFilterValues = ['all', ...expectedSourceIds];
 const projectRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -94,10 +93,9 @@ function categoryDistribution(records: NormalizedRecall[]): Record<string, numbe
   return Object.fromEntries(Object.entries(distribution).sort((a, b) => b[1] - a[1]));
 }
 
-async function readCanonicalRecords(): Promise<NormalizedRecall[]> {
+async function readCanonicalSnapshot(): Promise<ProcessedRecallFile> {
   const text = await readFile(canonicalProcessedPath, 'utf8');
-  const payload = JSON.parse(text) as ProcessedRecallFile;
-  return Array.isArray(payload.records) ? payload.records : [];
+  return JSON.parse(text) as ProcessedRecallFile;
 }
 
 function duplicateIds(records: NormalizedRecall[]): DuplicateId[] {
@@ -124,7 +122,9 @@ function buildWarnings(missingBySource: Record<string, MissingCounts>): string[]
 }
 
 async function runAudit(): Promise<void> {
-  const records = await readCanonicalRecords();
+  const snapshot = await readCanonicalSnapshot();
+  const records = Array.isArray(snapshot.records) ? snapshot.records : [];
+  const expectedTotal = snapshot.count;
   const activeSourceFilterValues = ['all', ...getSourceOptionsForCurrentCoverage().map((option) => option.value)];
   const activeSourceIds = activeSourceFilterValues.filter((value) => value !== 'all');
   const counts = sourceCounts(records);
@@ -148,7 +148,7 @@ async function runAudit(): Promise<void> {
   const expectedCountMismatches = expectedSourceIds
     .map((source) => {
       const actual = counts[source] ?? 0;
-      const expected = expectedCounts[source];
+      const expected = snapshot.countsBySource?.[source] ?? expectedCounts[source];
       return actual === expected ? '' : `${source} count ${actual} does not match expected ${expected}.`;
     })
     .filter(Boolean);

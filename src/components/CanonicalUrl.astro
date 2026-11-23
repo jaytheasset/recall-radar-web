@@ -1,0 +1,5 @@
+---
+const pathname = `${Astro.url.pathname.replace(/\/+$/, '')}/`;
+const url = Astro.site && new URL(pathname, Astro.site);
+---
+{url && <link rel="canonical" href={url.href} />}

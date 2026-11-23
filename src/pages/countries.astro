@@ -1,13 +1,21 @@
 ---
+import CanonicalUrl from '../components/CanonicalUrl.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import { getSourceLandingPageCards } from '../lib/source-landing-pages';
 import { getSourceLandingTitleI18nKey } from '../lib/i18n';
+import { recallSnapshotDate, siteRecalls } from '../lib/recall-data';
+import { getCurrentRecallSourceConfigs } from '../lib/recall-sources';
 import '../styles/global.css';
 
 const title = 'Countries | Recall Radar';
 const description = 'Browse official recall notices by country and source in Recall Radar.';
 const sourcePages = getSourceLandingPageCards();
+const sourceCoverage = getCurrentRecallSourceConfigs().map((source) => {
+  const records = siteRecalls.filter((recall) => recall.source === source.id);
+  const dates = records.map((recall) => recall.recallDate).filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date)).sort();
+  return { source, dates, count: records.length };
+});
 const countrySourceRoutes = [
   '/us-product-recalls',
   '/canada-product-recalls',
@@ -66,6 +74,7 @@ const sourceCardDetails = {
 
 <html lang="en">
   <head>
+    <CanonicalUrl />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
@@ -113,6 +122,23 @@ const sourceCardDetails = {
               </a>
             );
           })}
+        </div>
+      </section>
+
+      <section id="coverage" class="section" aria-labelledby="coverage-heading">
+        <div class="detail-card detail-section-card">
+          <h2 id="coverage-heading" data-i18n="home.sourceCoverage">Source coverage</h2>
+          <p>Data snapshot <time datetime={recallSnapshotDate}>{recallSnapshotDate}</time>. The dates show the oldest and newest dated notices available in Recall Radar for each source. Check the agency site for its complete publication history.</p>
+          <div class="recall-table-scroll" tabindex="0" role="region" aria-labelledby="coverage-heading">
+            <table class="recall-facts-table">
+              <thead><tr><th scope="col">Official source</th><th scope="col">Notices</th><th scope="col">Oldest notice</th><th scope="col">Newest notice</th></tr></thead>
+              <tbody>
+                {sourceCoverage.map(({ source, dates, count }) => (
+                  <tr><th scope="row">{source.displayLabel}</th><td>{count.toLocaleString('en-US')}</td><td>{dates[0] ?? '—'}</td><td>{dates.at(-1) ?? '—'}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
     </main>

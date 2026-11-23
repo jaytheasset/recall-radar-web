@@ -1,4 +1,5 @@
 ---
+import CanonicalUrl from '../../components/CanonicalUrl.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import EuImageResourceHints from '../../components/EuImageResourceHints.astro';
@@ -17,6 +18,7 @@ import {
   getRecallImageForContext
 } from '../../lib/recall-images';
 import { getRecallSourcePlaceholder } from '../../lib/recall-sources';
+import { isJointPowerBankRecall, jointPowerBankRecall } from '../../lib/recall-search-examples';
 import {
   getTaxonomyV2CategoryPages,
   getTaxonomyV2CategoryRouteBySlug,
@@ -31,11 +33,19 @@ export function getStaticPaths() {
       params: { slug: recall.slug },
       props: { pageKind: 'detail', recall }
     })),
+    ...siteRecalls.flatMap((recall) => (recall.previousSiteSlugs ?? []).map((slug) => ({
+      params: { slug },
+      props: { pageKind: 'redirect', destination: `${recall.detailPath}/` }
+    }))),
     ...getTaxonomyV2CategoryPages(siteRecalls).map((taxonomyPage) => ({
       params: { slug: taxonomyPage.slug },
       props: { pageKind: 'taxonomy-family', taxonomyPage }
     }))
   ];
+}
+
+if (Astro.props.pageKind === 'redirect' && typeof Astro.props.destination === 'string') {
+  return Astro.redirect(Astro.props.destination, 301);
 }
 
 const taxonomyPage = Astro.props.pageKind === 'taxonomy-family' ? Astro.props.taxonomyPage : undefined;
@@ -111,7 +121,11 @@ const duplicateIdentificationValues = [
   view.reason,
   view.action
 ].map((value) => value.replace(/\s+/g, ' ').trim().toLowerCase()).filter(Boolean);
-const whatToCheckFacts = view.identificationDetails.filter((fact) => {
+const jointPowerBank = isJointPowerBankRecall(recall.id);
+const identificationFacts = jointPowerBank
+  ? [{ label: 'Model number (Health Canada)', value: jointPowerBankRecall.model }, ...view.identificationDetails]
+  : view.identificationDetails;
+const whatToCheckFacts = identificationFacts.filter((fact) => {
   const label = fact.label.toLowerCase();
   const value = factValueText(fact.value);
 
@@ -190,6 +204,7 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
 
 <html lang="en">
   <head>
+    <CanonicalUrl />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <EuImageResourceHints />
@@ -242,7 +257,11 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
                   <span class="image-placeholder">{fallbackImageLabel}</span>
                 )}
               </div>
-              <figcaption data-detail-gallery-caption hidden={!detailHeroCaption}>{detailHeroCaption}</figcaption>
+              {!detailHeroImage && recall.source === 'EU_SAFETY_GATE' && view.officialSourceUrl ? (
+                <figcaption>Product image unavailable. <a href={view.officialSourceUrl} target="_blank" rel="noopener noreferrer">View the official Safety Gate notice</a>.</figcaption>
+              ) : (
+                <figcaption data-detail-gallery-caption hidden={!detailHeroCaption}>{detailHeroCaption}</figcaption>
+              )}
             </figure>
             {view.productImages.length > 1 ? (
               <div class="thumbnail-grid detail-thumbnail-grid" aria-label="Additional product images">
@@ -342,25 +361,23 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
             </div>
           </div>
           {whatToCheckFacts.length ? (
-            <div class="detail-fact-grid">
-              {whatToCheckFacts.map((fact) => (
-                <div class="detail-fact">
-                  <strong>{fact.label}</strong>
-                  {Array.isArray(fact.value) ? (
-                    <ul>
-                      {fact.value.map((item) => <li>{item}</li>)}
-                    </ul>
-                  ) : (
-                    <span>{fact.value}</span>
-                  )}
-                </div>
-              ))}
-            </div>
+            <table class="recall-facts-table">
+              <thead><tr><th scope="col">What to check</th><th scope="col">In the official notice</th></tr></thead>
+              <tbody>
+                {whatToCheckFacts.map((fact) => (
+                  <tr>
+                    <th scope="row">{fact.label}</th>
+                    <td>{Array.isArray(fact.value) ? <ul>{fact.value.map((item) => <li>{item}</li>)}</ul> : fact.value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           ) : (
             <p class="verification-note">{view.sparseIdentificationCopy}</p>
           )}
           <p class="verification-note compact-verification-note">{view.identifierVerificationHint}</p>
           <p class="verification-note compact-verification-note">{view.detailSafetyCopy}</p>
+          {jointPowerBank && <p><a class="section-link" href={jointPowerBankRecall.guidePath}>Compare the US and Canadian recall notices</a></p>}
         </article>
       </section>
 
