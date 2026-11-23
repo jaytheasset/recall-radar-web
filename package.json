@@ -108,6 +108,9 @@
     "preview:classification-db-write": "node --experimental-strip-types scripts/build-classification-db-write-preview.ts",
     "audit:classification-db-write-preview": "node --experimental-strip-types scripts/audit-classification-db-write-preview.ts",
     "apply:classification-results-v2": "node --experimental-strip-types scripts/apply-classification-results-v2.ts",
+    "enrich:recalls:local": "node scripts/run-local-recall-enrichment.ts",
+    "cache:recall-images": "node scripts/cache-recall-images.ts",
+    "prepare:recall-site-snapshot": "node scripts/prepare-recall-site-snapshot.ts",
     "audit:classification-results-v2": "node --experimental-strip-types scripts/audit-classification-results-v2.ts",
     "audit:classification-results-v2-runtime": "node --experimental-strip-types scripts/audit-classification-results-v2-runtime.ts",
     "audit:llm-classifier-dry-run": "node --experimental-strip-types scripts/audit-llm-classifier-dry-run.ts",
@@ -127,7 +130,8 @@
     "check": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro check"
   },
   "dependencies": {
-    "astro": "^5.0.0"
+    "astro": "^5.0.0",
+    "sharp": "0.34.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",

@@ -11,6 +11,7 @@ const openFdaFoodEnforcementEndpoint = 'https://api.fda.gov/food/enforcement.jso
 
 type FetchOptions = {
   limit: number;
+  offset: number;
 };
 
 function readOption(name: string): string | undefined {
@@ -23,13 +24,16 @@ function getFetchOptions(): FetchOptions {
   const parsedLimit = Number.parseInt(readOption('limit') ?? '100', 10);
   const limit = Number.isFinite(parsedLimit) ? Math.min(Math.max(parsedLimit, 1), 100) : 100;
 
-  return { limit };
+  const offset = Number(readOption('offset') ?? '0');
+  if (!Number.isSafeInteger(offset) || offset < 0) throw new Error('Invalid openFDA recall offset.');
+  return { limit, offset };
 }
 
 function buildFdaFoodUrl(options: FetchOptions): string {
   const url = new URL(openFdaFoodEnforcementEndpoint);
   url.searchParams.set('sort', 'report_date:desc');
   url.searchParams.set('limit', String(options.limit));
+  if (options.offset) url.searchParams.set('skip', String(options.offset));
   return url.toString();
 }
 

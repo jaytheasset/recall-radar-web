@@ -36,6 +36,7 @@ export type FsanzFoodRecallRaw = {
   detail?: {
     title?: unknown;
     publishedDate?: unknown;
+    companyName?: unknown;
     metaDescription?: unknown;
     introduction?: unknown;
     dateMarking?: unknown;
@@ -332,6 +333,7 @@ function cleanFsanzRawRecord(raw: FsanzFoodRecallRaw): FsanzFoodRecallRaw {
     detail: {
       title: cleanTitle(raw.detail?.title),
       publishedDate: normalizeFsanzText(raw.detail?.publishedDate),
+      companyName: normalizeFsanzText(raw.detail?.companyName),
       metaDescription: normalizeFsanzText(raw.detail?.metaDescription),
       introduction: normalizeFsanzText(raw.detail?.introduction),
       dateMarking: normalizeFsanzText(raw.detail?.dateMarking),
@@ -470,7 +472,7 @@ export function normalizeFsanzFoodRecallRecords(records: FsanzFoodRecallRaw[]): 
       const officialTitle = cleanTitle(firstNonEmpty([cleanedRaw.detail?.title, cleanedRaw.title, cleanedRaw.listedTitle], 'FSANZ food recall'));
       const titleParts = splitCompanyAndProduct(officialTitle);
       const productName = firstNonEmpty([titleParts.product, officialTitle], officialTitle);
-      const companyName = firstNonEmpty([titleParts.company], '');
+      const companyName = firstNonEmpty([cleanedRaw.detail?.companyName, titleParts.company], '');
       const sourceRecordId = sourceIdFor(cleanedRaw);
       const id = `fsanz-food-recalls-${sourceRecordId}`;
       const identifiers = extractIdentifierText(cleanedRaw);

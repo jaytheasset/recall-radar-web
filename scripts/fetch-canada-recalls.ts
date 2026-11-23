@@ -18,6 +18,8 @@ const runtimeEnv = (process as typeof process & { env?: Record<string, string | 
 type FetchOptions = {
   endpoint: string;
   limit: number;
+  offset: number;
+  skipDetailImages: boolean;
 };
 
 function readOption(name: string): string | undefined {
@@ -35,7 +37,9 @@ function getFetchOptions(): FetchOptions {
   const limit = Number.isFinite(parsedLimit) ? Math.min(Math.max(parsedLimit, 1), maxLimit) : defaultLimit;
   const endpoint = readOption('url') ?? defaultCanadaEndpoint;
 
-  return { endpoint, limit };
+  const offset = Number(readOption('offset') ?? '0');
+  if (!Number.isSafeInteger(offset) || offset < 0) throw new Error('Invalid Canada recall offset.');
+  return { endpoint, limit, offset, skipDetailImages: process.argv.includes('--skip-detail-images') };
 }
 
 function publicSample(record: {
@@ -132,13 +136,15 @@ async function runFetch(): Promise<void> {
   const options = getFetchOptions();
   const payload = await fetchCanadaRecalls(options.endpoint);
   const allRecords = extractCanadaRecallRecords(payload);
-  const records = allRecords.slice().sort(compareCanadaRecallDateDescending).slice(0, options.limit);
+  const records = allRecords.slice().sort(compareCanadaRecallDateDescending).slice(options.offset, options.offset + options.limit);
 
   if (records.length === 0) {
     throw new Error('Canada Recalls open data returned zero records; existing data was not overwritten.');
   }
 
-  const { records: enrichedRecords, results } = await enrichCanadaRecordsWithDetailImages(records);
+  const { records: enrichedRecords, results } = options.skipDetailImages
+    ? { records, results: [] }
+    : await enrichCanadaRecordsWithDetailImages(records);
   const fetchedAt = new Date().toISOString();
   await writeJsonAtomic(defaultRawCanadaRecallsPath, {
     fetchedAt,

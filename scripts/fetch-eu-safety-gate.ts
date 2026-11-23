@@ -20,6 +20,7 @@ const runtimeEnv = (process as typeof process & { env?: Record<string, string | 
 type FetchOptions = {
   limit: number;
   refreshExistingRecordIds: boolean;
+  offset: number;
 };
 
 type PagePayload = {
@@ -46,7 +47,9 @@ function getFetchOptions(): FetchOptions {
   const refreshExistingRecordIds =
     process.argv.includes('--refresh-existing-record-ids') || process.argv.includes('--existing-record-ids');
 
-  return { limit, refreshExistingRecordIds };
+  const offset = Number(readOption('offset') ?? '0');
+  if (!Number.isSafeInteger(offset) || offset < 0) throw new Error('Invalid Safety Gate recall offset.');
+  return { limit, refreshExistingRecordIds, offset };
 }
 
 function commonHeaders(): HeadersInit {
@@ -157,12 +160,12 @@ async function mapWithConcurrency<T, R>(
   return results;
 }
 
-async function collectMostRecentSummaries(limit: number): Promise<{ records: EuSafetyGateRaw[]; totalAvailable: number }> {
+async function collectMostRecentSummaries(limit: number, offset: number): Promise<{ records: EuSafetyGateRaw[]; totalAvailable: number }> {
   const records: EuSafetyGateRaw[] = [];
   let page = 0;
   let totalAvailable = 0;
 
-  while (records.length < limit) {
+  while (records.length < offset + limit) {
     const pagePayload = await fetchMostRecentPage(page);
     const pageRecords = extractEuSafetyGateRecords(pagePayload);
 
@@ -184,7 +187,7 @@ async function collectMostRecentSummaries(limit: number): Promise<{ records: EuS
   }
 
   return {
-    records: records.slice(0, limit),
+    records: records.slice(offset, offset + limit),
     totalAvailable
   };
 }
@@ -259,7 +262,7 @@ async function runFetch(): Promise<void> {
         records: await collectExistingRawSummaries(),
         totalAvailable: 0
       }
-    : await collectMostRecentSummaries(options.limit);
+    : await collectMostRecentSummaries(options.limit, options.offset);
 
   if (summaries.length === 0) {
     throw new Error('EU Safety Gate returned zero records; existing data was not overwritten.');

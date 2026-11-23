@@ -1,6 +1,7 @@
 ---
 import type { SiteRecall } from '../lib/recall-data';
-import { cleanRecallDisplayText } from '../lib/recall-display-text';
+import { getMessage } from '../lib/i18n';
+import { cleanRecallDisplayText, formatRecallAction, getPhotoSubmissionNoticeUrl } from '../lib/recall-display-text';
 import { getRecallImageForContext, type RecallImageContext } from '../lib/recall-images';
 import { getOfficialAllergenTerms } from '../lib/multilingual-search';
 import {
@@ -43,7 +44,8 @@ const brandText = recall.displayBrandNames.length
   ? recall.displayBrandNames.slice(0, 3).join(', ')
   : recall.primaryBrand;
 const reasonText = cleanRecallDisplayText(recall.hazard || recall.reason || 'Not listed in the recall notice.');
-const actionText = cleanRecallDisplayText(recall.remedy || getRecallDefaultActionFallback(recall.source));
+const action = formatRecallAction(recall.remedy || getRecallDefaultActionFallback(recall.source));
+const photoSubmissionNoticeUrl = getPhotoSubmissionNoticeUrl(recall.source, recall.sourceUrl, action.hasPhotoSubmission);
 const taxonomyFacts = [
   {
     label: 'Product family',
@@ -111,7 +113,12 @@ const allergens = searchText ? getOfficialAllergenTerms(recall) : [];
       </dl>
     ) : null}
     <p class="result-card-line result-card-reason"><strong>{getRecallReasonLabel(recall.source)}: </strong>{reasonText}</p>
-    <p class="result-card-line result-card-action"><strong>{getRecallActionLabel(recall.source)}: </strong>{actionText}</p>
+    <p class="result-card-line result-card-action"><strong>{getRecallActionLabel(recall.source)}: </strong>{action.text}</p>
+    {photoSubmissionNoticeUrl ? (
+      <a class="source-link source-link-small photo-submission-link" href={photoSubmissionNoticeUrl} target="_blank" rel="noopener noreferrer" data-i18n="detail.photoSubmissionNotice">
+        {getMessage('detail.photoSubmissionNotice')}
+      </a>
+    ) : null}
     {reviewNeeded ? <p class="taxonomy-review-note">{TAXONOMY_REVIEW_NOTICE}</p> : null}
     <div class="link-row">
       <a class="btn btn-primary" href={recall.detailPath}>View recall</a>

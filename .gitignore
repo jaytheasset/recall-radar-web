@@ -8,6 +8,7 @@ dist/
 npm-debug.log*
 *.log
 outputs/llm-classifier/
+public/recall-images/cache/
 data/backfill/cpsc/**/*.json
 data/backfill/cpsc/**/*.jsonl
 data/backfill/cpsc/**/*.tmp

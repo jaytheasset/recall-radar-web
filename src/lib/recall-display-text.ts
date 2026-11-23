@@ -3,17 +3,26 @@ function uniqueText(values: string[]): string[] {
 }
 
 const contactDetailPattern =
-  /\b(?:call|phone|tel|email|visit|web|website|online|live chat)\s*:?\s*|\bhttps?:\/\/[^\s)]+|\bwww\.[^\s)]+|\b[A-Z0-9._%+-]+@[A-Z0-9.-]+(?:\.[A-Z]{2,})+\b|[+()0-9][0-9 ()+-]{6,}[0-9]/i;
+  /\b(?:call|phone|tel|email|visit|web|website|online|live chat)\b\s*:?\s*|\bhttps?:\/\/[^\s)]+|\bwww\.[^\s)]+|\b[A-Z0-9._%+-]+@[A-Z0-9.-]+(?:\.[A-Z]{2,})+\b|[+()0-9][0-9 ()+-]{6,}[0-9]/i;
 
 const contactActionPattern =
   /\b(?:to arrange|to receive|to return|to obtain|to request|to schedule|to register|for a full refund|for a refund|for a replacement|for repair|for further instructions|if you|if unable)\b/i;
+
+const photoNoun = /\b(?:photo(?:graph)?s?|pictures?|images?)\b/.source;
+const submissionVerb = /\b(?:send(?:ing)?|submit(?:ting)?|upload(?:ing)?|e-?mail(?:ing)?|provid(?:e|ing)|attach(?:ing)?)\b/.source;
+const photoSubmissionPattern = new RegExp(
+  `${submissionVerb}.*${photoNoun}|${photoNoun}.*${submissionVerb}\\s+(?:it|them|the proof)\\b`,
+  'i'
+);
+const photoDestinationPattern = /,?\s+(?:(?:or|and)\s+online\s+)?(?:(?:by|via)\s+e-?mail\s+)?(?:to|at|via|through|using)\s*:?\s*(?:https?:\/\/[^\s)]+|www\.[^\s)]+|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b)/gi;
+const emailPhotoVerbPattern = new RegExp(`\\be-?mail(?=\\s+(?:it\\b|them\\b|(?:a |the |your )?${photoNoun}))`, 'gi');
 
 function stripContactDetails(value: string): string {
   return value
     .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+(?:\.[A-Z]{2,})+\b/gi, '')
     .replace(/\bhttps?:\/\/[^\s)]+|\bwww\.[^\s)]+/gi, '')
     .replace(/\b(?:call|phone|tel)\s*:?\s*[+()0-9][0-9 ()+-]{6,}[0-9]\b/gi, '')
-    .replace(/\b(?:email|visit|web|website|online|live chat|call|phone|tel)\s*:?\s*/gi, '')
+    .replace(/\b(?:email|visit|web|website|online|live chat|call|phone|tel)\b\s*:?\s*/gi, '')
     .replace(/\b(?:via|by)\s+email\b/gi, '')
     .replace(/\s+([.,;:])/g, '$1')
     .replace(/\s{2,}/g, ' ')
@@ -65,8 +74,36 @@ export function cleanRecallDisplayText(value: string): string {
   return simplifyContactHeavyAction(value);
 }
 
+export function formatRecallAction(value: string): { text: string; hasPhotoSubmission: boolean } {
+  let hasPhotoSubmission = false;
+  const action = value.split(/(?<=[.!?])\s+/).map((sentence) => {
+    if (!photoSubmissionPattern.test(sentence)) return sentence;
+
+    const instruction = sentence.replace(photoDestinationPattern, (destination) => {
+      hasPhotoSubmission = true;
+      return destination.match(/[.,;:!?]+$/)?.[0] ?? '';
+    });
+    return instruction === sentence
+      ? sentence
+      : instruction.replace(emailPhotoVerbPattern, (verb) => (verb[0] === 'E' ? 'Send' : 'send'));
+  }).join(' ');
+
+  return { text: simplifyContactHeavyAction(action), hasPhotoSubmission };
+}
+
+export function getPhotoSubmissionNoticeUrl(source: string, sourceUrl: string, hasPhotoSubmission: boolean): string {
+  if (source !== 'CPSC' || !hasPhotoSubmission) return '';
+
+  const url = URL.parse(sourceUrl);
+  if (url?.protocol === 'https:' && ['cpsc.gov', 'www.cpsc.gov'].includes(url.hostname) && /^\/Recalls\//i.test(url.pathname)) {
+    return url.href;
+  }
+
+  return '';
+}
+
 export function buildRecallActionItems(values: string[]): string[] {
-  const items = uniqueText(values.map(simplifyContactHeavyAction)).filter(
+  const items = uniqueText(values.map((value) => formatRecallAction(value).text)).filter(
     (value) => value && !isContactOnlyAction(value) && !/^(?:[a-z]{2}|com|co|net|org)(?:\s+to\b.*)?$/i.test(value)
   );
 
@@ -84,7 +121,9 @@ export function buildRecallContactItems(values: string[]): string[] {
   const phones = [...text.matchAll(/\b(?:call|phone|tel)\s*:?\s*([+()0-9][0-9 ()+-]{6,}[0-9])\b/gi)].map(
     (match) => `Phone: ${match[1].trim()}`
   );
-  const links = [...text.matchAll(/\b(?:https?:\/\/[^\s)]+|www\.[^\s)]+)/gi)].map((match) => `Website: ${match[0]}`);
+  const links = [...text.matchAll(/\b(?:https?:\/\/[^\s)]+|www\.[^\s)]+)/gi)].map(
+    (match) => `Website: ${match[0].replace(/[.,;:!?]+$/, '')}`
+  );
 
   return uniqueText([...emails, ...phones, ...links]);
 }

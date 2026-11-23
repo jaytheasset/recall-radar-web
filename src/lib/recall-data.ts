@@ -10,6 +10,8 @@ import {
 import { getRecallSourceLabel } from './recall-sources';
 import { limitSlug, recallSlug } from './slug';
 import { isJointPowerBankRecall, jointPowerBankRecall } from './recall-search-examples';
+import { officialRecallImages } from './official-recall-images';
+import { recallImageCacheFilename, recallImageCachePublicPath, savedRecallImageUrls } from './recall-image-cache';
 import { correctCpscRecallAction, isUnavailableEuRecallImage } from './recall-source-corrections';
 import {
   getAudienceLabel,
@@ -565,73 +567,25 @@ function safeText(value: unknown): string {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-function isOfficialRecallImageUrl(url: string): boolean {
-  return (
-    /^https:\/\/www\.cpsc\.gov\//i.test(url) ||
-    /^https:\/\/rappel\.conso\.gouv\.fr\/image\//i.test(url) ||
-    /^https:\/\/(?:recalls-rappels\.canada\.ca|www\.canada\.ca)\/sites\/default\/files\/(?:styles\/[^/]+\/)?public\/alert\/recall\//i.test(
-      url
-    ) ||
-    /^https:\/\/ec\.europa\.eu\/safety-gate-alerts\/public\/api\/notification\/(?:image|thumbnail)\//i.test(url)
-    ||
-    /^https:\/\/www\.productsafety\.gov\.au\/system\/files\/(?:styles\/[^/]+\/)?(?:public|private)\//i.test(url) ||
-    /^https:\/\/www\.productsafety\.govt\.nz\/assets\/uploads\//i.test(url) ||
-    /^https:\/\/www\.cfs\.gov\.hk\//i.test(url) ||
-    /^https:\/\/www\.foodstandards\.gov\.au\/sites\/default\/files\/(?:styles\/[^/]+\/)?public\//i.test(url)
-  );
-}
+declare const __RECALL_IMAGE_CACHE_FILES__: string[];
+const cachedRecallImages = new Set(__RECALL_IMAGE_CACHE_FILES__);
 
-function normalizeImage(value: unknown, fallbackAlt: string): RecallImage | null {
-  if (!isObject(value)) {
-    return null;
-  }
-
-  const url = safeText(value.url) || safeText(value.URL);
-  if (!url || !isOfficialRecallImageUrl(url) || isUnavailableEuRecallImage(url)) {
-    return null;
-  }
-
-  const thumbnailUrl = safeText(value.thumbnailUrl) || safeText(value.thumbnailURL) || safeText(value.ThumbnailURL);
-  const caption = safeText(value.caption) || safeText(value.Caption);
-  const alt = safeText(value.alt) || safeText(value.AltText) || caption || fallbackAlt;
-
-  return {
-    url,
-    ...(thumbnailUrl && isOfficialRecallImageUrl(thumbnailUrl) && !isUnavailableEuRecallImage(thumbnailUrl) ? { thumbnailUrl } : {}),
-    ...(caption ? { caption } : {}),
-    ...(alt ? { alt } : {})
-  };
-}
-
-function uniqueImages(images: RecallImage[]): RecallImage[] {
-  const seen = new Set<string>();
-  return images.filter((image) => {
-    if (seen.has(image.url)) {
-      return false;
-    }
-    seen.add(image.url);
-    return true;
-  });
+function localRecallImage(url: string): string | undefined {
+  const saved = savedRecallImageUrls.get(url);
+  if (saved) return saved;
+  if (!cachedRecallImages.size) return;
+  const filename = recallImageCacheFilename(url);
+  if (cachedRecallImages.has(filename)) return `${recallImageCachePublicPath}${filename}`;
 }
 
 function extractRecallImages(record: NormalizedRecall): RecallImage[] {
-  const directImages = Array.isArray(record.images) ? record.images : [];
-  const rawImages = isObject(record.raw) && Array.isArray(record.raw.Images) ? record.raw.Images : [];
-  const fallbackAlt = `${record.title} recall product image`;
-  const images = [...directImages, ...rawImages]
-    .map((image) => normalizeImage(image, fallbackAlt))
-    .filter((image): image is RecallImage => Boolean(image));
-
-  return record.source === 'CPSC' ||
-    record.source === 'FR_RAPPELCONSO' ||
-    record.source === 'CA_RECALLS' ||
-    record.source === 'EU_SAFETY_GATE' ||
-    record.source === 'AU_PRODUCT_SAFETY' ||
-    record.source === 'NZ_PRODUCT_SAFETY' ||
-    record.source === 'HK_CFS' ||
-    record.source === 'FSANZ_FOOD_RECALLS'
-    ? uniqueImages(images)
-    : [];
+  return officialRecallImages(record).flatMap((image) => {
+    const local = localRecallImage(image.url);
+    if (local) return [{ ...image, url: local, thumbnailUrl: image.thumbnailUrl ? local : undefined }];
+    if (isUnavailableEuRecallImage(image.url)) return [];
+    const thumbnailUrl = isUnavailableEuRecallImage(image.thumbnailUrl) ? undefined : image.thumbnailUrl;
+    return [{ ...image, thumbnailUrl }];
+  });
 }
 
 function toSiteRecallFromProcessed(record: NormalizedRecall): SiteRecall {

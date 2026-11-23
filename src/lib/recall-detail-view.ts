@@ -367,7 +367,7 @@ function paragraphs(value: string): string[] {
     return [];
   }
 
-  const sentences = text.match(/[^.!?]+[.!?]+(?:\s|$)|[^.!?]+$/g)?.map(cleanText).filter(Boolean) ?? [text];
+  const sentences = text.split(/(?<=[.!?])\s+/).map(cleanText).filter(Boolean);
   return sentences.length > 2 ? sentences : [text];
 }
 

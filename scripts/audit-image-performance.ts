@@ -1,6 +1,8 @@
 // @ts-nocheck
 import fs from 'node:fs';
 import path from 'node:path';
+import { isUnavailableEuRecallImage } from '../src/lib/recall-source-corrections.ts';
+import { recallImageCacheFilename, recallImageCachePublicPath } from '../src/lib/recall-image-cache.ts';
 
 type ProcessedRecall = {
   id: string;
@@ -118,7 +120,12 @@ function priorityImageTag(html: string): string {
 
 const records = readProcessedRecords();
 const euRecords = records.filter((record) => record.source === 'EU_SAFETY_GATE');
-const euRecordsWithThumbnails = euRecords.filter((record) => firstFullImage(record) && firstThumbnailImage(record));
+const euRecordsWithThumbnails = euRecords.filter((record) => {
+  const fullImage = firstFullImage(record);
+  const thumbnail = firstThumbnailImage(record);
+  const cached = fullImage && fs.existsSync(path.join(distDir, recallImageCachePublicPath, recallImageCacheFilename(fullImage)));
+  return fullImage && thumbnail && !cached && !isUnavailableEuRecallImage(fullImage) && !isUnavailableEuRecallImage(thumbnail);
+});
 const htmlFiles = walkHtmlFiles(distDir);
 const htmlByPath = new Map(htmlFiles.map((filePath) => [filePath, readText(filePath)]));
 const detailHtmlFiles = htmlFiles.filter((filePath) => isDetailHtml(filePath) && !isRecallIndexHtml(filePath));
@@ -127,6 +134,10 @@ const nonDetailHtml = nonDetailHtmlFiles.map((filePath) => htmlByPath.get(filePa
 const homepageHtml = htmlByPath.get(path.join(distDir, 'index.html')) ?? '';
 const allHtml = [...htmlByPath.values()].join('\n');
 const blockers: string[] = [];
+const cachedWebpReferences = new Set([...allHtml.matchAll(/\/recall-images\/cache\/[\da-f]{32}\.webp/g)].map(([url]) => url));
+for (const url of cachedWebpReferences) {
+  if (!fs.existsSync(path.join(distDir, url))) blockers.push(`Missing referenced WebP asset: ${url}`);
+}
 
 if (!htmlFiles.length) {
   blockers.push('dist HTML files were not found. Run npm run build before npm run audit:image-performance.');
@@ -308,11 +319,11 @@ const summary: AuditSummary = {
   },
   checks: {
     resourceHintsExist,
-    euCardsOrListsUseThumbnails: euListThumbnailHits > 0,
+    euCardsOrListsUseThumbnails: !euRecordsWithThumbnails.length || euListThumbnailHits > 0,
     noEuFullImageMisuseInCardsOrLists: euListFullImageMisuseHits === 0,
     euCardFullImageLoadsNearViewport: euCardViewportProgressiveLoaderHits > 0,
     detailHeroPreloadExists: detailHeroPriorityImages > 0 && detailHeroPreloads === detailHeroPriorityImages,
-    euDetailHeroProgressiveExists: euRecordsWithThumbnails.length > 0 && euProgressiveHeroImages === euRecordsWithThumbnails.length,
+    euDetailHeroProgressiveExists: euProgressiveHeroImages === euRecordsWithThumbnails.length,
     noEuFullImageInitialHeroSrc: euInitialFullImageMisuseHits === 0,
     fetchpriorityHighNotOverusedOutsideDetailPages: homepageFetchpriorityHigh <= 1 && fetchpriorityHighOutsideDetailPages <= 1,
     detailGalleryControlsExist:

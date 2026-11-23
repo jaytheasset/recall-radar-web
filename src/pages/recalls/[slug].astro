@@ -4,11 +4,13 @@ import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import EuImageResourceHints from '../../components/EuImageResourceHints.astro';
 import TaxonomyFamilyPage from '../../components/TaxonomyFamilyPage.astro';
+import { getMessage } from '../../lib/i18n';
 import { categoryRoutes, siteRecalls } from '../../lib/recall-data';
 import {
   buildRecallActionItems,
   buildRecallContactItems,
-  cleanRecallDisplayText
+  formatRecallAction,
+  getPhotoSubmissionNoticeUrl
 } from '../../lib/recall-display-text';
 import { buildRecallDetailView, recallSourceBadge, type DetailFact } from '../../lib/recall-detail-view';
 import {
@@ -82,6 +84,8 @@ const displayRecallDomainLabel = isUsefulDisplayValue(view.taxonomyRecallDomainL
   : '';
 const displayAudienceLabels = view.taxonomyAudienceLabels.filter(isUsefulDisplayValue).slice(0, 3);
 const displayProductName = view.productName.replace(/[.\s]+$/g, '');
+const action = formatRecallAction(view.action);
+const photoSubmissionNoticeUrl = getPhotoSubmissionNoticeUrl(recall.source, view.officialSourceUrl, action.hasPhotoSubmission);
 const displayActionItems = buildRecallActionItems([view.action, ...view.actionParagraphs]);
 const summaryActionItems = displayActionItems.slice(0, 2);
 const displayContactItems = buildRecallContactItems([view.action, view.consumerContact]);
@@ -165,7 +169,7 @@ const officialSourceFacts = [
   pageFact('Product name', view.productName),
   pageFact('Brand / company', view.brandName),
   pageFact('Hazard / issue', view.reason),
-  pageFact('Remedy / action', displayActionItems.length ? displayActionItems : cleanRecallDisplayText(view.action)),
+  pageFact('Remedy / action', displayActionItems.length ? displayActionItems : action.text),
   pageFact(view.quantityLabel, view.units),
   pageFact('Recall number / record ID', view.recallNumber || recall.id),
   ...view.fdaDetails.filter((fact) => ['Classification', 'Status'].includes(fact.label))
@@ -336,6 +340,11 @@ const detailHeroCaption = getDisplayImageCaption(detailHeroImage?.caption);
               <ul class="detail-action-list compact">
                 {summaryActionItems.map((item) => <li>{item}</li>)}
               </ul>
+              {photoSubmissionNoticeUrl ? (
+                <a class="source-link source-link-small photo-submission-link" href={photoSubmissionNoticeUrl} target="_blank" rel="noopener noreferrer" data-i18n="detail.photoSubmissionNotice">
+                  {getMessage('detail.photoSubmissionNotice')}
+                </a>
+              ) : null}
             </div>
           ) : null}
           <div class="link-row">

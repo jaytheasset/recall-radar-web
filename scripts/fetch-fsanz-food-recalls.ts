@@ -27,7 +27,7 @@ const officialListPage = 'https://www.foodstandards.gov.au/food-recalls/recall-a
 const officialRssFeed = 'https://www.foodstandards.gov.au/food-recalls-rss.xml';
 const defaultLimit = 100;
 const maxLimit = 100;
-const maxPages = 8;
+const maxPages = 12;
 const runtimeEnv = (process as typeof process & { env?: Record<string, string | undefined> }).env ?? {};
 
 function readOption(name: string): string | undefined {
@@ -130,17 +130,20 @@ function firstImageIn(html: string, base: string): FsanzFoodRecallImage | undefi
 }
 
 function extractListingRecords(html: string, base: string): FsanzFoodRecallRaw[] {
-  const rows = [...html.matchAll(/<div class="food-recall-wrapper">([\s\S]*?)<\/div>\s*<\/span>\s*<\/div>\s*<\/div>/gi)];
+  const cards = [...html.matchAll(/<article\b[^>]*class=["'][^"']*\brecall-card\b[^"']*["'][^>]*>([\s\S]*?)<\/article>/gi)];
+  const rows = cards.length ? cards : [...html.matchAll(/<div class="food-recall-wrapper">([\s\S]*?)<\/div>\s*<\/span>\s*<\/div>\s*<\/div>/gi)];
 
   return rows
     .map((match) => {
       const rowHtml = match[1];
-      const link = rowHtml.match(/<h2>\s*<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>\s*<\/h2>/i);
+      const link = rowHtml.match(/<h[23]\b[^>]*>\s*<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>\s*<\/h[23]>/i);
       const sourceUrl = link ? absoluteUrl(link[1], base) : '';
       const listedTitle = link ? stripHtml(link[2]) : '';
       const listImage = firstImageIn(rowHtml, base);
-      const publishedDate = textFromFirst(/<p\b[^>]*class=["']published-date["'][^>]*>\s*Published\s+([\s\S]*?)<\/p>/i, rowHtml);
-      const listSummary = textFromFirst(/<div class="food-recall-desc">[\s\S]*?<p>\s*<p>([\s\S]*?)<\/p>\s*<\/p>/i, rowHtml);
+      const publishedDate = textFromFirst(/<span class="recall-card__date">([^<]+)<\/span>/i, rowHtml) ||
+        textFromFirst(/<p\b[^>]*class=["']published-date["'][^>]*>\s*Published\s+([\s\S]*?)<\/p>/i, rowHtml);
+      const listSummary = textFromFirst(/<div class="food-recall-desc">[\s\S]*?<p>\s*<p>([\s\S]*?)<\/p>\s*<\/p>/i, rowHtml) ||
+        textFromFirst(/<span class="recall-card__type-label">([^<]+)<\/span>/i, rowHtml);
       const path = sourceUrl ? new URL(sourceUrl).pathname : '';
 
       return {
@@ -255,8 +258,14 @@ function extractDetail(html: string, sourceUrl: string): NonNullable<FsanzFoodRe
   const introductionHtml = firstHeading >= 0 ? fieldHtml.slice(0, firstHeading) : fieldHtml;
   const introLines = htmlLines(introductionHtml);
   const dateMarking = introLines.find((line) => /^Date Marking:/i.test(line))?.replace(/^Date Marking:\s*/i, '') ?? '';
-  const introduction = introLines.filter((line) => !/^Date Marking:/i.test(line)).join(' ');
+  const summary = articleHtml.match(/<section class="recall-summary">([\s\S]*?)<\/section>/i)?.[1];
+  const introduction = summary ? paragraphs(summary).join(' ') : introLines.filter((line) => !/^Date Marking:/i.test(line)).join(' ');
   const sections = extractSections(fieldHtml);
+  const detailField = (label: string) => {
+    const heading = new RegExp(`<h3[^>]*>\\s*${label}\\s*<\\/h3>\\s*<div class="field-item">([\\s\\S]*?)<\\/div>`, 'i');
+    return textFromFirst(heading, articleHtml) || sectionValue(sections, label);
+  };
+  const information = articleHtml.match(/<section class="recall-information">([\s\S]*?)<\/section>/i)?.[1];
 
   return {
     title: textFromFirst(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i, html).replace(/^Food Recalls\s*/i, ''),
@@ -265,14 +274,15 @@ function extractDetail(html: string, sourceUrl: string): NonNullable<FsanzFoodRe
       textFromFirst(/Published\s*<time[^>]*>([\s\S]*?)<\/time>/i, html),
     metaDescription: html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["'][^>]*>/i)?.[1] ?? '',
     introduction,
-    dateMarking,
-    problem: sectionValue(sections, 'Problem'),
-    foodSafetyHazard: sectionValue(sections, 'Food safety hazard'),
-    whatToDo: sectionValue(sections, 'What to do'),
+    companyName: textFromFirst(/<div class="recall-information__label">\s*Business\s*<\/div>\s*<div class="recall-information__value">([\s\S]*?)<\/div>/i, articleHtml),
+    dateMarking: detailField('Date marking') || dateMarking,
+    problem: detailField('Problem'),
+    foodSafetyHazard: detailField('Food safety hazard'),
+    whatToDo: detailField('What to do'),
     contact: sectionValue(sections, 'For further information please contact'),
-    relatedLinks: extractRelatedLinks(fieldHtml, sourceUrl),
+    relatedLinks: extractRelatedLinks(information ?? fieldHtml, sourceUrl),
     images: extractAllImages(articleHtml, sourceUrl),
-    text: stripHtml(fieldHtml)
+    text: stripHtml(information ?? fieldHtml)
   };
 }
 

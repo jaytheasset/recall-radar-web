@@ -16,6 +16,7 @@ const runtimeEnv = (process as typeof process & { env?: Record<string, string | 
 type FetchOptions = {
   endpoint: string;
   limit: number;
+  offset: number;
 };
 
 function readOption(name: string): string | undefined {
@@ -33,12 +34,15 @@ function getFetchOptions(): FetchOptions {
   const limit = Number.isFinite(parsedLimit) ? Math.min(Math.max(parsedLimit, 1), maxLimit) : defaultLimit;
   const endpoint = readOption('url') ?? defaultRappelConsoEndpoint;
 
-  return { endpoint, limit };
+  const offset = Number(readOption('offset') ?? '0');
+  if (!Number.isSafeInteger(offset) || offset < 0) throw new Error('Invalid RappelConso offset.');
+  return { endpoint, limit, offset };
 }
 
 function buildRappelConsoUrl(options: FetchOptions): string {
   const url = new URL(options.endpoint);
   url.searchParams.set('limit', String(options.limit));
+  if (options.offset) url.searchParams.set('offset', String(options.offset));
   url.searchParams.set('order_by', 'date_publication desc');
   return url.toString();
 }
