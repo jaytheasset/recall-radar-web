@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-11-23T07:52:39.128Z",
+  "generatedAt": "2026-11-24T10:10:49.549Z",
   "provider": "mixed",
   "model": "gemini-2.5-flash-lite + gpt-6-luna",
   "promptVersion": "recall-classifier-v2",
   "taxonomyVersion": "recall-taxonomy-v2",
-  "totalRecords": 4389,
-  "success": 4389,
+  "totalRecords": 4424,
+  "success": 4424,
   "failed": 0,
   "sourceCounts": {
-    "AU_PRODUCT_SAFETY": 190,
-    "CA_RECALLS": 816,
-    "EU_SAFETY_GATE": 318,
-    "FR_RAPPELCONSO": 1452,
+    "AU_PRODUCT_SAFETY": 191,
+    "CA_RECALLS": 818,
+    "EU_SAFETY_GATE": 338,
+    "FR_RAPPELCONSO": 1464,
     "UK_FSA": 146,
     "FSANZ_FOOD_RECALLS": 128,
     "NZ_PRODUCT_SAFETY": 151,
@@ -21,7 +21,7 @@
   },
   "qualityFlagCounts": {
     "baby-kids-evidence-food-family": 1,
-    "needs-review": 96,
+    "needs-review": 95,
     "unknown-hazard-type": 106,
     "medical-evidence-non-medical-domain": 5,
     "low-confidence": 2
@@ -6099,22 +6099,22 @@
         "hazardType": "fire",
         "hazardTags": [
           "combustible candle holder",
-          "dried flowers",
-          "burn risk"
+          "burns"
         ],
         "recallDomain": "consumer-product",
         "audience": [
           "general"
         ],
-        "confidence": 0.96,
+        "confidence": 0.93,
         "needsReview": false,
-        "reason": "The candle bouquets contain wicks and dried flowers that create a fire risk and violate a permanent ban on combustible candle holders.",
+        "reason": "The candles contain wicks and dried flowers that present a fire risk.",
         "evidenceFields": [
           "title",
           "productNames",
           "hazard",
           "description",
-          "rawSourceCategory"
+          "rawSourceCategory",
+          "remedy"
         ],
         "taxonomyVersion": "recall-taxonomy-v2",
         "method": "llm",
@@ -132751,38 +132751,35 @@
       "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/peglyte-powder-affected-lots-may-contain-foreign-matter",
       "success": true,
       "failed": false,
-      "qualityFlags": [
-        "needs-review"
-      ],
+      "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "health-personal-care",
         "productType": "supplement-like-food",
         "hazardType": "foreign-matter",
         "hazardTags": [
           "foreign matter contamination",
-          "powder for solution"
+          "medicinal product"
         ],
         "recallDomain": "medical-health",
         "audience": [
           "general"
         ],
-        "confidence": 0.88,
-        "needsReview": true,
-        "reason": "PegLyte is a drug powder identified as a health product with possible foreign matter contamination.",
+        "confidence": 0.91,
+        "needsReview": false,
+        "reason": "Peg Lyte is a health product whose affected lots may contain foreign matter.",
         "evidenceFields": [
           "title",
           "productNames",
           "brandNames",
-          "category",
+          "rawSourceCategory",
           "hazard",
           "remedy",
-          "rawSourceCategory",
           "identifiers"
-        ]
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -132795,33 +132792,31 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "health-personal-care",
         "productType": "health-personal-care-other",
         "hazardType": "quality-defect",
         "hazardTags": [
-          "medication mix-up",
-          "incorrect capsule contents"
+          "wrong medication in package",
+          "product quality"
         ],
         "recallDomain": "medical-health",
         "audience": [
           "general"
         ],
-        "confidence": 0.94,
+        "confidence": 0.93,
         "needsReview": false,
-        "reason": "Taro-Candesartan tablets may contain Esomeprazole capsules in affected lots.",
+        "reason": "Some Taro-Candesartan lots may contain Esomeprazole capsules instead of the labeled medicine.",
         "evidenceFields": [
           "title",
           "productNames",
           "brandNames",
-          "category",
           "hazard",
-          "remedy",
           "identifiers"
-        ]
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -133206,32 +133201,33 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "health-personal-care",
-        "productType": "health-personal-care-other",
+        "productType": "personal-care-product",
         "hazardType": "foreign-matter",
         "hazardTags": [
-          "foreign matter contamination"
+          "foreign matter contamination",
+          "nasal gel"
         ],
         "recallDomain": "medical-health",
         "audience": [
           "general"
         ],
-        "confidence": 0.94,
+        "confidence": 0.92,
         "needsReview": false,
-        "reason": "The nasal gel is a health product whose affected lot may contain foreign matter.",
+        "reason": "The nasal gel is a health product and the affected lot may contain foreign matter.",
         "evidenceFields": [
           "title",
           "productNames",
           "brandNames",
+          "rawSourceCategory",
           "hazard",
           "remedy",
-          "rawSourceCategory",
           "identifiers"
-        ]
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -133790,31 +133786,31 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "health-personal-care",
         "productType": "health-personal-care-other",
         "hazardType": "quality-defect",
         "hazardTags": [
-          "out-of-specification-impurity",
-          "drug"
+          "out-of-specification impurity",
+          "medicinal product"
         ],
         "recallDomain": "medical-health",
         "audience": [
           "general"
         ],
-        "confidence": 0.94,
+        "confidence": 0.92,
         "needsReview": false,
-        "reason": "The diphenhydramine capsules are recalled for an out-of-specification impurity and product quality issue.",
+        "reason": "The diphenhydramine capsules are recalled for an out-of-specification impurity.",
         "evidenceFields": [
           "title",
           "productNames",
+          "brandNames",
           "hazard",
-          "description",
-          "rawSourceCategory"
-        ]
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -134849,15 +134845,12 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "health-personal-care",
         "productType": "health-personal-care-other",
         "hazardType": "quality-defect",
         "hazardTags": [
-          "packaging defect"
+          "packaging defect",
+          "veterinary drug"
         ],
         "recallDomain": "medical-health",
         "audience": [
@@ -134869,9 +134862,15 @@
         "evidenceFields": [
           "title",
           "productNames",
-          "category",
-          "hazard"
-        ]
+          "brandNames",
+          "rawSourceCategory",
+          "hazard",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -135170,31 +135169,31 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "health-personal-care",
         "productType": "health-personal-care-other",
         "hazardType": "foreign-matter",
         "hazardTags": [
           "particulate matter",
-          "product quality"
+          "injectable drug"
         ],
         "recallDomain": "medical-health",
         "audience": [
           "general"
         ],
-        "confidence": 0.91,
+        "confidence": 0.92,
         "needsReview": false,
-        "reason": "The injectable drug recall reports particulate matter in cyclophosphamide for injection.",
+        "reason": "The injectable drug recall concerns particulate matter in the product.",
         "evidenceFields": [
           "title",
           "productNames",
+          "brandNames",
           "hazard",
-          "description",
-          "rawSourceCategory"
-        ]
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -135244,31 +135243,31 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "health-personal-care",
-        "productType": "supplement-like-food",
+        "productType": "health-personal-care-other",
         "hazardType": "foreign-matter",
         "hazardTags": [
           "metal fragments",
-          "product quality"
+          "chewable antacid"
         ],
         "recallDomain": "medical-health",
         "audience": [
           "general"
         ],
-        "confidence": 0.82,
+        "confidence": 0.88,
         "needsReview": false,
-        "reason": "The antacid chewable tablets are a health product with reported potential metal foreign matter.",
+        "reason": "The chewable antacid may contain metal fragments, as stated in the title.",
         "evidenceFields": [
           "title",
           "productNames",
+          "brandNames",
           "hazard",
-          "description",
-          "rawSourceCategory"
-        ]
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -158112,31 +158111,31 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "vehicles-mobility",
         "productType": "passenger-vehicle",
         "hazardType": "injury",
         "hazardTags": [
-          "airbag inflator fragments"
+          "airbag inflator",
+          "metal fragments"
         ],
         "recallDomain": "vehicle",
         "audience": [
           "vehicle-users"
         ],
-        "confidence": 0.97,
+        "confidence": 0.96,
         "needsReview": false,
-        "reason": "The passenger cars have an airbag inflator defect that may cause fragments to injure occupants.",
+        "reason": "Airbag deployment may propel inflator fragments and injure vehicle occupants.",
         "evidenceFields": [
           "title",
           "productNames",
           "brandNames",
           "hazard",
-          "remedy",
-          "identifiers"
-        ]
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -159792,33 +159791,32 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "baby-kids",
         "productType": "toy",
         "hazardType": "choking",
         "hazardTags": [
-          "detachable small parts",
-          "suction cups"
+          "detachable suction cups",
+          "small parts"
         ],
         "recallDomain": "consumer-product",
         "audience": [
           "children"
         ],
-        "confidence": 0.95,
+        "confidence": 0.97,
         "needsReview": false,
-        "reason": "The bow and dart toy set has detachable suction cups that pose a choking hazard to small children.",
+        "reason": "The toy's detachable suction cups may be put in a child's mouth and cause choking.",
         "evidenceFields": [
           "title",
           "productNames",
           "brandNames",
-          "category",
+          "rawSourceCategory",
           "hazard",
-          "remedy",
-          "identifiers"
-        ]
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -160617,34 +160615,32 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "vehicles-mobility",
         "productType": "passenger-vehicle",
         "hazardType": "fire",
         "hazardTags": [
-          "high-voltage battery short circuit",
-          "loss of propulsion",
-          "crash risk"
+          "high-voltage battery",
+          "short circuit",
+          "loss of propulsion"
         ],
         "recallDomain": "vehicle",
         "audience": [
           "vehicle-users"
         ],
-        "confidence": 0.96,
+        "confidence": 0.97,
         "needsReview": false,
-        "reason": "The Ford Kuga may have a high-voltage battery short circuit that can cause fire and loss of propulsion.",
+        "reason": "A short circuit in the vehicle's high-voltage battery may cause fire and loss of propulsion.",
         "evidenceFields": [
           "title",
           "productNames",
           "brandNames",
-          "category",
           "hazard",
-          "remedy",
-          "identifiers"
-        ]
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -166104,21 +166100,17 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "food-grocery",
         "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared-peanuts"
+          "undeclared peanuts"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.97,
+        "confidence": 0.98,
         "needsReview": false,
         "reason": "The protein bar contains peanuts that are not declared on its label.",
         "evidenceFields": [
@@ -166127,8 +166119,12 @@
           "brandNames",
           "hazard",
           "remedy",
-          "rawSourceCategory"
-        ]
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -168648,31 +168644,32 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "furniture-household",
         "productType": "household-product",
         "hazardType": "fire",
         "hazardTags": [
-          "combustible-candle-holder",
+          "combustible candle holder",
           "burns"
         ],
         "recallDomain": "consumer-product",
         "audience": [
           "general"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "The candle rings are combustible candle holders that may catch fire.",
+        "reason": "The candle rings may catch fire because the candle holders are combustible.",
         "evidenceFields": [
           "title",
           "productNames",
+          "brandNames",
+          "rawSourceCategory",
           "hazard",
-          "description",
-          "rawSourceCategory"
-        ]
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -168685,33 +168682,31 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "baby-kids",
         "productType": "toy",
-        "hazardType": "choking",
+        "hazardType": "regulatory-noncompliance",
         "hazardTags": [
-          "button-battery",
-          "battery-ingestion",
-          "internal-burn"
+          "button-battery warning and labeling requirements"
         ],
         "recallDomain": "consumer-product",
         "audience": [
-          "children",
-          "infants"
+          "children"
         ],
-        "confidence": 0.96,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "The fidget toy contains button batteries and lacks required warnings about ingestion hazards.",
+        "reason": "The children's sound toy contains button batteries and lacks required battery safety warnings.",
         "evidenceFields": [
           "title",
           "productNames",
           "hazard",
           "description",
-          "rawSourceCategory"
-        ]
+          "rawSourceCategory",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -169594,7 +169589,7 @@
         "hazardType": "fire",
         "hazardTags": [
           "USB cable overheating",
-          "burn risk"
+          "short circuit"
         ],
         "recallDomain": "consumer-product",
         "audience": [
@@ -169602,12 +169597,14 @@
         ],
         "confidence": 0.95,
         "needsReview": false,
-        "reason": "The USB charging cable for the adult vibrator may overheat or catch fire and cause burns.",
+        "reason": "The adult USB rechargeable vibrator's charging cable may short circuit, overheat, or catch fire.",
         "evidenceFields": [
           "title",
           "productNames",
           "hazard",
-          "description"
+          "description",
+          "rawSourceCategory",
+          "remedy"
         ],
         "taxonomyVersion": "recall-taxonomy-v2",
         "method": "llm",
@@ -169629,21 +169626,23 @@
         "productType": "toy",
         "hazardType": "strangulation",
         "hazardTags": [
-          "accessory hook snag hazard",
+          "snagging",
           "asphyxiation"
         ],
         "recallDomain": "consumer-product",
         "audience": [
           "children"
         ],
-        "confidence": 0.97,
+        "confidence": 0.96,
         "needsReview": false,
         "reason": "Hooks on the children's play kitchen can snag clothing and pose a strangulation hazard.",
         "evidenceFields": [
           "title",
           "productNames",
           "hazard",
-          "description"
+          "description",
+          "rawSourceCategory",
+          "remedy"
         ],
         "taxonomyVersion": "recall-taxonomy-v2",
         "method": "llm",
@@ -170543,20 +170542,21 @@
           "loss of control",
           "fall"
         ],
-        "recallDomain": "vehicle",
+        "recallDomain": "consumer-product",
         "audience": [
-          "vehicle-users"
+          "vehicle-users",
+          "outdoor-users"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "The bicycle handlebar can crack or break and cause loss of control and a fall.",
+        "reason": "The recalled mountain bike handlebar can break and cause a rider to lose control and fall.",
         "evidenceFields": [
           "title",
           "productNames",
-          "brandNames",
           "hazard",
-          "remedy",
-          "description"
+          "description",
+          "identifiers",
+          "remedy"
         ],
         "taxonomyVersion": "recall-taxonomy-v2",
         "method": "llm",
@@ -170587,15 +170587,14 @@
         ],
         "confidence": 0.93,
         "needsReview": false,
-        "reason": "The candle containers and dried flowers present a fire and burn risk.",
+        "reason": "The bowl candles use combustible wood or coconut holders and dried flowers that present a fire risk.",
         "evidenceFields": [
           "title",
           "productNames",
-          "brandNames",
-          "category",
           "hazard",
-          "remedy",
-          "description"
+          "description",
+          "rawSourceCategory",
+          "remedy"
         ],
         "taxonomyVersion": "recall-taxonomy-v2",
         "method": "llm",
@@ -171166,32 +171165,33 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "home-appliances",
         "productType": "home-appliance-other",
         "hazardType": "entrapment",
         "hazardTags": [
-          "child-entrapment",
-          "suffocation-risk",
-          "standard-noncompliance"
+          "freezer door",
+          "child trapped inside"
         ],
         "recallDomain": "consumer-product",
         "audience": [
           "children"
         ],
-        "confidence": 0.94,
+        "confidence": 0.96,
         "needsReview": false,
-        "reason": "The chest freezer door may be too difficult to open from inside, potentially trapping a child.",
+        "reason": "The freezer door may be difficult to open from inside, creating an entrapment risk for a child.",
         "evidenceFields": [
           "title",
           "productNames",
+          "brandNames",
+          "rawSourceCategory",
           "hazard",
           "remedy",
           "identifiers"
-        ]
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -174756,6 +174756,1292 @@
         "evidenceFields": [
           "title",
           "productNames",
+          "hazard",
+          "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0162",
+      "source": "FR_RAPPELCONSO",
+      "title": "wonday - plaques de découpe standard et qualité supérieure",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24155/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "furniture-household",
+        "productType": "household-product",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "DEHP",
+          "reproductive toxicant"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.92,
+        "needsReview": false,
+        "reason": "The cutting mats contain DEHP above the stated concentration limit.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "description",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0153",
+      "source": "FR_RAPPELCONSO",
+      "title": "auchan - pomme de terre rouge salade vapeur saute 2kg et 2.5kg",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24146/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "food-other",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "glycoalkaloids"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The recalled potatoes were found to contain elevated glycoalkaloids.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0161",
+      "source": "FR_RAPPELCONSO",
+      "title": "blossity - spray éclaircissant cheveux blonds",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24154/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "leaking packaging",
+          "skin irritation"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.91,
+        "needsReview": false,
+        "reason": "The hair lightening spray may leak and cause severe skin irritation on contact.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0156",
+      "source": "FR_RAPPELCONSO",
+      "title": "sans marque - roti bf tt rond tg 2kg",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24149/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "meat-seafood",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "Salmonella"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general",
+          "children",
+          "pregnant-people"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Salmonella was detected in the beef roast.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0157",
+      "source": "FR_RAPPELCONSO",
+      "title": "e.leclerc atout sud - jambon cuit superieur decouenne degraisse au torchon + cornet jambon blanc, bruschetta jambon champignons, pizza...",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24150/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "meat-seafood",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "Listeria monocytogenes"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general",
+          "pregnant-people"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Listeria monocytogenes was detected in the ham and prepared foods.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0159",
+      "source": "FR_RAPPELCONSO",
+      "title": "top budget - emmental râpé top budget 200g",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24152/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "dairy",
+        "hazardType": "foreign-matter",
+        "hazardTags": [
+          "glass"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Glass foreign matter was reported in the grated Emmental cheese.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0135",
+      "source": "FR_RAPPELCONSO",
+      "title": "barnett - pistolet - arbalete flechette phantum",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24126/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "sports-outdoor",
+        "productType": "sports-other",
+        "hazardType": "injury",
+        "hazardTags": [
+          "dart noncompliance",
+          "choking"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.86,
+        "needsReview": false,
+        "reason": "The recalled dart launcher has noncompliant darts associated with injury and choking risks.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0154",
+      "source": "FR_RAPPELCONSO",
+      "title": "maison ginisty - terrine de biche",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24147/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "meat-seafood",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "biological contamination",
+          "stability analysis noncompliance"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.82,
+        "needsReview": false,
+        "reason": "The venison terrine failed stability analysis and is classified as a biological contaminant risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0151",
+      "source": "FR_RAPPELCONSO",
+      "title": "panier du primeur - pommes de terre vapeur sautées rouge 2kg - panier du primeur",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24144/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "food-other",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "glycoalkaloids"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The recalled potatoes contain glycoalkaloids.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0147",
+      "source": "FR_RAPPELCONSO",
+      "title": "e.leclerc ibos - thon basquaise/riz",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24140/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "packaged-food",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "Salmonella"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general",
+          "children",
+          "pregnant-people"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Salmonella was detected in the tuna and rice prepared dish.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0144",
+      "source": "FR_RAPPELCONSO",
+      "title": "le foué paul prédault - jambon cuit supérieur braisé aux légumes le foué paul prédault",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24137/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "meat-seafood",
+        "hazardType": "labeling-error",
+        "hazardTags": [
+          "incorrect use-by date"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.9,
+        "needsReview": false,
+        "reason": "The cooked ham recall cites an error in its use-by date.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0148",
+      "source": "FR_RAPPELCONSO",
+      "title": "boland - kit 4 pieces police swat",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24141/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "burn",
+        "hazardTags": [
+          "accessible button batteries",
+          "choking",
+          "labeling noncompliance"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The toy set has accessible button batteries that pose ingestion and burn risks.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-82992",
+      "source": "CA_RECALLS",
+      "title": "Transport Canada Recall - 2026541 - BMW",
+      "recallDate": "2026-11-20",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/transport-canada-recall-2026541-bmw",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "passenger-vehicle",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "vehicle electrical issue"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.84,
+        "needsReview": false,
+        "reason": "The recalled BMW car has an electrical issue.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-82991",
+      "source": "CA_RECALLS",
+      "title": "Transport Canada Recall - 2026534 - FORD",
+      "recallDate": "2026-11-20",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/transport-canada-recall-2026534-ford",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "vehicles-other",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "vehicle electrical issue"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.83,
+        "needsReview": false,
+        "reason": "The recalled Ford light truck or van has an electrical issue.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119617",
+      "source": "EU_SAFETY_GATE",
+      "title": "Fancy-dress mask - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119617",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "suffocation",
+        "hazardTags": [
+          "insufficient ventilation"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The non-permeable costume mask can cover the mouth and nose and cause suffocation.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119514",
+      "source": "EU_SAFETY_GATE",
+      "title": "Samsung - USB charger - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119514",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "charger",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "accessible live parts",
+          "inadequate creepage distance"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The USB charger may expose users to live parts and cause electric shock.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119812",
+      "source": "EU_SAFETY_GATE",
+      "title": "Necklace - Safety Gate alert",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119812",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "cadmium"
+        ],
+        "recallDomain": "chemical",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The necklace contains an excessive concentration of cadmium.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "description",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119814",
+      "source": "EU_SAFETY_GATE",
+      "title": "Earrings - Safety Gate alert",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119814",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "cadmium"
+        ],
+        "recallDomain": "chemical",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The earrings contain an excessive concentration of cadmium.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "description",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119458",
+      "source": "EU_SAFETY_GATE",
+      "title": "Soft toy - Safety Gate alert",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119458",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "accessible fibrous stuffing",
+          "accessible batteries",
+          "battery electrolyte exposure"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The toy's accessible stuffing can cause choking and its batteries can be accessed by children.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "description",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119432",
+      "source": "EU_SAFETY_GATE",
+      "title": "Flying Tiger Copenhagen - Musical toy - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119432",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable small parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Small detachable parts on the xylophone may be put in a child's mouth and cause choking.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119669",
+      "source": "EU_SAFETY_GATE",
+      "title": "Toy gun set - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119669",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable suction cups",
+          "small parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The toy's detachable suction cups may be put in a small child's mouth and cause choking.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119691",
+      "source": "EU_SAFETY_GATE",
+      "title": "Triciclo Editores - Squeeze toy - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119691",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable small parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The toy's detachable ears are small parts that may cause choking.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119747",
+      "source": "EU_SAFETY_GATE",
+      "title": "Fancy-dress costume - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119747",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "clothing",
+        "hazardType": "fire",
+        "hazardTags": [
+          "flammable wig",
+          "burns"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The costume's wig is highly flammable and may cause fire and burns.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "description",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119560",
+      "source": "EU_SAFETY_GATE",
+      "title": "Eskuta - Electric bicycle - Safety Gate alert",
+      "recallDate": "2026-11-16",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119560",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "bicycle",
+        "hazardType": "crash",
+        "hazardTags": [
+          "speed limiter bypass",
+          "loss of control",
+          "injury"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The modified electric bicycle can exceed its speed limit and become harder to control, increasing accident risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119609",
+      "source": "EU_SAFETY_GATE",
+      "title": "Chain saw - Safety Gate alert",
+      "recallDate": "2026-11-16",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119609",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "tools-equipment",
+        "productType": "power-tool",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "non-compliant plug",
+          "exposed live parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The chainsaw's non-compliant plug could expose users to live parts and electric shock.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "rawSourceCategory",
+          "hazard",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119442",
+      "source": "EU_SAFETY_GATE",
+      "title": "Teething toy - Safety Gate alert",
+      "recallDate": "2026-11-16",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119442",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable small parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "infants",
+          "children"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The teething toy has detachable small parts that may cause choking.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "rawSourceCategory",
+          "hazard",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119662",
+      "source": "EU_SAFETY_GATE",
+      "title": "Ford - Passenger car - Safety Gate alert",
+      "recallDate": "2026-11-16",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119662",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "passenger-vehicle",
+        "hazardType": "fire",
+        "hazardTags": [
+          "wiring harness",
+          "short circuit"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Abrasion of the car's wiring harness can expose wires, cause a short circuit, and start a fire.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119679",
+      "source": "EU_SAFETY_GATE",
+      "title": "budi - USB charger - Safety Gate alert",
+      "recallDate": "2026-11-13",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119679",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "charger",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "inadequate insulation",
+          "live USB ports"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "Inadequate circuit insulation can make the charger's ports and cable live and cause electric shock.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119682",
+      "source": "EU_SAFETY_GATE",
+      "title": "Delight - USB charger - Safety Gate alert",
+      "recallDate": "2026-11-13",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119682",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "charger",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "inadequate insulation",
+          "live USB ports"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "Inadequate circuit insulation can make the charger's ports and cable live and cause electric shock.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119639",
+      "source": "EU_SAFETY_GATE",
+      "title": "YOUYIKE - Balloons - Safety Gate alert",
+      "recallDate": "2026-11-13",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119639",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "nitrosamines",
+          "nitrosatable substances"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The balloons release excessive nitrosatable substances that may expose children through contact or mouthing.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119627",
+      "source": "EU_SAFETY_GATE",
+      "title": "Belsvor - Balloons - Safety Gate alert",
+      "recallDate": "2026-11-13",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119627",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "nitrosamines",
+          "nitrosatable substances"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The balloons release excessive nitrosamines and related substances that may expose children through contact or mouthing.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119635",
+      "source": "EU_SAFETY_GATE",
+      "title": "UDRKFOPK - Balloons - Safety Gate alert",
+      "recallDate": "2026-11-13",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119635",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "nitrosamines",
+          "nitrosatable substances"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The balloons release excessive nitrosamines and related substances that may expose children through contact or mouthing.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119557",
+      "source": "EU_SAFETY_GATE",
+      "title": "Mercedes-Benz - Passenger car - Safety Gate alert",
+      "recallDate": "2026-11-11",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119557",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "passenger-vehicle",
+        "hazardType": "crash",
+        "hazardTags": [
+          "brake fluid leak",
+          "reduced braking performance"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "Leaking brake hoses can reduce braking performance and increase accident risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119556",
+      "source": "EU_SAFETY_GATE",
+      "title": "Mercedes-Benz - Passenger car - Safety Gate alert",
+      "recallDate": "2026-11-11",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119556",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "passenger-vehicle",
+        "hazardType": "injury",
+        "hazardTags": [
+          "seat belt anchorage",
+          "restraint failure"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The incorrectly installed seat belt mount could detach in a collision and increase injury risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "au-product-safety-handmade-botanical-candle",
+      "source": "AU_PRODUCT_SAFETY",
+      "title": "Handmade Botanical Candle",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://www.productsafety.gov.au/search-consumer-product-recalls/handmade-botanical-candle",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "furniture-household",
+        "productType": "household-product",
+        "hazardType": "fire",
+        "hazardTags": [
+          "combustible candle holder",
+          "dried flowers"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The candle contains dried flowers and poses a fire risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "rawSourceCategory",
           "hazard",
           "description"
         ],
