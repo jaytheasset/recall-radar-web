@@ -2,7 +2,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { isUnavailableEuRecallImage } from '../src/lib/recall-source-corrections.ts';
-import { recallImageCacheFilename, recallImageCachePublicPath } from '../src/lib/recall-image-cache.ts';
+import { recallImageCacheFilename, recallImageCachePublicPath, recallImageR2Origin } from '../src/lib/recall-image-cache.ts';
+import { readRecallImageR2Manifest } from '../src/lib/recall-image-r2-manifest.ts';
 
 type ProcessedRecall = {
   id: string;
@@ -53,7 +54,7 @@ type AuditSummary = {
 };
 
 const root = process.cwd();
-const distDir = path.join(root, 'dist');
+const distDir = path.resolve(root, process.argv[2] ?? 'dist');
 const processedPath = path.join(root, 'data', 'processed', 'recalls.json');
 const progressiveImageLoaderPath = path.join(root, 'src', 'lib', 'progressive-detail-image.ts');
 
@@ -119,11 +120,14 @@ function priorityImageTag(html: string): string {
 }
 
 const records = readProcessedRecords();
+const r2WebpFiles = new Set(readRecallImageR2Manifest());
 const euRecords = records.filter((record) => record.source === 'EU_SAFETY_GATE');
 const euRecordsWithThumbnails = euRecords.filter((record) => {
   const fullImage = firstFullImage(record);
   const thumbnail = firstThumbnailImage(record);
-  const cached = fullImage && fs.existsSync(path.join(distDir, recallImageCachePublicPath, recallImageCacheFilename(fullImage)));
+  const filename = fullImage && recallImageCacheFilename(fullImage);
+  const cached = filename && (r2WebpFiles.has(filename)
+    || fs.existsSync(path.join(distDir, recallImageCachePublicPath, filename)));
   return fullImage && thumbnail && !cached && !isUnavailableEuRecallImage(fullImage) && !isUnavailableEuRecallImage(thumbnail);
 });
 const htmlFiles = walkHtmlFiles(distDir);
@@ -134,9 +138,17 @@ const nonDetailHtml = nonDetailHtmlFiles.map((filePath) => htmlByPath.get(filePa
 const homepageHtml = htmlByPath.get(path.join(distDir, 'index.html')) ?? '';
 const allHtml = [...htmlByPath.values()].join('\n');
 const blockers: string[] = [];
-const cachedWebpReferences = new Set([...allHtml.matchAll(/\/recall-images\/cache\/[\da-f]{32}\.webp/g)].map(([url]) => url));
+const cachedWebpPattern = new RegExp(
+  `(?<=[\"'])(?:${escapeRegExp(recallImageR2Origin)})?${escapeRegExp(recallImageCachePublicPath)}[\\da-f]{32}\\.webp`,
+  'g'
+);
+const cachedWebpReferences = new Set([...allHtml.matchAll(cachedWebpPattern)].map(([url]) => url));
 for (const url of cachedWebpReferences) {
-  if (!fs.existsSync(path.join(distDir, url))) blockers.push(`Missing referenced WebP asset: ${url}`);
+  if (url.startsWith(recallImageR2Origin)) {
+    if (!r2WebpFiles.has(path.posix.basename(url))) blockers.push(`Unverified R2 WebP asset: ${url}`);
+  } else if (!fs.existsSync(path.join(distDir, url))) {
+    blockers.push(`Missing referenced WebP asset: ${url}`);
+  }
 }
 
 if (!htmlFiles.length) {

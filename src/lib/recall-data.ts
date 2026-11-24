@@ -11,7 +11,7 @@ import { getRecallSourceLabel } from './recall-sources';
 import { limitSlug, recallSlug } from './slug';
 import { isJointPowerBankRecall, jointPowerBankRecall } from './recall-search-examples';
 import { officialRecallImages } from './official-recall-images';
-import { recallImageCacheFilename, recallImageCachePublicPath, savedRecallImageUrls } from './recall-image-cache';
+import { recallImageCacheFilename, recallImageCachePublicPath, recallImageR2Origin, savedRecallImageUrls } from './recall-image-cache';
 import { correctCpscRecallAction, isUnavailableEuRecallImage } from './recall-source-corrections';
 import {
   getAudienceLabel,
@@ -568,20 +568,23 @@ function safeText(value: unknown): string {
 }
 
 declare const __RECALL_IMAGE_CACHE_FILES__: string[];
+declare const __RECALL_IMAGE_R2_FILES__: string[];
 const cachedRecallImages = new Set(__RECALL_IMAGE_CACHE_FILES__);
+const recallImagesInR2 = new Set(__RECALL_IMAGE_R2_FILES__);
 
-function localRecallImage(url: string): string | undefined {
+function optimizedRecallImage(url: string): string | undefined {
   const saved = savedRecallImageUrls.get(url);
   if (saved) return saved;
-  if (!cachedRecallImages.size) return;
+  if (!cachedRecallImages.size && !recallImagesInR2.size) return;
   const filename = recallImageCacheFilename(url);
+  if (recallImagesInR2.has(filename)) return `${recallImageR2Origin}${recallImageCachePublicPath}${filename}`;
   if (cachedRecallImages.has(filename)) return `${recallImageCachePublicPath}${filename}`;
 }
 
 function extractRecallImages(record: NormalizedRecall): RecallImage[] {
   return officialRecallImages(record).flatMap((image) => {
-    const local = localRecallImage(image.url);
-    if (local) return [{ ...image, url: local, thumbnailUrl: image.thumbnailUrl ? local : undefined }];
+    const optimized = optimizedRecallImage(image.url);
+    if (optimized) return [{ ...image, url: optimized, thumbnailUrl: image.thumbnailUrl ? optimized : undefined }];
     if (isUnavailableEuRecallImage(image.url)) return [];
     const thumbnailUrl = isUnavailableEuRecallImage(image.thumbnailUrl) ? undefined : image.thumbnailUrl;
     return [{ ...image, thumbnailUrl }];

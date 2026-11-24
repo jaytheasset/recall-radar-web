@@ -13,6 +13,20 @@ The production Pages project `recall-radar-web` follows `local-mvp` and automati
 
 The project does not declare a Node `engines` version. Local validation for this branch used Node `v24.15.0`. Select a Cloudflare-supported Node LTS version for the Pages project and verify the same build command succeeds there before pinning a version in the repository.
 
+## Check the Pages File Budget
+
+After a local build, run `npm run audit:pages-budget`. The check reports the file count, remaining slots, recall image size, and largest file in `dist`. The `_local-preview` directory is excluded. The check also runs as part of `npm run validate:launch` and fails if the build exceeds the [Cloudflare Pages Free limits](https://developers.cloudflare.com/pages/platform/limits/) of 20,000 files or 25 MiB per file.
+
+## Publish Recall Photos to R2
+
+1. Run `npm run upload:recall-images-r2 -- --plan` to count pending WebPs. For an interactive upload, run `powershell -NoProfile -File scripts/Start-RecallImageR2Upload.ps1` and enter the two S3 keys from an R2 token scoped to `recall-radar-images` with Object Read & Write access. The uploader copies the local WebPs into `recall-images/cache/` and preserves existing objects. Keep the local files for verification and rollback.
+2. Connect the bucket to `images.recall-radar.app` under its Custom Domains settings. Only public recall photos belong in this bucket.
+3. Run `npm run verify:recall-images-r2`. It checks that each new image is served as WebP and matches its local copy. A successful run records the filenames in `data/processed/recall-images-r2.json`.
+4. Build and run `npm run audit:image-performance` and `npm run audit:pages-budget`. The build uses R2 for photos listed in the manifest and excludes their copies from `dist`. The dedicated homepage photo stays in Pages.
+5. Include the verified manifest in the deployment. Check that image URLs on the homepage, a listing, and recall details load after publishing.
+
+Without a manifest, the build uses local images when available. This also provides a rollback while the local copies are retained. Use `npm run verify:recall-images-r2 -- --all` to compare all locally cached images with R2 again.
+
 ## Cloudflare Pages Setup
 
 1. Create a Pages project from the Recall Radar repository and select the intended production branch.

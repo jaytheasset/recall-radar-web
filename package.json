@@ -115,7 +115,10 @@
     "audit:classification-results-v2-runtime": "node --experimental-strip-types scripts/audit-classification-results-v2-runtime.ts",
     "audit:llm-classifier-dry-run": "node --experimental-strip-types scripts/audit-llm-classifier-dry-run.ts",
     "audit:static-routes": "node --experimental-strip-types scripts/audit-static-routes.ts",
-    "validate:launch": "npm run audit:sources && npm run audit:fsanz-food-recalls && npm run audit:hong-kong-cfs && npm run audit:new-zealand-product-safety && npm run audit:australia-product-safety && npm run audit:uk-fsa && npm run audit:eu-safety-gate && npm run audit:canada && npm run audit:rappelconso && npm run audit:search-aliases && npm run audit:classification-results-v2-runtime && npm run check && npm run build && npm run audit:static-routes",
+    "audit:pages-budget": "node --experimental-strip-types scripts/audit-pages-budget.ts",
+    "upload:recall-images-r2": "node --experimental-strip-types scripts/upload-recall-images-r2.ts",
+    "verify:recall-images-r2": "node --experimental-strip-types scripts/verify-recall-images-r2.ts",
+    "validate:launch": "npm run audit:sources && npm run audit:fsanz-food-recalls && npm run audit:hong-kong-cfs && npm run audit:new-zealand-product-safety && npm run audit:australia-product-safety && npm run audit:uk-fsa && npm run audit:eu-safety-gate && npm run audit:canada && npm run audit:rappelconso && npm run audit:search-aliases && npm run audit:classification-results-v2-runtime && npm run check && npm run build && npm run audit:static-routes && npm run audit:pages-budget",
     "normalize:cpsc": "node --experimental-strip-types scripts/normalize-cpsc.ts",
     "normalize:fda-food": "node --experimental-strip-types scripts/normalize-fda-food.ts",
     "normalize:rappelconso": "node --experimental-strip-types scripts/normalize-rappelconso.ts",
@@ -135,6 +138,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
+    "@aws-sdk/client-s3": "3.1176.0",
     "@types/node": "^24.19.2",
     "cross-env": "^10.1.0",
     "typescript": "^5.6.3"
