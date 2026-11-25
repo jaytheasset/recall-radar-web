@@ -1,23 +1,23 @@
 {
-  "generatedAt": "2026-11-24T10:10:49.549Z",
+  "generatedAt": "2026-11-25T10:10:14.837Z",
   "provider": "mixed",
   "model": "gemini-2.5-flash-lite + gpt-6-luna",
   "promptVersion": "recall-classifier-v2",
   "taxonomyVersion": "recall-taxonomy-v2",
-  "totalRecords": 4424,
-  "success": 4424,
+  "totalRecords": 4503,
+  "success": 4503,
   "failed": 0,
   "sourceCounts": {
-    "AU_PRODUCT_SAFETY": 191,
+    "AU_PRODUCT_SAFETY": 195,
     "CA_RECALLS": 818,
-    "EU_SAFETY_GATE": 338,
-    "FR_RAPPELCONSO": 1464,
+    "EU_SAFETY_GATE": 390,
+    "FR_RAPPELCONSO": 1469,
     "UK_FSA": 146,
-    "FSANZ_FOOD_RECALLS": 128,
-    "NZ_PRODUCT_SAFETY": 151,
+    "FSANZ_FOOD_RECALLS": 129,
+    "NZ_PRODUCT_SAFETY": 153,
     "HK_CFS": 118,
     "CPSC": 530,
-    "FDA": 540
+    "FDA": 555
   },
   "qualityFlagCounts": {
     "baby-kids-evidence-food-family": 1,
@@ -904,26 +904,26 @@
       "classification": {
         "productFamily": "electronics-batteries",
         "productType": "lighting",
-        "hazardType": "regulatory-noncompliance",
+        "hazardType": "choking",
         "hazardTags": [
           "button battery",
-          "missing warning",
-          "ingestion risk"
+          "battery ingestion",
+          "internal burns",
+          "child injury"
         ],
         "recallDomain": "consumer-product",
         "audience": [
           "children"
         ],
-        "confidence": 0.93,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "The neon wall lamp packaging lacks required button battery warnings.",
+        "reason": "The lamp packaging has a button battery, and the notice describes choking and internal burn risks if children swallow one.",
         "evidenceFields": [
           "title",
           "productNames",
-          "brandNames",
-          "hazard",
           "description",
-          "rawSourceCategory"
+          "hazard",
+          "remedy"
         ],
         "taxonomyVersion": "recall-taxonomy-v2",
         "method": "llm",
@@ -66506,31 +66506,29 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "food-grocery",
         "productType": "dairy",
         "hazardType": "contamination-pathogen",
         "hazardTags": [
-          "E. coli",
-          "STEC"
+          "e-coli"
         ],
         "recallDomain": "food",
         "audience": [
-          "general",
-          "children"
+          "general"
         ],
         "confidence": 0.95,
         "needsReview": false,
-        "reason": "The raw milk cheddar may be contaminated with pathogenic E. coli.",
+        "reason": "Raw milk cheddar cheese may be contaminated with pathogenic E. coli.",
         "evidenceFields": [
           "title",
           "productNames",
           "hazard",
-          "identifiers"
-        ]
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -67268,18 +67266,19 @@
         "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared Red 40",
-          "undeclared Yellow 5",
-          "undeclared Yellow 6",
-          "undeclared Blue 1"
+          "undeclared allergen",
+          "Red #40",
+          "Yellow #5",
+          "Yellow #6",
+          "Blue #1"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.92,
         "needsReview": false,
-        "reason": "Gummy worms are recalled for undeclared listed color additives.",
+        "reason": "Gummy worms are recalled due to undeclared color additives.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -67306,8 +67305,9 @@
         "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared milk",
-          "undeclared soy"
+          "undeclared allergen",
+          "milk",
+          "soy"
         ],
         "recallDomain": "food",
         "audience": [
@@ -67315,7 +67315,7 @@
         ],
         "confidence": 0.95,
         "needsReview": false,
-        "reason": "The chocolate-covered raisins contain undeclared milk and soy.",
+        "reason": "Milk chocolate covered raisins have undeclared milk and soy allergens.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -67339,18 +67339,19 @@
       "qualityFlags": [],
       "classification": {
         "productFamily": "food-grocery",
-        "productType": "packaged-food",
+        "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared wheat"
+          "undeclared allergen",
+          "wheat"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "The whole wheat flour is recalled for undeclared wheat.",
+        "reason": "Whole wheat flour is identified as containing an undeclared wheat allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -67377,18 +67378,23 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared sesame",
-          "undeclared peanuts",
-          "undeclared wheat",
-          "undeclared soy",
-          "undeclared tree nuts",
-          "undeclared color additives"
+          "undeclared allergen",
+          "sesame",
+          "peanuts",
+          "wheat",
+          "soy",
+          "almonds",
+          "walnuts",
+          "Yellow #5",
+          "Yellow #6",
+          "Red #40",
+          "Blue #2"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.93,
+        "confidence": 0.94,
         "needsReview": false,
         "reason": "Almond mole powder is recalled for multiple undeclared allergens and color additives.",
         "evidenceFields": [
@@ -67414,20 +67420,21 @@
       "qualityFlags": [],
       "classification": {
         "productFamily": "food-grocery",
-        "productType": "snacks-bakery",
+        "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared wheat",
-          "undeclared Yellow 5",
-          "undeclared Yellow 6"
+          "undeclared allergen",
+          "wheat",
+          "Yellow #5",
+          "Yellow #6"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Mixed dried fruit snack is recalled for undeclared wheat and listed color additives.",
+        "reason": "Mixed dried fruit is recalled for undeclared wheat and color additives.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -67454,15 +67461,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "sesame"
+          "sesame",
+          "undeclared-allergen"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.93,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Black sesame seeds are identified with an undeclared sesame allergen issue.",
+        "reason": "The black sesame seed product has an undeclared sesame allergen ingredient.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -67489,15 +67497,16 @@
         "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared wheat"
+          "undeclared allergen",
+          "wheat"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "The wheat snack is recalled for undeclared wheat.",
+        "reason": "The wheat snack is identified as containing an undeclared wheat allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -67524,15 +67533,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared soy"
+          "undeclared allergen",
+          "soy"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "Textured soy protein is recalled for an undeclared soy allergen.",
+        "reason": "Textured soy protein is identified as containing an undeclared soy allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -67594,13 +67604,14 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared wheat"
+          "undeclared allergen",
+          "wheat"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
         "reason": "All-purpose flour is recalled for an undeclared wheat allergen.",
         "evidenceFields": [
@@ -67629,15 +67640,16 @@
         "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared wheat"
+          "undeclared allergen",
+          "wheat"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Potato wheel snack is recalled for an undeclared wheat allergen.",
+        "reason": "The potato wheel snack is recalled for an undeclared wheat allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -67664,13 +67676,14 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared soy"
+          "undeclared allergen",
+          "soy"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
         "reason": "Soybeans are recalled for an undeclared soy allergen.",
         "evidenceFields": [
@@ -67696,18 +67709,19 @@
       "qualityFlags": [],
       "classification": {
         "productFamily": "food-grocery",
-        "productType": "food-other",
+        "productType": "beverage",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared milk"
+          "undeclared allergen",
+          "milk"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.91,
         "needsReview": false,
-        "reason": "Horchata drink mix is recalled for an undeclared milk allergen.",
+        "reason": "Horchata drink mix is recalled for undeclared milk.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -67731,17 +67745,18 @@
       "qualityFlags": [],
       "classification": {
         "productFamily": "food-grocery",
-        "productType": "snacks-bakery",
+        "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared egg",
-          "undeclared wheat"
+          "undeclared allergen",
+          "egg",
+          "wheat"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
         "reason": "Churro mix is recalled for undeclared egg and wheat allergens.",
         "evidenceFields": [
@@ -67770,18 +67785,19 @@
         "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared Red 40",
-          "undeclared Yellow 5",
-          "undeclared Yellow 6",
-          "undeclared Blue 1"
+          "undeclared allergen",
+          "Red #40",
+          "Yellow #5",
+          "Yellow #6",
+          "Blue #1"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.92,
         "needsReview": false,
-        "reason": "Gummy bears are recalled for undeclared listed color additives.",
+        "reason": "Gummy bears are recalled due to undeclared color additives.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -67808,15 +67824,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "almond"
+          "almond",
+          "undeclared-allergen"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.93,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Almonds in shell are identified with an undeclared almond allergen issue.",
+        "reason": "The almonds in shell are associated with an undeclared almond allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -67843,15 +67860,16 @@
         "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared wheat"
+          "undeclared allergen",
+          "wheat"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "The wheat snacks are recalled for undeclared wheat.",
+        "reason": "The wheat snack products are identified as containing an undeclared wheat allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -67875,18 +67893,19 @@
       "qualityFlags": [],
       "classification": {
         "productFamily": "food-grocery",
-        "productType": "food-other",
+        "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
+          "undeclared allergen",
           "sulfites"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "Dried pears are recalled for undeclared sulfites.",
+        "reason": "Dried pears are identified as containing undeclared sulfites.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -67913,15 +67932,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared wheat"
+          "undeclared allergen",
+          "wheat"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "Wheat bran is recalled for an undeclared wheat allergen.",
+        "reason": "Wheat bran is identified as containing an undeclared wheat allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -67945,19 +67965,20 @@
       "qualityFlags": [],
       "classification": {
         "productFamily": "food-grocery",
-        "productType": "food-other",
+        "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared peanuts",
-          "undeclared milk"
+          "peanuts",
+          "milk",
+          "undeclared-allergen"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Butter toffee peanuts are recalled for undeclared peanut and milk allergens.",
+        "reason": "Butter toffee peanuts have undeclared peanut and milk allergens.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68051,18 +68072,19 @@
       "qualityFlags": [],
       "classification": {
         "productFamily": "food-grocery",
-        "productType": "food-other",
+        "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
+          "undeclared allergen",
           "sulfites"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "Dried diced pineapple is recalled for undeclared sulfites.",
+        "reason": "Dried diced pineapple is identified as containing undeclared sulfites.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68089,17 +68111,18 @@
         "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared wheat",
-          "undeclared Yellow 6",
-          "undeclared soy"
+          "undeclared allergen",
+          "wheat",
+          "Yellow #6",
+          "soy"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Teardrop wheat snack is recalled for undeclared wheat, Yellow 6, and soy.",
+        "reason": "The wheat snack is recalled for undeclared wheat and soy allergens.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68164,7 +68187,8 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared wheat"
+          "undeclared allergen",
+          "wheat"
         ],
         "recallDomain": "food",
         "audience": [
@@ -68199,7 +68223,8 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared almond"
+          "undeclared allergen",
+          "almond"
         ],
         "recallDomain": "food",
         "audience": [
@@ -68231,16 +68256,17 @@
       "qualityFlags": [],
       "classification": {
         "productFamily": "food-grocery",
-        "productType": "packaged-food",
+        "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared sulfites"
+          "undeclared allergen",
+          "sulfites"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
         "reason": "Dried apricots are recalled for undeclared sulfites.",
         "evidenceFields": [
@@ -68269,18 +68295,19 @@
         "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared milk",
-          "undeclared wheat",
-          "undeclared sesame",
-          "undeclared soy"
+          "undeclared allergen",
+          "milk",
+          "wheat",
+          "sesame",
+          "soy"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "Bread crumbs are recalled for multiple undeclared allergens.",
+        "reason": "Bread crumbs have undeclared milk, wheat, sesame, and soy allergens.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68307,14 +68334,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
+          "undeclared allergen",
           "sulfites",
-          "undeclared color additives"
+          "Yellow #5",
+          "Blue #1"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.92,
+        "confidence": 0.94,
         "needsReview": false,
         "reason": "Dried kiwi slices are recalled for undeclared sulfites and color additives.",
         "evidenceFields": [
@@ -68349,13 +68378,14 @@
         "audience": [
           "general"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Chocolate products are recalled after broken glass was found in finished product.",
+        "reason": "Broken glass was found in finished chocolate products.",
         "evidenceFields": [
           "title",
           "productNames",
-          "hazard"
+          "hazard",
+          "rawSourceCategory"
         ],
         "taxonomyVersion": "recall-taxonomy-v2",
         "method": "llm",
@@ -68377,15 +68407,16 @@
         "productType": "meat-seafood",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared fish"
+          "fish",
+          "undeclared-allergen"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Dried cod is recalled for an undeclared fish allergen.",
+        "reason": "The dried cod product is associated with an undeclared fish allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68445,19 +68476,20 @@
       "qualityFlags": [],
       "classification": {
         "productFamily": "food-grocery",
-        "productType": "snacks-bakery",
+        "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared sulfites",
-          "undeclared Yellow 6"
+          "undeclared allergen",
+          "sulfites",
+          "Yellow #6"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Dried fruit mix is recalled for undeclared sulfites and Yellow 6.",
+        "reason": "Dried fruit mix is recalled for undeclared sulfites and a color additive.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68484,6 +68516,7 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
+          "undeclared allergen",
           "sulfites"
         ],
         "recallDomain": "food",
@@ -68492,7 +68525,7 @@
         ],
         "confidence": 0.94,
         "needsReview": false,
-        "reason": "Air-dried apple rings are recalled for undeclared sulfites.",
+        "reason": "Dried apple rings are recalled for undeclared sulfites.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68519,15 +68552,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "sesame"
+          "sesame",
+          "undeclared-allergen"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.93,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Hulled sesame seeds are identified with an undeclared sesame allergen issue.",
+        "reason": "The hulled sesame seed product has an undeclared sesame allergen ingredient.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68551,16 +68585,17 @@
       "qualityFlags": [],
       "classification": {
         "productFamily": "food-grocery",
-        "productType": "packaged-food",
+        "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared sulfites"
+          "undeclared allergen",
+          "sulfites"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
         "reason": "Dried peaches are recalled for undeclared sulfites.",
         "evidenceFields": [
@@ -68589,17 +68624,18 @@
         "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared Red 40",
-          "undeclared Yellow 5",
-          "undeclared Yellow 6"
+          "undeclared allergen",
+          "Red #40",
+          "Yellow #5",
+          "Yellow #6"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.92,
         "needsReview": false,
-        "reason": "Gummy peach rings are recalled for undeclared listed color additives.",
+        "reason": "Gummy peach rings are recalled due to undeclared color additives.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68626,14 +68662,15 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
+          "undeclared allergen",
           "sulfites",
-          "undeclared color additive"
+          "Yellow #6"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.92,
+        "confidence": 0.94,
         "needsReview": false,
         "reason": "Dried mango slices are recalled for undeclared sulfites and a color additive.",
         "evidenceFields": [
@@ -68662,15 +68699,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared pine nuts"
+          "undeclared allergen",
+          "pine nuts"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "Shelled white pine nuts are recalled for an undeclared pine nut allergen.",
+        "reason": "Shelled white pine nuts are identified as containing an undeclared pine nut allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68694,18 +68732,19 @@
       "qualityFlags": [],
       "classification": {
         "productFamily": "food-grocery",
-        "productType": "food-other",
+        "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
+          "undeclared allergen",
           "sulfites"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "Dried pineapple rings are recalled for undeclared sulfites.",
+        "reason": "Dried pineapple rings are identified as containing undeclared sulfites.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68732,15 +68771,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared pistachios"
+          "undeclared allergen",
+          "pistachios"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "Raw shelled pistachios are recalled for an undeclared pistachio allergen.",
+        "reason": "Raw shelled pistachios are identified as containing an undeclared pistachio allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68767,15 +68807,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared walnuts"
+          "undeclared allergen",
+          "walnuts"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "Walnut halves are recalled for an undeclared walnut allergen.",
+        "reason": "Walnut halves are identified as containing an undeclared walnut allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68802,15 +68843,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "almond"
+          "almond",
+          "undeclared-allergen"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.93,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Roasted whole almonds are identified with an undeclared almond allergen issue.",
+        "reason": "The roasted whole almonds are associated with an undeclared almond allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68911,20 +68953,20 @@
         "productType": "food-other",
         "hazardType": "contamination-pathogen",
         "hazardTags": [
-          "Salmonella"
+          "salmonella"
         ],
         "recallDomain": "food",
         "audience": [
           "general"
         ],
-        "confidence": 0.94,
+        "confidence": 0.93,
         "needsReview": false,
-        "reason": "The broccoli seeds are identified as contaminated with Salmonella.",
+        "reason": "Broccoli seeds are associated with Salmonella.",
         "evidenceFields": [
           "title",
           "productNames",
-          "category",
-          "hazard"
+          "hazard",
+          "rawSourceCategory"
         ],
         "taxonomyVersion": "recall-taxonomy-v2",
         "method": "llm",
@@ -68946,10 +68988,11 @@
         "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared peanuts",
-          "undeclared almonds",
-          "undeclared sulfites",
-          "undeclared Yellow 6"
+          "undeclared allergen",
+          "peanuts",
+          "almonds",
+          "sulfites",
+          "Yellow #6"
         ],
         "recallDomain": "food",
         "audience": [
@@ -68957,7 +69000,7 @@
         ],
         "confidence": 0.95,
         "needsReview": false,
-        "reason": "The trail mix contains undeclared peanut, almond, sulfite, and Yellow 6 ingredients.",
+        "reason": "Tropical trail mix has undeclared peanut, almond, sulfite, and Yellow #6 allergens.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -68984,15 +69027,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "sesame"
+          "sesame",
+          "undeclared-allergen"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.93,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Natural sesame seeds are identified with an undeclared sesame allergen issue.",
+        "reason": "The sesame seed product is associated with undeclared allergen ingredients.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -69019,15 +69063,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared peanuts"
+          "undeclared allergen",
+          "peanuts"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Peanut products are recalled for an undeclared peanut allergen.",
+        "reason": "Peanuts are recalled for an undeclared peanut allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -69054,13 +69099,14 @@
         "productType": "meat-seafood",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared shrimp"
+          "undeclared allergen",
+          "shrimp"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
         "reason": "Ground shrimp is recalled for an undeclared shrimp allergen.",
         "evidenceFields": [
@@ -69086,18 +69132,19 @@
       "qualityFlags": [],
       "classification": {
         "productFamily": "food-grocery",
-        "productType": "packaged-food",
+        "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared wheat"
+          "undeclared allergen",
+          "wheat"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "The wheat germ is recalled for undeclared wheat.",
+        "reason": "Wheat germ is identified as containing an undeclared wheat allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -69124,18 +69171,19 @@
         "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared Red 40",
-          "undeclared Yellow 5",
-          "undeclared Yellow 6",
-          "undeclared Blue 1"
+          "undeclared allergen",
+          "Red #40",
+          "Yellow #5",
+          "Yellow #6",
+          "Blue #1"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.92,
         "needsReview": false,
-        "reason": "Gummy bears are recalled for undeclared listed color additives.",
+        "reason": "Gummy bears are recalled due to undeclared color additives.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -69199,15 +69247,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared pecans"
+          "undeclared allergen",
+          "pecans"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "Pecans in shell are recalled for an undeclared pecan allergen.",
+        "reason": "Pecans in shell are identified as containing an undeclared pecan allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -69270,15 +69319,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared almond"
+          "almond",
+          "undeclared-allergen"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Sliced almonds are recalled for an undeclared almond allergen.",
+        "reason": "The sliced almonds are associated with an undeclared almond allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -69305,18 +69355,19 @@
         "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared Red 40",
-          "undeclared Yellow 5",
-          "undeclared Yellow 6",
-          "undeclared Blue 1"
+          "undeclared allergen",
+          "Red #40",
+          "Yellow #5",
+          "Yellow #6",
+          "Blue #1"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.92,
         "needsReview": false,
-        "reason": "Gummy worms are recalled for undeclared listed color additives.",
+        "reason": "Gummy worms are recalled due to undeclared color additives.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -69343,15 +69394,16 @@
         "productType": "food-other",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared wheat"
+          "undeclared allergen",
+          "wheat"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "Whole wheat is recalled for an undeclared wheat allergen.",
+        "reason": "Whole wheat is identified as containing an undeclared wheat allergen.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -69375,19 +69427,20 @@
       "qualityFlags": [],
       "classification": {
         "productFamily": "food-grocery",
-        "productType": "food-other",
+        "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared color additive",
+          "undeclared allergen",
+          "Yellow #6",
           "sulfites"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.93,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "Dried papaya spears are recalled for undeclared sulfites and a color additive.",
+        "reason": "Dried papaya spears have undeclared Yellow #6 and sulfites.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -69414,17 +69467,18 @@
         "productType": "snacks-bakery",
         "hazardType": "allergen",
         "hazardTags": [
-          "undeclared wheat",
-          "undeclared Yellow 5",
-          "undeclared Yellow 6"
+          "undeclared allergen",
+          "wheat",
+          "Yellow #5",
+          "Yellow #6"
         ],
         "recallDomain": "food",
         "audience": [
           "allergy-sensitive-consumers"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Wheat wheel snack is recalled for undeclared wheat and listed color additives.",
+        "reason": "The wheat wheel snack is recalled for undeclared wheat and color additives.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -134136,35 +134190,36 @@
       "recordId": "ca-recalls-82874",
       "source": "CA_RECALLS",
       "title": "​​Klean Strip Denatured Alcohol Fuel​ recalled due to improper labelling",
-      "recallDate": "2026-11-06",
+      "recallDate": "2026-11-24",
       "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/klean-strip-denatured-alcohol-fuel-recalled-due-improper-labelling",
       "success": true,
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "chemicals-cleaning",
         "productType": "chemical-product",
-        "hazardType": "labeling-error",
+        "hazardType": "regulatory-noncompliance",
         "hazardTags": [
-          "improper labeling"
+          "improper-labeling",
+          "packaging"
         ],
         "recallDomain": "chemical",
         "audience": [
           "general"
         ],
-        "confidence": 0.88,
+        "confidence": 0.9,
         "needsReview": false,
-        "reason": "The denatured alcohol fuel recall cites improper labeling and packaging.",
+        "reason": "Denatured alcohol fuel is recalled for labelling and packaging issues.",
         "evidenceFields": [
           "title",
           "productNames",
           "hazard",
           "rawSourceCategory"
-        ]
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -160178,37 +160233,37 @@
       "recordId": "eu-safety-gate-10118847",
       "source": "EU_SAFETY_GATE",
       "title": "Ring - Safety Gate alert",
-      "recallDate": "2026-11-18",
+      "recallDate": "2026-11-24",
       "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10118847",
       "success": true,
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "clothing-accessories",
         "productType": "jewelry-accessory",
         "hazardType": "contamination-chemical",
         "hazardTags": [
-          "cadmium"
+          "cadmium",
+          "reach-noncompliance"
         ],
         "recallDomain": "consumer-product",
         "audience": [
           "general"
         ],
-        "confidence": 0.95,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "The ring contains excessive cadmium, a chemical contaminant identified in the notice.",
+        "reason": "The metal ring contains excessive cadmium and does not comply with REACH.",
         "evidenceFields": [
           "title",
           "productNames",
-          "category",
+          "description",
           "hazard",
-          "remedy",
-          "identifiers"
-        ]
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -168522,31 +168577,31 @@
       "failed": false,
       "qualityFlags": [],
       "classification": {
-        "taxonomyVersion": "recall-taxonomy-v2",
-        "method": "llm",
-        "model": "gpt-6-luna",
-        "promptVersion": "recall-classifier-v2",
         "productFamily": "baby-kids",
-        "productType": "baby-kids-other",
+        "productType": "nursery-gear",
         "hazardType": "fall",
         "hazardTags": [
-          "walker-tip-over",
-          "falling-downstairs"
+          "tip-over",
+          "fall-downstairs"
         ],
         "recallDomain": "consumer-product",
         "audience": [
-          "infants"
+          "infants",
+          "children"
         ],
-        "confidence": 0.94,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "The baby walker may tip or fail to prevent falling downstairs, creating a fall risk for babies.",
+        "reason": "The baby walker may tip or fail to prevent a fall downstairs.",
         "evidenceFields": [
           "title",
           "productNames",
           "hazard",
-          "description",
-          "rawSourceCategory"
-        ]
+          "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
       }
     },
     {
@@ -168684,24 +168739,23 @@
       "classification": {
         "productFamily": "baby-kids",
         "productType": "toy",
-        "hazardType": "regulatory-noncompliance",
+        "hazardType": "choking",
         "hazardTags": [
-          "button-battery warning and labeling requirements"
+          "button-battery-ingestion",
+          "battery-warning"
         ],
         "recallDomain": "consumer-product",
         "audience": [
           "children"
         ],
-        "confidence": 0.94,
+        "confidence": 0.91,
         "needsReview": false,
-        "reason": "The children's sound toy contains button batteries and lacks required battery safety warnings.",
+        "reason": "The fidget toy lacks required button battery warnings and presents an ingestion risk to children.",
         "evidenceFields": [
           "title",
           "productNames",
           "hazard",
-          "description",
-          "rawSourceCategory",
-          "remedy"
+          "description"
         ],
         "taxonomyVersion": "recall-taxonomy-v2",
         "method": "llm",
@@ -169441,8 +169495,8 @@
         "productType": "medical-device-consumer",
         "hazardType": "contamination-pathogen",
         "hazardTags": [
-          "Burkholderia cepacia complex",
-          "eye infection"
+          "burkholderia-cepacia-complex",
+          "eye-infection"
         ],
         "recallDomain": "medical-health",
         "audience": [
@@ -169450,7 +169504,7 @@
         ],
         "confidence": 0.94,
         "needsReview": false,
-        "reason": "The contact lens packaging may be contaminated with Burkholderia cepacia complex bacteria.",
+        "reason": "Contact lenses may be contaminated with Burkholderia cepacia complex bacteria.",
         "evidenceFields": [
           "title",
           "productNames",
@@ -169588,23 +169642,22 @@
         "productType": "personal-care-product",
         "hazardType": "fire",
         "hazardTags": [
-          "USB cable overheating",
-          "short circuit"
+          "usb-cable-overheating",
+          "short-circuit",
+          "burn"
         ],
         "recallDomain": "consumer-product",
         "audience": [
           "general"
         ],
-        "confidence": 0.95,
+        "confidence": 0.93,
         "needsReview": false,
-        "reason": "The adult USB rechargeable vibrator's charging cable may short circuit, overheat, or catch fire.",
+        "reason": "The vibrator's USB charging cable may short circuit, overheat, and catch fire.",
         "evidenceFields": [
           "title",
           "productNames",
           "hazard",
-          "description",
-          "rawSourceCategory",
-          "remedy"
+          "description"
         ],
         "taxonomyVersion": "recall-taxonomy-v2",
         "method": "llm",
@@ -170381,25 +170434,25 @@
       "qualityFlags": [],
       "classification": {
         "productFamily": "chemicals-cleaning",
-        "productType": "cleaning-product",
+        "productType": "chemical-product",
         "hazardType": "poisoning",
         "hazardTags": [
-          "ingestion",
+          "child ingestion",
           "chemical exposure",
-          "inadequate packaging information"
+          "missing safety information"
         ],
         "recallDomain": "chemical",
         "audience": [
           "children"
         ],
-        "confidence": 0.93,
+        "confidence": 0.94,
         "needsReview": false,
-        "reason": "Drain cleaning powder poses ingestion and contact injury risks, and its packaging lacks required safety information.",
+        "reason": "Drain cleaning powder can cause serious harm if swallowed or contacted with skin or mucous membranes, and required safety information is absent.",
         "evidenceFields": [
           "title",
           "productNames",
-          "hazard",
           "description",
+          "hazard",
           "remedy"
         ],
         "taxonomyVersion": "recall-taxonomy-v2",
@@ -170579,22 +170632,21 @@
         "hazardType": "fire",
         "hazardTags": [
           "combustible candle holder",
-          "burns"
+          "burn risk"
         ],
         "recallDomain": "consumer-product",
         "audience": [
           "general"
         ],
-        "confidence": 0.93,
+        "confidence": 0.95,
         "needsReview": false,
-        "reason": "The bowl candles use combustible wood or coconut holders and dried flowers that present a fire risk.",
+        "reason": "Scented candles in wood and coconut bowls contain combustible holders and dried flowers that present a fire risk.",
         "evidenceFields": [
           "title",
           "productNames",
-          "hazard",
           "description",
-          "rawSourceCategory",
-          "remedy"
+          "hazard",
+          "rawSourceCategory"
         ],
         "taxonomyVersion": "recall-taxonomy-v2",
         "method": "llm",
@@ -176044,6 +176096,2973 @@
           "rawSourceCategory",
           "hazard",
           "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-H-0203-2027",
+      "source": "FDA",
+      "title": "Ground Up Nut Butter Cups filled with Almond & Cashew Butter Dark Chocolate Two Pack. Net wt. 1.9oz.  Each paper box... recalled by Breath of Fresh Air PDX LLC",
+      "recallDate": "2026-10-28",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0203-2027%22&limit=1",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "snacks-bakery",
+        "hazardType": "foreign-matter",
+        "hazardTags": [
+          "plastic fiber"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The nut butter cups are recalled due to plastic fiber foreign material.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "identifiers",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-H-0201-2027",
+      "source": "FDA",
+      "title": "NAGAI SOYEAT GREEN branded soy paper wrap; 10- 2.5OZ containers in vacuumed sealed containers.  UPC: 0 11152 64246 8 recalled by J F C International Inc",
+      "recallDate": "2026-10-22",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0201-2027%22&limit=1",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "food-other",
+        "hazardType": "allergen",
+        "hazardTags": [
+          "Yellow 5",
+          "undeclared color additive"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "allergy-sensitive-consumers"
+        ],
+        "confidence": 0.91,
+        "needsReview": false,
+        "reason": "The soy paper wrap contains undeclared Yellow 5.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "identifiers",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-H-0208-2027",
+      "source": "FDA",
+      "title": "Brad's Crunchy Kale Original, 2 oz (57g) bags with UPC 813104021679. recalled by Snack Right Super Foods, Inc.",
+      "recallDate": "2026-10-13",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0208-2027%22&limit=1",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "snacks-bakery",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "thallium"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "Kale snack bags may contain elevated levels of thallium.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-H-0209-2027",
+      "source": "FDA",
+      "title": "Brad's Crunchy Kale, Cheeze It Up, 2 oz (57g) bags with UPC 813104021877. recalled by Snack Right Super Foods, Inc.",
+      "recallDate": "2026-10-13",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0209-2027%22&limit=1",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "snacks-bakery",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "thallium"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "Kale snack bags may contain elevated levels of thallium.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-99839",
+      "source": "FDA",
+      "title": "Branch Manager, Dietary Supplement for Men 18+, packaged in single capsule blister card, 24 individual blister cards... recalled by SUPPLX.com",
+      "recallDate": "2026-09-03",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "supplement-like-food",
+        "hazardType": "labeling-error",
+        "hazardTags": [
+          "undeclared-yohimbine"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.93,
+        "needsReview": false,
+        "reason": "The dietary supplement contains undeclared yohimbine.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-H-0200-2027",
+      "source": "FDA",
+      "title": "Country Creek Acres Alfalfa Sprout Seeds packed in a clear and silver poly bag, 16 oz, with a white adhesive label and... recalled by Country Creek LLC",
+      "recallDate": "2026-10-23",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0200-2027%22&limit=1",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "food-other",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "E. coli",
+          "Salmonella"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The alfalfa sprout seeds may be contaminated with E. coli or Salmonella.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "identifiers",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-H-0206-2027",
+      "source": "FDA",
+      "title": "Brad's Crunchy Kale Radical Ranch, 2 oz (57g) bags with UPC UPC 813104020726. recalled by Snack Right Super Foods, Inc.",
+      "recallDate": "2026-10-13",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0206-2027%22&limit=1",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "snacks-bakery",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "thallium"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "Kale snack bags may contain elevated levels of thallium.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-H-0205-2027",
+      "source": "FDA",
+      "title": "Mana Bakery Peperecha, 8 oz., with UPC: 8-5000973405-1. recalled by Mana Bakery",
+      "recallDate": "2026-09-16",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0205-2027%22&limit=1",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "snacks-bakery",
+        "hazardType": "labeling-error",
+        "hazardTags": [
+          "undeclared-color"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.91,
+        "needsReview": false,
+        "reason": "The bakery product contains undeclared FD&C Yellow 5 color.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-H-0198-2027",
+      "source": "FDA",
+      "title": "Cold Smoked Sprats, 5 lbs. recalled by D & M Smoked Fish, Inc.",
+      "recallDate": "2026-10-26",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0198-2027%22&limit=1",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "meat-seafood",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "Clostridium botulinum",
+          "botulism"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The cold smoked sprats may be contaminated with Clostridium botulinum.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "identifiers",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-H-0229-2027",
+      "source": "FDA",
+      "title": "Fresh To You Sausage, Egg & Cheese Biscuit Sandwich, net weight. 4.6 oz (131g). Refrigerated breakfast sandwich sold to... recalled by Fresh & Ready Foods LLC",
+      "recallDate": "2026-11-06",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0229-2027%22&limit=1",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "meat-seafood",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "Listeria monocytogenes"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The refrigerated sausage, egg, and cheese breakfast sandwich may be contaminated with Listeria monocytogenes.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "identifiers",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-H-0207-2027",
+      "source": "FDA",
+      "title": "Brad's Veggie Chips Kale, 3 oz (85g) bags with UPC UPC 854615002054. recalled by Snack Right Super Foods, Inc.",
+      "recallDate": "2026-10-13",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0207-2027%22&limit=1",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "snacks-bakery",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "thallium"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "Kale veggie chips may contain elevated levels of thallium.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-H-0199-2027",
+      "source": "FDA",
+      "title": "Alfalfa Sprouts hydroponically grown. 4oz Alfalfa Sprouts were packaged in zip lock style bag and 1lb Alfalfa Sprouts... recalled by Francisco Family Foods",
+      "recallDate": "2026-08-23",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0199-2027%22&limit=1",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "food-other",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "e-coli",
+          "salmonella"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Alfalfa sprouts may be contaminated with E. coli and Salmonella.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-H-0204-2027",
+      "source": "FDA",
+      "title": "365 Whole Foods Market Standardized + Full Spectrum Blend Ashwagandha Capsules 120 count. Product Item Number: 3006661.... recalled by Vitality Works, Inc",
+      "recallDate": "2026-10-23",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0204-2027%22&limit=1",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "supplement-like-food",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "Salmonella",
+          "ashwagandha"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The ashwagandha capsules are recalled for possible Salmonella contamination.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "identifiers",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-H-0202-2027",
+      "source": "FDA",
+      "title": "Wise Wife ground cinnamon in plastic container with black screw top cap, 3.88 oz recalled by SLR Food Distribution, Inc.",
+      "recallDate": "2026-10-15",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0202-2027%22&limit=1",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "food-other",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "heavy-metal"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The ground cinnamon contains elevated levels of lead.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "identifiers",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fda-H-0227-2027",
+      "source": "FDA",
+      "title": "- Product Name: 7-Eleven Horchata FD 4:1 BIB - Brand: 7-Eleven -Item Number: L0496F010201 - Package Size: 3 gallon bag... recalled by Sunny Sky Products, LLC",
+      "recallDate": "2026-10-23",
+      "sourceUrl": "https://api.fda.gov/food/enforcement.json?search=recall_number%3A%22H-0227-2027%22&limit=1",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "beverage",
+        "hazardType": "quality-defect",
+        "hazardTags": [
+          "water activity",
+          "specification"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.91,
+        "needsReview": false,
+        "reason": "The horchata's measured water activity was above the established product specification.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "identifiers",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0168",
+      "source": "FR_RAPPELCONSO",
+      "title": "côté marché - pomme de terre rouge 2.5 kg",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24162/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "food-other",
+        "hazardType": "poisoning",
+        "hazardTags": [
+          "glycoalkaloids",
+          "potatoes"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.92,
+        "needsReview": false,
+        "reason": "The potatoes contain excessive levels of naturally occurring glycoalkaloids.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0164",
+      "source": "FR_RAPPELCONSO",
+      "title": "auchan - choux chantilly x2",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24157/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "snacks-bakery",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "Listeria monocytogenes",
+          "listeriosis"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general",
+          "pregnant-people"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The choux pastry is recalled for the presence of Listeria monocytogenes.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0165",
+      "source": "FR_RAPPELCONSO",
+      "title": "auchan - paupiette de boeuf (stand boucherie)",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24158/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "meat-seafood",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "Salmonella",
+          "salmonellosis"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general",
+          "children",
+          "pregnant-people"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The beef paupiette is recalled for the presence of Salmonella.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0166",
+      "source": "FR_RAPPELCONSO",
+      "title": "top budget - emmental râpé top budget 200g",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24159/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "dairy",
+        "hazardType": "foreign-matter",
+        "hazardTags": [
+          "foreign matter",
+          "glass"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The grated Emmental is recalled due to foreign matter, with glass identified as a risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0160",
+      "source": "FR_RAPPELCONSO",
+      "title": "sans marque - fromage de brebis au piment d'espelette",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24153/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "dairy",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "Listeria monocytogenes",
+          "listeriosis"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general",
+          "pregnant-people"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The sheep's milk cheese is recalled for the presence of Listeria monocytogenes.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119799",
+      "source": "EU_SAFETY_GATE",
+      "title": "Earrings - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119799",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "nickel release",
+          "skin sensitiser"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "allergy-sensitive-consumers"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The earrings release excessive nickel that can cause allergic skin reactions.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119800",
+      "source": "EU_SAFETY_GATE",
+      "title": "Shein - Earrings - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119800",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "nickel release",
+          "skin sensitiser"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "allergy-sensitive-consumers"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The earrings release excessive nickel that can cause allergic skin reactions.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119793",
+      "source": "EU_SAFETY_GATE",
+      "title": "Citroën - Passenger car - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119793",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "passenger-vehicle",
+        "hazardType": "injury",
+        "hazardTags": [
+          "brake linkage",
+          "brake pedal may not return"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Misaligned brake linkage pins may prevent the passenger car brake pedal from returning fully.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory",
+          "source",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119844",
+      "source": "EU_SAFETY_GATE",
+      "title": "Ring - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119844",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "cadmium"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The ring contains excessive cadmium, which can harm health.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119831",
+      "source": "EU_SAFETY_GATE",
+      "title": "Lexus and Toyota - Passenger car - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119831",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "passenger-vehicle",
+        "hazardType": "injury",
+        "hazardTags": [
+          "airbag inflator",
+          "projectile fragments"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Deteriorating airbag propellant may cause inflator fragments to injure occupants when deployed.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory",
+          "source",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119808",
+      "source": "EU_SAFETY_GATE",
+      "title": "Tiger - Expandable toy - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119808",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable small part"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "A detachable frog leg piece could be put in a child's mouth and cause choking.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119716",
+      "source": "EU_SAFETY_GATE",
+      "title": "UPKOCH - Toy steak - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119716",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "organotin",
+          "toxic-substance"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.9,
+        "needsReview": false,
+        "reason": "The simulated steak toy has excessive migration of toxic organotin compounds.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119804",
+      "source": "EU_SAFETY_GATE",
+      "title": "Laser pointer - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119804",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "electronics-other",
+        "hazardType": "injury",
+        "hazardTags": [
+          "laser beam",
+          "eye injury"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "pet-owners"
+        ],
+        "confidence": 0.93,
+        "needsReview": false,
+        "reason": "The laser pointer beam is too powerful and direct viewing may damage eyesight.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119796",
+      "source": "EU_SAFETY_GATE",
+      "title": "KEEL TOYS - Keyring with soft toy - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119796",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable small part"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "A detachable small part on the soft toy could be put in a child's mouth and cause choking.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119769",
+      "source": "EU_SAFETY_GATE",
+      "title": "Yihuitoys - Toy sewing machine - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119769",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "cadmium",
+          "lead",
+          "environmental-risk"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.9,
+        "needsReview": false,
+        "reason": "The toy sewing machine’s solder contains excessive cadmium and lead, identified as environmental hazards.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119770",
+      "source": "EU_SAFETY_GATE",
+      "title": "BCIE SARL / VARAN - Guardrail for French window - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119770",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "furniture-household",
+        "productType": "home-fixture",
+        "hazardType": "fall",
+        "hazardTags": [
+          "inadequate guardrail height",
+          "excessive rail spacing"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The window guardrail is too low and widely spaced, creating a fall risk for children.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119680",
+      "source": "EU_SAFETY_GATE",
+      "title": "Portwest - Safety helmet - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119680",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "tools-equipment",
+        "productType": "helmet-protective-gear",
+        "hazardType": "injury",
+        "hazardTags": [
+          "inadequate-impact-absorption",
+          "head-injury"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "workers"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The safety helmet has insufficient impact absorption and may not prevent head injuries.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119677",
+      "source": "EU_SAFETY_GATE",
+      "title": "FACOM - Screwdriver - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119677",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "tools-equipment",
+        "productType": "hand-tool",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "inadequate-insulation",
+          "misleading-marking"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "The screwdriver is inadequately insulated despite being marked as insulated, creating an electric-shock risk near live components.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119889",
+      "source": "EU_SAFETY_GATE",
+      "title": "Push game - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119889",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "electronics-other",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "cadmium",
+          "solder"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.87,
+        "needsReview": false,
+        "reason": "The push game console's solder contains excessive lead and cadmium.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119892",
+      "source": "EU_SAFETY_GATE",
+      "title": "FG Fyndgrossisten - Electric toy - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119892",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "solder"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.93,
+        "needsReview": false,
+        "reason": "The soft silicone toy's solder contains an excessive concentration of lead.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119755",
+      "source": "EU_SAFETY_GATE",
+      "title": "kids game - Sensory toy - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119755",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable-small-parts",
+          "excessive-sound-level",
+          "magnet"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.83,
+        "needsReview": false,
+        "reason": "The toy has detachable small parts posing a choking risk, alongside excessive sound levels and strong magnets.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119451",
+      "source": "EU_SAFETY_GATE",
+      "title": "IKONKA - Toy water gun - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119451",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "environmental-risk"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.9,
+        "needsReview": false,
+        "reason": "The toy water gun’s solder contains excessive lead, identified as an environmental hazard.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119896",
+      "source": "EU_SAFETY_GATE",
+      "title": "Squeeze toy - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119896",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "solder"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.93,
+        "needsReview": false,
+        "reason": "The squeeze rabbit toy's solder contains an excessive concentration of lead.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119888",
+      "source": "EU_SAFETY_GATE",
+      "title": "Sandals - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119888",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "footwear",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "phthalates",
+          "DBP"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The jelly flip flops contain dibutyl phthalate at an excessive concentration.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119887",
+      "source": "EU_SAFETY_GATE",
+      "title": "Sandals - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119887",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "footwear",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "phthalates",
+          "DEHP",
+          "DBP"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The children's jelly sandals contain excessive concentrations of phthalates.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119850",
+      "source": "EU_SAFETY_GATE",
+      "title": "HÖGERT technik - Safety helmet - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119850",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "sports-outdoor",
+        "productType": "helmet-protective-gear",
+        "hazardType": "injury",
+        "hazardTags": [
+          "inadequate impact protection",
+          "head injury"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The safety helmet has inadequate strength and effectiveness to prevent head injuries on impact.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119886",
+      "source": "EU_SAFETY_GATE",
+      "title": "Slippers - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119886",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "footwear",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "phthalates",
+          "DBP"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.93,
+        "needsReview": false,
+        "reason": "The fish slippers contain dibutyl phthalate at an excessive concentration.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119885",
+      "source": "EU_SAFETY_GATE",
+      "title": "Children's slipper clogs - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119885",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "footwear",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "phthalates",
+          "DEHP",
+          "DIBP",
+          "DBP"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "Children's slippers contain excessive concentrations of several phthalates.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119905",
+      "source": "EU_SAFETY_GATE",
+      "title": "Jewelry set - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119905",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "cadmium",
+          "heavy-metal"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The jewelry set contains excessive cadmium, identified as harmful to health.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119872",
+      "source": "EU_SAFETY_GATE",
+      "title": "Earrings - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119872",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "allergen",
+        "hazardTags": [
+          "nickel",
+          "skin-sensitizer"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "allergy-sensitive-consumers"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The earrings release excessive nickel, which can cause allergic skin reactions.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119864",
+      "source": "EU_SAFETY_GATE",
+      "title": "Necklace - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119864",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "allergen",
+        "hazardTags": [
+          "nickel",
+          "skin-sensitizer"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "allergy-sensitive-consumers"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The necklace releases excessive nickel, which can cause allergic skin reactions.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119863",
+      "source": "EU_SAFETY_GATE",
+      "title": "Necklace - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119863",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "cadmium",
+          "heavy-metal"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The necklace contains excessive cadmium, identified as harmful to health.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119848",
+      "source": "EU_SAFETY_GATE",
+      "title": "Necklace - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119848",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "cadmium"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The necklace contains excessive cadmium and does not comply with REACH requirements.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "description",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119801",
+      "source": "EU_SAFETY_GATE",
+      "title": "UOUOROSE - Soft toy - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119801",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable small parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Small parts can detach from the soft toy and cause a choking risk to a child.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119735",
+      "source": "EU_SAFETY_GATE",
+      "title": "Lancome Paris - Perfume - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119735",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "prohibited-ingredient",
+          "BMHCA",
+          "reproductive-harm"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "pregnant-people"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "The perfume contains prohibited BMHCA, which may harm reproduction and the unborn child.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119734",
+      "source": "EU_SAFETY_GATE",
+      "title": "Mondial 1908 - Hand soap - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119734",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "hygiene-product",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "prohibited-ingredient",
+          "BMHCA",
+          "reproductive-harm"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "pregnant-people"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "The hand soap contains prohibited BMHCA, which may harm reproduction and the unborn child.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119733",
+      "source": "EU_SAFETY_GATE",
+      "title": "Mondial 1908 - Eau de toilette - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119733",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "prohibited-ingredient",
+          "BMHCA",
+          "reproductive-harm"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "pregnant-people"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "The eau de toilette contains prohibited BMHCA, which may harm reproduction and the unborn child.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119732",
+      "source": "EU_SAFETY_GATE",
+      "title": "Mondial 1908 - Aftershave lotion - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119732",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "prohibited-ingredient",
+          "BMHCA",
+          "reproductive-harm"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "pregnant-people"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "The aftershave contains prohibited BMHCA, which may harm reproduction and the unborn child.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119834",
+      "source": "EU_SAFETY_GATE",
+      "title": "Earrings - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119834",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "cadmium",
+          "nickel release",
+          "skin sensitiser"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "allergy-sensitive-consumers"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The earrings contain excessive cadmium and release excessive nickel.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119839",
+      "source": "EU_SAFETY_GATE",
+      "title": "HÖGERT technik - Safety helmet - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119839",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "sports-outdoor",
+        "productType": "helmet-protective-gear",
+        "hazardType": "injury",
+        "hazardTags": [
+          "inadequate impact protection",
+          "head injury"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The safety helmet has inadequate strength and effectiveness to prevent head injuries on impact.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119631",
+      "source": "EU_SAFETY_GATE",
+      "title": "Slime toy - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119631",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "boron",
+          "reproductive-system-harm"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The slime toy releases excessive boron, which may harm children’s health.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119779",
+      "source": "EU_SAFETY_GATE",
+      "title": "Plastic case - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119779",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "furniture-household",
+        "productType": "household-product",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "DEHP",
+          "phthalate",
+          "REACH noncompliance"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The plastic case contains excessive DEHP and does not comply with REACH requirements.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "description",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119854",
+      "source": "EU_SAFETY_GATE",
+      "title": "NG - Eau de toilette - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119854",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "prohibited cosmetic ingredient",
+          "BMHCA"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The eau de toilette contains prohibited BMHCA, which may harm reproductive health and cause skin sensitisation.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119328",
+      "source": "EU_SAFETY_GATE",
+      "title": "Shower gel - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119328",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "personal-care-product",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "microbial-contamination",
+          "bacteria"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general",
+          "elderly"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The shower gel contains excessive aerobic bacteria and Serratia species that may cause infections.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119855",
+      "source": "EU_SAFETY_GATE",
+      "title": "NG - Perfume - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119855",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "prohibited cosmetic ingredient",
+          "BMHCA"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The perfume contains prohibited BMHCA, which may harm reproductive health and cause skin sensitisation.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119774",
+      "source": "EU_SAFETY_GATE",
+      "title": "Fancy-dress costume - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119774",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "clothing",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "DEHP",
+          "phthalate"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The fancy-dress costume contains excessive DEHP, which may harm reproductive health.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119847",
+      "source": "EU_SAFETY_GATE",
+      "title": "NG - Eau de toilette - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119847",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "prohibited cosmetic ingredient",
+          "BMHCA"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The eau de toilette contains prohibited BMHCA, which may harm reproductive health and cause skin sensitisation.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119647",
+      "source": "EU_SAFETY_GATE",
+      "title": "aiyingle - Educational toy - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119647",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable-small-parts",
+          "suffocation"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "infants",
+          "children"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "Small balls can detach from the educational toy and cause choking or suffocation.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119853",
+      "source": "EU_SAFETY_GATE",
+      "title": "HÖGERT technik - Safety helmet - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119853",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "sports-outdoor",
+        "productType": "helmet-protective-gear",
+        "hazardType": "injury",
+        "hazardTags": [
+          "inadequate impact protection",
+          "head injury"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The safety helmet has inadequate strength and effectiveness to prevent head injuries on impact.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119852",
+      "source": "EU_SAFETY_GATE",
+      "title": "HÖGERT technik - Safety helmet - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119852",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "sports-outdoor",
+        "productType": "helmet-protective-gear",
+        "hazardType": "injury",
+        "hazardTags": [
+          "inadequate impact protection",
+          "head injury"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The safety helmet has inadequate strength and effectiveness to prevent head injuries on impact.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119792",
+      "source": "EU_SAFETY_GATE",
+      "title": "LED jumping rope - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119792",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "DBP",
+          "lead"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The LED jumping rope contains excessive DBP and lead in its plastic and solders.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119849",
+      "source": "EU_SAFETY_GATE",
+      "title": "HÖGERT technik - Safety helmet - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119849",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "sports-outdoor",
+        "productType": "helmet-protective-gear",
+        "hazardType": "injury",
+        "hazardTags": [
+          "inadequate impact protection",
+          "head injury"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The safety helmet has inadequate strength and effectiveness to prevent head injuries on impact.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119802",
+      "source": "EU_SAFETY_GATE",
+      "title": "Earrings - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119802",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "nickel release",
+          "skin sensitiser"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "allergy-sensitive-consumers"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The earrings release excessive nickel that can cause allergic skin reactions.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory",
+          "source"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119723",
+      "source": "EU_SAFETY_GATE",
+      "title": "XCSJ - Plastic toy - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119723",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "organotin",
+          "toxic-substance"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "The plastic toy contains excessive organic tin, which may cause several health effects.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119642",
+      "source": "EU_SAFETY_GATE",
+      "title": "King Sport - Crossbow toy set - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119642",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable-small-parts",
+          "suction-cups"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "The crossbow toy’s suction cups can detach and pose a choking risk to small children.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119478",
+      "source": "EU_SAFETY_GATE",
+      "title": "Hess - Teething toy - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119478",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable-small-parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "infants",
+          "children"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "Wooden beads can detach from the teething toy and be swallowed by a small child.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119750",
+      "source": "EU_SAFETY_GATE",
+      "title": "PLUSH - Soft toy - Safety Gate alert",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119750",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "accessible-fibrous-filling",
+          "weak-seams"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "Weak seams expose fibrous filling that a small child could put in the mouth and choke on.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "au-product-safety-bose-s1-pro-and-s1-pro-system-battery-packs",
+      "source": "AU_PRODUCT_SAFETY",
+      "title": "Bose S1 Pro and S1 Pro+ System Battery Packs",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://www.productsafety.gov.au/search-consumer-product-recalls/bose-s1-pro-and-s1-pro-system-battery-packs",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "battery",
+        "hazardType": "battery-overheat",
+        "hazardTags": [
+          "lithium-ion",
+          "overheating",
+          "fire"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The lithium-ion speaker battery packs may overheat and catch fire.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "description",
+          "rawSourceCategory",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "au-product-safety-gap-branded-sleepwear-for-children-e2-80-93-various-styles-e2-80-93-sold-on-the-iconic-kids-platform",
+      "source": "AU_PRODUCT_SAFETY",
+      "title": "GAP branded sleepwear for children – various styles – sold on THE ICONIC Kids platform",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://www.productsafety.gov.au/search-consumer-product-recalls/gap-branded-sleepwear-for-children-%E2%80%93-various-styles-%E2%80%93-sold-on-the-iconic-kids-platform",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "clothing",
+        "hazardType": "fire",
+        "hazardTags": [
+          "flammability",
+          "missing-warning-label",
+          "children's-sleepwear"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "Children’s sleepwear lacks a required fire warning and may ignite when exposed to heat or flame.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "description",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "au-product-safety-little-rawr-mini-sunshine-pull-play",
+      "source": "AU_PRODUCT_SAFETY",
+      "title": "Little Rawr Mini Sunshine Pull & Play",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://www.productsafety.gov.au/search-consumer-product-recalls/little-rawr-mini-sunshine-pull-play",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "long-strings",
+          "asphyxiation"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children",
+          "infants"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "The toy’s long silicone strings can reach a child’s throat and cause choking or asphyxiation.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "description",
+          "rawSourceCategory",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "au-product-safety-personalised-led-snap-hook-torch-moonlight",
+      "source": "AU_PRODUCT_SAFETY",
+      "title": "Personalised LED Snap Hook Torch Moonlight",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://www.productsafety.gov.au/search-consumer-product-recalls/personalised-led-snap-hook-torch-moonlight",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "lighting",
+        "hazardType": "choking",
+        "hazardTags": [
+          "button-battery",
+          "missing-warning"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.9,
+        "needsReview": false,
+        "reason": "The LED torch contains button batteries without required warnings, and the stated risk is ingestion causing choking or internal burns.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "description",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "nz-product-safety-hisense-501l-and-702l-chest-freezers-sold-at-various-retailers",
+      "source": "NZ_PRODUCT_SAFETY",
+      "title": "Hisense 501L and 702L chest freezers sold at various retailers",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://www.productsafety.govt.nz/recalls/hisense-501l-and-702l-chest-freezers-sold-at-various-retailers",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "home-appliances",
+        "productType": "home-appliance-other",
+        "hazardType": "suffocation",
+        "hazardTags": [
+          "child-entrapment"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "A child trapped inside the chest freezer may be unable to open it from within and suffocate.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "description",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "nz-product-safety-iybao-teething-gum-sold-at-gold-coin-whanganui",
+      "source": "NZ_PRODUCT_SAFETY",
+      "title": "iybao Teething Gum – Sold at various retailers",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://www.productsafety.govt.nz/recalls/iybao-teething-gum-sold-at-gold-coin-whanganui",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "teether",
+          "airway-obstruction"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "infants",
+          "children"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The teether may lodge in an infant’s throat or airway and cause choking or suffocation.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "description",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fsanz-food-recalls-fsanz-coca-cola-zero-sugar-375ml-x-30-pack",
+      "source": "FSANZ_FOOD_RECALLS",
+      "title": "Coca-Cola Zero Sugar - 375ml x 30 Pack",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://www.foodstandards.gov.au/food-recalls/recall-alert/coca-cola-zero-sugar-375ml-x-30-pack",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "beverage",
+        "hazardType": "labeling-error",
+        "hazardTags": [
+          "incorrect-packaging",
+          "phenylalanine",
+          "aspartame"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "allergy-sensitive-consumers"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Incorrectly packaged Coca-Cola Zero Sugar contains aspartame despite cans labeled Coca-Cola Classic.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
         ],
         "taxonomyVersion": "recall-taxonomy-v2",
         "method": "llm",
