@@ -170,6 +170,7 @@ const officialSourceFacts = [
   pageFact('Brand / company', view.brandName),
   pageFact('Hazard / issue', view.reason),
   pageFact('Remedy / action', displayActionItems.length ? displayActionItems : action.text),
+  ...view.identificationDetails.filter((fact) => recall.source === 'FSANZ_FOOD_RECALLS' && fact.label === 'Date / batch details'),
   pageFact(view.quantityLabel, view.units),
   pageFact('Recall number / record ID', view.recallNumber || recall.id),
   ...view.fdaDetails.filter((fact) => ['Classification', 'Status'].includes(fact.label))

@@ -476,6 +476,10 @@ export function normalizeFsanzFoodRecallRecords(records: FsanzFoodRecallRaw[]): 
       const sourceRecordId = sourceIdFor(cleanedRaw);
       const id = `fsanz-food-recalls-${sourceRecordId}`;
       const identifiers = extractIdentifierText(cleanedRaw);
+      const dateMarking = normalizeFsanzText(cleanedRaw.detail?.dateMarking);
+      const packSizes = uniqueNonEmpty(
+        officialTitle.match(/\b\d+(?:\.\d+)?\s*(?:kg|g|ml|l|litres?)\b(?:\s*[x×]\s*\d+(?:\s*(?:packs?|cans?|bottles?))?\b)?/gi) ?? []
+      );
       const hazard = firstNonEmpty(
         [cleanedRaw.detail?.problem, cleanedRaw.detail?.foodSafetyHazard, cleanedRaw.listSummary],
         'Food recall reason not listed.'
@@ -497,13 +501,13 @@ export function normalizeFsanzFoodRecallRecords(records: FsanzFoodRecallRaw[]): 
         hazard,
         remedy: action,
         recallDate,
-        affectedUnits: uniqueNonEmpty([normalizeFsanzText(cleanedRaw.detail?.dateMarking), ...identifiers]).join('; '),
+        affectedUnits: dateMarking,
         description: descriptionFor(cleanedRaw, identifiers),
         slug: slugify(`${productName}-${id}`),
         classification: 'Food Standards Australia New Zealand food recall',
         reason: hazard,
         distributionPattern: normalizeFsanzText(cleanedRaw.detail?.introduction || cleanedRaw.listSummary),
-        productQuantity: uniqueNonEmpty([normalizeFsanzText(cleanedRaw.detail?.dateMarking), ...identifiers]).join('; '),
+        productQuantity: packSizes.join('; '),
         recallNumber: sourceRecordId,
         status: '',
         ...(images.length

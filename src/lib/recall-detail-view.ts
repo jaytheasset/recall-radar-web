@@ -857,16 +857,19 @@ function buildFsanzFoodRecallView(recall: SiteRecall, raw: RawObject): SourceDet
   const foodSafetyHazard = rawText(detail, 'foodSafetyHazard');
   const action = firstNonEmpty([rawText(detail, 'whatToDo'), recall.remedy], getRecallDefaultActionFallback(recall.source));
   const dateMarking = rawText(detail, 'dateMarking');
+  const packSize = (recall.productQuantity ?? '').split(';').map((value) => value.trim())
+    .filter((value) => /^\d+(?:\.\d+)?\s*(?:kg|g|ml|l|litres?)(?:\s*[x×]\s*\d+(?:\s*(?:packs?|cans?|bottles?))?)?$/i.test(value))
+    .join('; ');
   const introduction = rawText(detail, 'introduction');
-  const identifiers = uniqueNonEmpty([
-    dateMarking,
-    ...identifierDetails([cleanTitle, dateMarking, introduction, recall.description].join(' '))
-  ]);
+  const otherIdentifiers = identifierDetails([cleanTitle, introduction, recall.description].join(' '))
+    .filter((value) => !/^(?:lot|date of manufacture|date code|best by|use by|sell by|expiration date|expiry date)\b/i.test(value));
   const details: DetailFact[] = [];
 
   addFact(details, 'Product', productName);
   addFact(details, 'Brand or company', brandName);
-  addFact(details, 'Date marking, batch, barcode, or pack details', identifiers);
+  addFact(details, 'Date / batch details', dateMarking);
+  addFact(details, 'Pack size', packSize);
+  addFact(details, 'Other product identifiers', otherIdentifiers);
   addFact(details, 'Problem', problem);
   addFact(details, 'Food safety hazard', foodSafetyHazard);
   addFact(details, 'Distribution or availability', introduction);
@@ -891,7 +894,7 @@ function buildFsanzFoodRecallView(recall: SiteRecall, raw: RawObject): SourceDet
     importer: [],
     manufacturer: uniqueNonEmpty([brandName]),
     manufacturedIn: [],
-    units: recall.affectedUnits || recall.productQuantity || '',
+    units: packSize,
     fdaDetails: details
   };
 }

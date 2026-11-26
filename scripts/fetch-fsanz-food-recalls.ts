@@ -1,3 +1,5 @@
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { canonicalProcessedPath, mergeProcessedRecalls } from './merge-recalls.ts';
 import { writeJsonAtomic } from './normalize-cpsc.ts';
 import {
@@ -82,6 +84,7 @@ async function fetchText(url: string, accept = 'text/html,application/xhtml+xml,
 
   try {
     response = await fetch(url, {
+      signal: AbortSignal.timeout(15000),
       headers: {
         accept,
         'user-agent': 'Recall Radar local FSANZ food recall fetch'
@@ -251,13 +254,45 @@ function extractAllImages(html: string, base: string): FsanzFoodRecallImage[] {
   return images;
 }
 
-function extractDetail(html: string, sourceUrl: string): NonNullable<FsanzFoodRecallRaw['detail']> {
+function extractDateMarking(articleHtml: string, summaryHtml: string): string {
+  const headingLabel = /^(?:Date markings?|Date marking\(s\)|Best Before(?: dates?)?|Use By(?: dates?)?|(?:Expiry|Expiration) Dates?|(?:Batch|Lot)(?:\s+(?:codes?|numbers?|no\.?))?s?)\s*:?$/i;
+  const headingPattern = /<h[2-4]\b[^>]*>([\s\S]*?)<\/h[2-4]>/gi;
+  const headings = [...articleHtml.matchAll(headingPattern)];
+  const labelled = /^(?:Date Marking(?:s|\(s\))?\s*:|Best Before\b|Use By\b|(?:Expiry|Expiration|Harvest) Date\b|(?:Batch|Lot)\s*(?:(?:code|number|no\.?)s?\s*[:#]?|[:#])|Timestamp\s*:|All Date (?:Markings|Codes)\b)/i;
+  const sectionValues = headings.flatMap((heading, index) => {
+    const label = stripHtml(heading[1]);
+    if (!headingLabel.test(label)) return labelled.test(label) ? [label] : [];
+
+    const block = articleHtml.slice(heading.index + heading[0].length, headings[index + 1]?.index);
+    const field = block.match(/^\s*<div\b[^>]*class=["']field-item["'][^>]*>([\s\S]*?)<\/div>/i)?.[1];
+    const lines = htmlLines((field ?? block).replace(/\r?\n/g, ' '));
+    if (lines.length && !/^Date marking/i.test(label)) {
+      lines[0] = `${label.replace(/:\s*$/, '')}: ${lines[0]}`;
+    }
+    return lines;
+  });
+  const endOfProductDetails = [...summaryHtml.matchAll(headingPattern)].find((heading) =>
+    /^(?:Problem|Food safety hazard|What to do|For further information|Recall information)\b/i.test(stripHtml(heading[1]))
+  );
+  const summaryLines = htmlLines(
+    summaryHtml.slice(0, endOfProductDetails?.index).replace(/\r?\n/g, ' ').replace(/<\/?h[2-4]\b[^>]*>/gi, '\n')
+  );
+  const summaryLabel = summaryLines.findIndex((line) => headingLabel.test(line));
+  const summaryValues = summaryLabel >= 0
+    ? summaryLines.slice(summaryLabel + 1).filter((line) => !headingLabel.test(line))
+    : summaryLines.filter((line) => labelled.test(line) ||
+      /\bDate markings?\s*(?::|for\b)|[–—-]\s*(?:Best Before|Use By|Harvest Date)\b/i.test(line));
+  const values = sectionValues.length ? sectionValues : summaryValues;
+  return [...new Set(values.map((value) => value.replace(/^Date Marking(?:s|\(s\))?\s*:\s*/i, '').trim()).filter(Boolean))]
+    .join('; ').replace(/\.; /g, '. ');
+}
+
+export function extractFsanzRecallDetail(html: string, sourceUrl: string): NonNullable<FsanzFoodRecallRaw['detail']> {
   const articleHtml = html.match(/<article\b[^>]*class=["'][^"']*food-recall[^"']*full[^"']*["'][^>]*>([\s\S]*?)<\/article>/i)?.[1] ?? html;
   const fieldHtml = articleHtml.match(/<div class="field-bare">([\s\S]*?)<\/div>\s*<div class="container container-page-updated">/i)?.[1] ?? articleHtml;
   const firstHeading = fieldHtml.search(/<h2\b/i);
   const introductionHtml = firstHeading >= 0 ? fieldHtml.slice(0, firstHeading) : fieldHtml;
   const introLines = htmlLines(introductionHtml);
-  const dateMarking = introLines.find((line) => /^Date Marking:/i.test(line))?.replace(/^Date Marking:\s*/i, '') ?? '';
   const summary = articleHtml.match(/<section class="recall-summary">([\s\S]*?)<\/section>/i)?.[1];
   const introduction = summary ? paragraphs(summary).join(' ') : introLines.filter((line) => !/^Date Marking:/i.test(line)).join(' ');
   const sections = extractSections(fieldHtml);
@@ -275,7 +310,7 @@ function extractDetail(html: string, sourceUrl: string): NonNullable<FsanzFoodRe
     metaDescription: html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["'][^>]*>/i)?.[1] ?? '',
     introduction,
     companyName: textFromFirst(/<div class="recall-information__label">\s*Business\s*<\/div>\s*<div class="recall-information__value">([\s\S]*?)<\/div>/i, articleHtml),
-    dateMarking: detailField('Date marking') || dateMarking,
+    dateMarking: extractDateMarking(articleHtml, summary ?? fieldHtml) || detailField('Date marking'),
     problem: detailField('Problem'),
     foodSafetyHazard: detailField('Food safety hazard'),
     whatToDo: detailField('What to do'),
@@ -289,7 +324,7 @@ function extractDetail(html: string, sourceUrl: string): NonNullable<FsanzFoodRe
 async function enrichRecord(record: FsanzFoodRecallRaw): Promise<FsanzFoodRecallRaw> {
   const sourceUrl = normalizeFsanzText(record.sourceUrl);
   const html = await fetchText(sourceUrl);
-  const detail = extractDetail(html, sourceUrl);
+  const detail = extractFsanzRecallDetail(html, sourceUrl);
 
   return {
     ...record,
@@ -430,7 +465,9 @@ async function runFetch(): Promise<void> {
   );
 }
 
-runFetch().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.message : String(error));
-  process.exitCode = 1;
-});
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
+  runFetch().catch((error: unknown) => {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exitCode = 1;
+  });
+}

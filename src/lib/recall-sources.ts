@@ -475,7 +475,7 @@ const sourceConfigs: Record<RecallSourceId, RecallSourceConfig> = {
     placeholderLabel: 'FSANZ food recall',
     reasonLabel: 'Reason',
     actionLabel: 'Consumer action',
-    quantityLabel: 'Date / batch details',
+    quantityLabel: 'Pack size',
     distributionLabel: 'Distribution',
     defaultActionFallback: DEFAULT_ACTION_FALLBACK,
     verificationIntro:
