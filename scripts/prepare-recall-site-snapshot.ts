@@ -22,7 +22,8 @@ type LocalSnapshot = {
   candidates: number;
   classified: number;
   remaining: number;
-  sourceWarnings: unknown[];
+  sourceWarnings: NormalizedRecall['source'][];
+  error?: string;
   records: Array<{ recall: NormalizedRecall; result: ClassificationRow }>;
 };
 
@@ -48,18 +49,29 @@ function correctVerifiedCpscHazard(record: NormalizedRecall): NormalizedRecall {
   return { ...record, hazard: 'Children can access and swallow the finger lights’ button cell batteries, which can cause severe internal burns or death.' };
 }
 
-const [snapshot, previous, canada] = await Promise.all([
+const [snapshot, previous, previousClassifications, canada] = await Promise.all([
   readLocalJson<LocalSnapshot>(join(localDir, 'current.json')),
   readLocalJson<ProcessedRecallFile>(recallsPath),
+  readLocalJson<{ records: ClassificationRow[] }>(classificationsPath),
   readLocalJson<{ records: NormalizedRecall[] }>(join(localDir, 'release-canada-official-details.json'))
 ]);
 if (!snapshot || !previous || !Number.isFinite(Date.parse(snapshot.generatedAt)) ||
-    snapshot.generatedAt < previous.generatedAt || snapshot.sourceWarnings.length || snapshot.remaining ||
+    Date.parse(snapshot.generatedAt) < Date.parse(previous.generatedAt) || snapshot.error || snapshot.remaining ||
     snapshot.records.length !== snapshot.classified || snapshot.records.length !== snapshot.candidates) {
   throw new Error('A complete local enrichment snapshot at least as recent as the site snapshot is required.');
 }
 
 const previousById = new Map(previous.records.map((row) => [row.id, row]));
+const heldSources = new Set(snapshot.sourceWarnings);
+const publishable = snapshot.records.filter(({ recall }) => !heldSources.has(recall.source));
+if (!publishable.length) throw new Error('No successful recall sources to publish.');
+const priorResults = new Map((previousClassifications?.records ?? []).map((row) => [row.recordId, row]));
+for (const recall of previous.records) {
+  if (!heldSources.has(recall.source)) continue;
+  const result = priorResults.get(recall.id);
+  if (!result) throw new Error(`Missing published classification for retained recall ${recall.id}.`);
+  publishable.push({ recall, result });
+}
 const canadaDetails = canada ? normalizeCanadaRecallRecords(canada.records.map((row) => row.raw as CanadaRecallRaw)) : [];
 const canadaById = new Map(canadaDetails.map((row) => [row.id, row]));
 const sourceCounts: NonNullable<ProcessedRecallFile['countsBySource']> = {};
@@ -72,7 +84,7 @@ const records: NormalizedRecall[] = [];
 const classifications: ClassificationRow[] = [];
 let canadianDetailsUsed = 0;
 
-for (const { recall, result } of snapshot.records) {
+for (const { recall, result } of publishable) {
   const prior = previousById.get(recall.id);
   if (!recall.id || !recall.title.trim() || ids.has(recall.id) || result.recordId !== recall.id ||
       result.source !== recall.source || (prior && prior.source !== recall.source) ||
@@ -83,21 +95,24 @@ for (const { recall, result } of snapshot.records) {
     throw new Error(`Invalid official URL for ${recall.id}.`);
   }
   ids.add(recall.id);
-  const detail = canadaById.get(recall.id);
+  const retained = heldSources.has(recall.source);
+  const detail = retained ? undefined : canadaById.get(recall.id);
   const useCanadaDetail = detail?.source === 'CA_RECALLS' && detail.sourceUrl === recall.sourceUrl &&
     detail.recallDate === recall.recallDate;
   if (useCanadaDetail) canadianDetailsUsed += 1;
-  const enriched = correctVerifiedCpscHazard(useCanadaDetail ? detail : recall);
+  const enriched = retained ? recall : correctVerifiedCpscHazard(useCanadaDetail ? detail : recall);
   const priorSlug = prior && (prior.siteSlug ?? siteSlug(prior, false));
   const correctedTitle = enriched.id === 'cpsc-26577' && /Shield Line Recalls MedPride/i.test(enriched.title);
-  const slug = correctedTitle || !priorSlug ? siteSlug(enriched, true) : priorSlug;
-  const aliases = [...new Set([...(prior?.previousSiteSlugs ?? []), ...(priorSlug ? [priorSlug] : [])])]
+  const slug = retained ? (recall.siteSlug ?? siteSlug(recall, false))
+    : correctedTitle || !priorSlug ? siteSlug(enriched, true) : priorSlug;
+  const aliases = retained ? (recall.previousSiteSlugs ?? [])
+    : [...new Set([...(prior?.previousSiteSlugs ?? []), ...(priorSlug ? [priorSlug] : [])])]
     .filter((alias) => alias !== slug);
   for (const route of [slug, ...aliases]) {
     if (!route || routes.has(route)) throw new Error(`Duplicate or empty recall path for ${recall.id}: ${route}.`);
     routes.add(route);
   }
-  records.push({ ...enriched, siteSlug: slug, previousSiteSlugs: aliases.length ? aliases : undefined });
+  records.push(retained ? recall : { ...enriched, siteSlug: slug, previousSiteSlugs: aliases.length ? aliases : undefined });
   classifications.push(result);
   sourceCounts[recall.source] = (sourceCounts[recall.source] ?? 0) + 1;
   if (result.classification.model) models.add(result.classification.model);
@@ -132,4 +147,4 @@ await writeLocalJson(classificationsPath, {
   qualityFlagCounts,
   records: classifications
 });
-console.log(JSON.stringify({ generatedAt: snapshot.generatedAt, total: records.length, sourceCounts, canadianDetailsUsed }));
+console.log(JSON.stringify({ generatedAt: snapshot.generatedAt, total: records.length, sourceCounts, retainedSources: [...heldSources], canadianDetailsUsed }));
