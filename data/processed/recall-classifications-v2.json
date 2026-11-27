@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-11-26T10:07:14.971Z",
+  "generatedAt": "2026-11-27T10:07:49.408Z",
   "provider": "mixed",
   "model": "gemini-2.5-flash-lite + gpt-6-luna",
   "promptVersion": "recall-classifier-v2",
   "taxonomyVersion": "recall-taxonomy-v2",
-  "totalRecords": 4540,
-  "success": 4540,
+  "totalRecords": 4633,
+  "success": 4633,
   "failed": 0,
   "sourceCounts": {
-    "CA_RECALLS": 824,
-    "EU_SAFETY_GATE": 399,
-    "FR_RAPPELCONSO": 1490,
-    "UK_FSA": 147,
+    "CA_RECALLS": 840,
+    "EU_SAFETY_GATE": 469,
+    "FR_RAPPELCONSO": 1495,
+    "UK_FSA": 148,
     "FSANZ_FOOD_RECALLS": 129,
-    "NZ_PRODUCT_SAFETY": 153,
+    "NZ_PRODUCT_SAFETY": 154,
     "HK_CFS": 118,
     "CPSC": 530,
     "FDA": 555,
@@ -166963,8 +166963,8 @@
         "productType": "charger",
         "hazardType": "electric-shock",
         "hazardTags": [
-          "accessible live parts",
-          "inadequate creepage distance"
+          "USB charger",
+          "accessible live parts"
         ],
         "recallDomain": "consumer-product",
         "audience": [
@@ -166972,13 +166972,12 @@
         ],
         "confidence": 0.95,
         "needsReview": false,
-        "reason": "The USB charger may expose users to live parts and cause electric shock.",
+        "reason": "Inadequate circuit spacing may expose live parts and cause electric shock.",
         "evidenceFields": [
           "title",
           "productNames",
           "brandNames",
-          "hazard",
-          "rawSourceCategory"
+          "hazard"
         ],
         "taxonomyVersion": "recall-taxonomy-v2",
         "method": "llm",
@@ -171846,6 +171845,3404 @@
         "evidenceFields": [
           "title",
           "productNames",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0201",
+      "source": "FR_RAPPELCONSO",
+      "title": "sans marque - tarte 3 fromages",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24195/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "snacks-bakery",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "listeria"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "The three-cheese tart is identified with Listeria contamination risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0189",
+      "source": "FR_RAPPELCONSO",
+      "title": "sans marque - figatellu",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24183/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "meat-seafood",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "salmonella"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "The figatellu lot is identified with Salmonella contamination risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0190",
+      "source": "FR_RAPPELCONSO",
+      "title": "le cabrichou - buche fraiche nature",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24184/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "dairy",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "salmonella"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "The fresh cheese is identified with Salmonella contamination risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0196",
+      "source": "FR_RAPPELCONSO",
+      "title": "sans marque - boudin viande",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24190/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "meat-seafood",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "listeria"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "The meat sausage is identified with Listeria contamination risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "fr-rappelconso-2026-11-0197",
+      "source": "FR_RAPPELCONSO",
+      "title": "distralis - bergers du haut béarn - pavé fermière ail des ours au lait cru",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://rappel.conso.gouv.fr/fiche-rappel/24191/interne",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "dairy",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "listeria"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.98,
+        "needsReview": false,
+        "reason": "The raw milk cheese is identified with Listeria contamination risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-82998",
+      "source": "CA_RECALLS",
+      "title": "Origami Extraction Inc. recalls Smoke Ops Shatter 1.0 g due to labelling issue",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/origami-extraction-inc-recalls-smoke-ops-shatter-10-g-due-labelling-issue",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "other",
+        "hazardType": "labeling-error",
+        "hazardTags": [
+          "cannabis extract",
+          "labeling and packaging"
+        ],
+        "recallDomain": "medical-health",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.84,
+        "needsReview": false,
+        "reason": "The notice identifies a cannabis extract and states that its labeling and packaging are at issue.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-83012",
+      "source": "CA_RECALLS",
+      "title": "Heart Sine® Samaritan® PAD 350P/360P/500P",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/heartsiner-samaritanr-pad-350p360p500p",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "medical-device-consumer",
+        "hazardType": "quality-defect",
+        "hazardTags": [
+          "performance issue"
+        ],
+        "recallDomain": "medical-health",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The Samaritan PAD is a medical device with a stated performance issue.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-83010",
+      "source": "CA_RECALLS",
+      "title": "Health Canada warns of very rare but serious risk of vision loss with semaglutide drugs",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/health-canada-warns-very-rare-serious-risk-vision-loss-semaglutide-drugs",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "health-personal-care-other",
+        "hazardType": "injury",
+        "hazardTags": [
+          "vision loss",
+          "semaglutide drugs"
+        ],
+        "recallDomain": "medical-health",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The notice concerns prescription semaglutide drugs and warns of a risk of vision loss.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-83004",
+      "source": "CA_RECALLS",
+      "title": "Mc Kesson Radiology and Change Healthcare Radiology Solutions",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/mckesson-radiology-and-change-healthcare-radiology-solutions",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "medical-device-consumer",
+        "hazardType": "quality-defect",
+        "hazardTags": [
+          "performance issue"
+        ],
+        "recallDomain": "medical-health",
+        "audience": [
+          "workers"
+        ],
+        "confidence": 0.91,
+        "needsReview": false,
+        "reason": "The recalled radiology solutions are medical products with a stated performance issue.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-83003",
+      "source": "CA_RECALLS",
+      "title": "Novum IQ Syringe Pump",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/novum-iq-syringe-pump",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "medical-device-consumer",
+        "hazardType": "quality-defect",
+        "hazardTags": [
+          "performance issue"
+        ],
+        "recallDomain": "medical-health",
+        "audience": [
+          "workers"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The syringe pump is a medical device with a stated performance issue.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-83002",
+      "source": "CA_RECALLS",
+      "title": "Smart Port Implantable Ports",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/smartport-implantable-ports",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "medical-device-consumer",
+        "hazardType": "quality-defect",
+        "hazardTags": [
+          "device compatibility"
+        ],
+        "recallDomain": "medical-health",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The product is an implantable medical port and the stated issue is device compatibility.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-82999",
+      "source": "CA_RECALLS",
+      "title": "Casearia il Ghiottone brand Burattina Fresh Stretched Curd Cheese with Cream recalled due to generic E. coli",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/casearia-il-ghiottone-brand-burattina-fresh-stretched-curd-cheese-cream-recalled-due",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "dairy",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "E. coli"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The fresh curd cheese is recalled for microbial contamination with E. coli.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-82996",
+      "source": "CA_RECALLS",
+      "title": "Various Clef des Champs Inc. natural health products: Out-of-specification (microbial contamination)",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/various-clef-champs-inc-natural-health-products-out-specification-microbial",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "supplement-like-food",
+        "hazardType": "contamination-pathogen",
+        "hazardTags": [
+          "microbial contamination"
+        ],
+        "recallDomain": "medical-health",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.81,
+        "needsReview": false,
+        "reason": "The recalled natural health products have an out-of-specification microbial contamination issue.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "remedy",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-81440",
+      "source": "CA_RECALLS",
+      "title": "Medline Brand Beds, Rails, Mattresses, and Accessories",
+      "recallDate": "2026-11-25",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/medline-brand-beds-rails-mattresses-and-accessories",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "medical-device-consumer",
+        "hazardType": "quality-defect",
+        "hazardTags": [
+          "performance issue"
+        ],
+        "recallDomain": "medical-health",
+        "audience": [
+          "elderly"
+        ],
+        "confidence": 0.83,
+        "needsReview": false,
+        "reason": "The recalled beds, rails, and pressure mattresses are medical devices with a stated performance issue.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "identifiers"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-83014",
+      "source": "CA_RECALLS",
+      "title": "Transport Canada Recall - 2026546 - YOKOHAMA",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/transport-canada-recall-2026546-yokohama",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "vehicle-accessory",
+        "hazardType": "quality-defect",
+        "hazardTags": [
+          "tire issue"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.91,
+        "needsReview": false,
+        "reason": "The recalled product is a vehicle tire and the notice identifies a tire issue.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-83013",
+      "source": "CA_RECALLS",
+      "title": "Transport Canada Recall - 2026540 - BMW",
+      "recallDate": "2026-11-24",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/transport-canada-recall-2026540-bmw",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "passenger-vehicle",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "high voltage"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.91,
+        "needsReview": false,
+        "reason": "The record identifies a BMW car and lists high voltage as the hazard.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-83009",
+      "source": "CA_RECALLS",
+      "title": "Transport Canada Recall - 2026539 - VOLKSWAGEN",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/transport-canada-recall-2026539-volkswagen",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "passenger-vehicle",
+        "hazardType": "injury",
+        "hazardTags": [
+          "seats and restraints"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.91,
+        "needsReview": false,
+        "reason": "The notice identifies a Volkswagen SUV and a seats and restraints issue.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-83008",
+      "source": "CA_RECALLS",
+      "title": "Transport Canada Recall - 2026538 - FOREST RIVER",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/transport-canada-recall-2026538-forest-river",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "trailer",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "vehicle electrical issue"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.92,
+        "needsReview": false,
+        "reason": "The recalled RV trailer has an identified electrical issue.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-83007",
+      "source": "CA_RECALLS",
+      "title": "Transport Canada Recall - 2026537 - FORD",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/transport-canada-recall-2026537-ford",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "passenger-vehicle",
+        "hazardType": "injury",
+        "hazardTags": [
+          "lights and instruments"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.91,
+        "needsReview": false,
+        "reason": "The notice identifies a Ford light truck or van and a lights and instruments issue.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-83006",
+      "source": "CA_RECALLS",
+      "title": "Transport Canada Recall - 2026536 - FORD",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/transport-canada-recall-2026536-ford",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "passenger-vehicle",
+        "hazardType": "injury",
+        "hazardTags": [
+          "lights and instruments"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.91,
+        "needsReview": false,
+        "reason": "The notice identifies a Ford SUV and a lights and instruments issue.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "ca-recalls-83005",
+      "source": "CA_RECALLS",
+      "title": "Transport Canada Recall - 2026535 - FORD",
+      "recallDate": "2026-11-23",
+      "sourceUrl": "https://recalls-rappels.canada.ca/en/alert-recall/transport-canada-recall-2026535-ford",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "passenger-vehicle",
+        "hazardType": "injury",
+        "hazardTags": [
+          "vehicle structure"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.91,
+        "needsReview": false,
+        "reason": "The notice identifies a Ford SUV and a structural issue.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119813",
+      "source": "EU_SAFETY_GATE",
+      "title": "Wooden ride-on toy - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119813",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "entrapment",
+        "hazardTags": [
+          "finger entrapment",
+          "injury"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The ride-on toy's wheel gaps may trap a child's fingers during play.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119917",
+      "source": "EU_SAFETY_GATE",
+      "title": "Plastic coverall - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119917",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "clothing",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "DEHP",
+          "cadmium",
+          "reproductive harm",
+          "kidney and bone damage"
+        ],
+        "recallDomain": "chemical",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The raincoat contains excessive DEHP and cadmium, which the notice associates with health harms.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119923",
+      "source": "EU_SAFETY_GATE",
+      "title": "Winsoo - Electric toy car - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119923",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "environmental-risk"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The electric toy car contains lead in its solder, identified as an environmental risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119924",
+      "source": "EU_SAFETY_GATE",
+      "title": "Winsoo - Electric toy car - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119924",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "environmental-risk"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The electric toy car contains lead in its solder, identified as an environmental risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119925",
+      "source": "EU_SAFETY_GATE",
+      "title": "FlyNova - Electric toy - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119925",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "environmental-risk"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The electric toy contains lead in its solder, identified as an environmental risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119926",
+      "source": "EU_SAFETY_GATE",
+      "title": "Tongxinyi - Toy game console - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119926",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "environmental-risk"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The toy game console contains lead in its solder, identified as an environmental risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119927",
+      "source": "EU_SAFETY_GATE",
+      "title": "Tongxinyi - Toy game console - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119927",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "environmental-risk"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The toy game console contains lead in its solder, identified as an environmental risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119929",
+      "source": "EU_SAFETY_GATE",
+      "title": "Remote control - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119929",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "electronic-accessory",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "environmental-risk"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The remote control contains lead in its solder, identified as an environmental risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119932",
+      "source": "EU_SAFETY_GATE",
+      "title": "Electric plush toy - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119932",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "cadmium",
+          "environmental-risk"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The electric plush toy contains lead and cadmium in its solder, identified as environmental risks.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119954",
+      "source": "EU_SAFETY_GATE",
+      "title": "Rahmqvist Work - Outdoor lamp - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119954",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "lighting",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "environmental-risk"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The outdoor lamp contains lead in its solder, identified as an environmental risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119928",
+      "source": "EU_SAFETY_GATE",
+      "title": "Tongxinyi - Toy game console - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119928",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "environmental-risk"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The toy game console contains lead in its solder, identified as an environmental risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119955",
+      "source": "EU_SAFETY_GATE",
+      "title": "Scander - Aroma diffuser - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119955",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "appliance-electrical",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "environmental-risk"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.93,
+        "needsReview": false,
+        "reason": "The aroma diffuser contains lead in its solder, identified as an environmental risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119910",
+      "source": "EU_SAFETY_GATE",
+      "title": "Portable fan - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119910",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "air-conditioner-fan",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead in solders",
+          "environmental hazard"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.91,
+        "needsReview": false,
+        "reason": "The portable fan's solders contain excessive lead, which the notice identifies as an environmental risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119921",
+      "source": "EU_SAFETY_GATE",
+      "title": "MKB - Electric toy car - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119921",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "environmental-risk"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The electric toy car contains lead in its solder, identified as an environmental risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119922",
+      "source": "EU_SAFETY_GATE",
+      "title": "Streamline design - Electric toy car - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119922",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "contamination-chemical",
+        "hazardTags": [
+          "lead",
+          "environmental-risk"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The electric toy car contains lead in its solder, identified as an environmental risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119752",
+      "source": "EU_SAFETY_GATE",
+      "title": "Xerteam - Fancy-dress costume - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119752",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "clothing",
+        "hazardType": "entrapment",
+        "hazardTags": [
+          "long functional cords",
+          "injury"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The children's pirate costumes have long waist cords that may become trapped and cause injuries.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "description",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119988",
+      "source": "EU_SAFETY_GATE",
+      "title": "Runfeng - Water beads - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119988",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "expanding-water-beads",
+          "airway-obstruction",
+          "intestinal-blockage"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The water beads expand when swallowed and can obstruct the respiratory tract or intestines.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119964",
+      "source": "EU_SAFETY_GATE",
+      "title": "PRO-eximp - Plastic doll - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119964",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "DEHP",
+          "phthalates"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.98,
+        "needsReview": false,
+        "reason": "The doll contains excessive DEHP, which the notice says may harm children's reproductive systems.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119865",
+      "source": "EU_SAFETY_GATE",
+      "title": "Costume National - Perfume - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119865",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "BMHCA",
+          "skin sensitization",
+          "prohibited cosmetic ingredient"
+        ],
+        "recallDomain": "chemical",
+        "audience": [
+          "pregnant-people"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The perfume contains prohibited BMHCA, which may harm reproduction and cause skin sensitization.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119867",
+      "source": "EU_SAFETY_GATE",
+      "title": "Narciso Rodriguez - Perfume - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119867",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "BMHCA",
+          "skin sensitization",
+          "prohibited cosmetic ingredient"
+        ],
+        "recallDomain": "chemical",
+        "audience": [
+          "pregnant-people"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The perfume contains prohibited BMHCA, which may harm reproduction and cause skin sensitization.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119857",
+      "source": "EU_SAFETY_GATE",
+      "title": "Bentley - Perfume - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119857",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "BMHCA",
+          "skin sensitization",
+          "prohibited cosmetic ingredient"
+        ],
+        "recallDomain": "chemical",
+        "audience": [
+          "pregnant-people"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The perfume contains prohibited BMHCA, which may harm reproduction and cause skin sensitization.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119590",
+      "source": "EU_SAFETY_GATE",
+      "title": "Toy slime - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119590",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "boron",
+          "excessive migration"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The toy slime releases excessive boron that may harm children's health through ingestion or contact.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119822",
+      "source": "EU_SAFETY_GATE",
+      "title": "I TOTAL - Keyring with soft toy - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119822",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable metal ring"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The keyring's detachable metal ring could be mouthed by a small child and cause choking.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119956",
+      "source": "EU_SAFETY_GATE",
+      "title": "Nina's - Toy rattle - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119956",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable-small-parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.98,
+        "needsReview": false,
+        "reason": "The rattle has detachable small parts that a small child could choke on.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119894",
+      "source": "EU_SAFETY_GATE",
+      "title": "Fancy-dress costume - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119894",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "child-clothing",
+        "hazardType": "fire",
+        "hazardTags": [
+          "flammable costume",
+          "burns"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.92,
+        "needsReview": false,
+        "reason": "The fancy-dress costume can catch fire near an ignition source and burn its wearer.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119860",
+      "source": "EU_SAFETY_GATE",
+      "title": "Clinique - Perfume - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119860",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "BMHCA",
+          "skin sensitization",
+          "prohibited cosmetic ingredient"
+        ],
+        "recallDomain": "chemical",
+        "audience": [
+          "pregnant-people"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The perfume contains prohibited BMHCA, which may harm reproduction and cause skin sensitization.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119821",
+      "source": "EU_SAFETY_GATE",
+      "title": "I TOTAL - Keyring with soft toy - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119821",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable metal ring",
+          "accessible fibrous filling"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Detachable ring and accessible filling on the soft toy may be mouthed by a small child and cause choking.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119803",
+      "source": "EU_SAFETY_GATE",
+      "title": "Watch - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119803",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "nickel release",
+          "skin sensitization",
+          "allergic reaction"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "allergy-sensitive-consumers"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The watch releases excessive nickel, which can cause allergic skin reactions with prolonged contact.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119943",
+      "source": "EU_SAFETY_GATE",
+      "title": "YappyKids - Baby sleeping bag - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119943",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "baby-kids-other",
+        "hazardType": "suffocation",
+        "hazardTags": [
+          "sleepwear",
+          "airway-obstruction"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "infants"
+        ],
+        "confidence": 0.98,
+        "needsReview": false,
+        "reason": "The sleeping bag's neck opening may cover a child's nose and mouth during sleep.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "description",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119960",
+      "source": "EU_SAFETY_GATE",
+      "title": "YEBO - Earrings - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119960",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "nickel",
+          "allergic-reaction"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "allergy-sensitive-consumers"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The earrings release nickel at a level associated with allergic reactions after prolonged skin contact.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119969",
+      "source": "EU_SAFETY_GATE",
+      "title": "Ring set - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119969",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "cadmium",
+          "nickel",
+          "allergic-reaction"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "allergy-sensitive-consumers"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The rings contain excessive cadmium and release nickel associated with allergic reactions.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119851",
+      "source": "EU_SAFETY_GATE",
+      "title": "Genesis - Passenger car - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119851",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "passenger-vehicle",
+        "hazardType": "fire",
+        "hazardTags": [
+          "fuel leakage",
+          "loose fuel rail union nuts"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "Insufficiently tightened fuel rail union nuts may cause fuel leakage and increase fire risk in the passenger cars.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119898",
+      "source": "EU_SAFETY_GATE",
+      "title": "MebyDrea - Bracelet - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119898",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "lead",
+          "excessive concentration",
+          "reproductive harm"
+        ],
+        "recallDomain": "chemical",
+        "audience": [
+          "pregnant-people"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The bracelet contains excessive lead, which accumulates in the body and may affect unborn or breast-fed children.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119833",
+      "source": "EU_SAFETY_GATE",
+      "title": "Em Milano ® - Gel nail polish - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119833",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "TPO",
+          "reproductive harm",
+          "allergic skin reactions",
+          "prohibited cosmetic ingredient"
+        ],
+        "recallDomain": "chemical",
+        "audience": [
+          "pregnant-people"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The gel nail polish contains prohibited TPO, which may harm reproduction and cause allergic skin reactions.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119973",
+      "source": "EU_SAFETY_GATE",
+      "title": "Ring - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119973",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "cadmium"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The ring contains excessive cadmium, described as harmful to human health.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119778",
+      "source": "EU_SAFETY_GATE",
+      "title": "tonies - Plastic toy - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119778",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable small part"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "A detachable foot on the plastic toy could be mouthed by a small child and cause choking.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119837",
+      "source": "EU_SAFETY_GATE",
+      "title": "Tertio - Gel nail polish - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119837",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "TMPTA",
+          "skin irritation",
+          "eye irritation",
+          "prohibited cosmetic ingredient"
+        ],
+        "recallDomain": "chemical",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The gel nail polish contains prohibited TMPTA, which can irritate skin and eyes and might cause cancer.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119828",
+      "source": "EU_SAFETY_GATE",
+      "title": "Tertio - Gel nail polish - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119828",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "TMPTA",
+          "skin irritation",
+          "eye irritation",
+          "prohibited cosmetic ingredient"
+        ],
+        "recallDomain": "chemical",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The gel nail polish contains prohibited TMPTA, which can irritate skin and eyes and might cause cancer.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119823",
+      "source": "EU_SAFETY_GATE",
+      "title": "Jurassic Epoch - Projectile toy - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119823",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "small suction cup projectiles"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Small suction cup projectiles from the toy may be mouthed by children and cause choking.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119856",
+      "source": "EU_SAFETY_GATE",
+      "title": "Proteo Line - Hair-colouring cream - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119856",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "cosmetic",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "BMHCA",
+          "skin sensitization",
+          "prohibited cosmetic ingredient"
+        ],
+        "recallDomain": "chemical",
+        "audience": [
+          "pregnant-people"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The hair-colouring cream contains prohibited BMHCA, which may harm reproduction and cause skin sensitization.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119845",
+      "source": "EU_SAFETY_GATE",
+      "title": "Necklace - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119845",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "jewelry-accessory",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "nickel release",
+          "skin sensitization",
+          "allergic reaction"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "allergy-sensitive-consumers"
+        ],
+        "confidence": 0.94,
+        "needsReview": false,
+        "reason": "The necklace releases excessive nickel, which can cause allergic skin reactions with prolonged contact.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119846",
+      "source": "EU_SAFETY_GATE",
+      "title": "I TOTAL - Soft toy pillow - Safety Gate alert",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119846",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "accessible fibrous filling",
+          "weak seams"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Weak seams expose the toy pillow's filling, which a small child could mouth and choke on.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119668",
+      "source": "EU_SAFETY_GATE",
+      "title": "META-PRO - USB charger - Safety Gate alert",
+      "recallDate": "2026-11-18",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119668",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "charger",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "inadequate insulation",
+          "accessible live parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.97,
+        "needsReview": false,
+        "reason": "The USB charger lacks adequate insulation and could expose users to live parts.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119739",
+      "source": "EU_SAFETY_GATE",
+      "title": "Playbox - Light clay foam - Safety Gate alert",
+      "recallDate": "2026-11-18",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119739",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "excessive boron migration"
+        ],
+        "recallDomain": "chemical",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The toy clay releases excessive boron that may harm children through ingestion or contact.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "description",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119748",
+      "source": "EU_SAFETY_GATE",
+      "title": "Leafless - Hairdryer - Safety Gate alert",
+      "recallDate": "2026-11-18",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119748",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "personal-care-product",
+        "hazardType": "fire",
+        "hazardTags": [
+          "overheating",
+          "fire",
+          "electrical defect"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The hairdryer has electrical defects that may cause overheating and fire.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "rawSourceCategory",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119742",
+      "source": "EU_SAFETY_GATE",
+      "title": "Tastetreasure - Keyring with soft toy - Safety Gate alert",
+      "recallDate": "2026-11-18",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119742",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable small parts",
+          "choking"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The keyring includes a soft toy with detachable small parts that could cause choking.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "rawSourceCategory",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119621",
+      "source": "EU_SAFETY_GATE",
+      "title": "Decorative chocolate - Safety Gate alert",
+      "recallDate": "2026-11-18",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119621",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "furniture-household",
+        "productType": "household-product",
+        "hazardType": "choking",
+        "hazardTags": [
+          "food imitation",
+          "small child"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.93,
+        "needsReview": false,
+        "reason": "The decorative chocolate imitation can be mistaken for food and a child could choke on it.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119529",
+      "source": "EU_SAFETY_GATE",
+      "title": "LISCIANI - Activity toy - Safety Gate alert",
+      "recallDate": "2026-11-18",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119529",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "small parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.98,
+        "needsReview": false,
+        "reason": "The activity toy has small parts that a child could put in their mouth and choke on.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "remedy"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119619",
+      "source": "EU_SAFETY_GATE",
+      "title": "STYLER V2 - Electric brush - Safety Gate alert",
+      "recallDate": "2026-11-18",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119619",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "health-personal-care",
+        "productType": "personal-care-product",
+        "hazardType": "burn",
+        "hazardTags": [
+          "overheating",
+          "hairbrush"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The electric hairbrush becomes excessively hot and may cause burns.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "description",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119577",
+      "source": "EU_SAFETY_GATE",
+      "title": "Piper K - Keyring with soft toy - Safety Gate alert",
+      "recallDate": "2026-11-18",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119577",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable small parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.98,
+        "needsReview": false,
+        "reason": "The soft toy has detachable small parts that a child could put in their mouth and choke on.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "category",
+          "hazard",
+          "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119591",
+      "source": "EU_SAFETY_GATE",
+      "title": "Toy car - Safety Gate alert",
+      "recallDate": "2026-11-18",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119591",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "injury",
+        "hazardTags": [
+          "excessive LED intensity",
+          "sight damage"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.96,
+        "needsReview": false,
+        "reason": "The toy car's LED light is too intense and direct viewing could damage sight.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard",
+          "description"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119576",
+      "source": "EU_SAFETY_GATE",
+      "title": "Teething toy - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119576",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "strangulation",
+        "hazardTags": [
+          "cord",
+          "neck entanglement",
+          "strangulation"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The teething toy has a loop that may entangle around a child's neck and cause strangulation.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "rawSourceCategory",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119620",
+      "source": "EU_SAFETY_GATE",
+      "title": "Mounted lighting - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119620",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "lighting",
+        "hazardType": "fire",
+        "hazardTags": [
+          "overheating",
+          "electrical defect",
+          "fire"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The ceiling light's incorrect supply cord could overheat or ignite nearby materials.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "rawSourceCategory",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119535",
+      "source": "EU_SAFETY_GATE",
+      "title": "Protective gloves - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119535",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "industrial-workplace",
+        "productType": "other",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "protective equipment",
+          "conformity testing",
+          "chemical exposure",
+          "biological agents"
+        ],
+        "recallDomain": "workplace-industrial",
+        "audience": [
+          "workers"
+        ],
+        "confidence": 0.9,
+        "needsReview": false,
+        "reason": "Protective gloves lack required conformity tests and may expose wearers to hazardous substances or biological agents.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119536",
+      "source": "EU_SAFETY_GATE",
+      "title": "Protective gloves - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119536",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "industrial-workplace",
+        "productType": "other",
+        "hazardType": "chemical-exposure",
+        "hazardTags": [
+          "protective equipment",
+          "conformity testing",
+          "chemical exposure",
+          "biological agents"
+        ],
+        "recallDomain": "workplace-industrial",
+        "audience": [
+          "workers"
+        ],
+        "confidence": 0.9,
+        "needsReview": false,
+        "reason": "Protective gloves lack required conformity tests and may expose wearers to hazardous substances or biological agents.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "category",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119700",
+      "source": "EU_SAFETY_GATE",
+      "title": "ORIGINAL - USB charger - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119700",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "charger",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "USB charger",
+          "inadequate insulation",
+          "live parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Inadequate insulation could make the charger's USB ports and cable live and cause electric shock.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119704",
+      "source": "EU_SAFETY_GATE",
+      "title": "XO - USB charger - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119704",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "charger",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "USB charger",
+          "inadequate insulation",
+          "live parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Inadequate insulation could make the charger's USB port and cable live and cause electric shock.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119746",
+      "source": "EU_SAFETY_GATE",
+      "title": "Katyjun - Keyring with soft toy - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119746",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "detachable small parts",
+          "choking"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The soft toy keyrings have detachable small parts that could cause choking.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "rawSourceCategory",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119714",
+      "source": "EU_SAFETY_GATE",
+      "title": "Futou - Travel adaptor - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119714",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "electronic-accessory",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "travel adaptor",
+          "accessible live parts",
+          "single-pole insertion"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The travel adaptor's design may expose live parts and cause electric shock.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "rawSourceCategory",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119712",
+      "source": "EU_SAFETY_GATE",
+      "title": "YOURZ - USB charger - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119712",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "charger",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "USB charger",
+          "inadequate insulation",
+          "live parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Inadequate insulation could make the charger's USB ports and cable live and cause electric shock.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119696",
+      "source": "EU_SAFETY_GATE",
+      "title": "EZRA - USB charger - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119696",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "charger",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "USB charger",
+          "inadequate insulation",
+          "live parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Inadequate insulation could make the charger's USB ports and cable live and cause electric shock.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119749",
+      "source": "EU_SAFETY_GATE",
+      "title": "Baby pillow - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119749",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "nursery-gear",
+        "hazardType": "suffocation",
+        "hazardTags": [
+          "infant sleep space",
+          "airway obstruction",
+          "suffocation"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "infants"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The baby pillow may cause suffocation when used in an infant sleep space.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "rawSourceCategory",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119695",
+      "source": "EU_SAFETY_GATE",
+      "title": "Power adaptor - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119695",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "electronic-accessory",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "power adaptor",
+          "accessible live parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The adaptor may fail to connect a plug's protective contact and cause electric shock.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "rawSourceCategory",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119710",
+      "source": "EU_SAFETY_GATE",
+      "title": "USB charger - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119710",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "charger",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "USB charger",
+          "inadequate insulation",
+          "live parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Inadequate insulation could make the charger's USB ports live and cause electric shock.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "rawSourceCategory",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119711",
+      "source": "EU_SAFETY_GATE",
+      "title": "USB charger - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119711",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "charger",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "USB charger",
+          "inadequate insulation",
+          "live parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Inadequate insulation could make the charger's USB ports live and cause electric shock.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119708",
+      "source": "EU_SAFETY_GATE",
+      "title": "Foneng - USB charger - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119708",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "electronics-batteries",
+        "productType": "charger",
+        "hazardType": "electric-shock",
+        "hazardTags": [
+          "USB charger",
+          "inadequate insulation",
+          "live parts"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "general"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Inadequate insulation could make the charger's USB ports and cable live and cause electric shock.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119664",
+      "source": "EU_SAFETY_GATE",
+      "title": "Porsche - Passenger car. - Safety Gate alert",
+      "recallDate": "2026-11-17",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119664",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "vehicles-mobility",
+        "productType": "passenger-vehicle",
+        "hazardType": "crash",
+        "hazardTags": [
+          "wheel detachment",
+          "accident risk",
+          "injury"
+        ],
+        "recallDomain": "vehicle",
+        "audience": [
+          "vehicle-users"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "Defective wheel bolts may cause a wheel to detach and increase accident and injury risk.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119613",
+      "source": "EU_SAFETY_GATE",
+      "title": "Toy gun - Safety Gate alert",
+      "recallDate": "2026-11-13",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119613",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "choking",
+        "hazardTags": [
+          "small parts",
+          "choking",
+          "eye injury",
+          "mislabeling"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The toy gun has small bullets that could cause choking, and its plastic bullets may injure eyes.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "rawSourceCategory",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119630",
+      "source": "EU_SAFETY_GATE",
+      "title": "VIGA - Lacing toy - Safety Gate alert",
+      "recallDate": "2026-11-13",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119630",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "baby-kids",
+        "productType": "toy",
+        "hazardType": "strangulation",
+        "hazardTags": [
+          "lacing loop",
+          "neck entanglement",
+          "strangulation"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The loop formed by the lacing toy may become trapped around a child's neck and cause strangulation.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "rawSourceCategory",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "eu-safety-gate-10119618",
+      "source": "EU_SAFETY_GATE",
+      "title": "Jeliboom kidswear - Children's clothing set - Safety Gate alert",
+      "recallDate": "2026-11-13",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/webReport/alertDetail/10119618",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "clothing-accessories",
+        "productType": "child-clothing",
+        "hazardType": "entrapment",
+        "hazardTags": [
+          "waist cords",
+          "entanglement",
+          "fall",
+          "injury"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "children"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The clothing set's waist cords may become trapped or entangled during children's activities and cause injury.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "hazard"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "uk-fsa-fsa-aa-55-2026",
+      "source": "UK_FSA",
+      "title": "Dundeis UK Ltd recalls Minton & Donello Original Muesli because of undeclared Brazil nuts (nuts)",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://alerts.food.gov.uk/news-alerts/alert/fsa-aa-55-2026",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "food-grocery",
+        "productType": "packaged-food",
+        "hazardType": "allergen",
+        "hazardTags": [
+          "undeclared Brazil nuts"
+        ],
+        "recallDomain": "food",
+        "audience": [
+          "allergy-sensitive-consumers"
+        ],
+        "confidence": 0.98,
+        "needsReview": false,
+        "reason": "The muesli contains Brazil nuts that are not declared on the label.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "brandNames",
+          "hazard",
+          "remedy",
+          "rawSourceCategory"
+        ],
+        "taxonomyVersion": "recall-taxonomy-v2",
+        "method": "llm",
+        "model": "gpt-6-luna",
+        "promptVersion": "recall-classifier-v2"
+      }
+    },
+    {
+      "recordId": "nz-product-safety-isc-reflex-mechanical-hitch-sold-at-various-retailers",
+      "source": "NZ_PRODUCT_SAFETY",
+      "title": "ISC MH285 (original) REFLEX Mechanical Hitch sold at various retailers",
+      "recallDate": "2026-11-26",
+      "sourceUrl": "https://www.productsafety.govt.nz/recalls/isc-reflex-mechanical-hitch-sold-at-various-retailers",
+      "success": true,
+      "failed": false,
+      "qualityFlags": [],
+      "classification": {
+        "productFamily": "tools-equipment",
+        "productType": "machinery-equipment",
+        "hazardType": "fall",
+        "hazardTags": [
+          "unexpected slipping",
+          "fall from height",
+          "wear"
+        ],
+        "recallDomain": "consumer-product",
+        "audience": [
+          "workers",
+          "outdoor-users"
+        ],
+        "confidence": 0.95,
+        "needsReview": false,
+        "reason": "The mechanical hitch is used for rope access and rescue, and wear can cause it to slip and lead to a fall.",
+        "evidenceFields": [
+          "title",
+          "productNames",
+          "description",
           "hazard",
           "remedy",
           "rawSourceCategory"
